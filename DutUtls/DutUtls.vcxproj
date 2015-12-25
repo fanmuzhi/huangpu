@@ -73,6 +73,30 @@
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Syn_BinCodes.h" />
+    <ClInclude Include="Syn_Config.h" />
+    <ClInclude Include="Syn_Dut.h" />
+    <ClInclude Include="Syn_DutCtrl.h" />
+    <ClInclude Include="Syn_Metallica.h" />
+    <ClInclude Include="Syn_MPC04Ctrl.h" />
+    <ClInclude Include="Syn_Site.h" />
+    <ClInclude Include="Syn_SPCCtrl.h" />
+    <ClInclude Include="Syn_Viper.h" />
+    <ClInclude Include="Syn_Viper1.h" />
+    <ClInclude Include="Syn_Viper2.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Syn_BinCodes.cpp" />
+    <ClCompile Include="Syn_Dut.cpp" />
+    <ClCompile Include="Syn_Metallica.cpp" />
+    <ClCompile Include="Syn_MPC04Ctrl.cpp" />
+    <ClCompile Include="Syn_Site.cpp" />
+    <ClCompile Include="Syn_SPCCtrl.cpp" />
+    <ClCompile Include="Syn_Viper.cpp" />
+    <ClCompile Include="Syn_Viper1.cpp" />
+    <ClCompile Include="Syn_Viper2.cpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

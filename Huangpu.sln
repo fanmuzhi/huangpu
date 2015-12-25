@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Huangpu", "Huangpu\Huangpu.vcxproj", "{B12702AD-ABFB-343A-A199-8E24837244A3}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DutUtls", "DutUtls\DutUtls.vcxproj", "{C2D06DBB-48F6-4737-8036-040F98CBC023}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -21,11 +23,17 @@ Global
 		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|Win32.Build.0 = Release|Win32
 		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|x64.ActiveCfg = Release|x64
 		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|x64.Build.0 = Release|x64
+		{C2D06DBB-48F6-4737-8036-040F98CBC023}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C2D06DBB-48F6-4737-8036-040F98CBC023}.Debug|Win32.Build.0 = Debug|Win32
+		{C2D06DBB-48F6-4737-8036-040F98CBC023}.Debug|x64.ActiveCfg = Debug|Win32
+		{C2D06DBB-48F6-4737-8036-040F98CBC023}.Release|Win32.ActiveCfg = Release|Win32
+		{C2D06DBB-48F6-4737-8036-040F98CBC023}.Release|Win32.Build.0 = Release|Win32
+		{C2D06DBB-48F6-4737-8036-040F98CBC023}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		Qt5Version = Qt5.5.1
+		Qt5Version = 5.5.1
 	EndGlobalSection
 EndGlobal
