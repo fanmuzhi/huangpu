@@ -21,23 +21,9 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QPushButton" name="pushButtonPowerOn">
+       <widget class="QPushButton" name="pushButtonRun">
         <property name="text">
-         <string>PowerOn</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonGetVer">
-        <property name="text">
-         <string>GetVer</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonPowerOff">
-        <property name="text">
-         <string>PowerOff</string>
+         <string>Run</string>
         </property>
        </widget>
       </item>

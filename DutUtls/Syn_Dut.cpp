@@ -82,3 +82,11 @@ Syn_DutCtrl * Syn_Dut::GetDutCtrl()
 {
 	return _pSyn_DutCtrl;
 }
+
+bool Syn_Dut::ReadOTP()
+{
+	//dutCtrl.poweron()
+	//dutCtrl.fpUnloadPatch()
+	//dutCtrl.fpLoadPatch() <-- OTPReadWritePatch
+	//dutCtrl.fpReadOTPROM()
+}

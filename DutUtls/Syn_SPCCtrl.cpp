@@ -41,7 +41,7 @@ bool Syn_SPCCtrl::PowerOn(uint8_t *pDst, int numBytes)
 {
 	uint16_t error;
 	// Power on sensor
-	error = MPC_SetVoltages(syn_DeviceHandle, 3300, 3300, 3300, 3300, 200);
+	error = MPC_SetVoltages(syn_DeviceHandle, 1800, 1800, 3300, 3300, 200);
 	::Sleep(5);
 
 	// Disable Sleep

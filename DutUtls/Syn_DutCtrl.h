@@ -33,6 +33,12 @@ public:
 
 	virtual bool FpGetVersion(uint8_t *pDst, int numBytes) = 0;
 
+	virtual bool FpLoadPatch() = 0;
+
+	virtual bool FpUnloadPatch() = 0;
+
+	virtual bool FpOtpRomRead() = 0;
+
 protected:
 
 	uint32_t syn_DeviceHandle;

@@ -34,10 +34,12 @@ public:
 
 
 	//virtual void Method1() = 0;//test nothing
+	bool ReadOTP();
 
 
 protected:
 
 	Syn_DutCtrl *_pSyn_DutCtrl;
+
 };
 
