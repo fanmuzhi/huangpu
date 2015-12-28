@@ -6,6 +6,12 @@
 #include "MpcApiDll.h"
 #include "SysConfig.h"
 
+//DutUtls
+#include <Syn_DutOperation.h>
+#include <Syn_Dut.h>
+#include <Syn_DutCtrl.h>
+
+//std
 #include <sstream>
 #include <vector>
 #include <iostream>
@@ -36,6 +42,8 @@ private:
 	uint32_t Init();
 	Ui::FPS_TestExecutiveClass ui;
 	uint32_t m_deviceHandle;
+
+	vector<Syn_Dut*> _ListOfDutPtr;
 };
 
 #endif // FPS_TESTEXECUTIVE_H

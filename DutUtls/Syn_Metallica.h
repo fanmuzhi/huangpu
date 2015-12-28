@@ -6,5 +6,8 @@ class Syn_Metallica :
 public:
 	Syn_Metallica();
 	~Syn_Metallica();
+
+	void GetProjectType(ProjectType &oProjectType);
+
 };
 

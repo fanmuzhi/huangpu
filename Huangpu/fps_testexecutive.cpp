@@ -15,7 +15,7 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 uint32_t FPS_TestExecutive::Init()
 {
 	ui.textBrowser->append("Hello World");
-	MPC_Initialize(); 
+	/*MPC_Initialize(); 
 	int deviceNum;
 	MPC_GetNumberOfDevices(&deviceNum);
 	QString s = "DeviceNum: " + QString::number(deviceNum);
@@ -44,12 +44,39 @@ uint32_t FPS_TestExecutive::Init()
 	else{
 		ui.textBrowser->append("Device Not Connected.");
 		return -1;
+	}*/
+
+	QString qstrValue;
+	std::string strValue;
+	bool bResult = Syn_DutOperation::StartDutOperation(_ListOfDutPtr, strValue);
+
+	QString qCounts = _ListOfDutPtr.size();
+
+	qstrValue.fromStdString(strValue);
+	//ui.textBrowser->append(qstrValue);
+	//ui.textBrowser->append(qCounts);
+
+	if (0 == _ListOfDutPtr.size())
+	{
+		QString qResult("Can't retrieve the device!");
+		ui.textBrowser->append(qResult);
+		
 	}
+	else
+	{
+		QString qResult("Devices are ready!");
+		ui.textBrowser->append(qResult);
+	}
+
+
+
+	return -1;
 }
 
 int FPS_TestExecutive::DutPowerOn()
 {
 	uint16_t error;
+	/*
 	// Power on sensor
 	error = MPC_SetVoltages(m_deviceHandle, 3300, 3300, 3300, 3300, 200);
 	::Sleep(5);
@@ -69,7 +96,18 @@ int FPS_TestExecutive::DutPowerOn()
 	uint8_t pSrc[2]={0};
 	error = MPC_FpWrite(m_deviceHandle, 1, 0x0057, pSrc, sizeof(pSrc), 200);
 	error = MPC_FpGetStatus(m_deviceHandle, pDst, 4, 2000);
-	Display(pDst, sizeof(pDst));
+	Display(pDst, sizeof(pDst));*/
+
+	auto iCounts = _ListOfDutPtr.size();
+	for (auto i = 0; i < iCounts; i++)
+	{
+		uint8_t pDst[4] = { 0 };
+		bool bResult = (_ListOfDutPtr[i])->GetDutCtrl()->PowerOn(pDst, 4);
+		if (bResult)
+		{
+			Display(pDst, sizeof(pDst));
+		}
+	}
 
 	return error;
 }
@@ -78,8 +116,21 @@ int FPS_TestExecutive::DutPowerOff()
 {
 	uint16_t error;
 	// Power on sensor
-	error = MPC_SetVoltages(m_deviceHandle, 0, 0, 0, 0, 200);
-	::Sleep(5);
+	/*error = MPC_SetVoltages(m_deviceHandle, 0, 0, 0, 0, 200);
+	::Sleep(5);*/
+
+	auto iCounts = _ListOfDutPtr.size();
+	for (auto i = 0; i < iCounts; i++)
+	{
+		bool bResult = (_ListOfDutPtr[i])->GetDutCtrl()->PowerOff();
+		if (bResult)
+		{
+			QString qResult("Device is powerof!");
+			ui.textBrowser->append(qResult);
+		}
+	}
+
+
 	return error;
 }
 
@@ -88,7 +139,7 @@ int FPS_TestExecutive::GetVersion()
 	//MPC_GpioSetPinType(m_deviceHandle, 7, 0x10, 6, 2000);	//Pin 16 = output (Ext reset)
 	//MPC_GpioPinWrite(m_deviceHandle, 7, 0x10, 0x0, 2000);	//Set pin 16 high (reverse logic).
 
-	int i = 1;
+	/*int i = 1;
 	while(i>0){
 		::Sleep(20);
 		uint8_t	pDst[VERSION_SIZE] = {0};
@@ -96,6 +147,17 @@ int FPS_TestExecutive::GetVersion()
 		ui.textBrowser->append("GetVersion:");
 		Display(pDst, VERSION_SIZE);
 		i--;
+	}*/
+
+	auto iCounts = _ListOfDutPtr.size();
+	for (auto i = 0; i < iCounts; i++)
+	{
+		uint8_t	pDst[VERSION_SIZE] = { 0 };
+		bool bResult = (_ListOfDutPtr[i])->GetDutCtrl()->FpGetVersion(pDst, VERSION_SIZE);
+		if (bResult)
+		{
+			Display(pDst, sizeof(pDst));
+		}
 	}
 		
 		//MPC_FpGetStatus(deviceHandle, pDst, 4, 2000);

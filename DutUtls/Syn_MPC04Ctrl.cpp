@@ -2,6 +2,7 @@
 
 
 Syn_MPC04Ctrl::Syn_MPC04Ctrl()
+:Syn_SPCCtrl()
 {
 }
 

@@ -6,5 +6,8 @@ class Syn_Viper2 :
 public:
 	Syn_Viper2();
 	~Syn_Viper2();
+
+	void GetProjectType(ProjectType &oProjectType);
+
 };
 
