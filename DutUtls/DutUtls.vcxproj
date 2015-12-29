@@ -57,6 +57,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>D:\Project\huangpu\DutUtls\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>Mpc04Api.lib %(AdditionalOptions)</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -85,6 +86,7 @@
     <ClInclude Include="Syn_Dut.h" />
     <ClInclude Include="Syn_DutCtrl.h" />
     <ClInclude Include="Syn_DutOperation.h" />
+    <ClInclude Include="Syn_Exception.h" />
     <ClInclude Include="Syn_Metallica.h" />
     <ClInclude Include="Syn_MPC04Ctrl.h" />
     <ClInclude Include="Syn_Site.h" />

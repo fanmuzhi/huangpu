@@ -6,9 +6,9 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 {
 	ui.setupUi(this);
 	m_deviceHandle = Init();
-	QObject::connect(ui.pushButtonGetVer, SIGNAL(clicked()), this, SLOT(GetVersion()));
-	QObject::connect(ui.pushButtonPowerOn, SIGNAL(clicked()), this, SLOT(DutPowerOn()));
-	QObject::connect(ui.pushButtonPowerOff, SIGNAL(clicked()), this, SLOT(DutPowerOff()));
+	//QObject::connect(ui.pushButtonGetVer, SIGNAL(clicked()), this, SLOT(GetVersion()));
+	//QObject::connect(ui.pushButtonPowerOn, SIGNAL(clicked()), this, SLOT(DutPowerOn()));
+	//QObject::connect(ui.pushButtonPowerOff, SIGNAL(clicked()), this, SLOT(DutPowerOff()));
 	//QObject::connect(ui.pushButtonStart, SIGNAL(clicked()), ui.textEdit, SLOT(setText("Clicked.\n")));
 }
 
@@ -75,7 +75,7 @@ uint32_t FPS_TestExecutive::Init()
 
 int FPS_TestExecutive::DutPowerOn()
 {
-	uint16_t error;
+	uint16_t error(1);
 	/*
 	// Power on sensor
 	error = MPC_SetVoltages(m_deviceHandle, 3300, 3300, 3300, 3300, 200);
@@ -98,7 +98,7 @@ int FPS_TestExecutive::DutPowerOn()
 	error = MPC_FpGetStatus(m_deviceHandle, pDst, 4, 2000);
 	Display(pDst, sizeof(pDst));*/
 
-	auto iCounts = _ListOfDutPtr.size();
+	/*auto iCounts = _ListOfDutPtr.size();
 	for (auto i = 0; i < iCounts; i++)
 	{
 		uint8_t pDst[4] = { 0 };
@@ -107,19 +107,19 @@ int FPS_TestExecutive::DutPowerOn()
 		{
 			Display(pDst, sizeof(pDst));
 		}
-	}
+	}*/
 
 	return error;
 }
 
 int FPS_TestExecutive::DutPowerOff()
 {
-	uint16_t error;
+	uint16_t error(1);
 	// Power on sensor
 	/*error = MPC_SetVoltages(m_deviceHandle, 0, 0, 0, 0, 200);
 	::Sleep(5);*/
 
-	auto iCounts = _ListOfDutPtr.size();
+	/*auto iCounts = _ListOfDutPtr.size();
 	for (auto i = 0; i < iCounts; i++)
 	{
 		bool bResult = (_ListOfDutPtr[i])->GetDutCtrl()->PowerOff();
@@ -128,7 +128,7 @@ int FPS_TestExecutive::DutPowerOff()
 			QString qResult("Device is powerof!");
 			ui.textBrowser->append(qResult);
 		}
-	}
+	}*/
 
 
 	return error;
@@ -149,7 +149,7 @@ int FPS_TestExecutive::GetVersion()
 		i--;
 	}*/
 
-	auto iCounts = _ListOfDutPtr.size();
+	/*auto iCounts = _ListOfDutPtr.size();
 	for (auto i = 0; i < iCounts; i++)
 	{
 		uint8_t	pDst[VERSION_SIZE] = { 0 };
@@ -158,7 +158,7 @@ int FPS_TestExecutive::GetVersion()
 		{
 			Display(pDst, sizeof(pDst));
 		}
-	}
+	}*/
 		
 		//MPC_FpGetStatus(deviceHandle, pDst, 4, 2000);
 		

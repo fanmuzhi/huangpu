@@ -35,9 +35,7 @@ public:
     QVBoxLayout *verticalLayout;
     QTextBrowser *textBrowser;
     QHBoxLayout *horizontalLayout;
-    QPushButton *pushButtonPowerOn;
-    QPushButton *pushButtonGetVer;
-    QPushButton *pushButtonPowerOff;
+    QPushButton *pushButtonRun;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
@@ -66,20 +64,10 @@ public:
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(6);
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        pushButtonPowerOn = new QPushButton(centralWidget);
-        pushButtonPowerOn->setObjectName(QStringLiteral("pushButtonPowerOn"));
+        pushButtonRun = new QPushButton(centralWidget);
+        pushButtonRun->setObjectName(QStringLiteral("pushButtonRun"));
 
-        horizontalLayout->addWidget(pushButtonPowerOn);
-
-        pushButtonGetVer = new QPushButton(centralWidget);
-        pushButtonGetVer->setObjectName(QStringLiteral("pushButtonGetVer"));
-
-        horizontalLayout->addWidget(pushButtonGetVer);
-
-        pushButtonPowerOff = new QPushButton(centralWidget);
-        pushButtonPowerOff->setObjectName(QStringLiteral("pushButtonPowerOff"));
-
-        horizontalLayout->addWidget(pushButtonPowerOff);
+        horizontalLayout->addWidget(pushButtonRun);
 
 
         verticalLayout->addLayout(horizontalLayout);
@@ -103,9 +91,7 @@ public:
         openAct->setText(QApplication::translate("FPS_TestExecutiveClass", "Open...", 0));
         saveAsAct->setText(QApplication::translate("FPS_TestExecutiveClass", "Save As...", 0));
         exitAct->setText(QApplication::translate("FPS_TestExecutiveClass", "Exit", 0));
-        pushButtonPowerOn->setText(QApplication::translate("FPS_TestExecutiveClass", "PowerOn", 0));
-        pushButtonGetVer->setText(QApplication::translate("FPS_TestExecutiveClass", "GetVer", 0));
-        pushButtonPowerOff->setText(QApplication::translate("FPS_TestExecutiveClass", "PowerOff", 0));
+        pushButtonRun->setText(QApplication::translate("FPS_TestExecutiveClass", "Run", 0));
     } // retranslateUi
 
 };

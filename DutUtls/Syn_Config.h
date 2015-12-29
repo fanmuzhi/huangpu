@@ -1,5 +1,8 @@
 #pragma once
 
+//Reference inc
+#include "SYN_TestUtils.h"
+
 //std C
 #include "stdint.h"
 
@@ -8,32 +11,60 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <map>
 using namespace std;
 
-typedef struct Syn_SysConfig 
+struct Syn_TestStepInfo
 {
-	uint16_t		m_pwrVdd_mV;
-	uint16_t		m_pwrVio_mV;
-	uint16_t		m_pwrVled_mV;
-	uint16_t		m_pwrVddh_mV;
-	string			m_sSysConfigFile;
-	string			m_sAutoController;
-	string			m_sAutoCtrlCom;
-	string			m_sDutType;
-	string			m_sDutController;
-	string			m_sDutCom;
-	unordered_map<string, string> Syn_UMap_TestStep;
-	vector<string>	m_arTestSteps;
-	vector<string>	m_arTestArgs;
-	bool			m_bWriteBootSectors;
-	uint8_t			m_arUserSpecifiedBS0[BS0_SIZE];
-	uint8_t			m_arUserSpecifiedBS1[BS1_SIZE];
+	string _strTestStepName;
+	string _strTestStepArgs;
+};
 
-	uint16_t		m_numRows;
-	uint16_t		m_numCols;
+struct Syn_XepatchInfo
+{
+	string    _strXepatchName;
+
+	uint8_t   *_pArrayBuf;
+	uint16_t  _uiArraySize;
+};
+
+struct Syn_SysConfig 
+{	
+	string			_strAutoController;//AutoController
+	string			_strDutType;//DutType
+	string			_strDutController;//DutController
+	string			_strDutCom;//DutCom
+
+	uint16_t		_uiDutpwrVdd_mV;//DutpwrVdd_mV
+	uint16_t		_uiDutpwrVio_mV;//DutpwrVio_mV
+	uint16_t		_uiDutpwrVled_mV;//DutpwrVled_mV
+	uint16_t		_uiDutpwrVddh_mV;//DutpwrVddh_mV
+
+	uint16_t		_uiNumRows;//NumRows
+	uint16_t		_uiNumCols;//NumCols
+
+	bool			_bWriteBootSectors;//WriteBootSectors
+	uint8_t			_arrUserSpecifiedBS0[BS0_SIZE];//BootSector0
+	uint8_t			_arrUserSpecifiedBS1[BS1_SIZE];//BootSector1
+
+	vector<Syn_TestStepInfo> _listTestSteps;//TestSeq
+	
+	vector<Syn_XepatchInfo>	 _listXepatchInfo;//All patch
+	
 };
 
 struct Syn_LocalSettings 
 {
+	string     _strSysConfigFilePath;
 
+	//NumSites
+
+	/*vector<SiteSettings>		m_arSiteSettings;
+	bool						m_bRunRepeatedly;
+	int							m_nNumRepetitions;
+	bool						m_bLGAMode;
+	bool						m_bQAMode;
+	bool						m_bVerboseMode;
+	bool						m_bManualControl;
+	CString						m_sAutoController;*/
 };

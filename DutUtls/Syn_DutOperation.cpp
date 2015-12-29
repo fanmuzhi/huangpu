@@ -2,7 +2,8 @@
 #include "Syn_DutOperation.h"
 
 //MPC_API
-#include "MpcApiDll.h"
+//#include "MpcApiDll.h"
+#include "inc/MpcApiDll.h"
 
 //std
 #include <iostream>
@@ -31,11 +32,6 @@ bool Syn_DutOperation::StartDutOperation(vector<Syn_Dut*> &ListOfDuctPtr,std::st
 		return false;
 	}
 
-	//test
-	/*Syn_Dut *pSyn_Dut1 = NULL;
-	bool bResult = Syn_Dut::CreateDutInstance(Viper1, &pSyn_Dut1, 222, Syn_SPC);*/
-
-
 	int iDeviceCounts(0);
 	MPC_GetNumberOfDevices(&iDeviceCounts);
 	if (0 == iDeviceCounts)
@@ -48,13 +44,10 @@ bool Syn_DutOperation::StartDutOperation(vector<Syn_Dut*> &ListOfDuctPtr,std::st
 
 	//uint32_t *pDeviceSerialNumberArray = new uint32_t[iDeviceCounts];
 
-	uint32_t pDeviceSerialNumberArray[8] = { 0 };
+	/*uint32_t pDeviceSerialNumberArray[8] = { 0 };
 	MPC_GetDeviceSerialNumList(pDeviceSerialNumberArray);
 	for (int i = 0; i<iDeviceCounts; i++)
 	{
-		/*QString s = "Device SN: " + QString::number(pDeviceSerialNumberArray[i]);
-		ui.textBrowser->append(s);*/
-
 		uint32_t deviceHandle;
 		MPC_GetMpcDeviceHandle(pDeviceSerialNumberArray[i], &deviceHandle);
 
@@ -72,7 +65,7 @@ bool Syn_DutOperation::StartDutOperation(vector<Syn_Dut*> &ListOfDuctPtr,std::st
 		ListOfDuctPtr.push_back(pSyn_Dut);
 	}
 
-	strValue = ListOfDuctPtr.size();
+	strValue = ListOfDuctPtr.size();*/
 	
 
 	return true;

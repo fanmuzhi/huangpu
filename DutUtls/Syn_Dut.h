@@ -3,6 +3,10 @@
 //Local:DutCtrl
 #include "Syn_DutCtrl.h"
 
+extern "C" {
+#include "inc/SYN_TestUtils.h"
+}
+
 //std
 #include <string>
 using namespace std;
@@ -21,7 +25,7 @@ public:
 
 	//Gobal Function:Create a Dut Instance
 	//static bool CreateDutInstance(ProjectType iType, Syn_Dut ** opSyn_DutInstance);
-	static bool CreateDutInstance(ProjectType iType, Syn_Dut * &opSyn_DutInstance, uint32_t isyn_DeviceHandle, DutController iDutControllerType);
+	static bool CreateDutInstance(ProjectType iType, Syn_Dut * &opSyn_DutInstance, uint32_t iSerialNumber, DutController iDutControllerType);
 
 	//Set and Get DutCtrl
 	bool SetDutCtrl(Syn_DutCtrl * ipSyn_DutCtrl);
@@ -31,9 +35,9 @@ public:
 	//virtual void InitializeForRun() = 0;
 	virtual void GetProjectType(ProjectType &oProjectType) = 0;
 
+	//bool PowerOn();
+	void CycleDutPowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep);
 
-
-	//virtual void Method1() = 0;//test nothing
 	bool ReadOTP();
 
 

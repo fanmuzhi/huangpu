@@ -26,7 +26,8 @@
 #elif  MPCHostApp
   #define ERROR_BASE 0x0001
 #else
-  #error The firmware type must be defined
+  //#error The firmware type must be defined
+  #define ERROR_BASE 0x0001
 #endif
 
 class Errors
