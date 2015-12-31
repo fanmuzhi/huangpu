@@ -1,7 +1,9 @@
 #pragma once
 
 //Reference inc
+extern "C" {
 #include "SYN_TestUtils.h"
+};
 
 //std C
 #include "stdint.h"
@@ -16,6 +18,8 @@ using namespace std;
 
 struct Syn_TestStepInfo
 {
+	string _strNodeName;
+
 	string _strTestStepName;
 	string _strTestStepArgs;
 };
@@ -23,13 +27,47 @@ struct Syn_TestStepInfo
 struct Syn_XepatchInfo
 {
 	string    _strXepatchName;
+	string    _strXepatchFileName;
 
 	uint8_t   *_pArrayBuf;
 	uint16_t  _uiArraySize;
 };
 
 struct Syn_SysConfig 
-{	
+{
+	Syn_SysConfig(){}
+	~Syn_SysConfig()
+	{
+		for (size_t i = _listXepatchInfo.size(); i >= 1; i--)
+		{
+			Syn_XepatchInfo CurrentXepatchInfo = _listXepatchInfo[i-1];
+			if (NULL != CurrentXepatchInfo._pArrayBuf && 0 != CurrentXepatchInfo._uiArraySize)
+			{
+				delete[] CurrentXepatchInfo._pArrayBuf;
+				CurrentXepatchInfo._pArrayBuf = NULL;
+			}
+
+		}
+	}
+
+	//function
+	bool GetSyn_XepatchInfo(const std::string &strXepatchName, Syn_XepatchInfo &oSyn_XepatchInfo)
+	{
+		bool IsExists(false);
+		for (size_t i = 1; i <= _listXepatchInfo.size(); i++)
+		{
+			if (strXepatchName == _listXepatchInfo[i - 1]._strXepatchName)
+			{
+				oSyn_XepatchInfo = _listXepatchInfo[i-1];
+				IsExists = true;
+				break;
+			}
+		}
+
+		return IsExists;
+	}
+
+	//variables
 	string			_strAutoController;//AutoController
 	string			_strDutType;//DutType
 	string			_strDutController;//DutController
@@ -53,18 +91,25 @@ struct Syn_SysConfig
 	
 };
 
+struct SiteSettings
+{
+	uint32_t		_uiDutSerNum;
+	AdcBaseLineInfo	_adcBaseLineInfo;
+};
+
 struct Syn_LocalSettings 
 {
-	string     _strSysConfigFilePath;
+	string					_strSysConfigFilePath;
 
-	//NumSites
+	vector<SiteSettings>	_listOfSiteSettings;
 
-	/*vector<SiteSettings>		m_arSiteSettings;
-	bool						m_bRunRepeatedly;
-	int							m_nNumRepetitions;
-	bool						m_bLGAMode;
-	bool						m_bQAMode;
-	bool						m_bVerboseMode;
-	bool						m_bManualControl;
-	CString						m_sAutoController;*/
+	//?
+	bool					m_bRunRepeatedly;
+	int						m_nNumRepetitions;
+	bool					m_bLGAMode;
+	bool					m_bQAMode;
+	bool					m_bVerboseMode;
+	bool					m_bManualControl;
+
+	string					_strAutoController;
 };

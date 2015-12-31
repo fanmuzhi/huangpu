@@ -24,8 +24,8 @@ public:
 	virtual ~Syn_Dut();
 
 	//Gobal Function:Create a Dut Instance
-	//static bool CreateDutInstance(ProjectType iType, Syn_Dut ** opSyn_DutInstance);
-	static bool CreateDutInstance(ProjectType iType, Syn_Dut * &opSyn_DutInstance, uint32_t iSerialNumber, DutController iDutControllerType);
+	static bool CreateDutInstance(ProjectType iType, Syn_Dut * &opSyn_DutInstance);
+	//static bool CreateDutInstance(ProjectType iType, Syn_Dut * &opSyn_DutInstance, uint32_t iSerialNumber, DutController iDutControllerType);
 
 	//Set and Get DutCtrl
 	bool SetDutCtrl(Syn_DutCtrl * ipSyn_DutCtrl);
@@ -38,7 +38,7 @@ public:
 	//bool PowerOn();
 	void CycleDutPowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep);
 
-	bool ReadOTP();
+	bool ReadOTP(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep, uint8_t* pPatch, int numBytes, uint8_t *oarMS0, int iSize);
 
 
 protected:

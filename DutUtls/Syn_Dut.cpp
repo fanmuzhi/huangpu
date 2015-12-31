@@ -27,15 +27,13 @@ Syn_Dut::~Syn_Dut()
 	}
 }
 
-bool Syn_Dut::CreateDutInstance(ProjectType iType, Syn_Dut * &opSyn_DutInstance, uint32_t iSerialNumber, DutController iDutControllerType)
+bool Syn_Dut::CreateDutInstance(ProjectType iType, Syn_Dut * &opSyn_DutInstance)
 {
 	opSyn_DutInstance = NULL;
 	if (Viper1 == iType)
 	{
 		Syn_Viper1 *pSyn_Viper1 = new Syn_Viper1();
 		opSyn_DutInstance = static_cast<Syn_Dut*>(pSyn_Viper1);
-
-		//*opSyn_DutInstance = new Syn_Viper1();
 	}
 	else if (Viper2 == iType)
 	{
@@ -50,19 +48,6 @@ bool Syn_Dut::CreateDutInstance(ProjectType iType, Syn_Dut * &opSyn_DutInstance,
 		cout << "Error:Syn_Dut::CreateDutInstance() - Can't retrieve the ProjectType!" << endl;
 		return false;
 	}
-
-	//just for test
-	Syn_DutCtrl *pSyn_DutCtrl = NULL;
-	bool bResult = Syn_DutCtrl::CreateDutCtrlInstance(iDutControllerType, iSerialNumber, pSyn_DutCtrl);
-	if (!bResult || NULL == pSyn_DutCtrl)
-	{
-		cout << "Error:Syn_Dut::CreateDutInstance() - pSyn_DutCtrl is NULL!" << endl;
-		return false;
-	}
-
-	opSyn_DutInstance->SetDutCtrl(pSyn_DutCtrl);
-
-	//Init test
 
 	return true;
 }
@@ -130,15 +115,79 @@ void Syn_Dut::CycleDutPowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVd
 	}
 }
 
-
-
-bool Syn_Dut::ReadOTP()
+bool Syn_Dut::ReadOTP(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep, uint8_t* pPatch, int numBytes, uint8_t *oarMS0,int iSize)
 {
-	//dutCtrl.poweron()
-	//dutCtrl.fpUnloadPatch()
-	//dutCtrl.fpLoadPatch() <-- OTPReadWritePatch
-	//dutCtrl.fpReadOTPROM()
+	if (NULL == _pSyn_DutCtrl)
+	{
+		cout << "Error:Syn_Dut::ReadOTP() - _pSyn_DutCtrl is NULL!" << endl;
+		return false;
+	}
 
+	try
+	{
+		this->CycleDutPowerOn(nPwrVdd, nPwrVio, nPwrVled, nPwrVddh, bDisableSleep);
+	}
+	catch (Syn_Exception Exception)
+	{
+		cerr << "Error" + Exception.GetDescription() << endl;
+		return false;
+	}
+	
+	try
+	{
+		_pSyn_DutCtrl->FpUnloadPatch();
+	}
+	catch (Syn_Exception Exception)
+	{
+		cerr << "Error" + Exception.GetDescription() << endl;
+		return false;
+	}
+	
+
+	try
+	{
+		_pSyn_DutCtrl->FpLoadPatch(pPatch, numBytes);//OTPReadWritePatch
+	}
+	catch (Syn_Exception Exception)
+	{
+		cerr << "Error" + Exception.GetDescription() << endl;
+		return false;
+	}
+
+	//_pSyn_DutCtrl->FpLoadPatch(pPatch, numBytes);//OTPReadWritePatch
+	//_pSyn_DutCtrl->FpOtpRomRead();
+	//_pSyn_DutCtrl->FpReadOTPROM()
+
+
+	//bool FpSensor::ValidateMS0()
+	//Read Main Sector 0 and Main Sector 1 to get the count of each record type.
+	uint8_t	arMS0[MS0_SIZE] = {0};
+	try
+	{
+		_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 0, arMS0, MS0_SIZE);
+	}
+	catch (Syn_Exception Exception)
+	{
+		cerr << "Error" + Exception.GetDescription() << endl;
+		return false;
+	}
+
+	try
+	{
+		_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 1, &arMS0[2048], MS1_SIZE);
+	}
+	catch (Syn_Exception Exception)
+	{
+		cerr << "Error" + Exception.GetDescription() << endl;
+		return false;
+	}
+	
+	/*_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 0, arMS0, MS0_SIZE);
+	_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 1, &arMS0[2048], MS1_SIZE);*/
+	//CountOtpRecords(arMS0, &site.m_calibrationResults);
+	
+
+	oarMS0 = arMS0;
 
 	return true;
 }

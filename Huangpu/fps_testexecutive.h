@@ -7,14 +7,16 @@
 #include "SysConfig.h"
 
 //DutUtls
-#include <Syn_DutOperation.h>
-#include <Syn_Dut.h>
-#include <Syn_DutCtrl.h>
+#include "Syn_Site.h"
+#include "Syn_Dut.h"
+#include "Syn_DutCtrl.h"
+#include "Syn_Config.h"
 
 //std
 #include <sstream>
 #include <vector>
 #include <iostream>
+#include <string>
 
 extern "C" {
 #include "SYN_TestUtils.h"
@@ -31,14 +33,23 @@ public:
 	~FPS_TestExecutive();
     void parse_config();
 
+
+	bool ConstructSyn_SysConfig(const std::string &strConfigFilePath,Syn_SysConfig &oSyn_SysConfig);
+
 public Q_SLOTS:
 	int GetVersion();
 	int DutPowerOn();
 	int DutPowerOff();
 
+
 private:
 	void ConvertAsciiToBinary(const string& sAscii, int* pDst, int nDstSize);
 	void Display(uint8_t* pDst, int DstSize);
+
+	void Display(uint8_t* pDst, unsigned int StartPos, unsigned int EndPos);
+
+
+
 	uint32_t Init();
 	Ui::FPS_TestExecutiveClass ui;
 	uint32_t m_deviceHandle;

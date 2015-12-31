@@ -2,6 +2,11 @@
 //Local
 #include "SysConfig.h"
 
+//C
+//#include <stdio.h>
+#include <io.h>
+
+//std
 #include <iostream>
 using namespace std;
 
@@ -20,6 +25,22 @@ q_strFilePath(strXMLFilePath)
 SysConfig::~SysConfig()
 {
 
+}
+
+bool SysConfig::CreateSysConfigInstance(QString strXMLFilePath, SysConfig * &opSysConfigInstance)
+{
+	opSysConfigInstance = NULL;
+
+	int IsExists = _access(strXMLFilePath.toStdString().c_str(),4);//2
+	if (0 != IsExists)
+	{
+		cout << "Error:SysConfig::CreateSysConfigInstance() - strXMLFilePath is not exists!" << endl;
+		return false;
+	}
+
+	opSysConfigInstance = new SysConfig(strXMLFilePath);
+
+	return true;
 }
 
 bool SysConfig::ParseXML(const QString &file_name)
@@ -52,11 +73,11 @@ bool SysConfig::ParseXML(const QString &file_name)
 	}  
 
 	QDomElement root = q_DomDocument.documentElement(); 
-	if(QString("TesterConfig")!=root.tagName())
+	/*if (strRootNodeName != root.tagName())
 	{
 		cout<<"Error:SysConfig::ParseXML() - root is not TesterConfig!"<<endl;
 		return false;  
-	}
+	}*/
 
 	q_RootNode = root;
 
@@ -149,4 +170,19 @@ bool SysConfig::GetTestSeqList(std::vector<TestSeqInfo> &ListOfTestSeqInfo)
 	}
 
 	return FindResult;
+}
+
+void SysConfig::ConvertAsciiToBinary(const std::string& strAsciiValue, uint8_t *pDst, int nDstSize)
+{
+	char *p = NULL;
+
+	int	nNumBytes = strAsciiValue.length()/2;
+	//Translate the ASCII into binary values.
+	for (int i = 0; (i<nNumBytes) && (i<nDstSize); i++)
+	{
+		std::string strTemp(strAsciiValue,i * 2, 2);
+
+		uint8_t nVal = (uint8_t)strtol(strTemp.c_str(), &p, 16);
+		pDst[i] = nVal;
+	}
 }

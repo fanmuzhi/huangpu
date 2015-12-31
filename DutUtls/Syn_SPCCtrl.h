@@ -3,11 +3,10 @@
 //local
 #include "Syn_DutCtrl.h"
 
-
 class Syn_SPCCtrl :public Syn_DutCtrl
 {
 public:
-	Syn_SPCCtrl();
+	Syn_SPCCtrl(uint32_t iSerialNumber);
 	virtual ~Syn_SPCCtrl();
 
 	virtual bool Init();
@@ -42,6 +41,12 @@ public:
 	virtual bool FpGetVersion(uint8_t *pDst, int numBytes);
 
 	virtual bool PowerOff();
+
+
+
+
+	//virtual void UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader, uint32_t nRevApplication);
+
 
 protected:
 

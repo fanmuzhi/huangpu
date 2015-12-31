@@ -20,16 +20,13 @@ bool Syn_DutCtrl::CreateDutCtrlInstance(DutController iType, uint32_t iSerialNum
 	opSyn_DutCtrlInstance = NULL;
 	if (Syn_SPC == iType)
 	{
-		Syn_SPCCtrl *pSyn_SPCCtrl = new Syn_SPCCtrl();
-		opSyn_DutCtrlInstance = static_cast<Syn_DutCtrl*>(pSyn_SPCCtrl);
-
-		//*opSyn_DutCtrlInstance = new Syn_SPCCtrl();
-		opSyn_DutCtrlInstance->syn_SerialNumber = iSerialNumber;
+		opSyn_DutCtrlInstance = new Syn_SPCCtrl(iSerialNumber);
+		//opSyn_DutCtrlInstance->syn_SerialNumber = iSerialNumber;
 	}
 	else if (Syn_MPC04 == iType)
 	{
-		opSyn_DutCtrlInstance = new Syn_MPC04Ctrl();
-		opSyn_DutCtrlInstance->syn_SerialNumber = iSerialNumber;
+		opSyn_DutCtrlInstance = new Syn_MPC04Ctrl(iSerialNumber);
+		//opSyn_DutCtrlInstance->syn_SerialNumber = iSerialNumber;
 	}
 	else
 	{
