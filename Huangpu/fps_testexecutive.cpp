@@ -6,6 +6,10 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 {
 	ui.setupUi(this);
 	m_deviceHandle = Init();
+
+	
+
+
 	//QObject::connect(ui.pushButtonGetVer, SIGNAL(clicked()), this, SLOT(GetVersion()));
 	//QObject::connect(ui.pushButtonPowerOn, SIGNAL(clicked()), this, SLOT(DutPowerOn()));
 	//QObject::connect(ui.pushButtonPowerOff, SIGNAL(clicked()), this, SLOT(DutPowerOff()));
@@ -104,7 +108,10 @@ uint32_t FPS_TestExecutive::Init()
 	delete pSysConfig;
 	pSysConfig = NULL;*/
 
-	QString qstrXMLFilePath("C:\\test2.xml");
+	std::ofstream logfile("sys.log");
+	std::cout.rdbuf(logfile.rdbuf());
+
+	QString qstrXMLFilePath("C:\\test.xml");
 	Syn_SysConfig SysConfig;
 	bool result = ConstructSyn_SysConfig(qstrXMLFilePath.toStdString(), SysConfig);
 	if (!result)
@@ -140,8 +147,8 @@ uint32_t FPS_TestExecutive::Init()
 	{
 		if (NULL != listOfSyn_SiteInstance[i])
 		{
-			//uint8_t	arMS0[MS0_SIZE] = { 0 };
-			uint8_t	*arMS0 = new uint8_t[MS0_SIZE];
+			uint8_t	arMS0[MS0_SIZE] = { 0 };
+			//uint8_t	*arMS0 = new uint8_t[MS0_SIZE];
 
 			listOfSyn_SiteInstance[i]->Run(arMS0, MS0_SIZE);
 

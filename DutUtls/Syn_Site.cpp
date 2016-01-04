@@ -156,7 +156,7 @@ bool Syn_Site::ConstructSiteList(Syn_SysConfig &iSyn_SysConfigInfo, std::vector<
 }
 
 
-void Syn_Site::Run(uint8_t * &arMS0,int iSize)
+void Syn_Site::Run(uint8_t* arMS0,int iSize)
 {
 	if (NULL == _pSyn_Dut)
 	{

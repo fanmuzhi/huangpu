@@ -73,12 +73,9 @@ Syn_DutCtrl * Syn_Dut::GetDutCtrl()
 
 void Syn_Dut::PowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep)
 {
-	int				timeout;
-	uint8_t			pDst[10] = { 0 };
-	uint8_t			pSrc[2] = { 0 };
-
 	if (NULL == _pSyn_DutCtrl)
 	{
+		cout << "Error:Syn_Dut::ReadOTP() - _pSyn_DutCtrl is NULL!" << endl;
 		return;
 	}
 
@@ -92,66 +89,51 @@ void Syn_Dut::PowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool
 	if (bDisableSleep)
 	{
 		//Wake sensor from sleep mode.
-		_pSyn_DutCtrl->FpGetStatus(pDst, 4);
-		timeout = 200;
-		while (timeout && ((pDst[0] != 0x01) || (pDst[1] != 0x00) || (pDst[2] != 0x00) || (pDst[3] != 0x08)))
-		{
-			_pSyn_DutCtrl->FpGetStatus(pDst, 4);
-			timeout--;
-		}
-
-		if (timeout == 0)
-		{
-			Syn_Exception ex(0);
-			ex.SetDescription("Timeout waiting for sensor to wake.");
-			throw(ex);
-		}
-
+		_pSyn_DutCtrl->FpWaitDeviceReady();
 		//Configure sensor not to go back to sleep.
-		_pSyn_DutCtrl->FpWrite(1, 0x0057, pSrc, sizeof(pSrc));
-		//_pSyn_DutCtrl->FpGetStatus(pDst, 4);
-		_pSyn_DutCtrl->FpWaitForCommandCompleteAndCheckErrorCode(2);
-		
+		_pSyn_DutCtrl->FpDisableSleep();
+		_pSyn_DutCtrl->FpWaitForCMDComplete();
 	}
 }
 
 void Syn_Dut::PowerOff()
 {
-
+	try
+	{
+		_pSyn_DutCtrl->SetVoltages(0, 0, 0, 0);
+		::Sleep(50);
+	}
+	catch (...)
+	{
+	}
 }
 
-bool Syn_Dut::ReadOTP(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep, uint8_t* pPatch, int numBytes, uint8_t * &oarMS0,int iSize)
+bool Syn_Dut::ReadOTP(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep, uint8_t* pPatch, int numBytes, uint8_t* oarMS0, int iSize)
 {
+	//uint8_t	arMS0[MS0_SIZE] = {0};
+
 	if (NULL == _pSyn_DutCtrl)
 	{
 		cout << "Error:Syn_Dut::ReadOTP() - _pSyn_DutCtrl is NULL!" << endl;
-	}
-
-	this->PowerOn(nPwrVdd, nPwrVio, nPwrVled, nPwrVddh, bDisableSleep);
-	_pSyn_DutCtrl->FpUnloadPatch();
-	_pSyn_DutCtrl->FpLoadPatch(pPatch, numBytes);//OtpReadWritePatch
-
-	uint8_t	arMS0[MS0_SIZE] = {0};
-
-	try
-	{
-		_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 0, arMS0, MS0_SIZE);
-	}
-	catch (Syn_Exception Exception)
-	{
-		cerr << "Error" + Exception.GetDescription() << endl;
 		return false;
 	}
 
 	try
 	{
-		_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 1, &arMS0[2048], MS1_SIZE);
+		this->PowerOn(nPwrVdd, nPwrVio, nPwrVled, nPwrVddh, bDisableSleep);
+		_pSyn_DutCtrl->FpUnloadPatch();
+		_pSyn_DutCtrl->FpLoadPatch(pPatch, numBytes);//OtpReadWritePatch
+		_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 0, oarMS0, MS1_SIZE);
+		_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 1, &oarMS0[2048], MS1_SIZE);
+		this->PowerOff();
 	}
 	catch (Syn_Exception Exception)
 	{
 		cerr << "Error" + Exception.GetDescription() << endl;
+		this->PowerOff();
 		return false;
 	}
 
-	oarMS0 = arMS0;
+	//oarMS0 = arMS0;
+	return true;
 }

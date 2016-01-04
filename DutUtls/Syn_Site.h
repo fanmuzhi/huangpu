@@ -24,7 +24,7 @@ public:
 
 	//
 	//void Run();
-	void Run(uint8_t * &arMS0, int iSize);
+	void Run(uint8_t* arMS0, int iSize);
 
 
 

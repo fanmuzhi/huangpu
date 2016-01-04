@@ -87,7 +87,7 @@ bool Syn_SPCCtrl::Init()
 			else
 			{
 				//If necessary, update the firmware.
-				UpdateMPC04Firmware(uiDevType, uiRevBootLoader, uiRevApplication);
+				//UpdateMPC04Firmware(uiDevType, uiRevBootLoader, uiRevApplication);
 				//SetValidFlg(true);
 
 				//Set the MPC04 voltages to zero.
@@ -147,6 +147,14 @@ void Syn_SPCCtrl::FpGetStatus(uint8_t* pDst, int numBytes)
 	uint16_t ErrorCode;
 
 	ErrorCode = MPC_FpGetStatus(syn_DeviceHandle, pDst, numBytes, 2000);
+
+	for (auto x = 0; x < numBytes; x++)
+	{
+		cout << std::hex << *(pDst + x);
+		cout << ",";
+	}
+	cout << endl;
+
 	Syn_Exception Exception(ErrorCode);
 	if (MpcApiError::ERR_COMMUNICATION_FAILED==ErrorCode)
 	{
@@ -196,7 +204,7 @@ void Syn_SPCCtrl::FpWrite(uint16_t endpoint, uint16_t command, uint8_t* pSrc, in
 	}
 }
 
-void Syn_SPCCtrl::FpWaitForCommandCompleteAndCheckErrorCode(uint32_t numBytes, int nTimeout_ms)
+void Syn_SPCCtrl::FpWaitForCMDComplete(uint32_t numBytes, int nTimeout_ms)
 {
 	uint16_t ErrorCode = FpWaitForCommandCompleteAndReturnErrorCode(numBytes, nTimeout_ms);
 	if (ErrorCode != 0 && ErrorCode != 0xA605)
@@ -209,9 +217,10 @@ void Syn_SPCCtrl::FpWaitForCommandCompleteAndCheckErrorCode(uint32_t numBytes, i
 
 uint16_t Syn_SPCCtrl::FpWaitForCommandCompleteAndReturnErrorCode(uint32_t numBytes, int nTimeout_ms)
 {
-	uint8_t	pDst[MAX_PRINTFILE_SIZE];
+	//uint8_t	pDst[MAX_PRINTFILE_SIZE];
+	uint8_t	pDst[4];
 
-	DWORD timeout = GetTickCount() + nTimeout_ms;
+	uint64_t timeout = GetTickCount() + nTimeout_ms;
 	FpGetStatus(pDst, 4);
 	while ((timeout > GetTickCount()) && (*((uint32_t*)pDst) != 0x30000003))
 		FpGetStatus(pDst, 4);
@@ -229,6 +238,34 @@ uint16_t Syn_SPCCtrl::FpWaitForCommandCompleteAndReturnErrorCode(uint32_t numByt
 		FpRead(1, 0xFF, pDst, numBytes);
 
 	return ((pDst[0] << 8) + pDst[1]);
+}
+
+
+void Syn_SPCCtrl::FpWaitDeviceReady()
+{
+	uint8_t pDst[4];
+	uint32_t timeout = 2000;
+
+	this->FpGetStatus(pDst, 4);
+	while (timeout && ((pDst[0] != 0x01) || (pDst[1] != 0x00) || (pDst[2] != 0x00) || (pDst[3] != 0x08)))
+	{
+		this->FpGetStatus(pDst, 4);
+		timeout--;
+	}
+
+	if (timeout == 0)
+	{
+		Syn_Exception ex(0);
+		ex.SetDescription("Timeout waiting for sensor to wake.");
+		throw(ex);
+	}
+	
+}
+
+void Syn_SPCCtrl::FpDisableSleep()
+{
+	uint8_t pSrc[2] = { 0 };
+	this->FpWrite(1, 0x0057, pSrc, sizeof(pSrc));
 }
 
 void Syn_SPCCtrl::FpLoadPatch(uint8_t* pPatch, int numBytes)
@@ -323,161 +360,4 @@ bool Syn_SPCCtrl::FpGetVersion(uint8_t *pDst, int numBytes)
 	}
 
 	return true;
-}
-
-bool Syn_SPCCtrl::PowerOff()
-{
-	uint16_t error;
-	// Power on sensor
-	error = MPC_SetVoltages(syn_DeviceHandle, 0, 0, 0, 0, 200);
-	::Sleep(5);
-
-	return true;
-}
-
-
-
-
-void Syn_SPCCtrl::UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader, uint32_t nRevApplication)
-{
-	uint16_t error;
-	CString str;
-	int fileAppRev, fileBootloaderRev, bSuccess = 0;
-	bool AppUpdate, BootloaderUpdate, sequenceFound;
-	char filename_application[200];
-	char filename_bootloader[200];
-	FILE *pFileApplication, *pFileBootloader;
-	char line[44] = { 0 };
-
-	sprintf_s(filename_application, "Mpc04Application.hex");
-	sprintf_s(filename_bootloader, "Mpc04BootloaderLoader.hex");
-	pFileApplication = fopen(filename_application, "r");//_CRT_SECURE_NO_WARNINGS:C++:
-	pFileBootloader = fopen(filename_bootloader, "r");
-	if ((pFileApplication == NULL) || ((pFileBootloader == NULL)))
-	{
-		str.Format(_T("MPC04 firmware files not found!\nTesting will continue without updating the MPC04."));
-		//AfxMessageBox(str, MB_OK | MB_SYSTEMMODAL);
-		return;
-	}
-	else
-	{
-		AppUpdate = false;
-		BootloaderUpdate = false;
-		sequenceFound = false;
-		//Acquire the bootloader version from Mpc04BootloaderLoader.hex
-		while ((fgets(line, sizeof line, pFileBootloader) != NULL) && (!sequenceFound))
-		{
-			for (int i = 0; i<44 - 7; i++)
-			{
-				if ((line[i + 0] == '4') && (line[i + 1] == 'C') && (line[i + 2] == '5') && (line[i + 3] == '0') && (line[i + 4] == '5') && (line[i + 5] == '0') && (line[i + 6] == '4') && (line[i + 7] == '1'))
-				{
-					fgets(line, sizeof line, pFileBootloader);
-					fgets(line, sizeof line, pFileBootloader);
-					sequenceFound = true;
-					str.Format(_T("%c%c%c%c%c%c%c%c"), line[15], line[16], line[13], line[14], line[11], line[12], line[9], line[10]);
-					//sscanf(str, "%x", &fileBootloaderRev);.GetBuffer(0)
-					swscanf_s(str.GetBuffer(0), _T("%x"), &fileBootloaderRev);
-
-					if (((int)nRevBootLoader != fileBootloaderRev))
-						BootloaderUpdate = true;
-
-					break;
-				}
-			}
-		}
-		//Acquire the firmware version from Mpc04Application.hex
-		sequenceFound = false;
-		while ((fgets(line, sizeof line, pFileApplication) != NULL) && (!sequenceFound))
-		{
-			for (int i = 0; i<44 - 7; i++)
-			{
-				if ((line[i + 0] == '4') && (line[i + 1] == 'C') && (line[i + 2] == '5') && (line[i + 3] == '0') && (line[i + 4] == '5') && (line[i + 5] == '0') && (line[i + 6] == '4') && (line[i + 7] == '1'))
-				{
-					fgets(line, sizeof line, pFileApplication);
-					fgets(line, sizeof line, pFileApplication);
-					sequenceFound = true;
-					str.Format(_T("%c%c%c%c%c%c%c%c"), line[15], line[16], line[13], line[14], line[11], line[12], line[9], line[10]);
-					//sscanf(str, "%x", &fileAppRev);.GetBuffer(0)
-					swscanf_s(str.GetBuffer(0), _T("%x"), &fileAppRev);
-
-					if (((int)nRevApplication != fileAppRev))
-						AppUpdate = true;
-
-					break;
-				}
-			}
-		}
-	}
-
-	uint32_t serNum;
-	MPC_GetDeviceSerialNumber(syn_DeviceHandle, &serNum);
-	if ((BootloaderUpdate))
-	{
-		str.Format(_T("MPC04 Bootloader will be updated.\nPlease wait..."));
-		//AfxMessageBox(str, MB_OK);
-
-		//Create a modless progress dialog.
-		
-
-		//Asynchronously, start the update.
-		error = MPC_AsyncUpdateFirmware(syn_DeviceHandle, LPCTSTR(filename_bootloader), NULL, NULL, NULL);
-
-		//Update the modless progress dialog.
-		uint32_t nPercent = 0;
-		while ((nPercent < 100) && (error == Errors::NO_MPC_ERROR))
-		{
-			error = MPC_GetUpdateFirmwareProgress(syn_DeviceHandle, &nPercent);
-		}
-
-		//Wait for the Update command to complete.
-		::Sleep(6000);
-
-		if (error == Errors::NO_MPC_ERROR)
-			error = MPC_GetMpcDeviceHandle(serNum, &syn_DeviceHandle);
-		if (error == Errors::NO_MPC_ERROR)
-			error = MPC_Connect(syn_DeviceHandle);
-
-		if (error == Errors::NO_MPC_ERROR)
-		{
-		}
-		//else
-	}
-
-	if (AppUpdate || BootloaderUpdate)
-	{
-		str.Format(_T("MPC04 Firmware will be updated.\nPlease wait..."));
-		//AfxMessageBox(str, MB_OK);
-
-		//Create a modless progress dialog.
-
-		//Asynchronously, start the update.
-		error = MPC_AsyncUpdateFirmware(syn_DeviceHandle, LPCTSTR(filename_application), NULL, NULL, NULL);
-
-		//When the percent goes to zero it means the API has started the download.
-		//We want to wait until the download is started.
-		uint32_t nPercent;
-		error = MPC_GetUpdateFirmwareProgress(syn_DeviceHandle, &nPercent);
-		while ((nPercent == 100) && (error == Errors::NO_MPC_ERROR))
-			error = MPC_GetUpdateFirmwareProgress(syn_DeviceHandle, &nPercent);
-
-		//Update the modeless progress dialog.
-		while ((nPercent < 100) && (error == Errors::NO_MPC_ERROR))
-		{
-			error = MPC_GetUpdateFirmwareProgress(syn_DeviceHandle, &nPercent);
-		}
-
-		//Wait for the Update command to complete.
-		::Sleep(8000);
-
-		if (error == Errors::NO_MPC_ERROR)
-			error = MPC_GetMpcDeviceHandle(serNum, &syn_DeviceHandle);
-		if (error == Errors::NO_MPC_ERROR)
-			error = MPC_Connect(syn_DeviceHandle);
-
-		if (error == Errors::NO_MPC_ERROR)
-		{
-		}
-		
-		//else
-	}
 }
