@@ -6,7 +6,8 @@
 //std
 #include <iostream>
 
-Syn_DutCtrl::Syn_DutCtrl()
+Syn_DutCtrl::Syn_DutCtrl(uint32_t iSerialNumber)
+:syn_SerialNumber(iSerialNumber)
 {
 }
 

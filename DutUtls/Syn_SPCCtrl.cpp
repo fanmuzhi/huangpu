@@ -20,10 +20,9 @@
 bool Syn_SPCCtrl::_bDLLInitialized = false;
 
 Syn_SPCCtrl::Syn_SPCCtrl(uint32_t iSerialNumber)
-:Syn_DutCtrl()
-//,syn_SerialNumber(iSerialNumber)
+:Syn_DutCtrl(iSerialNumber)
 {
-	syn_SerialNumber = iSerialNumber;
+	//syn_SerialNumber = iSerialNumber;
 	bool bResult = Init();
 	if (!bResult)
 	{

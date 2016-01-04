@@ -26,7 +26,7 @@ public:
 	static bool CreateDutCtrlInstance(DutController iType, uint32_t iSerialNumber, Syn_DutCtrl * &opSyn_DutCtrlInstance);
 
 	//
-	Syn_DutCtrl();
+	Syn_DutCtrl(uint32_t iSerialNumber);
 
 	virtual ~Syn_DutCtrl();
 

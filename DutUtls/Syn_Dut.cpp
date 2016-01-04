@@ -146,7 +146,7 @@ bool Syn_Dut::ReadOTP(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool
 
 	try
 	{
-		_pSyn_DutCtrl->FpLoadPatch(pPatch, numBytes);//OTPReadWritePatch
+		_pSyn_DutCtrl->FpLoadPatch(pPatch, numBytes);//OtpReadWritePatch
 	}
 	catch (Syn_Exception Exception)
 	{
@@ -172,7 +172,7 @@ bool Syn_Dut::ReadOTP(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool
 		return false;
 	}
 
-	try
+	/*try
 	{
 		_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 1, &arMS0[2048], MS1_SIZE);
 	}
@@ -180,7 +180,7 @@ bool Syn_Dut::ReadOTP(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool
 	{
 		cerr << "Error" + Exception.GetDescription() << endl;
 		return false;
-	}
+	}*/
 	
 	/*_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 0, arMS0, MS0_SIZE);
 	_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 1, &arMS0[2048], MS1_SIZE);*/
