@@ -48,20 +48,9 @@ public:
 
 	virtual void FpOtpRomWrite(int section, int sector, uint8_t* pDst, int numBytes) = 0;
 
-
-
 	virtual void FpWaitForCommandCompleteAndCheckErrorCode(uint32_t numBytes, int nTimeout_ms = 2000) = 0;
 
 	virtual uint16_t FpWaitForCommandCompleteAndReturnErrorCode(uint32_t numBytes, int nTimeout_ms = 2000) = 0;
-
-
-
-
-
-
-	virtual bool PowerOn(uint8_t *pDst, int numBytes) = 0;
-
-	virtual bool PowerOff() = 0;
 
 	virtual bool FpGetVersion(uint8_t *pDst, int numBytes) = 0;
 
@@ -70,4 +59,3 @@ protected:
 	uint32_t syn_SerialNumber;
 	uint32_t syn_DeviceHandle;
 };
-

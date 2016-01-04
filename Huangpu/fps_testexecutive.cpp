@@ -104,9 +104,14 @@ uint32_t FPS_TestExecutive::Init()
 	delete pSysConfig;
 	pSysConfig = NULL;*/
 
-	QString qstrXMLFilePath("D:\\Project\\ProjectData\\580-005337-01rC (FM-000078-001).xml");
+	QString qstrXMLFilePath("C:\\test2.xml");
 	Syn_SysConfig SysConfig;
-	ConstructSyn_SysConfig(qstrXMLFilePath.toStdString(), SysConfig);
+	bool result = ConstructSyn_SysConfig(qstrXMLFilePath.toStdString(), SysConfig);
+	if (!result)
+	{
+		ui.textBrowser->append("Can't find the xml config file!");
+		return -1;
+	}
 
 	std::vector<Syn_Site*> listOfSyn_SiteInstance;
 	bool rc = Syn_Site::ConstructSiteList(SysConfig, listOfSyn_SiteInstance);
@@ -135,7 +140,9 @@ uint32_t FPS_TestExecutive::Init()
 	{
 		if (NULL != listOfSyn_SiteInstance[i])
 		{
-			uint8_t	arMS0[MS0_SIZE];
+			//uint8_t	arMS0[MS0_SIZE] = { 0 };
+			uint8_t	*arMS0 = new uint8_t[MS0_SIZE];
+
 			listOfSyn_SiteInstance[i]->Run(arMS0, MS0_SIZE);
 
 			for (int j = 1; j <= MS0_SIZE / 8; j++)
@@ -144,6 +151,9 @@ uint32_t FPS_TestExecutive::Init()
 				int EndPos = j*8-1;
 				Display(arMS0, StartPos, EndPos);
 			}
+
+			/*delete[] arMS0;
+			arMS0 = NULL;*/
 		}
 	}
 
@@ -494,7 +504,7 @@ bool FPS_TestExecutive::ConstructSyn_SysConfig(const std::string &strConfigFileP
 		else
 		{
 			uint8_t *pArray = new uint8_t[iXepatchTextLenth / 2];
-			pSysConfigOperation->ConvertAsciiToBinary(strXepatchTextValue, pArray, iXepatchTextLenth);
+			pSysConfigOperation->ConvertAsciiToBinary(strXepatchTextValue, pArray, iXepatchTextLenth/2);
 
 			CurrentSyn_XepatchInfo._strXepatchName = strXepatchName;
 			CurrentSyn_XepatchInfo._strXepatchFileName = qstrXepatchDisplayName.toStdString();

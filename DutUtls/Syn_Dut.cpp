@@ -117,10 +117,10 @@ void Syn_Dut::PowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool
 
 void Syn_Dut::PowerOff()
 {
-	
+
 }
 
-void Syn_Dut::ReadOTP(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep, uint8_t* pPatch, int numBytes, uint8_t *oarMS0,int iSize)
+bool Syn_Dut::ReadOTP(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep, uint8_t* pPatch, int numBytes, uint8_t * &oarMS0,int iSize)
 {
 	if (NULL == _pSyn_DutCtrl)
 	{
@@ -132,7 +132,26 @@ void Syn_Dut::ReadOTP(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool
 	_pSyn_DutCtrl->FpLoadPatch(pPatch, numBytes);//OtpReadWritePatch
 
 	uint8_t	arMS0[MS0_SIZE] = {0};
-	_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 0, arMS0, MS0_SIZE);
+
+	try
+	{
+		_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 0, arMS0, MS0_SIZE);
+	}
+	catch (Syn_Exception Exception)
+	{
+		cerr << "Error" + Exception.GetDescription() << endl;
+		return false;
+	}
+
+	try
+	{
+		_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 1, &arMS0[2048], MS1_SIZE);
+	}
+	catch (Syn_Exception Exception)
+	{
+		cerr << "Error" + Exception.GetDescription() << endl;
+		return false;
+	}
 
 	oarMS0 = arMS0;
 }

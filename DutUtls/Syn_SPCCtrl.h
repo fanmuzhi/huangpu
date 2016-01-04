@@ -1,5 +1,9 @@
 #pragma once
 
+//ATL
+#include <atlstr.h>
+#include <stdio.h> 
+
 //local
 #include "Syn_DutCtrl.h"
 
@@ -32,6 +36,10 @@ public:
 	virtual uint16_t FpWaitForCommandCompleteAndReturnErrorCode(uint32_t numBytes, int nTimeout_ms = 2000);
 
 	virtual bool FpGetVersion(uint8_t *pDst, int numBytes);
+
+	virtual bool PowerOff();
+
+	virtual void UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader, uint32_t nRevApplication);
 
 protected:
 
