@@ -27,29 +27,13 @@ public:
 
 	virtual void FpOtpRomWrite(int section, int sector, uint8_t* pDst, int numBytes);
 
-
-
 	virtual void FpWaitForCommandCompleteAndCheckErrorCode(uint32_t numBytes, int nTimeout_ms = 2000);
 
 	virtual uint16_t FpWaitForCommandCompleteAndReturnErrorCode(uint32_t numBytes, int nTimeout_ms = 2000);
 
-
-
-
-	virtual bool PowerOn(uint8_t *pDst, int numBytes);
-
 	virtual bool FpGetVersion(uint8_t *pDst, int numBytes);
-
-	virtual bool PowerOff();
-
-
-
-
-	//virtual void UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader, uint32_t nRevApplication);
-
 
 protected:
 
 	static bool	_bDLLInitialized;
 };
-

@@ -156,13 +156,6 @@ bool Syn_Site::ConstructSiteList(Syn_SysConfig &iSyn_SysConfigInfo, std::vector<
 }
 
 
-
-
-
-
-
-
-
 void Syn_Site::Run(uint8_t *arMS0,int iSize)
 {
 	if (NULL == _pSyn_Dut)
@@ -181,7 +174,6 @@ void Syn_Site::Run(uint8_t *arMS0,int iSize)
 		iOTPReadWritePatchSize = NeedSyn_XepatchInfo._uiArraySize;
 	}
 
-
 	/*for (auto i = 0; i < _SysConfig._listXepatchInfo.size(); i++)
 	{
 		if (std::string("OTPReadWritePatch") == (_SysConfig._listXepatchInfo)[i]._strXepatchName)
@@ -198,5 +190,12 @@ void Syn_Site::Run(uint8_t *arMS0,int iSize)
 		return;
 	}
 
-	_pSyn_Dut->ReadOTP(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true, pOTPReadWritePatchArray, iOTPReadWritePatchSize, arMS0, iSize);
+	try
+	{
+		_pSyn_Dut->ReadOTP(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true, pOTPReadWritePatchArray, iOTPReadWritePatchSize, arMS0, iSize);
+	}
+	catch (...)
+	{
+
+	}
 }

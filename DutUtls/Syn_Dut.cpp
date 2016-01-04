@@ -71,7 +71,7 @@ Syn_DutCtrl * Syn_Dut::GetDutCtrl()
 	return _pSyn_DutCtrl;
 }
 
-void Syn_Dut::CycleDutPowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep)
+void Syn_Dut::PowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep)
 {
 	int				timeout;
 	uint8_t			pDst[10] = { 0 };
@@ -115,79 +115,24 @@ void Syn_Dut::CycleDutPowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVd
 	}
 }
 
-bool Syn_Dut::ReadOTP(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep, uint8_t* pPatch, int numBytes, uint8_t *oarMS0,int iSize)
+void Syn_Dut::PowerOff()
+{
+	
+}
+
+void Syn_Dut::ReadOTP(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep, uint8_t* pPatch, int numBytes, uint8_t *oarMS0,int iSize)
 {
 	if (NULL == _pSyn_DutCtrl)
 	{
 		cout << "Error:Syn_Dut::ReadOTP() - _pSyn_DutCtrl is NULL!" << endl;
-		return false;
 	}
 
-	try
-	{
-		this->CycleDutPowerOn(nPwrVdd, nPwrVio, nPwrVled, nPwrVddh, bDisableSleep);
-	}
-	catch (Syn_Exception Exception)
-	{
-		cerr << "Error" + Exception.GetDescription() << endl;
-		return false;
-	}
-	
-	try
-	{
-		_pSyn_DutCtrl->FpUnloadPatch();
-	}
-	catch (Syn_Exception Exception)
-	{
-		cerr << "Error" + Exception.GetDescription() << endl;
-		return false;
-	}
-	
+	this->PowerOn(nPwrVdd, nPwrVio, nPwrVled, nPwrVddh, bDisableSleep);
+	_pSyn_DutCtrl->FpUnloadPatch();
+	_pSyn_DutCtrl->FpLoadPatch(pPatch, numBytes);//OtpReadWritePatch
 
-	try
-	{
-		_pSyn_DutCtrl->FpLoadPatch(pPatch, numBytes);//OtpReadWritePatch
-	}
-	catch (Syn_Exception Exception)
-	{
-		cerr << "Error" + Exception.GetDescription() << endl;
-		return false;
-	}
-
-	//_pSyn_DutCtrl->FpLoadPatch(pPatch, numBytes);//OTPReadWritePatch
-	//_pSyn_DutCtrl->FpOtpRomRead();
-	//_pSyn_DutCtrl->FpReadOTPROM()
-
-
-	//bool FpSensor::ValidateMS0()
-	//Read Main Sector 0 and Main Sector 1 to get the count of each record type.
 	uint8_t	arMS0[MS0_SIZE] = {0};
-	try
-	{
-		_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 0, arMS0, MS0_SIZE);
-	}
-	catch (Syn_Exception Exception)
-	{
-		cerr << "Error" + Exception.GetDescription() << endl;
-		return false;
-	}
-
-	/*try
-	{
-		_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 1, &arMS0[2048], MS1_SIZE);
-	}
-	catch (Syn_Exception Exception)
-	{
-		cerr << "Error" + Exception.GetDescription() << endl;
-		return false;
-	}*/
-	
-	/*_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 0, arMS0, MS0_SIZE);
-	_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 1, &arMS0[2048], MS1_SIZE);*/
-	//CountOtpRecords(arMS0, &site.m_calibrationResults);
-	
+	_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 0, arMS0, MS0_SIZE);
 
 	oarMS0 = arMS0;
-
-	return true;
 }

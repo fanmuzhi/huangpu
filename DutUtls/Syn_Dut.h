@@ -35,15 +35,13 @@ public:
 	//virtual void InitializeForRun() = 0;
 	virtual void GetProjectType(ProjectType &oProjectType) = 0;
 
-	//bool PowerOn();
-	void CycleDutPowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep);
+	void PowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep);
 
-	bool ReadOTP(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep, uint8_t* pPatch, int numBytes, uint8_t *oarMS0, int iSize);
+	void PowerOff();
 
+	void ReadOTP(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep, uint8_t* pPatch, int numBytes, uint8_t *oarMS0, int iSize);
 
 protected:
-
 	Syn_DutCtrl *_pSyn_DutCtrl;
 
 };
-
