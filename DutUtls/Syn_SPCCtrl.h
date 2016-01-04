@@ -1,5 +1,9 @@
 #pragma once
 
+//ATL
+#include <atlstr.h>
+#include <stdio.h> 
+
 //local
 #include "Syn_DutCtrl.h"
 
@@ -45,7 +49,7 @@ public:
 
 
 
-	//virtual void UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader, uint32_t nRevApplication);
+	virtual void UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader, uint32_t nRevApplication);
 
 
 protected:

@@ -183,7 +183,7 @@ void SysConfig::ConvertAsciiToBinary(const std::string& strAsciiValue, uint8_t *
 		std::string strTemp(strAsciiValue,i * 2, 2);
 
 		uint8_t nVal = (uint8_t)strtol(strTemp.c_str(), &p, 16);
-		//uint8_t nVal = (uint8_t)stoul(strTemp, 0, 16);
+		//uint8_t nVal = (uint8_t)stoul(strTemp, 0, 2);
 		pDst[i] = nVal;
 	}
 }

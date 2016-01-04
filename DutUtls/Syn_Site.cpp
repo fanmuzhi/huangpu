@@ -163,7 +163,7 @@ bool Syn_Site::ConstructSiteList(Syn_SysConfig &iSyn_SysConfigInfo, std::vector<
 
 
 
-void Syn_Site::Run(uint8_t *arMS0,int iSize)
+void Syn_Site::Run(uint8_t * &arMS0,int iSize)
 {
 	if (NULL == _pSyn_Dut)
 	{
@@ -174,7 +174,7 @@ void Syn_Site::Run(uint8_t *arMS0,int iSize)
 	uint8_t *pOTPReadWritePatchArray = NULL;
 	int iOTPReadWritePatchSize(0);
 	Syn_XepatchInfo NeedSyn_XepatchInfo;
-	bool rc = _SysConfig.GetSyn_XepatchInfo(std::string("OtpReadWritePatch"), NeedSyn_XepatchInfo);//OTPReadWritePatch
+	bool rc = _SysConfig.GetSyn_XepatchInfo(std::string("OtpReadWritePatch"), NeedSyn_XepatchInfo);
 	if (rc)
 	{
 		pOTPReadWritePatchArray = NeedSyn_XepatchInfo._pArrayBuf;
