@@ -10,8 +10,13 @@
 //std
 #include <iostream>
 
+
+
 Syn_Site::Syn_Site()
 :_pSyn_Dut(NULL)
+//, _syn_SiteThread()
+, _iTestEndTag(0)
+, _tm(0)
 {
 }
 
@@ -104,6 +109,11 @@ bool Syn_Site::ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn
 	opSyn_SiteInstance->_pSyn_Dut = pSyn_Dut;
 	opSyn_SiteInstance->_SysConfig = iSyn_SysConfigInfo;
 
+	//_syn_SiteThread = thread::move();
+
+	//thread syn_SiteThread{ SiteThreadStart, opSyn_SiteInstance };
+	//syn_SiteThread.join();
+
 	return true;
 }
 
@@ -155,14 +165,29 @@ bool Syn_Site::ConstructSiteList(Syn_SysConfig &iSyn_SysConfigInfo, std::vector<
 	return true;
 }
 
+bool Syn_Site::SiteThreadStart(void *vParam)
+{
+	if (NULL == vParam)
+		return false;
 
-void Syn_Site::Run(uint8_t* arMS0,int iSize)
+	Syn_Site *pSite = static_cast<Syn_Site*>(vParam);
+	if (NULL == pSite)
+		return false;
+
+	//pSite->Run();
+
+	return true;
+}
+
+void Syn_Site::Run(uint8_t * arMS0,int iSize)
 {
 	if (NULL == _pSyn_Dut)
 	{
 		cout << "Error:Syn_Site::Run() - _pSyn_Dut is NULL!" << endl;
 		return;
 	}
+
+	//ofstream logFile("D:\\error.log");
 
 	uint8_t *pOTPReadWritePatchArray = NULL;
 	int iOTPReadWritePatchSize(0);
@@ -196,6 +221,38 @@ void Syn_Site::Run(uint8_t* arMS0,int iSize)
 	}
 	catch (...)
 	{
-
+		std::clog << "Error:ReadOTP is failed!" << std::endl;
+		return;
 	}
+
+	return;
 }
+
+bool Syn_Site::TestGetValue(std::string &strTime)
+{
+	struct tm * timeinfo;
+	timeinfo = localtime(&_tm);
+
+	strTime = asctime(timeinfo);
+	//::Sleep(100);
+
+	return true;
+}
+
+
+void Syn_Site::TestSet()
+{
+	/*int iTag(0);
+	while (iTag <= 10000)
+	{
+		time(&_tm);
+		iTag += 1;
+	}*/
+	::Sleep(1500);
+	time(&_tm);
+}
+
+//void Syn_Site::TestGet(int &iTag, time_t &Time)
+//{
+//	if ()
+//}
