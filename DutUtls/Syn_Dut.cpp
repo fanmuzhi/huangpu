@@ -123,68 +123,18 @@ bool Syn_Dut::ReadOTP(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool
 		return false;
 	}
 
-	try
-	{
-		this->CycleDutPowerOn(nPwrVdd, nPwrVio, nPwrVled, nPwrVddh, bDisableSleep);
-	}
-	catch (Syn_Exception Exception)
-	{
-		cerr << "Error" + Exception.GetDescription() << endl;
-		return false;
-	}
-	
-	try
-	{
-		_pSyn_DutCtrl->FpUnloadPatch();
-	}
-	catch (Syn_Exception Exception)
-	{
-		cerr << "Error" + Exception.GetDescription() << endl;
-		return false;
-	}
-	
+	this->CycleDutPowerOn(nPwrVdd, nPwrVio, nPwrVled, nPwrVddh, bDisableSleep);
 
-	try
-	{
-		_pSyn_DutCtrl->FpLoadPatch(pPatch, numBytes);//OtpReadWritePatch
-	}
-	catch (Syn_Exception Exception)
-	{
-		cerr << "Error" + Exception.GetDescription() << endl;
-		return false;
-	}
-
-	//_pSyn_DutCtrl->FpLoadPatch(pPatch, numBytes);//OTPReadWritePatch
-	//_pSyn_DutCtrl->FpOtpRomRead();
-	//_pSyn_DutCtrl->FpReadOTPROM()
+	_pSyn_DutCtrl->FpUnloadPatch();
+	_pSyn_DutCtrl->FpLoadPatch(pPatch, numBytes);//OtpReadWritePatch
 
 
 	//bool FpSensor::ValidateMS0()
 	//Read Main Sector 0 and Main Sector 1 to get the count of each record type.
 	uint8_t	arMS0[MS0_SIZE] = {0};
-	try
-	{
-		_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 0, arMS0, MS0_SIZE);
-	}
-	catch (Syn_Exception Exception)
-	{
-		cerr << "Error" + Exception.GetDescription() << endl;
-		return false;
-	}
 
-	try
-	{
-		_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 1, &arMS0[2048], MS1_SIZE);
-	}
-	catch (Syn_Exception Exception)
-	{
-		cerr << "Error" + Exception.GetDescription() << endl;
-		return false;
-	}
-	
-	/*_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 0, arMS0, MS0_SIZE);
-	_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 1, &arMS0[2048], MS1_SIZE);*/
-	//CountOtpRecords(arMS0, &site.m_calibrationResults);
+	_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 0, arMS0, MS0_SIZE);
+	_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 1, &arMS0[2048], MS1_SIZE);
 	
 
 	oarMS0 = arMS0;

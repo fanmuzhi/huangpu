@@ -10,8 +10,13 @@
 //std
 #include <iostream>
 
+
+
 Syn_Site::Syn_Site()
 :_pSyn_Dut(NULL)
+//, _syn_SiteThread()
+, _iTestEndTag(0)
+, _tm(0)
 {
 }
 
@@ -104,6 +109,11 @@ bool Syn_Site::ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn
 	opSyn_SiteInstance->_pSyn_Dut = pSyn_Dut;
 	opSyn_SiteInstance->_SysConfig = iSyn_SysConfigInfo;
 
+	//_syn_SiteThread = thread::move();
+
+	//thread syn_SiteThread{ SiteThreadStart, opSyn_SiteInstance };
+	//syn_SiteThread.join();
+
 	return true;
 }
 
@@ -155,7 +165,19 @@ bool Syn_Site::ConstructSiteList(Syn_SysConfig &iSyn_SysConfigInfo, std::vector<
 	return true;
 }
 
+bool Syn_Site::SiteThreadStart(void *vParam)
+{
+	if (NULL == vParam)
+		return false;
 
+	Syn_Site *pSite = static_cast<Syn_Site*>(vParam);
+	if (NULL == pSite)
+		return false;
+
+	//pSite->Run();
+
+	return true;
+}
 
 
 
@@ -170,6 +192,8 @@ void Syn_Site::Run(uint8_t * &arMS0,int iSize)
 		cout << "Error:Syn_Site::Run() - _pSyn_Dut is NULL!" << endl;
 		return;
 	}
+
+	//ofstream logFile("D:\\error.log");
 
 	uint8_t *pOTPReadWritePatchArray = NULL;
 	int iOTPReadWritePatchSize(0);
@@ -198,5 +222,52 @@ void Syn_Site::Run(uint8_t * &arMS0,int iSize)
 		return;
 	}
 
-	_pSyn_Dut->ReadOTP(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true, pOTPReadWritePatchArray, iOTPReadWritePatchSize, arMS0, iSize);
+	try
+	{
+		_pSyn_Dut->ReadOTP(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true, pOTPReadWritePatchArray, iOTPReadWritePatchSize, arMS0, iSize);
+	}
+	catch (...)
+	{
+		std::clog << "Error:ReadOTP is failed!" << std::endl;
+		return;
+	}
+
+	//clog.rdbuf(logFile.rdbuf());
+	std::clog << "ok:ReadOTP is success!" << std::endl;
+
+
+	std::clog << "ok:ReadOTP is success2!" << std::endl;
+
+
+
+	return;
 }
+
+bool Syn_Site::TestGetValue(std::string &strTime)
+{
+	struct tm * timeinfo;
+	timeinfo = localtime(&_tm);
+
+	strTime = asctime(timeinfo);
+	//::Sleep(100);
+
+	return true;
+}
+
+
+void Syn_Site::TestSet()
+{
+	/*int iTag(0);
+	while (iTag <= 10000)
+	{
+		time(&_tm);
+		iTag += 1;
+	}*/
+	::Sleep(1500);
+	time(&_tm);
+}
+
+//void Syn_Site::TestGet(int &iTag, time_t &Time)
+//{
+//	if ()
+//}

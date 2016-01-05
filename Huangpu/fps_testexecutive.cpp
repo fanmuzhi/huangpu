@@ -1,15 +1,24 @@
 #include <QtWidgets>
 #include "fps_testexecutive.h"
 
+//C++ std
+#include <thread>
+
 FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	: QMainWindow(parent)
+	, _bStopTag(true)
 {
 	ui.setupUi(this);
 	m_deviceHandle = Init();
 	//QObject::connect(ui.pushButtonGetVer, SIGNAL(clicked()), this, SLOT(GetVersion()));
 	//QObject::connect(ui.pushButtonPowerOn, SIGNAL(clicked()), this, SLOT(DutPowerOn()));
 	//QObject::connect(ui.pushButtonPowerOff, SIGNAL(clicked()), this, SLOT(DutPowerOff()));
-	//QObject::connect(ui.pushButtonStart, SIGNAL(clicked()), ui.textEdit, SLOT(setText("Clicked.\n")));
+
+	QObject::connect(ui.pushButtonRun, SIGNAL(clicked()), this, SLOT(ThreadTest()));
+
+	//QObject::connect(&_synThread, SIGNAL(send(QString)), this, SLOT(receiveslot(QString)));
+	//QObject::connect(&_synThread, SIGNAL(send(Syn_St)), this, SLOT(receiveslot(Syn_St)));
+	QObject::connect(&_synThread, SIGNAL(send(void*)), this, SLOT(receiveslot(void*)));
 }
 
 uint32_t FPS_TestExecutive::Init()
@@ -104,6 +113,11 @@ uint32_t FPS_TestExecutive::Init()
 	delete pSysConfig;
 	pSysConfig = NULL;*/
 
+	ofstream logFile("D:\\error.log");
+	clog.rdbuf(logFile.rdbuf());
+
+	clog << "start!" << endl;
+
 	QString qstrXMLFilePath("D:\\Project\\ProjectData\\580-005337-01rC (FM-000078-001).xml");
 	Syn_SysConfig SysConfig;
 	ConstructSyn_SysConfig(qstrXMLFilePath.toStdString(), SysConfig);
@@ -131,26 +145,41 @@ uint32_t FPS_TestExecutive::Init()
 		Display(pOTPReadWritePatchArray, iOTPReadWritePatchSize);
 	}*/
 
+	//
 	for (size_t i = 0; i < ilistCounts; i++)
 	{
 		if (NULL != listOfSyn_SiteInstance[i])
 		{
 			//uint8_t	arMS0[MS0_SIZE] = { 0 };
-			uint8_t	*arMS0 = new uint8_t[MS0_SIZE];
-
+			/*uint8_t	*arMS0 = NULL;
 			listOfSyn_SiteInstance[i]->Run(arMS0, MS0_SIZE);
+
 
 			for (int j = 1; j <= MS0_SIZE / 8; j++)
 			{
 				int StartPos = (j-1)*8;
 				int EndPos = j*8-1;
 				Display(arMS0, StartPos, EndPos);
-			}
+			}*/
 
-			/*delete[] arMS0;
-			arMS0 = NULL;*/
+
+			
+
+			
 		}
 	}
+
+	/*_synThread.start();
+	_bStopTag = false;
+
+	QObject::connect(&_synThread, SIGNAL(send(bool)), this, SLOT(receiveslot(bool)));*/
+
+	_ListOfSitePtr = listOfSyn_SiteInstance;
+
+	_synThread.SetSite(_ListOfSitePtr[0]);
+
+	clog << "end!" << endl;
+
 
 	return 0;
 }
@@ -537,4 +566,103 @@ bool FPS_TestExecutive::ConstructSyn_SysConfig(const std::string &strConfigFileP
 	pSysConfigOperation = NULL;
 
 	return true;
+}
+
+
+void FPS_TestExecutive::ThreadTest()
+{
+	/*for (auto i = 0; i <_ListOfSitePtr.size(); i++)
+	{
+		//thread test
+		std::thread t1(SetTest, _ListOfSitePtr[i]);
+		//::Sleep(100);
+
+
+		std::thread t2(GetTest, this, _ListOfSitePtr[i]);
+
+		t1.join();
+		t2.join();
+	}*/
+
+	//_bStopTag = !_bStopTag;
+
+	//QObject::connect(&_synThread, SIGNAL(send(bool)), this, SLOT(receiveslot(bool)));
+
+	if (_synThread.isRunning())
+	{
+		_synThread.SetStopTag(true);
+
+		ui.pushButtonRun->setText(QString("Run"));
+	}
+	else
+	{
+		_synThread.start();
+		_synThread.SetStopTag(false);
+
+		ui.pushButtonRun->setText(QString("Stop"));
+	}
+
+}
+
+
+
+void FPS_TestExecutive::SetTest(void * vpSite)
+{
+	if (NULL == vpSite)
+		return;
+
+	Syn_Site *pSite = static_cast<Syn_Site*>(vpSite);
+
+	/*string strValue("");
+	bool rc(true);
+	while (rc)
+	{
+		rc = pSite->TestGetValue(strValue);
+		pSite->TestSet();
+	}*/
+
+	pSite->TestSet();
+}
+
+void FPS_TestExecutive::GetTest(void *vpFPS_TestExecutive, void * vpSite)
+{
+	if (NULL == vpSite || NULL == vpFPS_TestExecutive)
+		return;
+
+	Syn_Site *pSite = static_cast<Syn_Site*>(vpSite);
+
+	FPS_TestExecutive *pFPS_TestExecutive = static_cast<FPS_TestExecutive*>(vpFPS_TestExecutive);
+
+	string strValue("");
+
+	bool rc(true);
+	int x(0);
+	//while (rc)
+	while (x<=10000)
+	{
+		rc = pSite->TestGetValue(strValue);
+
+		(pFPS_TestExecutive->ui).textBrowser->append(QString::fromStdString(strValue));
+
+		x += 1;
+	}
+}
+
+//void FPS_TestExecutive::receiveslot(QString strTime)
+//void FPS_TestExecutive::receiveslot(Syn_St strTime)
+void FPS_TestExecutive::receiveslot(void* strTime)
+{
+	
+	if (!_synThread.isRunning())
+		return;
+
+	if (NULL == strTime)
+		return;
+
+	//ui.textBrowser->clear();
+	//ui.textBrowser->append(strTime);
+
+	Syn_St *p = static_cast<Syn_St*>(strTime);
+
+	ui.textBrowser->append(p->qValue);
 }

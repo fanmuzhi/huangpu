@@ -6,6 +6,9 @@
 #include "MpcApiDll.h"
 #include "SysConfig.h"
 
+//Local
+#include "Syn_Thread.h"
+
 //DutUtls
 #include "Syn_Site.h"
 #include "Syn_Dut.h"
@@ -36,10 +39,24 @@ public:
 
 	bool ConstructSyn_SysConfig(const std::string &strConfigFilePath,Syn_SysConfig &oSyn_SysConfig);
 
+
+	//threadTest
+	static void SetTest(void * vpSite);
+	static void GetTest(void *vpFPS_TestExecutive, void * vpSite);
+
+
+
 public Q_SLOTS:
 	int GetVersion();
 	int DutPowerOn();
 	int DutPowerOff();
+
+	void ThreadTest();
+
+
+	//void receiveslot(QString strTime);
+	//void receiveslot(Syn_St strTime);
+	void receiveslot(void * strTime);
 
 
 private:
@@ -55,6 +72,13 @@ private:
 	uint32_t m_deviceHandle;
 
 	vector<Syn_Dut*> _ListOfDutPtr;
+
+	vector<Syn_Site*> _ListOfSitePtr;
+
+	//vector<Syn_Thread> _ListOfThread;
+	Syn_Thread _synThread;
+
+	bool _bStopTag;
 };
 
 #endif // FPS_TESTEXECUTIVE_H
