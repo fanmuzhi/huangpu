@@ -1,18 +1,11 @@
-//windows
-//#include <afx.h>
-////#include "stdafx.h"
-//#include <windows.h>
-//#include <stdio.h>
-//#include <tchar.h>
-
 //Local
 #include "Syn_SPCCtrl.h"
 #include "Syn_Exception.h"
+#include "Syn_Vcsfw.h"
 
 //MPC_API
 #include "MpcApiDll.h"
 #include "MpcApiError.h"
-#include "MPCErrors.h"
 
 //std
 #include <iostream>
@@ -41,7 +34,7 @@ Syn_SPCCtrl::~Syn_SPCCtrl()
 
 bool Syn_SPCCtrl::Init()
 {
-	uint32_t	error;
+	uint32_t	err;
 
 	uint16_t	uiDevType;
 	uint32_t	uiRevBootLoader;
@@ -52,33 +45,32 @@ bool Syn_SPCCtrl::Init()
 	//We want to init the DLL only once.
 	if (false == _bDLLInitialized)
 	{
-		error = MPC_Initialize();
-		if (0 != error)
+		err = MPC_Initialize();
+		if (err != MpcApiError::ERR_OK)
 			_bDLLInitialized = true;
 	}
 
 	//Get the handle associated to this SPC.
-	error = MPC_GetMpcDeviceHandle(syn_SerialNumber, &syn_DeviceHandle);
-
-	MPC_Connect(syn_DeviceHandle);
+	err = MPC_GetMpcDeviceHandle(syn_SerialNumber, &syn_DeviceHandle);
+	err = MPC_Connect(syn_DeviceHandle);
 	::Sleep(2);
-	MPC_IsConnected(syn_DeviceHandle);
 
-	if (0 != error)
+	if (err != MpcApiError::ERR_OK)
 	{
 		syn_DeviceHandle = NULL;
 	}
 	else
 	{
-		error = MPC_Connect(syn_DeviceHandle);
-		if (0 != error)
+		err = MPC_Connect(syn_DeviceHandle);
+		if (err != MpcApiError::ERR_OK)
 		{
 			syn_DeviceHandle = NULL;
+			cout << "ERROR:Syn_SPCCtrl::Init() - cannot connect to MPC04 " << syn_SerialNumber << endl;
 		}
 		else
 		{
-			error = MPC_GetIdentity(syn_DeviceHandle, &uiDevType, &uiRevBootLoader, &uiRevApplication, 2000);
-			if (0 != error)
+			err = MPC_GetIdentity(syn_DeviceHandle, &uiDevType, &uiRevBootLoader, &uiRevApplication, TIMEOUT);
+			if (err != MpcApiError::ERR_OK)
 			{
 				MPC_Disconnect(syn_DeviceHandle);
 				MPC_CloseMpcDeviceHandle(syn_DeviceHandle);
@@ -91,8 +83,8 @@ bool Syn_SPCCtrl::Init()
 				//SetValidFlg(true);
 
 				//Set the MPC04 voltages to zero.
-				error = MPC_SetVoltages(syn_DeviceHandle, 0, 0, 0, 0, 2000);
-				if (0!=error)
+				err = MPC_SetVoltages(syn_DeviceHandle, 0, 0, 0, 0, TIMEOUT);
+				if (err != MpcApiError::ERR_OK)
 				{
 					//SetValidFlg(false);
 					MPC_Disconnect(syn_DeviceHandle);
@@ -104,150 +96,124 @@ bool Syn_SPCCtrl::Init()
 	}
 
 	//If this site has been assigned a serial number and the connection was NOT successful.
-	if (0!=syn_SerialNumber&&NULL==syn_DeviceHandle)
+	if (0!=syn_SerialNumber && NULL==syn_DeviceHandle)
 	{
-		cout << "Error:Syn_SPCCtrl::Init() - syn_DeviceHandle is NULL!" << endl;
+		cout << "ERROR:Syn_SPCCtrl::Init() - syn_DeviceHandle is NULL!" << endl;
 		return false;
 	}
 
 	if (MPC_IsConnected(syn_DeviceHandle))
 	{
 		// Set SPI port
-		MPC_SetPortFpSensor(syn_DeviceHandle, 0, 0x0008, 8000, 0, 0, 2000);
+		err = MPC_SetPortFpSensor(syn_DeviceHandle, 0, 0x0008, 8000, 0, 0, TIMEOUT);
+		if (err != MpcApiError::ERR_OK)
+		{
+			syn_DeviceHandle = NULL;
+			cout << "ERROR:Syn_SPCCtrl::Init() - MPC_SetPortFpSensor failed with MPC04 " << syn_SerialNumber << endl;
+			return false;
+		}
 		return true;
 	}
 	else
 	{
-		cout << "Error:Syn_SPCCtrl::Init() - ::MPC_IsConnected is failed!" << endl;
+		cout << "ERROR:Syn_SPCCtrl::Init() - ::MPC_IsConnected is failed!" << endl;
 		return false;
 	}
-
-	return true;
 }
+
+//--------------------
+//Basic Function: Read
+//--------------------
+void Syn_SPCCtrl::FpRead(uint16_t endpoint, uint16_t command, uint8_t* pDst, int numBytes)
+{
+	uint16_t err;
+
+	err = MPC_FpRead(syn_DeviceHandle, endpoint, command, pDst, numBytes, TIMEOUT);
+	Syn_Exception ex(err);
+	if (MpcApiError::ERR_COMMUNICATION_FAILED == err)
+	{
+		ex.SetDescription("FpRead() Controller communication failure.");
+		throw ex;
+	}
+	else if (MpcApiError::ERR_OK != err)
+	{
+		ex.SetDescription("FpRead() DUT communication failure.");
+		throw ex;
+	}
+}
+
+//--------------------
+//Basic Function: Write
+//--------------------
+void Syn_SPCCtrl::FpWrite(uint16_t endpoint, uint16_t command, uint8_t* pSrc, int numBytes)
+{
+	uint16_t err;
+
+	err = MPC_FpWrite(syn_DeviceHandle, endpoint, command, pSrc, numBytes, TIMEOUT);
+	Syn_Exception ex(err);
+	if (MpcApiError::ERR_COMMUNICATION_FAILED == err)
+	{
+		ex.SetDescription("FpWrite() Controller communication failure.");
+		throw ex;
+	}
+	else if (MpcApiError::ERR_OK != err)
+	{
+		ex.SetDescription("FpWrite() DUT communication failure.");
+		throw ex;
+	}
+}
+
 
 void Syn_SPCCtrl::SetVoltages(uint16_t vdd_mV, uint16_t vio_mV, uint16_t vled_mV, uint16_t vddh_mV)
 {
-	uint16_t ErrorCode = MPC_SetVoltages(syn_DeviceHandle, vdd_mV, vio_mV, vled_mV, vddh_mV, 2000);
-	Syn_Exception Exception(ErrorCode);
-	if (MpcApiError::ERR_COMMUNICATION_FAILED == ErrorCode)
+	uint16_t err = MPC_SetVoltages(syn_DeviceHandle, vdd_mV, vio_mV, vled_mV, vddh_mV, TIMEOUT);
+	Syn_Exception ex(err);
+	if (MpcApiError::ERR_COMMUNICATION_FAILED == err)
 	{
-		Exception.SetDescription("SetVoltages() Controller communication failure.");
-		throw Exception;
+		ex.SetDescription("SetVoltages() Controller communication failure.");
+		throw ex;
 	}
-	else if (Errors::NO_MPC_ERROR != ErrorCode)
+	else if (MpcApiError::ERR_OK != err)
 	{
-		Exception.SetDescription("SetVoltages() DUT communication failure.");
-		throw Exception;
+		ex.SetDescription("SetVoltages() DUT communication failure.");
+		throw ex;
 	}
-	
 }
 
 void Syn_SPCCtrl::FpGetStatus(uint8_t* pDst, int numBytes)
 {
-	uint16_t ErrorCode;
+	uint16_t endpoint = 0x00;
+	uint16_t cmd = 0x00;
 
-	ErrorCode = MPC_FpGetStatus(syn_DeviceHandle, pDst, numBytes, 2000);
+	this->FpRead(endpoint, cmd, pDst, numBytes);
 
-	for (auto x = 0; x < numBytes; x++)
-	{
-		cout << std::hex << *(pDst + x);
-		cout << ",";
-	}
-	cout << endl;
+	cout << "FpGetStatus(): 0x" << hex << *((uint32_t*)pDst) << endl;
+}
 
-	Syn_Exception Exception(ErrorCode);
-	if (MpcApiError::ERR_COMMUNICATION_FAILED==ErrorCode)
+void Syn_SPCCtrl::FpWaitForCMDComplete()
+{
+	uint8_t numBytes = 2;	// the sensor should return FF FF 00 00, and the 2bytes 00 00 should be OK.
+
+	uint16_t err = FpWaitForCommandCompleteAndReturnErrorCode(numBytes);
+
+	cout << "FpwaitForCMDComplete(): 0x" << hex << err << endl;
+	
+	if (err != 0 && err != 0xA605)
 	{
-		Exception.SetDescription("FpGetStatus() Controller communication failure.");
-		throw Exception;
-	}
-	else if (Errors::NO_MPC_ERROR!=ErrorCode)
-	{
-		Exception.SetDescription("FpGetStatus() DUT communication failure.");
-		throw Exception;
+		Syn_Exception ex(err);
+		ex.SetDescription("FpWaitForCommandCompleteAndCheckErrorCode() DUT communication failure.");
+		throw ex;
 	}
 }
 
-void Syn_SPCCtrl::FpRead(uint16_t endpoint, uint16_t command, uint8_t* pDst, int numBytes)
+uint16_t Syn_SPCCtrl::FpWaitForCommandCompleteAndReturnErrorCode(uint32_t numBytes)
 {
-	uint16_t ErrorCode;
-
-	ErrorCode = MPC_FpRead(syn_DeviceHandle, endpoint, command, pDst, numBytes, 2000);
-	Syn_Exception Exception(ErrorCode);
-	if (MpcApiError::ERR_COMMUNICATION_FAILED == ErrorCode)
-	{
-		Exception.SetDescription("FpRead() Controller communication failure.");
-		throw Exception;
-	}
-	else if (Errors::NO_MPC_ERROR != ErrorCode)
-	{
-		Exception.SetDescription("FpRead() DUT communication failure.");
-		throw Exception;
-	}
-}
-
-void Syn_SPCCtrl::FpWrite(uint16_t endpoint, uint16_t command, uint8_t* pSrc, int numBytes)
-{
-	uint16_t ErrorCode;
-
-	ErrorCode = MPC_FpWrite(syn_DeviceHandle, endpoint, command, pSrc, numBytes, 2000);
-	Syn_Exception Exception(ErrorCode);
-	if (MpcApiError::ERR_COMMUNICATION_FAILED == ErrorCode)
-	{
-		Exception.SetDescription("FpWrite() Controller communication failure.");
-		throw Exception;
-	}
-	else if (Errors::NO_MPC_ERROR != ErrorCode)
-	{
-		Exception.SetDescription("FpWrite() DUT communication failure.");
-		throw Exception;
-	}
-}
-
-void Syn_SPCCtrl::FpWaitForCMDComplete(uint32_t numBytes, int nTimeout_ms)
-{
-	uint16_t ErrorCode = FpWaitForCommandCompleteAndReturnErrorCode(numBytes, nTimeout_ms);
-	if (ErrorCode != 0 && ErrorCode != 0xA605)
-	{
-		Syn_Exception Exception(ErrorCode);
-		Exception.SetDescription("FpWaitForCommandCompleteAndCheckErrorCode() DUT communication failure.");
-		throw Exception;
-	}
-}
-
-uint16_t Syn_SPCCtrl::FpWaitForCommandCompleteAndReturnErrorCode(uint32_t numBytes, int nTimeout_ms)
-{
+	uint32_t timeout = TIMEOUT;
 	//uint8_t	pDst[MAX_PRINTFILE_SIZE];
 	uint8_t	pDst[4];
 
-	uint64_t timeout = GetTickCount() + nTimeout_ms;
-	FpGetStatus(pDst, 4);
-	while ((timeout > GetTickCount()) && (*((uint32_t*)pDst) != 0x30000003))
-		FpGetStatus(pDst, 4);
-
-	if (timeout < GetTickCount())
-	{
-		Syn_Exception Exception(0);
-		Exception.SetDescription("FpWaitForCommandCompleteAndReturnErrorCode() DUT communication failure.");
-		throw Exception;
-	}
-
-	//Check error code. The 'command' value(0xFF) for FpRead are don't cares.
-	FpRead(1, 0xFF, pDst, numBytes);
-	while ((timeout > GetTickCount()) && (*((uint16_t*)pDst) == 0xFFFF))
-		FpRead(1, 0xFF, pDst, numBytes);
-
-	return ((pDst[0] << 8) + pDst[1]);
-}
-
-
-void Syn_SPCCtrl::FpWaitDeviceReady()
-{
-	uint8_t pDst[4];
-	uint32_t timeout = 2000;
-
 	this->FpGetStatus(pDst, 4);
-	while (timeout && ((pDst[0] != 0x01) || (pDst[1] != 0x00) || (pDst[2] != 0x00) || (pDst[3] != 0x08)))
+	while (timeout && (*((uint32_t*)pDst) != 0x30000003))
 	{
 		this->FpGetStatus(pDst, 4);
 		timeout--;
@@ -256,108 +222,149 @@ void Syn_SPCCtrl::FpWaitDeviceReady()
 	if (timeout == 0)
 	{
 		Syn_Exception ex(0);
-		ex.SetDescription("Timeout waiting for sensor to wake.");
+		ex.SetDescription("FpWaitForCommandCompleteAndReturnErrorCode() DUT communication failure.");
+		throw ex;
+	}
+
+	//Check error code. The 'command' value(0xFF) for FpRead are don't cares.
+	timeout = TIMEOUT;
+	this->FpRead(1, 0xFF, pDst, numBytes);
+	while (timeout && (*((uint16_t*)pDst) == 0xFFFF))
+	{
+		this->FpRead(1, 0xFF, pDst, numBytes);
+		timeout--;
+	}
+
+	return ((pDst[0] << 8) + pDst[1]);
+}
+
+void Syn_SPCCtrl::FpWaitDeviceReady()
+{
+	cout << "FpWaitDeviceReady():" << endl;
+
+	uint8_t pDst[4];
+	uint32_t timeout = TIMEOUT;
+
+	this->FpGetStatus(pDst, 4);
+	while (timeout && (*((uint32_t*)pDst) != 0x08000001))
+	{
+		this->FpGetStatus(pDst, 4);
+		timeout--;
+	}
+	if (timeout == 0)
+	{
+		Syn_Exception ex(0);
+		ex.SetDescription("FpWaitDeviceReady() Timeout waiting for sensor to wake.");
 		throw(ex);
 	}
-	
 }
 
 void Syn_SPCCtrl::FpDisableSleep()
 {
+	cout << "FpDisableSleep():" << endl;
+
 	uint8_t pSrc[2] = { 0 };
-	this->FpWrite(1, 0x0057, pSrc, sizeof(pSrc));
+	this->FpWrite(1, VCSFW_CMD::TIDLE_SET, pSrc, sizeof(pSrc));
+	this->FpWaitForCMDComplete();
 }
 
 void Syn_SPCCtrl::FpLoadPatch(uint8_t* pPatch, int numBytes)
 {
-	uint16_t ErrorCode;
+	cout << "FpLoadPatch():" << endl;
 
-	ErrorCode = MPC_FpLoadPatch(syn_DeviceHandle, pPatch, numBytes, 2000);
+	uint16_t err;
 
-	Syn_Exception Exception(ErrorCode);
-	if (MpcApiError::ERR_COMMUNICATION_FAILED == ErrorCode)
+	err = MPC_FpLoadPatch(syn_DeviceHandle, pPatch, numBytes, TIMEOUT);
+
+	Syn_Exception ex(err);
+	if (MpcApiError::ERR_COMMUNICATION_FAILED == err)
 	{
-		Exception.SetDescription("FpLoadPatch() Controller communication failure.");
-		throw Exception;
+		ex.SetDescription("FpLoadPatch() Controller communication failure.");
+		throw ex;
 	}
-	else if (Errors::NO_MPC_ERROR != ErrorCode)
+	else if (MpcApiError::ERR_OK != err)
 	{
-		Exception.SetDescription("FpLoadPatch() DUT communication failure.");
-		throw Exception;
+		ex.SetDescription("FpLoadPatch() DUT communication failure.");
+		throw ex;
 	}
 }
 
 void Syn_SPCCtrl::FpUnloadPatch()
 {
-	uint16_t ErrorCode;
+	cout << "FpUnLoadPatch():" << endl;
 
-	ErrorCode = MPC_FpUnloadPatch(syn_DeviceHandle, 2000);
+	uint16_t err;
 
-	Syn_Exception Exception(ErrorCode);
-	if (MpcApiError::ERR_COMMUNICATION_FAILED == ErrorCode)
+	err = MPC_FpUnloadPatch(syn_DeviceHandle, TIMEOUT);
+
+	Syn_Exception ex(err);
+	if (MpcApiError::ERR_COMMUNICATION_FAILED == err)
 	{
-		Exception.SetDescription("FpUnloadPatch() Controller communication failure.");
-		throw Exception;
+		ex.SetDescription("FpUnloadPatch() Controller communication failure.");
+		throw ex;
 	}
-	else if (Errors::NO_MPC_ERROR != ErrorCode)
+	else if (MpcApiError::ERR_OK != err)
 	{
-		Exception.SetDescription("FpUnloadPatch() DUT communication failure.");
-		throw Exception;
+		ex.SetDescription("FpUnloadPatch() DUT communication failure.");
+		throw ex;
 	}
 }
 
 void Syn_SPCCtrl::FpOtpRomRead(int section, int sector, uint8_t* pDst, int numBytes)
 {
-	uint16_t ErrorCode;
+	cout << "FpOtpRomRead():" << endl;
 
-	ErrorCode = MPC_FpOtpRomRead(syn_DeviceHandle, section, sector, pDst, numBytes, 2000);
-	Syn_Exception Exception(ErrorCode);
-	if (ErrorCode == MpcApiError::ERR_COMMUNICATION_FAILED)
+	uint16_t err;
+
+	err = MPC_FpOtpRomRead(syn_DeviceHandle, section, sector, pDst, numBytes, TIMEOUT);
+	Syn_Exception ex(err);
+	if (err == MpcApiError::ERR_COMMUNICATION_FAILED)
 	{
-		Exception.SetDescription("FpOtpRomRead() Controller communication failure.");
-		throw Exception;
+		ex.SetDescription("FpOtpRomRead() Controller communication failure.");
+		throw ex;
 	}
-	else if (ErrorCode != Errors::NO_MPC_ERROR)
+	else if (err != MpcApiError::ERR_OK)
 	{
-		Exception.SetDescription("FpOtpRomRead() DUT communication failure.");
-		throw Exception;
+		ex.SetDescription("FpOtpRomRead() DUT communication failure.");
+		throw ex;
 	}
 }
 
 void Syn_SPCCtrl::FpOtpRomWrite(int section, int sector, uint8_t* pDst, int numBytes)
 {
-	uint16_t ErrorCode;
-	ErrorCode = MPC_FpOtpRomWrite(syn_DeviceHandle, section, sector, pDst, numBytes, 2000);
-	Syn_Exception Exception(ErrorCode);
-	if (ErrorCode == MpcApiError::ERR_COMMUNICATION_FAILED)
+	cout << "FpOtpRomWrite():" << endl;
+
+	uint16_t err;
+	err = MPC_FpOtpRomWrite(syn_DeviceHandle, section, sector, pDst, numBytes, TIMEOUT);
+	Syn_Exception ex(err);
+	if (err == MpcApiError::ERR_COMMUNICATION_FAILED)
 	{
-		Exception.SetDescription("FpOtpRomWrite() Controller communication failure.");
-		throw Exception;
+		ex.SetDescription("FpOtpRomWrite() Controller communication failure.");
+		throw ex;
 	}
-	else if (ErrorCode != Errors::NO_MPC_ERROR)
+	else if (err != MpcApiError::ERR_OK)
 	{
-		Exception.SetDescription("FpOtpRomWrite() DUT communication failure.");
-		throw Exception;
+		ex.SetDescription("FpOtpRomWrite() DUT communication failure.");
+		throw ex;
 	}
 }
 
 
-bool Syn_SPCCtrl::FpGetVersion(uint8_t *pDst, int numBytes)
+void Syn_SPCCtrl::FpGetVersion(uint8_t *pDst, int numBytes)
 {
-	uint16_t errorCode;
+	cout << "FpGetVersion():" << endl;
 
-	errorCode = MPC_FpGetVersion(syn_DeviceHandle, pDst, numBytes, 2000);
-	Syn_Exception Exception(errorCode);
-	if (MpcApiError::ERR_COMMUNICATION_FAILED == errorCode)
+	uint16_t err;
+	err = MPC_FpGetVersion(syn_DeviceHandle, pDst, numBytes, TIMEOUT);
+	Syn_Exception ex(err);
+	if (err == MpcApiError::ERR_COMMUNICATION_FAILED)
 	{
-		Exception.SetDescription("FpGetVersion() Controller communication failure.");
-		throw Exception;
+		ex.SetDescription("FpGetVersion() Controller communication failure.");
+		throw ex;
 	}
-	else if (Errors::NO_MPC_ERROR != errorCode)
+	else if (err != MpcApiError::ERR_OK)
 	{
-		Exception.SetDescription("FpGetVersion() DUT communication failure.");
-		throw Exception;
+		ex.SetDescription("FpGetVersion() DUT communication failure.");
+		throw ex;
 	}
-
-	return true;
 }

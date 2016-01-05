@@ -48,15 +48,15 @@ public:
 
 	virtual void FpOtpRomWrite(int section, int sector, uint8_t* pDst, int numBytes) = 0;
 
-	virtual void FpWaitForCMDComplete(uint32_t numBytes = 2, int nTimeout_ms = 2000) = 0;
+	virtual void FpWaitForCMDComplete() = 0;
 
 	virtual void FpWaitDeviceReady() = 0;
 
 	virtual void FpDisableSleep() = 0;
 
-	virtual uint16_t FpWaitForCommandCompleteAndReturnErrorCode(uint32_t numBytes, int nTimeout_ms = 2000) = 0;
+	virtual uint16_t FpWaitForCommandCompleteAndReturnErrorCode(uint32_t numBytes) = 0;
 
-	virtual bool FpGetVersion(uint8_t *pDst, int numBytes) = 0;
+	virtual void FpGetVersion(uint8_t *pDst, int numBytes) = 0;
 
 protected:
 

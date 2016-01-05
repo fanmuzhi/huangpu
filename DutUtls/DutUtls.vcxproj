@@ -97,6 +97,7 @@
     <ClInclude Include="Syn_MPC04Ctrl.h" />
     <ClInclude Include="Syn_Site.h" />
     <ClInclude Include="Syn_SPCCtrl.h" />
+    <ClInclude Include="Syn_Vcsfw.h" />
     <ClInclude Include="Syn_Viper.h" />
     <ClInclude Include="Syn_Viper1.h" />
     <ClInclude Include="Syn_Viper2.h" />

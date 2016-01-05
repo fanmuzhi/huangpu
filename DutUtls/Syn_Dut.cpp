@@ -79,9 +79,6 @@ void Syn_Dut::PowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool
 		return;
 	}
 
-	//Cycle the power to the sensor.
-	_pSyn_DutCtrl->SetVoltages(0, 0, nPwrVled, 0);
-	::Sleep(50);
 	_pSyn_DutCtrl->SetVoltages(nPwrVdd, nPwrVio, nPwrVled, nPwrVddh);
 	::Sleep(50);
 
@@ -92,7 +89,6 @@ void Syn_Dut::PowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool
 		_pSyn_DutCtrl->FpWaitDeviceReady();
 		//Configure sensor not to go back to sleep.
 		_pSyn_DutCtrl->FpDisableSleep();
-		_pSyn_DutCtrl->FpWaitForCMDComplete();
 	}
 }
 
@@ -120,11 +116,14 @@ bool Syn_Dut::ReadOTP(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool
 
 	try
 	{
+		this->PowerOff();
 		this->PowerOn(nPwrVdd, nPwrVio, nPwrVled, nPwrVddh, bDisableSleep);
 		_pSyn_DutCtrl->FpUnloadPatch();
 		_pSyn_DutCtrl->FpLoadPatch(pPatch, numBytes);//OtpReadWritePatch
-		_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 0, oarMS0, MS1_SIZE);
-		_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 1, &oarMS0[2048], MS1_SIZE);
+		_pSyn_DutCtrl->FpOtpRomRead(BOOT_SEC, 0, oarMS0, BS0_SIZE);
+		_pSyn_DutCtrl->FpOtpRomRead(BOOT_SEC, 1, &oarMS0[64], BS1_SIZE);
+		_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 0, &oarMS0[128], MS1_SIZE);
+		_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 1, &oarMS0[2176], MS1_SIZE);
 		this->PowerOff();
 	}
 	catch (Syn_Exception Exception)
