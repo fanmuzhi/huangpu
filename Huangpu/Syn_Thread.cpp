@@ -21,19 +21,31 @@ void Syn_Thread::run()
 		return;
 
 	string strTime("");
-	while (!_stopped)
-	{
-		_pSyn_Site->TestSet();
+	//while (!_stopped)
+	//{
+	//	/*_pSyn_Site->TestSet();
 
-		_pSyn_Site->TestGetValue(strTime);
+	//	_pSyn_Site->TestGetValue(strTime);
 
-		QString qstrTime(QString::fromStdString(strTime));
-		//emit send(qstrTime);
-		
-		_SynSt.qValue = qstrTime;
+	//	QString qstrTime(QString::fromStdString(strTime));
+	//	//emit send(qstrTime);
+	//	
+	//	_SynSt.qValue = qstrTime;
 
-		emit send(&_SynSt);
-	}
+	//	emit send(&_SynSt);*/
+
+	//	/*_pSyn_Site->Run();
+
+	//	_pSyn_Site->GetOTPTestInfo(_TestInfo);
+	//	emit send(&_TestInfo);*/
+	//}
+
+	_pSyn_Site->Run();
+
+	_pSyn_Site->GetOTPTestInfo(_TestInfo);
+	emit send(&_TestInfo);
+
+	_stopped = true;
 }
 
 void Syn_Thread::SetSite(Syn_Site *ipSyn_Site)

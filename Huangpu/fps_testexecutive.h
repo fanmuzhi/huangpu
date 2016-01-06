@@ -35,22 +35,13 @@ class FPS_TestExecutive : public QMainWindow
 public:
 	FPS_TestExecutive(QWidget *parent = 0);
 	~FPS_TestExecutive();
-    void parse_config();
+
 
 
 	bool ConstructSyn_SysConfig(const std::string &strConfigFilePath,Syn_SysConfig &oSyn_SysConfig);
 
 
-	//threadTest
-	static void SetTest(void * vpSite);
-	static void GetTest(void *vpFPS_TestExecutive, void * vpSite);
-
-
-
 public Q_SLOTS:
-	int GetVersion();
-	int DutPowerOn();
-	int DutPowerOff();
 
 	void ThreadTest();
 
@@ -58,10 +49,11 @@ public Q_SLOTS:
 	//void receiveslot(QString strTime);
 	//void receiveslot(Syn_St strTime);
 	void receiveslot(void * strTime);
+	void DisplayByTime(bool instruction);
 
 
 private:
-	void ConvertAsciiToBinary(const string& sAscii, int* pDst, int nDstSize);
+
 	void Display(uint8_t* pDst, int DstSize);
 
 	void Display(uint8_t* pDst, unsigned int StartPos, unsigned int EndPos);

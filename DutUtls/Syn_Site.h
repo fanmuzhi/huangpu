@@ -5,15 +5,20 @@
 #include "Syn_Dut.h"
 #include "Syn_DutCtrl.h"
 
-//C++ std
+//std
 #include <fstream>
 #include <vector>
 #include <string>
+#include <time.h>
 
-//C++ std::thread
-#include <thread>
-
-#include<time.h>
+struct Syn_OTPTestInfo
+{
+	uint8_t _BootSector0Array[BS0_SIZE];
+	uint8_t _BootSector1Array[BS1_SIZE];
+	
+	uint8_t _MainSector0Array[MS1_SIZE];//MS0_SIZE
+	uint8_t _MainSector1Array[MS1_SIZE];
+};
 
 class Syn_Site
 {
@@ -28,9 +33,11 @@ public:
 
 	static bool ConstructSiteList(Syn_SysConfig &iSyn_SysConfigInfo, std::vector<Syn_Site*> &olistOfSyn_SiteInstance);
 
-	static bool	SiteThreadStart(void *vParam);
+	//void Run(uint8_t* arMS0, int iSize);
+	void Run();
 
-	void Run(uint8_t* arMS0, int iSize);
+	void GetOTPTestInfo(Syn_OTPTestInfo &oSyn_OTPTestInfo);
+
 
 	//thread Test
 	bool TestGetValue(std::string &strTime);
@@ -44,9 +51,11 @@ private:
 
 	Syn_Dut *_pSyn_Dut;
 
-	//thread _syn_SiteThread;
+
 
 	time_t _tm;
 	int _iTestEndTag;
+
+	Syn_OTPTestInfo _OTPTestInfo;
 };
 

@@ -132,13 +132,6 @@ bool Syn_Dut::ReadOTP(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool
 		this->PowerOff();
 		return false;
 	}
-	//bool FpSensor::ValidateMS0()
-	//Read Main Sector 0 and Main Sector 1 to get the count of each record type.
-	uint8_t	arMS0[MS0_SIZE] = {0};
 
-	_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 0, arMS0, MS0_SIZE);
-	_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 1, &arMS0[2048], MS1_SIZE);
-	
-
-	oarMS0 = arMS0;
+	return true;
 }

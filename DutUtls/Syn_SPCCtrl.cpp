@@ -240,7 +240,7 @@ uint16_t Syn_SPCCtrl::FpWaitForCommandCompleteAndReturnErrorCode(uint32_t numByt
 
 void Syn_SPCCtrl::FpWaitDeviceReady()
 {
-	cout << "FpWaitDeviceReady():" << endl;
+	clog << "FpWaitDeviceReady():" << endl;
 
 	uint8_t pDst[4];
 	uint32_t timeout = TIMEOUT;
