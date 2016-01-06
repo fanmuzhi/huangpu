@@ -13,14 +13,16 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QFrame>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTextBrowser>
-#include <QtWidgets/QToolBar>
-#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -32,18 +34,23 @@ public:
     QAction *saveAsAct;
     QAction *exitAct;
     QWidget *centralWidget;
-    QVBoxLayout *verticalLayout;
+    QGridLayout *gridLayout_3;
+    QGroupBox *ImageGroupBox;
+    QGridLayout *gridLayout_2;
+    QLabel *ImageLabel;
     QTextBrowser *textBrowser;
-    QHBoxLayout *horizontalLayout;
     QPushButton *pushButtonRun;
-    QToolBar *mainToolBar;
+    QFrame *frame;
+    QGridLayout *gridLayout;
+    QLineEdit *RawdataLineEdit;
+    QPushButton *SelectPushButton;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *FPS_TestExecutiveClass)
     {
         if (FPS_TestExecutiveClass->objectName().isEmpty())
             FPS_TestExecutiveClass->setObjectName(QStringLiteral("FPS_TestExecutiveClass"));
-        FPS_TestExecutiveClass->resize(513, 470);
+        FPS_TestExecutiveClass->resize(475, 455);
         openAct = new QAction(FPS_TestExecutiveClass);
         openAct->setObjectName(QStringLiteral("openAct"));
         saveAsAct = new QAction(FPS_TestExecutiveClass);
@@ -52,30 +59,57 @@ public:
         exitAct->setObjectName(QStringLiteral("exitAct"));
         centralWidget = new QWidget(FPS_TestExecutiveClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        verticalLayout = new QVBoxLayout(centralWidget);
-        verticalLayout->setSpacing(6);
-        verticalLayout->setContentsMargins(11, 11, 11, 11);
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        gridLayout_3 = new QGridLayout(centralWidget);
+        gridLayout_3->setSpacing(6);
+        gridLayout_3->setContentsMargins(11, 11, 11, 11);
+        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
+        ImageGroupBox = new QGroupBox(centralWidget);
+        ImageGroupBox->setObjectName(QStringLiteral("ImageGroupBox"));
+        gridLayout_2 = new QGridLayout(ImageGroupBox);
+        gridLayout_2->setSpacing(6);
+        gridLayout_2->setContentsMargins(11, 11, 11, 11);
+        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
+        ImageLabel = new QLabel(ImageGroupBox);
+        ImageLabel->setObjectName(QStringLiteral("ImageLabel"));
+
+        gridLayout_2->addWidget(ImageLabel, 0, 0, 1, 1);
+
+
+        gridLayout_3->addWidget(ImageGroupBox, 4, 0, 1, 1);
+
         textBrowser = new QTextBrowser(centralWidget);
         textBrowser->setObjectName(QStringLiteral("textBrowser"));
 
-        verticalLayout->addWidget(textBrowser);
+        gridLayout_3->addWidget(textBrowser, 2, 0, 1, 1);
 
-        horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setSpacing(6);
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
         pushButtonRun = new QPushButton(centralWidget);
         pushButtonRun->setObjectName(QStringLiteral("pushButtonRun"));
 
-        horizontalLayout->addWidget(pushButtonRun);
+        gridLayout_3->addWidget(pushButtonRun, 3, 0, 1, 1);
+
+        frame = new QFrame(centralWidget);
+        frame->setObjectName(QStringLiteral("frame"));
+        frame->setFrameShape(QFrame::StyledPanel);
+        frame->setFrameShadow(QFrame::Raised);
+        gridLayout = new QGridLayout(frame);
+        gridLayout->setSpacing(6);
+        gridLayout->setContentsMargins(11, 11, 11, 11);
+        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        RawdataLineEdit = new QLineEdit(frame);
+        RawdataLineEdit->setObjectName(QStringLiteral("RawdataLineEdit"));
+        RawdataLineEdit->setReadOnly(true);
+
+        gridLayout->addWidget(RawdataLineEdit, 0, 0, 1, 1);
+
+        SelectPushButton = new QPushButton(frame);
+        SelectPushButton->setObjectName(QStringLiteral("SelectPushButton"));
+
+        gridLayout->addWidget(SelectPushButton, 0, 1, 1, 1);
 
 
-        verticalLayout->addLayout(horizontalLayout);
+        gridLayout_3->addWidget(frame, 1, 0, 1, 1);
 
         FPS_TestExecutiveClass->setCentralWidget(centralWidget);
-        mainToolBar = new QToolBar(FPS_TestExecutiveClass);
-        mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
-        FPS_TestExecutiveClass->addToolBar(Qt::TopToolBarArea, mainToolBar);
         statusBar = new QStatusBar(FPS_TestExecutiveClass);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         FPS_TestExecutiveClass->setStatusBar(statusBar);
@@ -91,7 +125,10 @@ public:
         openAct->setText(QApplication::translate("FPS_TestExecutiveClass", "Open...", 0));
         saveAsAct->setText(QApplication::translate("FPS_TestExecutiveClass", "Save As...", 0));
         exitAct->setText(QApplication::translate("FPS_TestExecutiveClass", "Exit", 0));
+        ImageGroupBox->setTitle(QApplication::translate("FPS_TestExecutiveClass", "Image", 0));
+        ImageLabel->setText(QApplication::translate("FPS_TestExecutiveClass", "TextLabel", 0));
         pushButtonRun->setText(QApplication::translate("FPS_TestExecutiveClass", "Run", 0));
+        SelectPushButton->setText(QApplication::translate("FPS_TestExecutiveClass", "Select", 0));
     } // retranslateUi
 
 };

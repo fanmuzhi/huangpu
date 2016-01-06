@@ -47,17 +47,16 @@ public:
 
 
 public Q_SLOTS:
-	int GetVersion();
-	int DutPowerOn();
-	int DutPowerOff();
-
+	
 	void ThreadTest();
-
 
 	//void receiveslot(QString strTime);
 	//void receiveslot(Syn_St strTime);
 	void receiveslot(void * strTime);
 
+	void SelectFile();
+
+	void csvFileAnalysis(QString &strFilePath);
 
 private:
 	void ConvertAsciiToBinary(const string& sAscii, int* pDst, int nDstSize);
@@ -79,6 +78,8 @@ private:
 	Syn_Thread _synThread;
 
 	bool _bStopTag;
+
+	QImage *_pImage;
 };
 
 #endif // FPS_TESTEXECUTIVE_H

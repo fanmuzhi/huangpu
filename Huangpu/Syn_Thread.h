@@ -14,7 +14,7 @@ struct Syn_St
 {
 	QString qValue;
 };
-Q_DECLARE_METATYPE(Syn_St)
+//Q_DECLARE_METATYPE(Syn_St)
 
 class Syn_Thread : public QThread
 {
