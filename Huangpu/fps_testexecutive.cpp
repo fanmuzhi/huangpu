@@ -11,19 +11,9 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	ui.setupUi(this);
 	m_deviceHandle = Init();
 
-	
-
-
-	//QObject::connect(ui.pushButtonGetVer, SIGNAL(clicked()), this, SLOT(GetVersion()));
-	//QObject::connect(ui.pushButtonPowerOn, SIGNAL(clicked()), this, SLOT(DutPowerOn()));
-	//QObject::connect(ui.pushButtonPowerOff, SIGNAL(clicked()), this, SLOT(DutPowerOff()));
-
 	QObject::connect(ui.pushButtonRun, SIGNAL(clicked()), this, SLOT(ThreadTest()));
 
-	//QObject::connect(&_synThread, SIGNAL(send(QString)), this, SLOT(receiveslot(QString)));
-	//QObject::connect(&_synThread, SIGNAL(send(Syn_St)), this, SLOT(receiveslot(Syn_St)));
 	QObject::connect(&_synThread, SIGNAL(send(void*)), this, SLOT(receiveslot(void*)));
-	//QObject::connect(&_synThread, SIGNAL(SendInstruct(void*)), this, SLOT(DisplayByTime(bool)));
 
 }
 
@@ -37,8 +27,8 @@ uint32_t FPS_TestExecutive::Init()
 
 	QString qstrXMLFilePath("C:\\test.xml");
 
-	Syn_SysConfig SysConfig;
-	bool result = ConstructSyn_SysConfig(qstrXMLFilePath.toStdString(), SysConfig);
+	//Syn_SysConfig SysConfig;
+	bool result = ConstructSyn_SysConfig(qstrXMLFilePath.toStdString(), _Config);
 	if (!result)
 	{
 		ui.textBrowser->append("Can't find the xml config file!");
@@ -46,7 +36,7 @@ uint32_t FPS_TestExecutive::Init()
 	}
 
 	std::vector<Syn_Site*> listOfSyn_SiteInstance;
-	bool rc = Syn_Site::ConstructSiteList(SysConfig, listOfSyn_SiteInstance);
+	bool rc = Syn_Site::ConstructSiteList(_Config, listOfSyn_SiteInstance);
 	size_t ilistCounts = listOfSyn_SiteInstance.size();
 	if (0 == ilistCounts)
 	{
@@ -80,6 +70,7 @@ uint32_t FPS_TestExecutive::Init()
 
 	clog << "end!" << endl;
 
+	//ThreadTest();
 
 	return 0;
 }
@@ -290,28 +281,12 @@ bool FPS_TestExecutive::ConstructSyn_SysConfig(const std::string &strConfigFileP
 
 void FPS_TestExecutive::ThreadTest()
 {
-	/*for (auto i = 0; i <_ListOfSitePtr.size(); i++)
-	{
-		//thread test
-		std::thread t1(SetTest, _ListOfSitePtr[i]);
-		//::Sleep(100);
-
-
-		std::thread t2(GetTest, this, _ListOfSitePtr[i]);
-
-		t1.join();
-		t2.join();
-	}*/
-
-	//_bStopTag = !_bStopTag;
-
-	//QObject::connect(&_synThread, SIGNAL(send(bool)), this, SLOT(receiveslot(bool)));
-
+	
 	if (_synThread.isRunning())
 	{
 		_synThread.SetStopTag(true);
 
-		_synThread.terminate();
+		//_synThread.terminate();
 
 		ui.pushButtonRun->setText(QString("Run"));
 	}
@@ -324,16 +299,14 @@ void FPS_TestExecutive::ThreadTest()
 
 	}
 
+
 }
 
-
-//void FPS_TestExecutive::receiveslot(QString strTime)
-//void FPS_TestExecutive::receiveslot(Syn_St strTime)
 void FPS_TestExecutive::receiveslot(void* strTime)
 {
 	
-	if (!_synThread.isRunning())
-		return;
+	/*if (!_synThread.isRunning())
+		return;*/
 
 	if (NULL == strTime)
 		return;
@@ -385,57 +358,4 @@ void FPS_TestExecutive::receiveslot(void* strTime)
 		int EndPos = i * 8 - 1;
 		Display(pTestInfo->_MainSector1Array, StartPos, EndPos);
 	}
-
-	//DisplayByTime(true);
-}
-
-
-void FPS_TestExecutive::DisplayByTime(bool instruction)
-{
-	if (!_synThread.isRunning())
-		return;
-
-	if (_ListOfSitePtr.size() == 0)
-		return;
-
-	if (NULL == _ListOfSitePtr[0])
-		return;
-
-	Syn_OTPTestInfo SynInfo;
-	_ListOfSitePtr[0]->GetOTPTestInfo(SynInfo);
-
-
-	ui.textBrowser->clear();
-
-	ui.textBrowser->append(QString("Boot Sector0:"));
-	for (int i = 1; i <= BS0_SIZE / 8; i++)
-	{
-		int StartPos = (i - 1) * 8;
-		int EndPos = i * 8 - 1;
-		Display(SynInfo._BootSector0Array, StartPos, EndPos);
-	}
-
-	ui.textBrowser->append(QString("Boot Sector1:"));
-	for (int i = 1; i <= BS1_SIZE / 8; i++)
-	{
-		int StartPos = (i - 1) * 8;
-		int EndPos = i * 8 - 1;
-		Display(SynInfo._BootSector1Array, StartPos, EndPos);
-	}
-
-	/*ui.textBrowser->append(QString("Main Sector0:"));
-	for (int i = 1; i <= MS0_SIZE / 8; i++)
-	{
-		int StartPos = (i - 1) * 8;
-		int EndPos = i * 8 - 1;
-		Display(SynInfo._MainSector0Array, StartPos, EndPos);
-	}
-
-	ui.textBrowser->append(QString("Main Sector1:"));
-	for (int i = 1; i <= MS1_SIZE / 8; i++)
-	{
-		int StartPos = (i - 1) * 8;
-		int EndPos = i * 8 - 1;
-		Display(SynInfo._MainSector1Array, StartPos, EndPos);
-	}*/
 }

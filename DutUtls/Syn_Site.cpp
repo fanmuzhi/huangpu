@@ -12,9 +12,6 @@
 
 Syn_Site::Syn_Site()
 :_pSyn_Dut(NULL)
-//, _syn_SiteThread()
-, _iTestEndTag(0)
-, _tm(0)
 {
 }
 
@@ -107,6 +104,8 @@ bool Syn_Site::ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn
 	opSyn_SiteInstance->_pSyn_Dut = pSyn_Dut;
 	opSyn_SiteInstance->_SysConfig = iSyn_SysConfigInfo;
 
+
+
 	return true;
 }
 
@@ -133,7 +132,6 @@ bool Syn_Site::ConstructSiteList(Syn_SysConfig &iSyn_SysConfigInfo, std::vector<
 	}
 
 	uint32_t *pDeviceSerNumArray = new uint32_t[iDeviceCounts];
-	//uint32_t pDeviceSerNumArray[8] = {0};
 	MPC_GetDeviceSerialNumList(pDeviceSerNumArray);
 	for (int i = 0; i<iDeviceCounts; i++)
 	{
@@ -193,7 +191,7 @@ void Syn_Site::Run()
 		_pSyn_Dut->ReadOTP(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true, 
 						   pOTPReadWritePatchArray, iOTPReadWritePatchSize, arMS0, iSize);
 	}
-	catch (...)
+	catch (Syn_Exception ex)
 	{
 		std::clog << "Error:ReadOTP is failed!" << std::endl;
 		return;
@@ -225,30 +223,6 @@ void Syn_Site::Run()
 
 void Syn_Site::GetOTPTestInfo(Syn_OTPTestInfo &oSyn_OTPTestInfo)
 {
-	//::Sleep(500);
+	//::Sleep(1000);
 	oSyn_OTPTestInfo = _OTPTestInfo;
-}
-
-bool Syn_Site::TestGetValue(std::string &strTime)
-{
-	struct tm * timeinfo;
-	timeinfo = localtime(&_tm);
-
-	strTime = asctime(timeinfo);
-	//::Sleep(100);
-
-	return true;
-}
-
-
-void Syn_Site::TestSet()
-{
-	/*int iTag(0);
-	while (iTag <= 10000)
-	{
-		time(&_tm);
-		iTag += 1;
-	}*/
-	::Sleep(1500);
-	time(&_tm);
 }

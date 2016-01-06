@@ -45,11 +45,7 @@ public Q_SLOTS:
 
 	void ThreadTest();
 
-
-	//void receiveslot(QString strTime);
-	//void receiveslot(Syn_St strTime);
 	void receiveslot(void * strTime);
-	void DisplayByTime(bool instruction);
 
 
 private:
@@ -59,6 +55,7 @@ private:
 	void Display(uint8_t* pDst, unsigned int StartPos, unsigned int EndPos);
 
 
+	Syn_SysConfig _Config;
 
 	uint32_t Init();
 	Ui::FPS_TestExecutiveClass ui;
@@ -68,7 +65,6 @@ private:
 
 	vector<Syn_Site*> _ListOfSitePtr;
 
-	//vector<Syn_Thread> _ListOfThread;
 	Syn_Thread _synThread;
 
 	bool _bStopTag;

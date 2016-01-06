@@ -50,6 +50,11 @@ struct Syn_SysConfig
 		}
 	}
 
+	/*Syn_SysConfig& Syn_SysConfig::operator=(Syn_SysConfig& original)
+	{
+		return *this;
+	}*/
+
 	//function
 	bool GetSyn_XepatchInfo(const std::string &strXepatchName, Syn_XepatchInfo &oSyn_XepatchInfo)
 	{

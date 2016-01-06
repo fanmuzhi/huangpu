@@ -33,28 +33,15 @@ public:
 
 	static bool ConstructSiteList(Syn_SysConfig &iSyn_SysConfigInfo, std::vector<Syn_Site*> &olistOfSyn_SiteInstance);
 
-	//void Run(uint8_t* arMS0, int iSize);
 	void Run();
 
 	void GetOTPTestInfo(Syn_OTPTestInfo &oSyn_OTPTestInfo);
-
-
-	//thread Test
-	bool TestGetValue(std::string &strTime);
-	void TestSet();
-
-
 
 private:
 
 	Syn_SysConfig _SysConfig;
 
 	Syn_Dut *_pSyn_Dut;
-
-
-
-	time_t _tm;
-	int _iTestEndTag;
 
 	Syn_OTPTestInfo _OTPTestInfo;
 };
