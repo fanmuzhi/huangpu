@@ -2,6 +2,10 @@
 //local
 #include "Syn_Thread.h"
 
+#include <QReadWriteLock>
+
+QReadWriteLock Lock;
+
 Syn_Thread::Syn_Thread()
 	: QThread()
 	, _stopped(true)
@@ -19,6 +23,9 @@ void Syn_Thread::run()
 {
 	if (NULL == _pSyn_Site)
 		return;
+
+	//Lock.lockForRead();
+	Lock.tryLockForWrite();
 
 	string strTime("");
 	//while (!_stopped)
@@ -46,6 +53,9 @@ void Syn_Thread::run()
 	emit send(&_TestInfo);
 
 	_stopped = true;
+
+	Lock.unlock();
+
 }
 
 void Syn_Thread::SetSite(Syn_Site *ipSyn_Site)

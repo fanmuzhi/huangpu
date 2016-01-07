@@ -61,8 +61,6 @@ private:
 	Ui::FPS_TestExecutiveClass ui;
 	uint32_t m_deviceHandle;
 
-	vector<Syn_Dut*> _ListOfDutPtr;
-
 	vector<Syn_Site*> _ListOfSitePtr;
 
 	Syn_Thread _synThread;

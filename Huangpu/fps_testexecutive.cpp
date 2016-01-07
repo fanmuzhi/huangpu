@@ -21,14 +21,15 @@ uint32_t FPS_TestExecutive::Init()
 {
 	ui.textBrowser->append("Hello World");
 
-	//std::ofstream logfile("sys.log");
-	//std::clog.rdbuf(logfile.rdbuf());
+	/*std::ofstream logfile("sys.log");
+	std::cout.rdbuf(logfile.rdbuf());*/
 	clog << "start!" << endl;
+	cout << "cout start!" << endl;
 
 	QString qstrXMLFilePath("C:\\test.xml");
 
-	//Syn_SysConfig SysConfig;
-	bool result = ConstructSyn_SysConfig(qstrXMLFilePath.toStdString(), _Config);
+	Syn_SysConfig SysConfig;
+	bool result = ConstructSyn_SysConfig(qstrXMLFilePath.toStdString(), SysConfig);
 	if (!result)
 	{
 		ui.textBrowser->append("Can't find the xml config file!");
@@ -36,7 +37,7 @@ uint32_t FPS_TestExecutive::Init()
 	}
 
 	std::vector<Syn_Site*> listOfSyn_SiteInstance;
-	bool rc = Syn_Site::ConstructSiteList(_Config, listOfSyn_SiteInstance);
+	bool rc = Syn_Site::ConstructSiteList(SysConfig, listOfSyn_SiteInstance);
 	size_t ilistCounts = listOfSyn_SiteInstance.size();
 	if (0 == ilistCounts)
 	{
@@ -248,7 +249,6 @@ bool FPS_TestExecutive::ConstructSyn_SysConfig(const std::string &strConfigFileP
 
 		listofXepatchInfo.push_back(CurrentSyn_XepatchInfo);
 	}
-
 
 	//Fill Syn_SysConfig
 	oSyn_SysConfig._strAutoController = qstrAutoControllerValue.toStdString();

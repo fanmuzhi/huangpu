@@ -104,8 +104,6 @@ bool Syn_Site::ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn
 	opSyn_SiteInstance->_pSyn_Dut = pSyn_Dut;
 	opSyn_SiteInstance->_SysConfig = iSyn_SysConfigInfo;
 
-
-
 	return true;
 }
 
