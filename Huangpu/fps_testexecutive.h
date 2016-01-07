@@ -42,22 +42,15 @@ public:
 
 
 public Q_SLOTS:
-<<<<<<< HEAD
-	
-	void ThreadTest();
 
 	//void receiveslot(QString strTime);
 	//void receiveslot(Syn_St strTime);
-=======
 
 	void ThreadTest();
 
->>>>>>> master
 	void receiveslot(void * strTime);
 
 	void SelectFile();
-
-	void csvFileAnalysis(QString &strFilePath);
 
 private:
 

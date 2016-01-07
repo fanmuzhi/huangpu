@@ -10,15 +10,11 @@
 //std
 #include <string>
 
-<<<<<<< HEAD
 struct Syn_St
 {
 	QString qValue;
 };
 //Q_DECLARE_METATYPE(Syn_St)
-=======
-Q_DECLARE_METATYPE(Syn_OTPTestInfo)
->>>>>>> master
 
 class Syn_Thread : public QThread
 {
@@ -34,11 +30,7 @@ public:
 
 signals:
 
-	//void send(QString strValue);
-	//void send(Syn_St Value);
 	void send(void * Value);
-
-	//void SendInstruct(bool Instruct);
 
 
 protected:

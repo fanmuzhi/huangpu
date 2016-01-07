@@ -23,16 +23,6 @@ uint32_t FPS_TestExecutive::Init()
 {
 	ui.textBrowser->append("Hello World");
 
-<<<<<<< HEAD
-	ofstream logFile("D:\\error.log");
-	clog.rdbuf(logFile.rdbuf());
-
-	clog << "start!" << endl;
-
-	QString qstrXMLFilePath("D:\\Project\\ProjectData\\580-005337-01rC (FM-000078-001).xml");
-	Syn_SysConfig SysConfig;
-	ConstructSyn_SysConfig(qstrXMLFilePath.toStdString(), SysConfig);
-=======
 	/*std::ofstream logfile("sys.log");
 	std::cout.rdbuf(logfile.rdbuf());*/
 	clog << "start!" << endl;
@@ -47,7 +37,6 @@ uint32_t FPS_TestExecutive::Init()
 		ui.textBrowser->append("Can't find the xml config file!");
 		return -1;
 	}
->>>>>>> master
 
 	std::vector<Syn_Site*> listOfSyn_SiteInstance;
 	bool rc = Syn_Site::ConstructSiteList(SysConfig, listOfSyn_SiteInstance);
@@ -363,15 +352,20 @@ void FPS_TestExecutive::receiveslot(void* strTime)
 	}
 
 	ui.textBrowser->append(QString("Main Sector0:"));
-	for (int i = 1; i <= MS0_SIZE / 8; i++)
+	for (int i = 1; i <= MS1_SIZE / 8; i++)
 	{
 		int StartPos = (i - 1) * 8;
 		int EndPos = i * 8 - 1;
 		Display(pTestInfo->_MainSector0Array, StartPos, EndPos);
 	}
 
-<<<<<<< HEAD
-	ui.textBrowser->append(p->qValue);
+	ui.textBrowser->append(QString("Main Sector1:"));
+	for (int i = 1; i <= MS1_SIZE / 8; i++)
+	{
+		int StartPos = (i - 1) * 8;
+		int EndPos = i * 8 - 1;
+		Display(pTestInfo->_MainSector0Array, StartPos, EndPos);
+	}
 }
 
 
@@ -388,34 +382,4 @@ void FPS_TestExecutive::SelectFile()
 	
 	ui.RawdataLineEdit->clear();
 	ui.RawdataLineEdit->setText(strFileName);
-}
-
-void FPS_TestExecutive::csvFileAnalysis(QString &strFilePath)
-{
-	QFile csvFile(strFilePath);
-	if (!csvFile.exists())
-	{
-		std::clog <<"Error:FPS_TestExecutive::csvFileAnalysis() - strFilePath is not exists!" <<endl;
-		return;
-	}
-
-	QStringList strListOfContent;
-	strListOfContent.clear();
-	if (csvFile.open(QIODevice::ReadWrite))
-	{
-		QTextStream stream(&csvFile);
-		while (!stream.atEnd())
-		{
-			strListOfContent.push_back(stream.readLine());
-		}
-
-=======
-	ui.textBrowser->append(QString("Main Sector1:"));
-	for (int i = 1; i <= MS1_SIZE / 8; i++)
-	{
-		int StartPos = (i - 1) * 8;
-		int EndPos = i * 8 - 1;
-		Display(pTestInfo->_MainSector1Array, StartPos, EndPos);
->>>>>>> master
-	}
 }
