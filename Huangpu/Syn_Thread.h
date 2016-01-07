@@ -26,12 +26,7 @@ public:
 
 signals:
 
-	//void send(QString strValue);
-	//void send(Syn_St Value);
-	void send(void * Value);
-
-	//void SendInstruct(bool Instruct);
-
+	void send(void * TestResultValue);
 
 protected:
 

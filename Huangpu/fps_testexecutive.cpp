@@ -5,80 +5,250 @@
 #include <thread>
 
 FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
-	: QMainWindow(parent)
-	, _bStopTag(true)
+: QMainWindow(parent)
+, _bStopTag(true)
+, _iRealDeviceCounts(0)
 {
 	ui.setupUi(this);
-	m_deviceHandle = Init();
 
+	_ListOfSitePtr.clear();
+	//_ListOfSynThread.clear();
+	
+	//slots
+	QObject::connect(ui.ConfigFileSelectPushButton, SIGNAL(clicked()), this, SLOT(SelectConfigFile()));
 	QObject::connect(ui.pushButtonRun, SIGNAL(clicked()), this, SLOT(ThreadTest()));
+	//QObject::connect(&_synThread, SIGNAL(send(void*)), this, SLOT(ReceiveOTPTestSlot(void*)));
 
-	QObject::connect(&_synThread, SIGNAL(send(void*)), this, SLOT(receiveslot(void*)));
+	for (int i = 1; i <= DeviceCounts; i++)
+	{
+		QObject::connect(&(_SynThreadArray[i - 1]), SIGNAL(send(void*)), this, SLOT(ReceiveOTPTestSlot(void*)));
+	}
+
+	_logfile = std::ofstream("sys.log");
 }
 
-uint32_t FPS_TestExecutive::Init()
+//uint32_t FPS_TestExecutive::Init()
+bool FPS_TestExecutive::Init(QString strConfigFile)
 {
-	ui.textBrowser->append("Hello World");
+	//ui.textBrowser->append("Hello World");
 
-	/*std::ofstream logfile("sys.log");
-	std::cout.rdbuf(logfile.rdbuf());*/
-	clog << "start!" << endl;
+	//std::ofstream logfile("sys.log");
+	std::cout.rdbuf(_logfile.rdbuf());
 	cout << "cout start!" << endl;
 
-	QString qstrXMLFilePath("C:\\test.xml");
+	QFile ConfigFile(strConfigFile);
+	if (!ConfigFile.exists())
+	{
+		QMessageBox::critical(this, QString("Error"), QString("Config File is not exists!"));
+		return false;
+	}
 
 	Syn_SysConfig SysConfig;
-	bool result = ConstructSyn_SysConfig(qstrXMLFilePath.toStdString(), SysConfig);
+	bool result = ConstructSyn_SysConfig(strConfigFile.toStdString(), SysConfig);
 	if (!result)
 	{
-		ui.textBrowser->append("Can't find the xml config file!");
-		return -1;
+		QMessageBox::critical(this, QString("Error"), QString("Can't construct the Site list,check it please!"));
+		return false;
 	}
 
-	std::vector<Syn_Site*> listOfSyn_SiteInstance;
-	bool rc = Syn_Site::ConstructSiteList(SysConfig, listOfSyn_SiteInstance);
-	size_t ilistCounts = listOfSyn_SiteInstance.size();
+	_ListOfSitePtr.clear();
+	//_ListOfSynThread.clear();
+	//std::vector<Syn_Site*> listOfSyn_SiteInstance;
+	bool rc = Syn_Site::ConstructSiteList(SysConfig, _ListOfSitePtr);
+	size_t ilistCounts = _ListOfSitePtr.size();
 	if (0 == ilistCounts)
 	{
-		ui.textBrowser->append("Can't construct Stie list!");
-		return -1;
+		QMessageBox::critical(this, QString("Error"), QString("Can't construct the Site list!"));
+		return false;
 	}
-
-	ui.textBrowser->append("construct Stie list is success!");
-
-	//
 	for (size_t i = 0; i < ilistCounts; i++)
 	{
-		if (NULL != listOfSyn_SiteInstance[i])
+		_SynThreadArray[i].SetSite(_ListOfSitePtr[i]);
+		_SynThreadArray[i].SetStopTag(true);
+		//Syn_Thread NewThread;
+		//_ListOfSynThread.push_back(NewThread);
+	}
+	_iRealDeviceCounts = ilistCounts;
+
+	//slots
+	/*for (size_t i = 1; i <= _ListOfSynThread.size(); i++)
+	{
+		QObject::connect(_ListOfSynThread[i-1], SIGNAL(send(void*)), this, SLOT(ReceiveOTPTestSlot(void*)));
+	}*/
+
+	//_synThread.SetSite(_ListOfSitePtr[0]);
+
+	cout << "end!" << endl;
+
+
+	return true;
+}
+
+
+
+FPS_TestExecutive::~FPS_TestExecutive()
+{
+	_ListOfSitePtr.clear();
+
+	//_ListOfSynThread.clear();
+
+	_logfile.close();
+}
+
+//slot
+void FPS_TestExecutive::SelectConfigFile()
+{
+	QString strConfigFilePath = QFileDialog::getOpenFileName(this, "Select Config File", "./", "xml file(*.xml)");
+	if (QString("") != strConfigFilePath)
+	{
+		QFile TempFile(strConfigFilePath);
+		if (!TempFile.exists())
+			return;
+
+		ui.ConfigFileLineEdit->clear();
+		ui.ConfigFileLineEdit->setText(strConfigFilePath);
+
+		bool rc = Init(strConfigFilePath);
+		/*if (rc)
 		{
-			/*uint8_t	arMS0[4224] = { 0 };
-			listOfSyn_SiteInstance[i]->Run(arMS0, 4224);
+			QMessageBox::information(this, QString("OK"), QString("Construct the Site list succeed!"));
+		}*/
+	}
+	
+}
 
+void FPS_TestExecutive::ThreadTest()
+{
+	if (0 == _ListOfSitePtr.size())
+	{
+		//QMessageBox::information(this, QString("Error"), QString("Site list is NULL,check it please!"));
+		QMessageBox::critical(this, QString("Error"), QString("Site list is NULL,check it please!"));
+		return;
+	}
 
-			for (int j = 1; j <= 4224 / 8; j++)
-			{
-				int StartPos = (j-1)*8;
-				int EndPos = j*8-1;
-				Display(arMS0, StartPos, EndPos);
-			}*/
+	/*if (_synThread.isRunning())
+	{
+		_synThread.SetStopTag(true);
+
+		//_synThread.terminate();
+
+		ui.pushButtonRun->setText(QString("Run"));
+	}
+	else
+	{
+		_synThread.start();
+		_synThread.SetStopTag(false);
+
+		//ui.pushButtonRun->setText(QString("Stop"));
+
+	}*/
+
+	for (int i = 1; i <= _iRealDeviceCounts; i++)
+	{
+		if (_SynThreadArray[i - 1].isRunning())
+		{
+			_SynThreadArray[i - 1].SetStopTag(true);
+
+			//_synThread.terminate();
+
+			ui.pushButtonRun->setText(QString("Run"));
+		}
+		else
+		{
+			_SynThreadArray[i - 1].start();
+			_SynThreadArray[i - 1].SetStopTag(false);
+
+			//ui.pushButtonRun->setText(QString("Stop"));
+
 		}
 	}
 
-	_ListOfSitePtr = listOfSyn_SiteInstance;
+}
 
-	_synThread.SetSite(_ListOfSitePtr[0]);
+void FPS_TestExecutive::ReceiveOTPTestSlot(void * pOTPTestInfo)
+{
 
-	clog << "end!" << endl;
+	/*if (!_synThread.isRunning())
+		return;*/
 
-	//ThreadTest();
+	if (NULL == pOTPTestInfo)
+		return;
 
-	return 0;
+	Syn_OTPTestInfo *pTestInfo = static_cast<Syn_OTPTestInfo*>(pOTPTestInfo);
+	if (NULL == pTestInfo)
+	{
+		clog << "FPS_TestExecutive::ReceiveOTPTestSlot() - pTestInfo is NULL!" << endl;
+		return;
+	}
+
+
+	QString strSerialNumber = QString("Site Number:") + QString::number(pTestInfo->_uiSiteNumber) + QString(" Serial Number:") + QString::number(pTestInfo->_uiSerialNumber);
+	ui.textBrowser->append(strSerialNumber);
+	
+	std::string strErrorMsg = pTestInfo->_strErrorMessage;
+	Syn_TestState TestResult = pTestInfo->_TestState;
+	if (TestError == TestResult)
+	{
+		//QMessageBox::critical(this, QString("Error"), strSerialNumber+QString(" Test is error,reason is ") + QString::fromStdString(strErrorMsg));
+		ui.textBrowser->append(QString("Test is Error,reason is ") + QString::fromStdString(strErrorMsg));
+		return;
+	}
+	else if (TestFailed == TestResult)
+	{
+		//QMessageBox::critical(this, QString("Failed"), strSerialNumber + QString(" Test is failed,reason is ") + QString::fromStdString(strErrorMsg));
+		ui.textBrowser->append(QString("Test is Failed,reason is ") + QString::fromStdString(strErrorMsg));
+		return;
+	}
+
+	/*std::string strErrorMsg = pTestInfo->_strErrorMessage;
+	if (std::string("") != strErrorMsg)
+	{
+		QMessageBox::critical(this, QString("Error"), QString::fromStdString(strErrorMsg));
+		return;
+	}*/
+
+	//ui.textBrowser->clear();
+
+	//QString strSerialNumber = QString("Site Number:") + QString::number(pTestInfo->_uiSiteNumber) + QString("   Serial Number:") + QString::number(pTestInfo->_uiSerialNumber);
+	
+
+	ui.textBrowser->append(QString("Boot Sector0:"));
+	for (int i = 1; i < BS0_SIZE / 8; i++)
+	{
+		int StartPos = (i - 1) * 8;
+		int EndPos = i * 8 - 1;
+		Display(pTestInfo->_BootSector0Array, StartPos, EndPos);
+	}
+
+	ui.textBrowser->append(QString("Boot Sector1:"));
+	for (int i = 1; i <= BS1_SIZE / 8; i++)
+	{
+		int StartPos = (i - 1) * 8;
+		int EndPos = i * 8 - 1;
+		Display(pTestInfo->_BootSector1Array, StartPos, EndPos);
+	}
+
+	/*ui.textBrowser->append(QString("Main Sector0:"));
+	for (int i = 1; i <= MS0_SIZE / 8; i++)
+	{
+		int StartPos = (i - 1) * 8;
+		int EndPos = i * 8 - 1;
+		Display(pTestInfo->_MainSector0Array, StartPos, EndPos);
+	}
+
+	ui.textBrowser->append(QString("Main Sector1:"));
+	for (int i = 1; i <= MS1_SIZE / 8; i++)
+	{
+		int StartPos = (i - 1) * 8;
+		int EndPos = i * 8 - 1;
+		Display(pTestInfo->_MainSector1Array, StartPos, EndPos);
+	}*/
 }
 
 void FPS_TestExecutive::Display(uint8_t* pDst, int DstSize)
 {
 	QString s = "";
-	for(int i=0; i<DstSize; i++){
+	for (int i = 0; i<DstSize; i++){
 		s += QString::number(pDst[i], 16) + ",";
 	}
 	ui.textBrowser->append(s);
@@ -93,18 +263,11 @@ void FPS_TestExecutive::Display(uint8_t* pDst, unsigned int StartPos, unsigned i
 	}
 
 	QString s = "";
-	for (int i = StartPos; i<=EndPos; i++)
+	for (int i = StartPos; i <= EndPos; i++)
 	{
 		s += (QString::number(pDst[i], 16)).toUpper() + ",";
 	}
 	ui.textBrowser->append(s);
-}
-
-FPS_TestExecutive::~FPS_TestExecutive()
-{
-	//MPC_Disconnect(m_deviceHandle);
-	//MPC_CloseMpcDeviceHandle(m_deviceHandle);
-	m_deviceHandle = NULL;
 }
 
 
@@ -137,6 +300,11 @@ bool FPS_TestExecutive::ConstructSyn_SysConfig(const std::string &strConfigFileP
 	rc = pSysConfigOperation->GetElementNodeText(qstrDutTypeName, qstrDutTypeValue);
 	rc = pSysConfigOperation->GetElementNodeText(qstrDutControllerName, qstrDutControllerValue);
 	rc = pSysConfigOperation->GetElementNodeText(qstrDutComName, qstrDutComValue);
+	if (QString("") == qstrAutoControllerValue || QString("") == qstrDutTypeValue || QString("") == qstrDutControllerValue || QString("") == qstrDutComValue)
+	{
+		cout << "Error:ConstructSyn_SysConfig() - 1st operation is failed!" << endl; 
+		return false;
+	}
 
 	//2nd
 	QString qstrDutPwrVdd_mVName("DutPwrVdd_mV"), qstrDutPwrVdd_mVValue("");
@@ -147,12 +315,22 @@ bool FPS_TestExecutive::ConstructSyn_SysConfig(const std::string &strConfigFileP
 	rc = pSysConfigOperation->GetElementNodeText(qstrDutPwrVio_mVName, qstrDutPwrVio_mVValue);
 	rc = pSysConfigOperation->GetElementNodeText(qstrDutPwrVled_mVName, qstrDutPwrVled_mVValue);
 	rc = pSysConfigOperation->GetElementNodeText(qstrDutPwrVddh_mVName, qstrDutPwrVddh_mVValue);
+	if (QString("") == qstrDutPwrVdd_mVValue || QString("") == qstrDutPwrVio_mVValue || QString("") == qstrDutPwrVled_mVValue || QString("") == qstrDutPwrVddh_mVValue)
+	{
+		cout << "Error:ConstructSyn_SysConfig() - 2nd operation is failed!" << endl;
+		return false;
+	}
 	
 	//3rd
 	QString qstrNumRowsName("NumRows"), qstrNumRowsValue("");
 	QString qstrNumColsName("NumCols"), qstrNumColsValue("");
 	rc = pSysConfigOperation->GetElementNodeText(qstrNumRowsName, qstrNumRowsValue);
 	rc = pSysConfigOperation->GetElementNodeText(qstrNumColsName, qstrNumColsValue);
+	if (QString("") == qstrNumRowsValue || QString("") == qstrNumColsValue)
+	{
+		cout << "Error:ConstructSyn_SysConfig() - 3rd operation is failed!" << endl;
+		return false;
+	}
 
 	//4th
 	QString qstrWriteBootSectorsName("WriteBootSectors"), qstrWriteBootSectorsValue("");
@@ -161,11 +339,21 @@ bool FPS_TestExecutive::ConstructSyn_SysConfig(const std::string &strConfigFileP
 	rc = pSysConfigOperation->GetElementNodeText(qstrWriteBootSectorsName, qstrWriteBootSectorsValue);
 	rc = pSysConfigOperation->GetElementNodeText(qstrBootSector0Name, qstrBootSector0Value);
 	rc = pSysConfigOperation->GetElementNodeText(qstrBootSector1Name, qstrBootSector1Value);
+	if (QString("") == qstrWriteBootSectorsValue || QString("") == qstrBootSector0Value || QString("") == qstrBootSector1Value)
+	{
+		cout << "Error:ConstructSyn_SysConfig() - 4th operation is failed!" << endl;
+		return false;
+	}
 
 	//5th
 	std::vector<TestSeqInfo> listOfTestSeqInfo;
 	rc = pSysConfigOperation->GetTestSeqList(listOfTestSeqInfo);
 	std::vector<Syn_TestStepInfo> listOfTestSteps;
+	if (0 == listOfTestSeqInfo.size())
+	{
+		cout << "Error:ConstructSyn_SysConfig() - 5th operation is failed!" << endl;
+		return false;
+	}
 	for (int i = 1; i <= listOfTestSeqInfo.size(); i++)
 	{
 		Syn_TestStepInfo CurrentTestStepInfo;
@@ -248,6 +436,11 @@ bool FPS_TestExecutive::ConstructSyn_SysConfig(const std::string &strConfigFileP
 
 		listofXepatchInfo.push_back(CurrentSyn_XepatchInfo);
 	}
+	if (0 == listofXepatchInfo.size())
+	{
+		cout << "Error:ConstructSyn_SysConfig() - 6th operation is failed!" << endl;
+		return false;
+	}
 
 	//Fill Syn_SysConfig
 	oSyn_SysConfig._strAutoController = qstrAutoControllerValue.toStdString();
@@ -275,86 +468,4 @@ bool FPS_TestExecutive::ConstructSyn_SysConfig(const std::string &strConfigFileP
 	pSysConfigOperation = NULL;
 
 	return true;
-}
-
-
-void FPS_TestExecutive::ThreadTest()
-{
-	
-	if (_synThread.isRunning())
-	{
-		_synThread.SetStopTag(true);
-
-		//_synThread.terminate();
-
-		ui.pushButtonRun->setText(QString("Run"));
-	}
-	else
-	{
-		_synThread.start();
-		_synThread.SetStopTag(false);
-
-		//ui.pushButtonRun->setText(QString("Stop"));
-
-	}
-
-
-}
-
-void FPS_TestExecutive::receiveslot(void* strTime)
-{
-	
-	/*if (!_synThread.isRunning())
-		return;*/
-
-	if (NULL == strTime)
-		return;
-
-	//ui.textBrowser->clear();
-	//ui.textBrowser->append(strTime);
-
-	//Syn_St *p = static_cast<Syn_St*>(strTime);
-
-	//ui.textBrowser->append(p->qValue);
-
-	Syn_OTPTestInfo *pTestInfo = static_cast<Syn_OTPTestInfo*>(strTime);
-	if (NULL == pTestInfo)
-	{
-		clog << "FPS_TestExecutive::receiveslot() - pTestInfo is NULL!" << endl;
-		return;
-	}
-
-	ui.textBrowser->clear();
-
-	ui.textBrowser->append(QString("Boot Sector0:"));
-	for (int i = 1; i < BS0_SIZE/8; i++)
-	{
-		int StartPos = (i - 1) * 8;
-		int EndPos = i * 8 - 1;
-		Display(pTestInfo->_BootSector0Array, StartPos, EndPos);
-	}
-
-	ui.textBrowser->append(QString("Boot Sector1:"));
-	for (int i = 1; i <= BS1_SIZE / 8; i++)
-	{
-		int StartPos = (i - 1) * 8;
-		int EndPos = i * 8 - 1;
-		Display(pTestInfo->_BootSector1Array, StartPos, EndPos);
-	}
-
-	ui.textBrowser->append(QString("Main Sector0:"));
-	for (int i = 1; i <= MS0_SIZE / 8; i++)
-	{
-		int StartPos = (i - 1) * 8;
-		int EndPos = i * 8 - 1;
-		Display(pTestInfo->_MainSector0Array, StartPos, EndPos);
-	}
-
-	ui.textBrowser->append(QString("Main Sector1:"));
-	for (int i = 1; i <= MS1_SIZE / 8; i++)
-	{
-		int StartPos = (i - 1) * 8;
-		int EndPos = i * 8 - 1;
-		Display(pTestInfo->_MainSector1Array, StartPos, EndPos);
-	}
 }
