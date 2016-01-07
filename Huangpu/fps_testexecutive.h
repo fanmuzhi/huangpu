@@ -17,6 +17,7 @@
 
 //std
 #include <sstream>
+#include <fstream>
 #include <vector>
 #include <iostream>
 #include <string>
@@ -34,24 +35,24 @@ class FPS_TestExecutive : public QMainWindow
 public:
 	FPS_TestExecutive(QWidget *parent = 0);
 	~FPS_TestExecutive();
-    void parse_config();
+
 
 
 	bool ConstructSyn_SysConfig(const std::string &strConfigFilePath,Syn_SysConfig &oSyn_SysConfig);
 
 
-	//threadTest
-	static void SetTest(void * vpSite);
-	static void GetTest(void *vpFPS_TestExecutive, void * vpSite);
-
-
-
 public Q_SLOTS:
+<<<<<<< HEAD
 	
 	void ThreadTest();
 
 	//void receiveslot(QString strTime);
 	//void receiveslot(Syn_St strTime);
+=======
+
+	void ThreadTest();
+
+>>>>>>> master
 	void receiveslot(void * strTime);
 
 	void SelectFile();
@@ -59,22 +60,20 @@ public Q_SLOTS:
 	void csvFileAnalysis(QString &strFilePath);
 
 private:
-	void ConvertAsciiToBinary(const string& sAscii, int* pDst, int nDstSize);
+
 	void Display(uint8_t* pDst, int DstSize);
 
 	void Display(uint8_t* pDst, unsigned int StartPos, unsigned int EndPos);
 
 
+	Syn_SysConfig _Config;
 
 	uint32_t Init();
 	Ui::FPS_TestExecutiveClass ui;
 	uint32_t m_deviceHandle;
 
-	vector<Syn_Dut*> _ListOfDutPtr;
-
 	vector<Syn_Site*> _ListOfSitePtr;
 
-	//vector<Syn_Thread> _ListOfThread;
 	Syn_Thread _synThread;
 
 	bool _bStopTag;

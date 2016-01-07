@@ -71,20 +71,14 @@ Syn_DutCtrl * Syn_Dut::GetDutCtrl()
 	return _pSyn_DutCtrl;
 }
 
-void Syn_Dut::CycleDutPowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep)
+void Syn_Dut::PowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep)
 {
-	int				timeout;
-	uint8_t			pDst[10] = { 0 };
-	uint8_t			pSrc[2] = { 0 };
-
 	if (NULL == _pSyn_DutCtrl)
 	{
+		cout << "Error:Syn_Dut::ReadOTP() - _pSyn_DutCtrl is NULL!" << endl;
 		return;
 	}
 
-	//Cycle the power to the sensor.
-	_pSyn_DutCtrl->SetVoltages(0, 0, nPwrVled, 0);
-	::Sleep(50);
 	_pSyn_DutCtrl->SetVoltages(nPwrVdd, nPwrVio, nPwrVled, nPwrVddh);
 	::Sleep(50);
 
@@ -92,52 +86,52 @@ void Syn_Dut::CycleDutPowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVd
 	if (bDisableSleep)
 	{
 		//Wake sensor from sleep mode.
-		_pSyn_DutCtrl->FpGetStatus(pDst, 4);
-		timeout = 200;
-		while (timeout && ((pDst[0] != 0x01) || (pDst[1] != 0x00) || (pDst[2] != 0x00) || (pDst[3] != 0x08)))
-		{
-			_pSyn_DutCtrl->FpGetStatus(pDst, 4);
-			timeout--;
-		}
-
-		if (timeout == 0)
-		{
-			Syn_Exception ex(0);
-			ex.SetDescription("Timeout waiting for sensor to wake.");
-			throw(ex);
-		}
-
+		_pSyn_DutCtrl->FpWaitDeviceReady();
 		//Configure sensor not to go back to sleep.
-		_pSyn_DutCtrl->FpWrite(1, 0x0057, pSrc, sizeof(pSrc));
-		//_pSyn_DutCtrl->FpGetStatus(pDst, 4);
-		_pSyn_DutCtrl->FpWaitForCommandCompleteAndCheckErrorCode(2);
-		
+		_pSyn_DutCtrl->FpDisableSleep();
 	}
 }
 
-bool Syn_Dut::ReadOTP(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep, uint8_t* pPatch, int numBytes, uint8_t * &oarMS0,int iSize)
+void Syn_Dut::PowerOff()
 {
+	try
+	{
+		_pSyn_DutCtrl->SetVoltages(0, 0, 0, 0);
+		::Sleep(50);
+	}
+	catch (...)
+	{
+	}
+}
+
+bool Syn_Dut::ReadOTP(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep, uint8_t* pPatch, int numBytes, uint8_t* oarMS0, int iSize)
+{
+	//uint8_t	arMS0[MS0_SIZE] = {0};
+
 	if (NULL == _pSyn_DutCtrl)
 	{
 		cout << "Error:Syn_Dut::ReadOTP() - _pSyn_DutCtrl is NULL!" << endl;
 		return false;
 	}
 
-	this->CycleDutPowerOn(nPwrVdd, nPwrVio, nPwrVled, nPwrVddh, bDisableSleep);
-
-	_pSyn_DutCtrl->FpUnloadPatch();
-	_pSyn_DutCtrl->FpLoadPatch(pPatch, numBytes);//OtpReadWritePatch
-
-
-	//bool FpSensor::ValidateMS0()
-	//Read Main Sector 0 and Main Sector 1 to get the count of each record type.
-	uint8_t	arMS0[MS0_SIZE] = {0};
-
-	_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 0, arMS0, MS0_SIZE);
-	_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 1, &arMS0[2048], MS1_SIZE);
-	
-
-	oarMS0 = arMS0;
+	try
+	{
+		this->PowerOff();
+		this->PowerOn(nPwrVdd, nPwrVio, nPwrVled, nPwrVddh, bDisableSleep);
+		_pSyn_DutCtrl->FpUnloadPatch();
+		_pSyn_DutCtrl->FpLoadPatch(pPatch, numBytes);//OtpReadWritePatch
+		_pSyn_DutCtrl->FpOtpRomRead(BOOT_SEC, 0, oarMS0, BS0_SIZE);
+		_pSyn_DutCtrl->FpOtpRomRead(BOOT_SEC, 1, &oarMS0[64], BS1_SIZE);
+		_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 0, &oarMS0[128], MS1_SIZE);
+		_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 1, &oarMS0[2176], MS1_SIZE);
+		this->PowerOff();
+	}
+	catch (Syn_Exception Exception)
+	{
+		cerr << "Error" + Exception.GetDescription() << endl;
+		this->PowerOff();
+		return false;
+	}
 
 	return true;
 }

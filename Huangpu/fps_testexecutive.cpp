@@ -14,8 +14,6 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 
 	QObject::connect(ui.pushButtonRun, SIGNAL(clicked()), this, SLOT(ThreadTest()));
 
-	//QObject::connect(&_synThread, SIGNAL(send(QString)), this, SLOT(receiveslot(QString)));
-	//QObject::connect(&_synThread, SIGNAL(send(Syn_St)), this, SLOT(receiveslot(Syn_St)));
 	QObject::connect(&_synThread, SIGNAL(send(void*)), this, SLOT(receiveslot(void*)));
 
 	QObject::connect(ui.SelectPushButton, SIGNAL(clicked()), this, SLOT(SelectFile()));
@@ -25,6 +23,7 @@ uint32_t FPS_TestExecutive::Init()
 {
 	ui.textBrowser->append("Hello World");
 
+<<<<<<< HEAD
 	ofstream logFile("D:\\error.log");
 	clog.rdbuf(logFile.rdbuf());
 
@@ -33,6 +32,22 @@ uint32_t FPS_TestExecutive::Init()
 	QString qstrXMLFilePath("D:\\Project\\ProjectData\\580-005337-01rC (FM-000078-001).xml");
 	Syn_SysConfig SysConfig;
 	ConstructSyn_SysConfig(qstrXMLFilePath.toStdString(), SysConfig);
+=======
+	/*std::ofstream logfile("sys.log");
+	std::cout.rdbuf(logfile.rdbuf());*/
+	clog << "start!" << endl;
+	cout << "cout start!" << endl;
+
+	QString qstrXMLFilePath("C:\\test.xml");
+
+	Syn_SysConfig SysConfig;
+	bool result = ConstructSyn_SysConfig(qstrXMLFilePath.toStdString(), SysConfig);
+	if (!result)
+	{
+		ui.textBrowser->append("Can't find the xml config file!");
+		return -1;
+	}
+>>>>>>> master
 
 	std::vector<Syn_Site*> listOfSyn_SiteInstance;
 	bool rc = Syn_Site::ConstructSiteList(SysConfig, listOfSyn_SiteInstance);
@@ -45,46 +60,23 @@ uint32_t FPS_TestExecutive::Init()
 
 	ui.textBrowser->append("construct Stie list is success!");
 
-	/*uint8_t *pOTPReadWritePatchArray = NULL;
-	int iOTPReadWritePatchSize(0);
-	Syn_XepatchInfo NeedSyn_XepatchInfo;
-	bool rc = SysConfig.GetSyn_XepatchInfo(std::string("OtpReadWritePatch"), NeedSyn_XepatchInfo);
-	if (rc)
-	{
-		pOTPReadWritePatchArray = NeedSyn_XepatchInfo._pArrayBuf;
-		iOTPReadWritePatchSize = NeedSyn_XepatchInfo._uiArraySize;
-
-		Display(pOTPReadWritePatchArray, iOTPReadWritePatchSize);
-	}*/
-
 	//
 	for (size_t i = 0; i < ilistCounts; i++)
 	{
 		if (NULL != listOfSyn_SiteInstance[i])
 		{
-			//uint8_t	arMS0[MS0_SIZE] = { 0 };
-			/*uint8_t	*arMS0 = NULL;
-			listOfSyn_SiteInstance[i]->Run(arMS0, MS0_SIZE);
+			/*uint8_t	arMS0[4224] = { 0 };
+			listOfSyn_SiteInstance[i]->Run(arMS0, 4224);
 
 
-			for (int j = 1; j <= MS0_SIZE / 8; j++)
+			for (int j = 1; j <= 4224 / 8; j++)
 			{
 				int StartPos = (j-1)*8;
 				int EndPos = j*8-1;
 				Display(arMS0, StartPos, EndPos);
 			}*/
-
-
-			
-
-			
 		}
 	}
-
-	/*_synThread.start();
-	_bStopTag = false;
-
-	QObject::connect(&_synThread, SIGNAL(send(bool)), this, SLOT(receiveslot(bool)));*/
 
 	_ListOfSitePtr = listOfSyn_SiteInstance;
 
@@ -92,6 +84,7 @@ uint32_t FPS_TestExecutive::Init()
 
 	clog << "end!" << endl;
 
+	//ThreadTest();
 
 	return 0;
 }
@@ -119,62 +112,6 @@ void FPS_TestExecutive::Display(uint8_t* pDst, unsigned int StartPos, unsigned i
 		s += (QString::number(pDst[i], 16)).toUpper() + ",";
 	}
 	ui.textBrowser->append(s);
-}
-
-
-void FPS_TestExecutive::ConvertAsciiToBinary(const string& sAscii, int* pDst, int nDstSize)
-{
-	string sTemp;
-	int*	p;
-	int		nNumBytes = sAscii.length() / 2;
-
-	//Translate the ASCII into binary values.
-	for (int i=0; (i<nNumBytes) && (i<nDstSize); i++)
-	{
-		sTemp = sAscii[i*2];
-		sTemp += sAscii[(i*2)+1];
-
-		stringstream ss;
-		ss << sTemp;
-		int nVal;
-		ss >> nVal;
-		pDst[i] = nVal;
-	}
-}
-
-void FPS_TestExecutive::parse_config()
-{
-	QString strFilePath("C:\\Users\\hfan\\Desktop\\580-00xxx-01r4(FM-000133)_ZTE.xml");
-	//SysConfig *pSysConfig = new SysConfig(strFilePath);
-
-	SysConfig *pSysConfig = NULL;
-	bool bResult = SysConfig::CreateSysConfigInstance(strFilePath, pSysConfig);
-	if (!bResult || NULL == pSysConfig)
-	{
-		return;
-	}
-
-	QString strNodeName("CreatedByRevision"),strNodeText("");
-	bResult = pSysConfig->GetElementNodeText(strNodeName,strNodeText);
-	//cout<<"Node Text is "<<strNodeText.toStdString()<<endl;
-	ui.textBrowser->append(strNodeName+"---------->"+strNodeText);
-
-	QString strImageAcqPatchName("ImageAcqPatch"),strImageAcqPatchValue("");
-	QString strAttributeName("Args"),strAttributeValue("");
-	bResult = pSysConfig->GetElementNodeTextAndAttribute(strImageAcqPatchName,strImageAcqPatchValue,strAttributeName,strAttributeValue);
-	//cout<<"Result is "<<strImageAcqPatchValue.toStdString()<<","<<strAttributeValue.toStdString()<<endl;
-	ui.textBrowser->append(strImageAcqPatchName+"---------->"+strImageAcqPatchValue+"----------->"+strAttributeName+"----->"+strAttributeValue);
-
-	std::vector<TestSeqInfo> ListOfTestSeqInfo;
-	bResult = pSysConfig->GetTestSeqList(ListOfTestSeqInfo);
-	for(int i=1;i<=ListOfTestSeqInfo.size();i++)
-	{
-		TestSeqInfo CurrentInfo = ListOfTestSeqInfo[i-1];
-		cout<<i<<" is "<<CurrentInfo.strNodeName.toStdString()<<","<<CurrentInfo.strSeqText.toStdString()<<","<<CurrentInfo.strSeqAttribute.toStdString()<<endl;
-	}
-
-	delete pSysConfig;
-	pSysConfig = NULL;
 }
 
 FPS_TestExecutive::~FPS_TestExecutive()
@@ -332,7 +269,6 @@ bool FPS_TestExecutive::ConstructSyn_SysConfig(const std::string &strConfigFileP
 		listofXepatchInfo.push_back(CurrentSyn_XepatchInfo);
 	}
 
-
 	//Fill Syn_SysConfig
 	oSyn_SysConfig._strAutoController = qstrAutoControllerValue.toStdString();
 	oSyn_SysConfig._strDutType = qstrDutTypeValue.toStdString();
@@ -364,26 +300,12 @@ bool FPS_TestExecutive::ConstructSyn_SysConfig(const std::string &strConfigFileP
 
 void FPS_TestExecutive::ThreadTest()
 {
-	/*for (auto i = 0; i <_ListOfSitePtr.size(); i++)
-	{
-		//thread test
-		std::thread t1(SetTest, _ListOfSitePtr[i]);
-		//::Sleep(100);
-
-
-		std::thread t2(GetTest, this, _ListOfSitePtr[i]);
-
-		t1.join();
-		t2.join();
-	}*/
-
-	//_bStopTag = !_bStopTag;
-
-	//QObject::connect(&_synThread, SIGNAL(send(bool)), this, SLOT(receiveslot(bool)));
-
+	
 	if (_synThread.isRunning())
 	{
 		_synThread.SetStopTag(true);
+
+		//_synThread.terminate();
 
 		ui.pushButtonRun->setText(QString("Run"));
 	}
@@ -392,62 +314,18 @@ void FPS_TestExecutive::ThreadTest()
 		_synThread.start();
 		_synThread.SetStopTag(false);
 
-		ui.pushButtonRun->setText(QString("Stop"));
+		//ui.pushButtonRun->setText(QString("Stop"));
+
 	}
 
+
 }
 
-
-
-void FPS_TestExecutive::SetTest(void * vpSite)
-{
-	if (NULL == vpSite)
-		return;
-
-	Syn_Site *pSite = static_cast<Syn_Site*>(vpSite);
-
-	/*string strValue("");
-	bool rc(true);
-	while (rc)
-	{
-		rc = pSite->TestGetValue(strValue);
-		pSite->TestSet();
-	}*/
-
-	pSite->TestSet();
-}
-
-void FPS_TestExecutive::GetTest(void *vpFPS_TestExecutive, void * vpSite)
-{
-	if (NULL == vpSite || NULL == vpFPS_TestExecutive)
-		return;
-
-	Syn_Site *pSite = static_cast<Syn_Site*>(vpSite);
-
-	FPS_TestExecutive *pFPS_TestExecutive = static_cast<FPS_TestExecutive*>(vpFPS_TestExecutive);
-
-	string strValue("");
-
-	bool rc(true);
-	int x(0);
-	//while (rc)
-	while (x<=10000)
-	{
-		rc = pSite->TestGetValue(strValue);
-
-		(pFPS_TestExecutive->ui).textBrowser->append(QString::fromStdString(strValue));
-
-		x += 1;
-	}
-}
-
-//void FPS_TestExecutive::receiveslot(QString strTime)
-//void FPS_TestExecutive::receiveslot(Syn_St strTime)
 void FPS_TestExecutive::receiveslot(void* strTime)
 {
 	
-	if (!_synThread.isRunning())
-		return;
+	/*if (!_synThread.isRunning())
+		return;*/
 
 	if (NULL == strTime)
 		return;
@@ -455,8 +333,44 @@ void FPS_TestExecutive::receiveslot(void* strTime)
 	//ui.textBrowser->clear();
 	//ui.textBrowser->append(strTime);
 
-	Syn_St *p = static_cast<Syn_St*>(strTime);
+	//Syn_St *p = static_cast<Syn_St*>(strTime);
 
+	//ui.textBrowser->append(p->qValue);
+
+	Syn_OTPTestInfo *pTestInfo = static_cast<Syn_OTPTestInfo*>(strTime);
+	if (NULL == pTestInfo)
+	{
+		clog << "FPS_TestExecutive::receiveslot() - pTestInfo is NULL!" << endl;
+		return;
+	}
+
+	ui.textBrowser->clear();
+
+	ui.textBrowser->append(QString("Boot Sector0:"));
+	for (int i = 1; i < BS0_SIZE/8; i++)
+	{
+		int StartPos = (i - 1) * 8;
+		int EndPos = i * 8 - 1;
+		Display(pTestInfo->_BootSector0Array, StartPos, EndPos);
+	}
+
+	ui.textBrowser->append(QString("Boot Sector1:"));
+	for (int i = 1; i <= BS1_SIZE / 8; i++)
+	{
+		int StartPos = (i - 1) * 8;
+		int EndPos = i * 8 - 1;
+		Display(pTestInfo->_BootSector1Array, StartPos, EndPos);
+	}
+
+	ui.textBrowser->append(QString("Main Sector0:"));
+	for (int i = 1; i <= MS0_SIZE / 8; i++)
+	{
+		int StartPos = (i - 1) * 8;
+		int EndPos = i * 8 - 1;
+		Display(pTestInfo->_MainSector0Array, StartPos, EndPos);
+	}
+
+<<<<<<< HEAD
 	ui.textBrowser->append(p->qValue);
 }
 
@@ -495,5 +409,13 @@ void FPS_TestExecutive::csvFileAnalysis(QString &strFilePath)
 			strListOfContent.push_back(stream.readLine());
 		}
 
+=======
+	ui.textBrowser->append(QString("Main Sector1:"));
+	for (int i = 1; i <= MS1_SIZE / 8; i++)
+	{
+		int StartPos = (i - 1) * 8;
+		int EndPos = i * 8 - 1;
+		Display(pTestInfo->_MainSector1Array, StartPos, EndPos);
+>>>>>>> master
 	}
 }

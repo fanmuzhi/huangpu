@@ -31,29 +31,20 @@ public:
 
 	virtual void FpOtpRomWrite(int section, int sector, uint8_t* pDst, int numBytes);
 
+	virtual void FpWaitForCMDComplete();
 
+	virtual void FpWaitDeviceReady();
 
-	virtual void FpWaitForCommandCompleteAndCheckErrorCode(uint32_t numBytes, int nTimeout_ms = 2000);
+	virtual void FpDisableSleep();
 
-	virtual uint16_t FpWaitForCommandCompleteAndReturnErrorCode(uint32_t numBytes, int nTimeout_ms = 2000);
+	virtual uint16_t FpWaitForCommandCompleteAndReturnErrorCode(uint32_t numBytes);
 
+	virtual void FpGetVersion(uint8_t *pDst, int numBytes);
 
-
-
-	virtual bool PowerOn(uint8_t *pDst, int numBytes);
-
-	virtual bool FpGetVersion(uint8_t *pDst, int numBytes);
-
-	virtual bool PowerOff();
-
-
-
-
-	virtual void UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader, uint32_t nRevApplication);
-
+	//virtual void UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader, uint32_t nRevApplication);
 
 protected:
 
 	static bool	_bDLLInitialized;
+	const uint32_t TIMEOUT = 2000;
 };
-

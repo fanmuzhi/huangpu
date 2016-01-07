@@ -10,13 +10,8 @@
 //std
 #include <iostream>
 
-
-
 Syn_Site::Syn_Site()
 :_pSyn_Dut(NULL)
-//, _syn_SiteThread()
-, _iTestEndTag(0)
-, _tm(0)
 {
 }
 
@@ -109,11 +104,6 @@ bool Syn_Site::ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn
 	opSyn_SiteInstance->_pSyn_Dut = pSyn_Dut;
 	opSyn_SiteInstance->_SysConfig = iSyn_SysConfigInfo;
 
-	//_syn_SiteThread = thread::move();
-
-	//thread syn_SiteThread{ SiteThreadStart, opSyn_SiteInstance };
-	//syn_SiteThread.join();
-
 	return true;
 }
 
@@ -139,8 +129,7 @@ bool Syn_Site::ConstructSiteList(Syn_SysConfig &iSyn_SysConfigInfo, std::vector<
 		return false;
 	}
 
-	//uint32_t *pDeviceSerNumArray = new uint32_t[iDeviceCounts];
-	uint32_t pDeviceSerNumArray[8] = {0};
+	uint32_t *pDeviceSerNumArray = new uint32_t[iDeviceCounts];
 	MPC_GetDeviceSerialNumList(pDeviceSerNumArray);
 	for (int i = 0; i<iDeviceCounts; i++)
 	{
@@ -159,33 +148,14 @@ bool Syn_Site::ConstructSiteList(Syn_SysConfig &iSyn_SysConfigInfo, std::vector<
 		}
 	}
 
-	/*delete[] pDeviceSerNumArray;
-	pDeviceSerNumArray = NULL;*/
+	delete[] pDeviceSerNumArray;
+	pDeviceSerNumArray = NULL;
 
 	return true;
 }
 
-bool Syn_Site::SiteThreadStart(void *vParam)
-{
-	if (NULL == vParam)
-		return false;
-
-	Syn_Site *pSite = static_cast<Syn_Site*>(vParam);
-	if (NULL == pSite)
-		return false;
-
-	//pSite->Run();
-
-	return true;
-}
-
-
-
-
-
-
-
-void Syn_Site::Run(uint8_t * &arMS0,int iSize)
+//void Syn_Site::Run(uint8_t * arMS0, int iSize)
+void Syn_Site::Run()
 {
 	if (NULL == _pSyn_Dut)
 	{
@@ -205,69 +175,52 @@ void Syn_Site::Run(uint8_t * &arMS0,int iSize)
 		iOTPReadWritePatchSize = NeedSyn_XepatchInfo._uiArraySize;
 	}
 
-
-	/*for (auto i = 0; i < _SysConfig._listXepatchInfo.size(); i++)
-	{
-		if (std::string("OTPReadWritePatch") == (_SysConfig._listXepatchInfo)[i]._strXepatchName)
-		{
-			pOTPReadWritePatchArray = (_SysConfig._listXepatchInfo)[i]._pArrayBuf;
-			iOTPReadWritePatchSize = (_SysConfig._listXepatchInfo)[i]._uiArraySize;
-			break;
-		}
-	}*/
-
 	if (NULL == pOTPReadWritePatchArray || 0 == iOTPReadWritePatchSize)
 	{
 		cout << "Error:Syn_Site::Run() - Array is NULL!" << endl;
 		return;
 	}
 
+	uint8_t arMS0[4224] = { 0 };
+	int iSize(4224);
 	try
 	{
-		_pSyn_Dut->ReadOTP(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true, pOTPReadWritePatchArray, iOTPReadWritePatchSize, arMS0, iSize);
+		//_pSyn_Dut->ReadOTP(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true, pOTPReadWritePatchArray, iOTPReadWritePatchSize, arMS0, iSize);
+		_pSyn_Dut->ReadOTP(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true, 
+						   pOTPReadWritePatchArray, iOTPReadWritePatchSize, arMS0, iSize);
 	}
-	catch (...)
+	catch (Syn_Exception ex)
 	{
 		std::clog << "Error:ReadOTP is failed!" << std::endl;
 		return;
 	}
 
-	//clog.rdbuf(logFile.rdbuf());
-	std::clog << "ok:ReadOTP is success!" << std::endl;
+	//Fill
+	for (int i = 0; i < BS0_SIZE; i++)
+	{
+		(_OTPTestInfo._BootSector0Array)[i] = arMS0[i];
+	}
 
+	for (int i = 0; i < BS1_SIZE; i++)
+	{
+		(_OTPTestInfo._BootSector1Array)[i] = arMS0[i + BS0_SIZE];
+	}
 
-	std::clog << "ok:ReadOTP is success2!" << std::endl;
-
-
+	for (int i = 0; i < MS1_SIZE; i++)//MS0_SIZE
+	{
+		(_OTPTestInfo._MainSector0Array)[i] = arMS0[i + BS0_SIZE + BS1_SIZE];
+	}
+	
+	for (int i = 0; i < MS1_SIZE; i++)
+	{
+		(_OTPTestInfo._MainSector1Array)[i] = arMS0[i + BS0_SIZE + BS1_SIZE + MS1_SIZE];//MS0_SIZE
+	}
 
 	return;
 }
 
-bool Syn_Site::TestGetValue(std::string &strTime)
+void Syn_Site::GetOTPTestInfo(Syn_OTPTestInfo &oSyn_OTPTestInfo)
 {
-	struct tm * timeinfo;
-	timeinfo = localtime(&_tm);
-
-	strTime = asctime(timeinfo);
-	//::Sleep(100);
-
-	return true;
+	//::Sleep(1000);
+	oSyn_OTPTestInfo = _OTPTestInfo;
 }
-
-
-void Syn_Site::TestSet()
-{
-	/*int iTag(0);
-	while (iTag <= 10000)
-	{
-		time(&_tm);
-		iTag += 1;
-	}*/
-	::Sleep(1500);
-	time(&_tm);
-}
-
-//void Syn_Site::TestGet(int &iTag, time_t &Time)
-//{
-//	if ()
-//}
