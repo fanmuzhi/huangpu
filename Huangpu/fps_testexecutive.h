@@ -29,7 +29,7 @@
 #include <string>
 
 //Construct Device Counts(large enough)
-#define DeviceCounts 100
+#define DeviceCounts 20
 
 extern "C" {
 #include "SYN_TestUtils.h"
@@ -52,25 +52,24 @@ public Q_SLOTS:
 
 	void SelectConfigFile();
 
-	void ThreadTest();
+	void RunningTest();
 
 	void ReceiveOTPTestSlot(void * pOTPTestInfo);
 
 private:
 
+	//private function
 	void Display(uint8_t* pDst, int DstSize);
 
 	void Display(uint8_t* pDst, unsigned int StartPos, unsigned int EndPos);
 
-	//uint32_t Init();
 	bool Init(QString strConfigFile);
 
+	//variable
 	Ui::FPS_TestExecutiveClass ui;
 
 	vector<Syn_Site*> _ListOfSitePtr;
-	//vector<Syn_Thread> _ListOfSynThread;
 	Syn_Thread _SynThreadArray[DeviceCounts];
-	//Syn_Thread _synThread;
 	unsigned int _iRealDeviceCounts;
 
 	bool _bStopTag;

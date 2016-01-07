@@ -202,7 +202,7 @@ void Syn_Site::Run()
 	}
 	catch (Syn_Exception ex)
 	{
-		std::clog << "Error:ReadOTP is failed!" << std::endl;
+		std::cout << "Error:ReadOTP is failed!" << std::endl;
 		_OTPTestInfo._strErrorMessage = ex.GetDescription();
 		_OTPTestInfo._TestState = TestFailed;
 

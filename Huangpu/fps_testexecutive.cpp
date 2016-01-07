@@ -12,12 +12,10 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	ui.setupUi(this);
 
 	_ListOfSitePtr.clear();
-	//_ListOfSynThread.clear();
 	
 	//slots
 	QObject::connect(ui.ConfigFileSelectPushButton, SIGNAL(clicked()), this, SLOT(SelectConfigFile()));
-	QObject::connect(ui.pushButtonRun, SIGNAL(clicked()), this, SLOT(ThreadTest()));
-	//QObject::connect(&_synThread, SIGNAL(send(void*)), this, SLOT(ReceiveOTPTestSlot(void*)));
+	QObject::connect(ui.pushButtonRun, SIGNAL(clicked()), this, SLOT(RunningTest()));
 
 	for (int i = 1; i <= DeviceCounts; i++)
 	{
@@ -27,7 +25,6 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	_logfile = std::ofstream("sys.log");
 }
 
-//uint32_t FPS_TestExecutive::Init()
 bool FPS_TestExecutive::Init(QString strConfigFile)
 {
 	//ui.textBrowser->append("Hello World");
@@ -78,8 +75,7 @@ bool FPS_TestExecutive::Init(QString strConfigFile)
 
 	//_synThread.SetSite(_ListOfSitePtr[0]);
 
-	cout << "end!" << endl;
-
+	//cout << "end!" << endl;
 
 	return true;
 }
@@ -89,8 +85,6 @@ bool FPS_TestExecutive::Init(QString strConfigFile)
 FPS_TestExecutive::~FPS_TestExecutive()
 {
 	_ListOfSitePtr.clear();
-
-	//_ListOfSynThread.clear();
 
 	_logfile.close();
 }
@@ -117,7 +111,7 @@ void FPS_TestExecutive::SelectConfigFile()
 	
 }
 
-void FPS_TestExecutive::ThreadTest()
+void FPS_TestExecutive::RunningTest()
 {
 	if (0 == _ListOfSitePtr.size())
 	{
@@ -150,8 +144,7 @@ void FPS_TestExecutive::ThreadTest()
 			_SynThreadArray[i - 1].SetStopTag(true);
 
 			//_synThread.terminate();
-
-			ui.pushButtonRun->setText(QString("Run"));
+			//ui.pushButtonRun->setText(QString("Run"));
 		}
 		else
 		{
@@ -200,17 +193,7 @@ void FPS_TestExecutive::ReceiveOTPTestSlot(void * pOTPTestInfo)
 		return;
 	}
 
-	/*std::string strErrorMsg = pTestInfo->_strErrorMessage;
-	if (std::string("") != strErrorMsg)
-	{
-		QMessageBox::critical(this, QString("Error"), QString::fromStdString(strErrorMsg));
-		return;
-	}*/
-
 	//ui.textBrowser->clear();
-
-	//QString strSerialNumber = QString("Site Number:") + QString::number(pTestInfo->_uiSiteNumber) + QString("   Serial Number:") + QString::number(pTestInfo->_uiSerialNumber);
-	
 
 	ui.textBrowser->append(QString("Boot Sector0:"));
 	for (int i = 1; i < BS0_SIZE / 8; i++)
