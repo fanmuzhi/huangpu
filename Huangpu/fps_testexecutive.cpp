@@ -48,9 +48,20 @@ bool FPS_TestExecutive::Init(QString strConfigFile)
 		return false;
 	}
 
+	if (0 != _ListOfSitePtr.size())
+	{
+		for (size_t i = _ListOfSitePtr.size(); i >= 1; i--)
+		{
+			if (NULL != _ListOfSitePtr[i - 1])
+			{
+				delete _ListOfSitePtr[i - 1];
+				_ListOfSitePtr[i - 1] = NULL;
+			}
+		}
+	}
 	_ListOfSitePtr.clear();
-	//_ListOfSynThread.clear();
-	//std::vector<Syn_Site*> listOfSyn_SiteInstance;
+	
+
 	bool rc = Syn_Site::ConstructSiteList(SysConfig, _ListOfSitePtr);
 	size_t ilistCounts = _ListOfSitePtr.size();
 	if (0 == ilistCounts)
@@ -66,14 +77,6 @@ bool FPS_TestExecutive::Init(QString strConfigFile)
 		//_ListOfSynThread.push_back(NewThread);
 	}
 	_iRealDeviceCounts = ilistCounts;
-
-	//slots
-	/*for (size_t i = 1; i <= _ListOfSynThread.size(); i++)
-	{
-		QObject::connect(_ListOfSynThread[i-1], SIGNAL(send(void*)), this, SLOT(ReceiveOTPTestSlot(void*)));
-	}*/
-
-	//_synThread.SetSite(_ListOfSitePtr[0]);
 
 	//cout << "end!" << endl;
 
@@ -100,13 +103,14 @@ void FPS_TestExecutive::SelectConfigFile()
 			return;
 
 		ui.ConfigFileLineEdit->clear();
-		ui.ConfigFileLineEdit->setText(strConfigFilePath);
+		//ui.ConfigFileLineEdit->setText(strConfigFilePath);
 
 		bool rc = Init(strConfigFilePath);
-		/*if (rc)
+		if (rc)
 		{
-			QMessageBox::information(this, QString("OK"), QString("Construct the Site list succeed!"));
-		}*/
+			//QMessageBox::information(this, QString("OK"), QString("Construct the Site list succeed!"));
+			ui.ConfigFileLineEdit->setText(strConfigFilePath);
+		}
 	}
 	
 }
@@ -211,7 +215,7 @@ void FPS_TestExecutive::ReceiveOTPTestSlot(void * pOTPTestInfo)
 		Display(pTestInfo->_BootSector1Array, StartPos, EndPos);
 	}
 
-	/*ui.textBrowser->append(QString("Main Sector0:"));
+	ui.textBrowser->append(QString("Main Sector0:"));
 	for (int i = 1; i <= MS0_SIZE / 8; i++)
 	{
 		int StartPos = (i - 1) * 8;
@@ -225,7 +229,7 @@ void FPS_TestExecutive::ReceiveOTPTestSlot(void * pOTPTestInfo)
 		int StartPos = (i - 1) * 8;
 		int EndPos = i * 8 - 1;
 		Display(pTestInfo->_MainSector1Array, StartPos, EndPos);
-	}*/
+	}
 }
 
 void FPS_TestExecutive::Display(uint8_t* pDst, int DstSize)
