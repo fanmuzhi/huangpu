@@ -196,7 +196,7 @@ void FPS_TestExecutive::ReceiveOTPTestSlot(void * pOTPTestInfo)
 	//ui.textBrowser->clear();
 
 	ui.textBrowser->append(QString("Boot Sector0:"));
-	for (int i = 1; i < BS0_SIZE / 8; i++)
+	for (int i = 1; i <= BS0_SIZE / 8; i++)
 	{
 		int StartPos = (i - 1) * 8;
 		int EndPos = i * 8 - 1;
