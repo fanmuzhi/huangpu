@@ -14,7 +14,6 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	QObject::connect(ui.pushButtonRun, SIGNAL(clicked()), this, SLOT(ThreadTest()));
 
 	QObject::connect(&_synThread, SIGNAL(send(void*)), this, SLOT(receiveslot(void*)));
-
 }
 
 uint32_t FPS_TestExecutive::Init()
