@@ -11,6 +11,8 @@
 #include <string>
 #include <time.h>
 
+enum Syn_TestState{TestReady = 0xAEF0,TestRunning,TestOK,TestError,TestFailed};
+
 struct Syn_OTPTestInfo
 {
 	uint8_t _BootSector0Array[BS0_SIZE];
@@ -18,6 +20,13 @@ struct Syn_OTPTestInfo
 	
 	uint8_t _MainSector0Array[MS1_SIZE];//MS0_SIZE
 	uint8_t _MainSector1Array[MS1_SIZE];
+
+	Syn_TestState _TestState;
+
+	std::string _strErrorMessage;
+
+	uint32_t _uiSerialNumber;
+	unsigned int _uiSiteNumber;
 };
 
 class Syn_Site
@@ -44,5 +53,7 @@ private:
 	Syn_Dut *_pSyn_Dut;
 
 	Syn_OTPTestInfo _OTPTestInfo;
+
+	unsigned int _iSiteNumber;
 };
 

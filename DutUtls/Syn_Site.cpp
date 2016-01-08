@@ -12,7 +12,9 @@
 
 Syn_Site::Syn_Site()
 :_pSyn_Dut(NULL)
+, _iSiteNumber(0)
 {
+	_OTPTestInfo._TestState = TestReady;
 }
 
 Syn_Site::~Syn_Site()
@@ -144,6 +146,10 @@ bool Syn_Site::ConstructSiteList(Syn_SysConfig &iSyn_SysConfigInfo, std::vector<
 				continue;
 			}
 			
+			pSyn_SiteInstance->_OTPTestInfo._uiSerialNumber = uiSerialNumber;
+			pSyn_SiteInstance->_iSiteNumber = i + 1;
+			pSyn_SiteInstance->_OTPTestInfo._uiSiteNumber = pSyn_SiteInstance->_iSiteNumber;
+
 			olistOfSyn_SiteInstance.push_back(pSyn_SiteInstance);
 		}
 	}
@@ -160,6 +166,7 @@ void Syn_Site::Run()
 	if (NULL == _pSyn_Dut)
 	{
 		cout << "Error:Syn_Site::Run() - _pSyn_Dut is NULL!" << endl;
+		_OTPTestInfo._TestState = TestError;
 		return;
 	}
 
@@ -177,21 +184,28 @@ void Syn_Site::Run()
 
 	if (NULL == pOTPReadWritePatchArray || 0 == iOTPReadWritePatchSize)
 	{
+		_OTPTestInfo._TestState = TestError;
 		cout << "Error:Syn_Site::Run() - Array is NULL!" << endl;
 		return;
 	}
 
-	uint8_t arMS0[4224] = { 0 };
-	int iSize(4224);
+	//uint8_t arMS0[4224] = { 0 };
+	uint8_t arMS0[BS0_SIZE + BS1_SIZE + MS1_SIZE + MS1_SIZE] = { 0 };
+	int iSize(BS0_SIZE + BS1_SIZE + MS1_SIZE + MS1_SIZE);
 	try
 	{
 		//_pSyn_Dut->ReadOTP(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true, pOTPReadWritePatchArray, iOTPReadWritePatchSize, arMS0, iSize);
 		_pSyn_Dut->ReadOTP(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true, 
 						   pOTPReadWritePatchArray, iOTPReadWritePatchSize, arMS0, iSize);
+
+		_OTPTestInfo._TestState = TestRunning;
 	}
 	catch (Syn_Exception ex)
 	{
-		std::clog << "Error:ReadOTP is failed!" << std::endl;
+		std::cout << "Error:ReadOTP is failed!" << std::endl;
+		_OTPTestInfo._strErrorMessage = ex.GetDescription();
+		_OTPTestInfo._TestState = TestFailed;
+
 		return;
 	}
 
@@ -215,6 +229,8 @@ void Syn_Site::Run()
 	{
 		(_OTPTestInfo._MainSector1Array)[i] = arMS0[i + BS0_SIZE + BS1_SIZE + MS1_SIZE];//MS0_SIZE
 	}
+
+	_OTPTestInfo._TestState = TestOK;
 
 	return;
 }

@@ -4,12 +4,12 @@
 
 #include <QReadWriteLock>
 
-QReadWriteLock Lock;
+//QReadWriteLock Lock;
 
 Syn_Thread::Syn_Thread()
-	: QThread()
-	, _stopped(true)
-	, _pSyn_Site(NULL)
+: QThread()
+, _stopped(true)
+, _pSyn_Site(NULL)
 {
 
 }
@@ -25,7 +25,7 @@ void Syn_Thread::run()
 		return;
 
 	//Lock.lockForRead();
-	Lock.tryLockForWrite();
+	//Lock.tryLockForWrite();
 
 	string strTime("");
 	//while (!_stopped)
@@ -54,7 +54,7 @@ void Syn_Thread::run()
 
 	_stopped = true;
 
-	Lock.unlock();
+	//Lock.unlock();
 
 }
 

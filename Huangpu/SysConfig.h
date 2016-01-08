@@ -7,6 +7,9 @@
 #include <qfile.h>
 #include <qdom.h>
 
+//DutUtls
+#include "Syn_Config.h"
+
 //std
 #include <vector>
 #include <string>
@@ -33,6 +36,12 @@ public:
 	//SysConfig(QString strXMLFilePath);
 	~SysConfig();
 
+	bool GetSyn_SysConfig(Syn_SysConfig &oSyn_SysConfig);
+
+private:
+
+	SysConfig(QString strXMLFilePath);//Constructor
+
 	bool ParseXML(const QString &file_name);
 
 	bool GetElementNodeText(const QString &strNodeName,QString &strNodeTextValue);
@@ -44,14 +53,13 @@ public:
 
 	void ConvertAsciiToBinary(const std::string& strAsciiValue, uint8_t *pDst, int nDstSize);
 
-private:
-
-	SysConfig(QString strXMLFilePath);
 
 private:
+
+	QFile q_File;
 
 	QDomDocument q_DomDocument;
-	//QFile q_File;
+	
 	QDomElement q_RootNode;
 	
 	QString q_strFilePath;

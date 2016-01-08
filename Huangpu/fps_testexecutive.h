@@ -1,12 +1,18 @@
 #ifndef FPS_TESTEXECUTIVE_H
 #define FPS_TESTEXECUTIVE_H
 
+//Qt
 #include <QtWidgets/QMainWindow>
+#include <QVector>
+
+//UI
 #include "ui_fps_testexecutive.h"
+
+//MPC DLL
 #include "MpcApiDll.h"
-#include "SysConfig.h"
 
 //Local
+#include "SysConfig.h"
 #include "Syn_Thread.h"
 
 //DutUtls
@@ -21,6 +27,9 @@
 #include <vector>
 #include <iostream>
 #include <string>
+
+//Construct Device Counts(large enough)
+#define DeviceCounts 20
 
 extern "C" {
 #include "SYN_TestUtils.h"
@@ -37,41 +46,33 @@ public:
 	~FPS_TestExecutive();
 
 
-
-	bool ConstructSyn_SysConfig(const std::string &strConfigFilePath,Syn_SysConfig &oSyn_SysConfig);
-
-
 public Q_SLOTS:
 
-	//void receiveslot(QString strTime);
-	//void receiveslot(Syn_St strTime);
+	void SelectConfigFile();
 
-	void ThreadTest();
+	void RunningTest();
 
-	void receiveslot(void * strTime);
-
-	void SelectFile();
+	void ReceiveOTPTestSlot(void * pOTPTestInfo);
 
 private:
 
+	//private function
 	void Display(uint8_t* pDst, int DstSize);
 
 	void Display(uint8_t* pDst, unsigned int StartPos, unsigned int EndPos);
 
+	bool Init(QString strConfigFile);
 
-	Syn_SysConfig _Config;
-
-	uint32_t Init();
+	//variable
 	Ui::FPS_TestExecutiveClass ui;
-	uint32_t m_deviceHandle;
 
 	vector<Syn_Site*> _ListOfSitePtr;
-
-	Syn_Thread _synThread;
+	Syn_Thread _SynThreadArray[DeviceCounts];
+	unsigned int _iRealDeviceCounts;
 
 	bool _bStopTag;
 
-	QImage *_pImage;
+	std::ofstream _logfile;
 };
 
 #endif // FPS_TESTEXECUTIVE_H
