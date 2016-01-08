@@ -44,8 +44,6 @@ class FPS_TestExecutive : public QMainWindow
 public:
 	FPS_TestExecutive(QWidget *parent = 0);
 	~FPS_TestExecutive();
-	
-	bool ConstructSyn_SysConfig(const std::string &strConfigFilePath,Syn_SysConfig &oSyn_SysConfig);
 
 
 public Q_SLOTS:
