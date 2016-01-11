@@ -46,6 +46,16 @@ public:
 
 	void GetOTPTestInfo(Syn_OTPTestInfo &oSyn_OTPTestInfo);
 
+	inline void SetSiteNumber(unsigned int iSiteNumber){ _iSiteNumber = iSiteNumber; };
+
+	inline void GetSiteNumber(unsigned int &oSiteNumber){ oSiteNumber = _iSiteNumber; };
+
+	inline void GetSerialNumber(uint32_t &oSerialNumber){ oSerialNumber = _uiSerialNumber; };
+
+	inline void GetSysConfig(Syn_SysConfig &oSysConfig){ oSysConfig = _SysConfig; };
+
+	inline void SetSysConfig(Syn_SysConfig iSysConfig){ _SysConfig = iSysConfig; };
+
 private:
 
 	Syn_SysConfig _SysConfig;
@@ -55,5 +65,7 @@ private:
 	Syn_OTPTestInfo _OTPTestInfo;
 
 	unsigned int _iSiteNumber;
+
+	uint32_t _uiSerialNumber;
 };
 

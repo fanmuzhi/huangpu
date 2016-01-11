@@ -13,15 +13,13 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
-#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHeaderView>
-#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
-#include <QtWidgets/QTextBrowser>
+#include <QtWidgets/QTableWidget>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
 
@@ -34,13 +32,15 @@ public:
     QAction *saveAsAct;
     QAction *exitAct;
     QWidget *centralWidget;
+    QGridLayout *gridLayout_4;
+    QGroupBox *SettingOptionGroupBox;
     QGridLayout *gridLayout_2;
-    QFrame *ConfigFileFrame;
+    QPushButton *LocalSettingsPushButton;
+    QGroupBox *TestGroupBox;
     QGridLayout *gridLayout;
-    QLineEdit *ConfigFileLineEdit;
-    QPushButton *ConfigFileSelectPushButton;
-    QTextBrowser *textBrowser;
-    QHBoxLayout *horizontalLayout;
+    QTableWidget *TestTableWidget;
+    QGroupBox *TestOperationGroupBox;
+    QGridLayout *gridLayout_3;
     QPushButton *pushButtonRun;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -49,7 +49,7 @@ public:
     {
         if (FPS_TestExecutiveClass->objectName().isEmpty())
             FPS_TestExecutiveClass->setObjectName(QStringLiteral("FPS_TestExecutiveClass"));
-        FPS_TestExecutiveClass->resize(438, 470);
+        FPS_TestExecutiveClass->resize(584, 654);
         openAct = new QAction(FPS_TestExecutiveClass);
         openAct->setObjectName(QStringLiteral("openAct"));
         saveAsAct = new QAction(FPS_TestExecutiveClass);
@@ -58,47 +58,67 @@ public:
         exitAct->setObjectName(QStringLiteral("exitAct"));
         centralWidget = new QWidget(FPS_TestExecutiveClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        gridLayout_2 = new QGridLayout(centralWidget);
+        gridLayout_4 = new QGridLayout(centralWidget);
+        gridLayout_4->setSpacing(6);
+        gridLayout_4->setContentsMargins(11, 11, 11, 11);
+        gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
+        SettingOptionGroupBox = new QGroupBox(centralWidget);
+        SettingOptionGroupBox->setObjectName(QStringLiteral("SettingOptionGroupBox"));
+        gridLayout_2 = new QGridLayout(SettingOptionGroupBox);
         gridLayout_2->setSpacing(6);
         gridLayout_2->setContentsMargins(11, 11, 11, 11);
         gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
-        ConfigFileFrame = new QFrame(centralWidget);
-        ConfigFileFrame->setObjectName(QStringLiteral("ConfigFileFrame"));
-        ConfigFileFrame->setFrameShape(QFrame::StyledPanel);
-        ConfigFileFrame->setFrameShadow(QFrame::Raised);
-        gridLayout = new QGridLayout(ConfigFileFrame);
+        LocalSettingsPushButton = new QPushButton(SettingOptionGroupBox);
+        LocalSettingsPushButton->setObjectName(QStringLiteral("LocalSettingsPushButton"));
+
+        gridLayout_2->addWidget(LocalSettingsPushButton, 0, 0, 1, 1);
+
+
+        gridLayout_4->addWidget(SettingOptionGroupBox, 0, 0, 1, 1);
+
+        TestGroupBox = new QGroupBox(centralWidget);
+        TestGroupBox->setObjectName(QStringLiteral("TestGroupBox"));
+        gridLayout = new QGridLayout(TestGroupBox);
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(11, 11, 11, 11);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        ConfigFileLineEdit = new QLineEdit(ConfigFileFrame);
-        ConfigFileLineEdit->setObjectName(QStringLiteral("ConfigFileLineEdit"));
-        ConfigFileLineEdit->setReadOnly(true);
+        TestTableWidget = new QTableWidget(TestGroupBox);
+        if (TestTableWidget->rowCount() < 7)
+            TestTableWidget->setRowCount(7);
+        QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
+        TestTableWidget->setVerticalHeaderItem(0, __qtablewidgetitem);
+        QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
+        TestTableWidget->setVerticalHeaderItem(1, __qtablewidgetitem1);
+        QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
+        TestTableWidget->setVerticalHeaderItem(2, __qtablewidgetitem2);
+        QTableWidgetItem *__qtablewidgetitem3 = new QTableWidgetItem();
+        TestTableWidget->setVerticalHeaderItem(3, __qtablewidgetitem3);
+        QTableWidgetItem *__qtablewidgetitem4 = new QTableWidgetItem();
+        TestTableWidget->setVerticalHeaderItem(4, __qtablewidgetitem4);
+        QTableWidgetItem *__qtablewidgetitem5 = new QTableWidgetItem();
+        TestTableWidget->setVerticalHeaderItem(5, __qtablewidgetitem5);
+        QTableWidgetItem *__qtablewidgetitem6 = new QTableWidgetItem();
+        TestTableWidget->setVerticalHeaderItem(6, __qtablewidgetitem6);
+        TestTableWidget->setObjectName(QStringLiteral("TestTableWidget"));
 
-        gridLayout->addWidget(ConfigFileLineEdit, 0, 0, 1, 1);
-
-        ConfigFileSelectPushButton = new QPushButton(ConfigFileFrame);
-        ConfigFileSelectPushButton->setObjectName(QStringLiteral("ConfigFileSelectPushButton"));
-
-        gridLayout->addWidget(ConfigFileSelectPushButton, 0, 1, 1, 1);
+        gridLayout->addWidget(TestTableWidget, 0, 0, 1, 1);
 
 
-        gridLayout_2->addWidget(ConfigFileFrame, 0, 0, 1, 1);
+        gridLayout_4->addWidget(TestGroupBox, 1, 0, 1, 1);
 
-        textBrowser = new QTextBrowser(centralWidget);
-        textBrowser->setObjectName(QStringLiteral("textBrowser"));
-
-        gridLayout_2->addWidget(textBrowser, 1, 0, 1, 1);
-
-        horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setSpacing(6);
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        pushButtonRun = new QPushButton(centralWidget);
+        TestOperationGroupBox = new QGroupBox(centralWidget);
+        TestOperationGroupBox->setObjectName(QStringLiteral("TestOperationGroupBox"));
+        gridLayout_3 = new QGridLayout(TestOperationGroupBox);
+        gridLayout_3->setSpacing(6);
+        gridLayout_3->setContentsMargins(11, 11, 11, 11);
+        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
+        pushButtonRun = new QPushButton(TestOperationGroupBox);
         pushButtonRun->setObjectName(QStringLiteral("pushButtonRun"));
 
-        horizontalLayout->addWidget(pushButtonRun);
+        gridLayout_3->addWidget(pushButtonRun, 0, 0, 1, 1);
 
 
-        gridLayout_2->addLayout(horizontalLayout, 2, 0, 1, 1);
+        gridLayout_4->addWidget(TestOperationGroupBox, 2, 0, 1, 1);
 
         FPS_TestExecutiveClass->setCentralWidget(centralWidget);
         mainToolBar = new QToolBar(FPS_TestExecutiveClass);
@@ -115,11 +135,28 @@ public:
 
     void retranslateUi(QMainWindow *FPS_TestExecutiveClass)
     {
-        FPS_TestExecutiveClass->setWindowTitle(QApplication::translate("FPS_TestExecutiveClass", "FPS_TestExecutive", 0));
+        FPS_TestExecutiveClass->setWindowTitle(QApplication::translate("FPS_TestExecutiveClass", "FPS Test Executive", 0));
         openAct->setText(QApplication::translate("FPS_TestExecutiveClass", "Open...", 0));
         saveAsAct->setText(QApplication::translate("FPS_TestExecutiveClass", "Save As...", 0));
         exitAct->setText(QApplication::translate("FPS_TestExecutiveClass", "Exit", 0));
-        ConfigFileSelectPushButton->setText(QApplication::translate("FPS_TestExecutiveClass", "Select", 0));
+        SettingOptionGroupBox->setTitle(QApplication::translate("FPS_TestExecutiveClass", "Setting Options", 0));
+        LocalSettingsPushButton->setText(QApplication::translate("FPS_TestExecutiveClass", "Local Settings", 0));
+        TestGroupBox->setTitle(QApplication::translate("FPS_TestExecutiveClass", "Test", 0));
+        QTableWidgetItem *___qtablewidgetitem = TestTableWidget->verticalHeaderItem(0);
+        ___qtablewidgetitem->setText(QApplication::translate("FPS_TestExecutiveClass", "Status", 0));
+        QTableWidgetItem *___qtablewidgetitem1 = TestTableWidget->verticalHeaderItem(1);
+        ___qtablewidgetitem1->setText(QApplication::translate("FPS_TestExecutiveClass", "Test", 0));
+        QTableWidgetItem *___qtablewidgetitem2 = TestTableWidget->verticalHeaderItem(2);
+        ___qtablewidgetitem2->setText(QApplication::translate("FPS_TestExecutiveClass", "Result", 0));
+        QTableWidgetItem *___qtablewidgetitem3 = TestTableWidget->verticalHeaderItem(3);
+        ___qtablewidgetitem3->setText(QApplication::translate("FPS_TestExecutiveClass", "Bin", 0));
+        QTableWidgetItem *___qtablewidgetitem4 = TestTableWidget->verticalHeaderItem(4);
+        ___qtablewidgetitem4->setText(QApplication::translate("FPS_TestExecutiveClass", "Pass/Total", 0));
+        QTableWidgetItem *___qtablewidgetitem5 = TestTableWidget->verticalHeaderItem(5);
+        ___qtablewidgetitem5->setText(QApplication::translate("FPS_TestExecutiveClass", "Image", 0));
+        QTableWidgetItem *___qtablewidgetitem6 = TestTableWidget->verticalHeaderItem(6);
+        ___qtablewidgetitem6->setText(QApplication::translate("FPS_TestExecutiveClass", "Test Info", 0));
+        TestOperationGroupBox->setTitle(QApplication::translate("FPS_TestExecutiveClass", "Test Operation", 0));
         pushButtonRun->setText(QApplication::translate("FPS_TestExecutiveClass", "Run", 0));
     } // retranslateUi
 

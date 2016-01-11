@@ -74,23 +74,6 @@ bool Syn_LocalSettingConfig::Initialize()
 	{
 		QDomProcessingInstruction instruction = q_DomDocument.createProcessingInstruction(QString("xml"),QString("version = \"1.0\" encoding = \"UTF-8\""));
 		q_DomDocument.appendChild(instruction);
-
-		/*QDomElement root = q_DomDocument.createElement("LocalSettings");
-		q_DomDocument.appendChild(root);
-
-		q_DomRootNode = root;
-
-		QFile qFile(_strFilePath);
-		if (!qFile.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
-			return false;
-
-		QTextStream qTextStream(&qFile);
-
-		qTextStream.setCodec("UTF-8");
-
-		q_DomDocument.save(qTextStream, 4, QDomNode::EncodingFromTextStream);
-
-		qFile.close();*/
 	}
 
 	return true;
@@ -222,7 +205,7 @@ bool Syn_LocalSettingConfig::SetLocalSettings(Syn_LocalSettings iSyn_LocalSettin
 		SiteNode.appendChild(SiteTextNode);
 
 		//AdcBaseLines:attribute
-		QDomAttr qAdcBaseLinesAttribute = q_DomDocument.createAttribute(QString("AdcBaseLines"));
+		//QDomAttr qAdcBaseLinesAttribute = q_DomDocument.createAttribute(QString("AdcBaseLines"));
 		QString strAdcBaseLinesValue("");
 		for (int a = 0; a < NUM_CURRENT_VALUES; a++)
 		{
@@ -231,16 +214,17 @@ bool Syn_LocalSettingConfig::SetLocalSettings(Syn_LocalSettings iSyn_LocalSettin
 				strAdcBaseLinesValue += QString::number((CurrentSiteSettings._adcBaseLineInfo.m_arAdcBaseLines)[a][b])+ QString(" ");
 			}
 		}
-		qAdcBaseLinesAttribute.setValue(strAdcBaseLinesValue);
-		SiteNode.appendChild(qAdcBaseLinesAttribute);
+		//qAdcBaseLinesAttribute.setValue(strAdcBaseLinesValue);
+		//SiteNode.appendChild(qAdcBaseLinesAttribute);
+		SiteNode.setAttribute(QString("AdcBaseLines"), strAdcBaseLinesValue);
 
 		//Voltages:attribute
-		QDomAttr qVoltagesAttribute = q_DomDocument.createAttribute(QString("Voltages"));
+		//QDomAttr qVoltagesAttribute = q_DomDocument.createAttribute(QString("Voltages"));
 		QString strVoltagesValue(QString::number(CurrentSiteSettings._adcBaseLineInfo.m_nVdd) + QString(" ") + QString::number(CurrentSiteSettings._adcBaseLineInfo.m_nVio) + QString(" ") +
 									QString::number(CurrentSiteSettings._adcBaseLineInfo.m_nVled) + QString(" ") + QString::number(CurrentSiteSettings._adcBaseLineInfo.m_nVddh));
 		
-		qVoltagesAttribute.setValue(strVoltagesValue);
-		SiteNode.appendChild(qVoltagesAttribute);
+		//qVoltagesAttribute.setValue(strVoltagesValue);
+		SiteNode.setAttribute(QString("Voltages"), strVoltagesValue);
 	}
 
 	//AutoController
