@@ -519,7 +519,7 @@ void FPS_TestExecutive::ReceiveOTPTestSlot(void * pOTPTestInfo)
 		strTestInfo += s + QString("\n");
 	}
 
-	/*strTestInfo += QString("Main Sector0:") + QString("\n");
+	strTestInfo += QString("Main Sector0:") + QString("\n");
 
 	for (int i = 1; i <= MS0_SIZE / 8; i++)
 	{
@@ -548,7 +548,7 @@ void FPS_TestExecutive::ReceiveOTPTestSlot(void * pOTPTestInfo)
 		}
 
 		strTestInfo += s + QString("\n");
-	}*/
+	}
 
 	ui.TestTableWidget->setItem(6, iColumnIndex, new QTableWidgetItem(strTestInfo));
 	ui.TestTableWidget->resizeRowToContents(6);
