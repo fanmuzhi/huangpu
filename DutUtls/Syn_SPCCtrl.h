@@ -7,6 +7,7 @@
 //local
 #include "Syn_DutCtrl.h"
 
+
 class Syn_SPCCtrl :public Syn_DutCtrl
 {
 public:

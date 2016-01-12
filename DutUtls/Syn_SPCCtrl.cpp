@@ -10,6 +10,9 @@
 //std
 #include <iostream>
 
+//third-party
+#include "easylogging++.h"
+
 bool Syn_SPCCtrl::_bDLLInitialized = false;
 
 Syn_SPCCtrl::Syn_SPCCtrl(uint32_t iSerialNumber)
@@ -64,7 +67,8 @@ bool Syn_SPCCtrl::Init()
 		if (err != MpcApiError::ERR_OK)
 		{
 			syn_DeviceHandle = NULL;
-			cout << "ERROR:Syn_SPCCtrl::Init() - cannot connect to MPC04 " << syn_SerialNumber << endl;
+			//cout << "ERROR:Syn_SPCCtrl::Init() - cannot connect to MPC04 " << syn_SerialNumber << endl;
+			LOG(ERROR) << "Cannot connect to MPC04: " << syn_SerialNumber;
 		}
 		else
 		{
@@ -97,7 +101,8 @@ bool Syn_SPCCtrl::Init()
 	//If this site has been assigned a serial number and the connection was NOT successful.
 	if (0!=syn_SerialNumber && NULL==syn_DeviceHandle)
 	{
-		cout << "ERROR:Syn_SPCCtrl::Init() - syn_DeviceHandle is NULL!" << endl;
+		//cout << "ERROR:Syn_SPCCtrl::Init() - syn_DeviceHandle is NULL!" << endl;
+		LOG(ERROR) << "syn_DeviceHandle is NULL";
 		return false;
 	}
 
@@ -108,14 +113,16 @@ bool Syn_SPCCtrl::Init()
 		if (err != MpcApiError::ERR_OK)
 		{
 			syn_DeviceHandle = NULL;
-			cout << "ERROR:Syn_SPCCtrl::Init() - MPC_SetPortFpSensor failed with MPC04 " << syn_SerialNumber << endl;
+			//cout << "ERROR:Syn_SPCCtrl::Init() - MPC_SetPortFpSensor failed with MPC04 " << syn_SerialNumber << endl;
+			LOG(ERROR) << "MPC_SetPortFpSensor failed with MPC04: " << syn_SerialNumber;
 			return false;
 		}
 		return true;
 	}
 	else
 	{
-		cout << "ERROR:Syn_SPCCtrl::Init() - ::MPC_IsConnected is failed!" << endl;
+		//cout << "ERROR:Syn_SPCCtrl::Init() - ::MPC_IsConnected is failed!" << endl;
+		LOG(ERROR) << "MPC_IsConnected is failed!";
 		return false;
 	}
 }
@@ -186,7 +193,8 @@ void Syn_SPCCtrl::FpGetStatus(uint8_t* pDst, int numBytes)
 
 	this->FpRead(endpoint, cmd, pDst, numBytes);
 
-	cout << "FpGetStatus(): 0x" << hex << *((uint32_t*)pDst) << endl;
+	//cout << "FpGetStatus(): 0x" << hex << *((uint32_t*)pDst) << endl;
+	LOG(DEBUG) << "0x" << hex << *((uint32_t*)pDst);
 }
 
 void Syn_SPCCtrl::FpWaitForCMDComplete(uint16_t ErrorCode)
@@ -194,8 +202,8 @@ void Syn_SPCCtrl::FpWaitForCMDComplete(uint16_t ErrorCode)
 	uint8_t numBytes = 2;	// the sensor should return FF FF 00 00, and the 2bytes 00 00 should be OK.
 
 	uint16_t err = FpWaitForCommandCompleteAndReturnErrorCode(numBytes);
-
-	cout << "FpwaitForCMDComplete(): 0x" << hex << err << endl;
+	//cout << "FpwaitForCMDComplete(): 0x" << hex << err << endl;
+	LOG(DEBUG) << "0x" << hex << err;
 	
 	if (err != 0 && err != ErrorCode) //0xA605
 	{
@@ -239,7 +247,8 @@ uint16_t Syn_SPCCtrl::FpWaitForCommandCompleteAndReturnErrorCode(uint32_t numByt
 
 void Syn_SPCCtrl::FpWaitDeviceReady()
 {
-	cout << "FpWaitDeviceReady():" << endl;
+	//cout << "FpWaitDeviceReady():" << endl;
+	LOG(INFO) << "Wait Device Ready";
 
 	uint8_t pDst[4];
 	uint32_t timeout = TIMEOUT;
@@ -260,7 +269,8 @@ void Syn_SPCCtrl::FpWaitDeviceReady()
 
 void Syn_SPCCtrl::FpDisableSleep()
 {
-	cout << "FpDisableSleep():" << endl;
+	//cout << "FpDisableSleep():" << endl;
+	LOG(INFO) << "Disable Sleep";
 
 	uint8_t pSrc[2] = { 0 };
 	this->FpWrite(1, VCSFW_CMD::TIDLE_SET, pSrc, sizeof(pSrc));
@@ -269,7 +279,8 @@ void Syn_SPCCtrl::FpDisableSleep()
 
 void Syn_SPCCtrl::FpLoadPatch(uint8_t* pPatch, int numBytes)
 {
-	cout << "FpLoadPatch():" << endl;
+	//cout << "FpLoadPatch():" << endl;
+	LOG(INFO) << "Load Patch";
 
 	this->FpWrite(1, VCSFW_CMD::PATCH, pPatch, numBytes);
 	this->FpWaitForCMDComplete(0);
@@ -277,7 +288,8 @@ void Syn_SPCCtrl::FpLoadPatch(uint8_t* pPatch, int numBytes)
 
 void Syn_SPCCtrl::FpUnloadPatch()
 {
-	cout << "FpUnLoadPatch():" << endl;
+	//cout << "FpUnLoadPatch():" << endl;
+	LOG(INFO) << "Unload Patch";
 
 	this->FpWrite(1, VCSFW_CMD::UNLOAD_PATCH, (uint8_t*)0, 0);
 	this->FpWaitForCMDComplete(0x9104);
@@ -285,7 +297,8 @@ void Syn_SPCCtrl::FpUnloadPatch()
 
 void Syn_SPCCtrl::FpOtpRomRead(int section, int sector, uint8_t* pDst, int numBytes)
 {
-	cout << "FpOtpRomRead():" << endl;
+	//cout << "FpOtpRomRead():" << endl;
+	LOG(INFO) << "OTPRom Read";
 
 	uint16_t err;
 
@@ -305,7 +318,8 @@ void Syn_SPCCtrl::FpOtpRomRead(int section, int sector, uint8_t* pDst, int numBy
 
 void Syn_SPCCtrl::FpOtpRomWrite(int section, int sector, uint8_t* pDst, int numBytes)
 {
-	cout << "FpOtpRomWrite():" << endl;
+	//cout << "FpOtpRomWrite():" << endl;
+	LOG(INFO) << "OTPRom Write";
 
 	uint16_t err;
 	err = MPC_FpOtpRomWrite(syn_DeviceHandle, section, sector, pDst, numBytes, TIMEOUT);
@@ -325,7 +339,8 @@ void Syn_SPCCtrl::FpOtpRomWrite(int section, int sector, uint8_t* pDst, int numB
 
 void Syn_SPCCtrl::FpGetVersion(uint8_t *pDst, int numBytes)
 {
-	cout << "FpGetVersion():" << endl;
+	//cout << "FpGetVersion():" << endl;
+	LOG(INFO) << "Get Version";
 
 	uint16_t err;
 	err = MPC_FpGetVersion(syn_DeviceHandle, pDst, numBytes, TIMEOUT);

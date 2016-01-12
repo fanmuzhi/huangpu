@@ -41,7 +41,11 @@ public:
 
 	void PowerOff();
 
-	bool ReadOTP(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep, uint8_t* pPatch, int numBytes, uint8_t* oarMS0, int iSize);
+	bool ReadOTP(uint8_t* pPatch, int numBytes, uint8_t* oarMS0, int iSize);
+
+private:
+
+	bool GetFPImage();
 
 protected:
 	Syn_DutCtrl *_pSyn_DutCtrl;

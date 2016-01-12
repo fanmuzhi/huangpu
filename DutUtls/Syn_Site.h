@@ -11,6 +11,7 @@
 #include <string>
 #include <time.h>
 
+
 enum Syn_TestState{TestReady = 0xAEF0,TestRunning,TestOK,TestError,TestFailed};
 
 struct Syn_OTPTestInfo
