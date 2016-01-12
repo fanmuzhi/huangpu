@@ -62,6 +62,18 @@
     <ClCompile Include="GeneratedFiles\Release\moc_Syn_Thread.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="Syn_LocalSettingConfig.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Syn_LocalSettingsDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Syn_LocalSettingsDlg.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Syn_LocalSettingsDlg.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="fps_testexecutive.h">
@@ -76,6 +88,12 @@
     <CustomBuild Include="Syn_Thread.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="Syn_LocalSettingsDlg.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Syn_LocalSettingsDlg.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_fps_testexecutive.h">
@@ -83,6 +101,12 @@
     </ClInclude>
     <ClInclude Include="SysConfig.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Syn_LocalSettingConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_Syn_LocalSettingsDlg.h">
+      <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

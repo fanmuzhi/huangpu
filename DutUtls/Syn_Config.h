@@ -150,7 +150,7 @@ struct Syn_SysConfig
 struct SiteSettings
 {
 	uint32_t		_uiDutSerNum;
-	AdcBaseLineInfo	_adcBaseLineInfo;
+	AdcBaseLineInfo	_adcBaseLineInfo;//SYN_TestUtils
 };
 
 struct Syn_LocalSettings 

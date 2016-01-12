@@ -14,6 +14,7 @@
 //Local
 #include "SysConfig.h"
 #include "Syn_Thread.h"
+#include "Syn_LocalSettingsDlg.h"
 
 //DutUtls
 #include "Syn_Site.h"
@@ -44,17 +45,28 @@ class FPS_TestExecutive : public QMainWindow
 public:
 	FPS_TestExecutive(QWidget *parent = 0);
 	~FPS_TestExecutive();
-	
-	bool ConstructSyn_SysConfig(const std::string &strConfigFilePath,Syn_SysConfig &oSyn_SysConfig);
 
+	void Initialize();
+
+	bool ConstructSiteList(QString strConfigFilePath, bool SendMsg = false);
 
 public Q_SLOTS:
 
+	void CreateLocalSettings();
+
+	void CloseLocalSettingsDialog();
+	
 	void SelectConfigFile();
+
+	void UpdateSiteLocalSettings();
+
+	void LocalSettingsOKAction();
 
 	void RunningTest();
 
 	void ReceiveOTPTestSlot(void * pOTPTestInfo);
+
+	
 
 private:
 
@@ -62,8 +74,6 @@ private:
 	void Display(uint8_t* pDst, int DstSize);
 
 	void Display(uint8_t* pDst, unsigned int StartPos, unsigned int EndPos);
-
-	bool Init(QString strConfigFile);
 
 	//variable
 	Ui::FPS_TestExecutiveClass ui;
@@ -75,6 +85,10 @@ private:
 	bool _bStopTag;
 
 	std::ofstream _logfile;
+
+	Syn_LocalSettingsDlg *_pSyn_LocalSettingsDlg;
+
+	Syn_LocalSettings _LocalSettingsInfo;
 };
 
 #endif // FPS_TESTEXECUTIVE_H
