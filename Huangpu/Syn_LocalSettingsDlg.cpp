@@ -14,8 +14,7 @@ Syn_LocalSettingsDlg::Syn_LocalSettingsDlg(QWidget *parent)
 	ui->SiteTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows); 
 	ui->SiteTableWidget->setSelectionMode(QAbstractItemView::SingleSelection); 
 	ui->SiteTableWidget->verticalHeader()->setVisible(false);
-	ui->SiteTableWidget->setColumnWidth(2,160);
-
+	ui->SiteTableWidget->horizontalHeader()->setStretchLastSection(true);
 }
 
 Syn_LocalSettingsDlg::~Syn_LocalSettingsDlg()

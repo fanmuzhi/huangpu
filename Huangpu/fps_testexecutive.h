@@ -58,7 +58,7 @@ public Q_SLOTS:
 	
 	void SelectConfigFile();
 
-	void UpdateSiteLocalSettings();
+	bool UpdateSiteLocalSettings();
 
 	void LocalSettingsOKAction();
 

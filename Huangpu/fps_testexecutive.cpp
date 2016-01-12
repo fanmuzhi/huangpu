@@ -268,13 +268,21 @@ void FPS_TestExecutive::SelectConfigFile()
 	}
 }
 
-void FPS_TestExecutive::UpdateSiteLocalSettings()
+bool FPS_TestExecutive::UpdateSiteLocalSettings()
 {
 	bool rc(false);
 
 	//update LocalSettings info
 	QString strConfigFilePath = _pSyn_LocalSettingsDlg->ui->SysConfigFileLlineEdit->text();
+	if (QString("")==strConfigFilePath)
+	{
+		QMessageBox::critical(_pSyn_LocalSettingsDlg, QString("Error"), QString("Config file value is NULL,check it please!"));
+		cout << "Error:FPS_TestExecutive::UpdateSiteLocalSettings() - strConfigFilePath is NULL!" << endl;
+		return false;
+	}
 	_LocalSettingsInfo._strSysConfigFilePath = strConfigFilePath.toStdString();
+
+
 	
 	_LocalSettingsInfo.m_bVerboseMode = _pSyn_LocalSettingsDlg->ui->VerboseLogCheckBox->isChecked();
 	_LocalSettingsInfo.m_bQAMode = _pSyn_LocalSettingsDlg->ui->QAModeCheckBox->isChecked();
@@ -288,9 +296,9 @@ void FPS_TestExecutive::UpdateSiteLocalSettings()
 	rc = ConstructSiteList(strConfigFilePath);
 	if (!rc || 0 == _iRealDeviceCounts)
 	{
-		QMessageBox::critical(this, QString("Error"), QString("Can't retrieve the site,check it please!"));
+		QMessageBox::critical(_pSyn_LocalSettingsDlg, QString("Error"), QString("Can't retrieve the site,check it please!"));
 		cout << "Error:FPS_TestExecutive::UpdateSiteLocalSettings() - ::ConstructSiteList is failed!" << endl;
-		return;
+		return false;
 	}
 
 	//clear
@@ -376,6 +384,7 @@ void FPS_TestExecutive::UpdateSiteLocalSettings()
 	}
 	ui.TestTableWidget->setHorizontalHeaderLabels(strListOfHeader);
 
+	return true;
 }
 
 void FPS_TestExecutive::LocalSettingsOKAction()
@@ -384,7 +393,11 @@ void FPS_TestExecutive::LocalSettingsOKAction()
 	_pSyn_LocalSettingsDlg->GetUpdateTag(bUpdateTag);
 	if (!bUpdateTag)
 	{
-		UpdateSiteLocalSettings();
+		bool rc = UpdateSiteLocalSettings();
+		if (!rc)
+		{
+			return;
+		}
 	}
 
 	_pSyn_LocalSettingsDlg->SetUpdateTag(false);
