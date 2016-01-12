@@ -43,18 +43,20 @@ public:
 
 	void PowerOff();
 
-	bool ReadOTP(uint8_t* pPatch, int numBytes, uint8_t* oarMS0, int iSize);
+	bool ReadOTP(uint8_t* oarMS0, int iSize);
+
+	bool GetFPImage();
 
 	inline void SetPatchInfo(vector<Syn_PatchInfo> ilistOfPatchInfo){ _listOfPatchInfo = ilistOfPatchInfo; };
 
 private:
 
-	bool GetFPImage();
-
+	bool FindPatch(std::string patchName, Syn_PatchInfo &patchInfo);
 
 protected:
 	
 	Syn_DutCtrl *_pSyn_DutCtrl;
 
 	vector<Syn_PatchInfo> _listOfPatchInfo;
+
 };

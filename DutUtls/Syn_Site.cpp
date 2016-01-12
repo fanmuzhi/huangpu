@@ -181,26 +181,6 @@ void Syn_Site::Run()
 		_OTPTestInfo._TestState = TestError;
 		return;
 	}
-
-	//ofstream logFile("D:\\error.log");
-
-	uint8_t *pOTPReadWritePatchArray = NULL;
-	int iOTPReadWritePatchSize(0);
-	Syn_PatchInfo NeedSyn_XepatchInfo;
-	bool rc = _SysConfig.GetSyn_XepatchInfo(std::string("OtpReadWritePatch"), NeedSyn_XepatchInfo);
-	if (rc)
-	{
-		pOTPReadWritePatchArray = NeedSyn_XepatchInfo._pArrayBuf;
-		iOTPReadWritePatchSize = NeedSyn_XepatchInfo._uiArraySize;
-	}
-
-	if (NULL == pOTPReadWritePatchArray || 0 == iOTPReadWritePatchSize)
-	{
-		_OTPTestInfo._TestState = TestError;
-		cout << "Error:Syn_Site::Run() - Array is NULL!" << endl;
-		return;
-	}
-
 	//uint8_t arMS0[4224] = { 0 };
 	uint8_t arMS0[BS0_SIZE + BS1_SIZE + MS1_SIZE + MS1_SIZE] = { 0 };
 	int iSize(BS0_SIZE + BS1_SIZE + MS1_SIZE + MS1_SIZE);
@@ -209,7 +189,8 @@ void Syn_Site::Run()
 		_OTPTestInfo._TestState = TestRunning;
 		//_pSyn_Dut->ReadOTP(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true, pOTPReadWritePatchArray, iOTPReadWritePatchSize, arMS0, iSize);
 		_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
-		_pSyn_Dut->ReadOTP(pOTPReadWritePatchArray, iOTPReadWritePatchSize, arMS0, iSize);
+		_pSyn_Dut->ReadOTP(arMS0, iSize);
+		_pSyn_Dut->GetFPImage();
 		_pSyn_Dut->PowerOff();
 
 	}

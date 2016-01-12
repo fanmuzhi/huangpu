@@ -197,26 +197,9 @@ void Syn_SPCCtrl::FpGetStatus(uint8_t* pDst, int numBytes)
 	LOG(DEBUG) << "0x" << hex << *((uint32_t*)pDst);
 }
 
-void Syn_SPCCtrl::FpWaitForCMDComplete(uint16_t ErrorCode)
-{
-	uint8_t numBytes = 2;	// the sensor should return FF FF 00 00, and the 2bytes 00 00 should be OK.
-
-	uint16_t err = FpWaitForCommandCompleteAndReturnErrorCode(numBytes);
-	//cout << "FpwaitForCMDComplete(): 0x" << hex << err << endl;
-	LOG(DEBUG) << "0x" << hex << err;
-	
-	if (err != 0 && err != ErrorCode) //0xA605
-	{
-		Syn_Exception ex(err);
-		ex.SetDescription("FpWaitForCommandCompleteAndCheckErrorCode() DUT communication failure.");
-		throw ex;
-	}
-}
-
-uint16_t Syn_SPCCtrl::FpWaitForCommandCompleteAndReturnErrorCode(uint32_t numBytes)
+void Syn_SPCCtrl::FpWaitForCMDComplete()
 {
 	uint32_t timeout = TIMEOUT;
-	//uint8_t	pDst[MAX_PRINTFILE_SIZE];
 	uint8_t	pDst[4];
 
 	this->FpGetStatus(pDst, 4);
@@ -225,24 +208,50 @@ uint16_t Syn_SPCCtrl::FpWaitForCommandCompleteAndReturnErrorCode(uint32_t numByt
 		this->FpGetStatus(pDst, 4);
 		timeout--;
 	}
-
 	if (timeout == 0)
 	{
 		Syn_Exception ex(0);
 		ex.SetDescription("FpWaitForCommandCompleteAndReturnErrorCode() DUT communication failure.");
 		throw ex;
 	}
+}
 
-	//Check error code. The 'command' value(0xFF) for FpRead are don't cares.
-	timeout = TIMEOUT;
+void Syn_SPCCtrl::FpReadBuff(uint8_t *pDst, int numBytes)
+{
+	uint32_t timeout = TIMEOUT;
+
 	this->FpRead(1, 0xFF, pDst, numBytes);
 	while (timeout && (*((uint16_t*)pDst) == 0xFFFF))
 	{
 		this->FpRead(1, 0xFF, pDst, numBytes);
 		timeout--;
 	}
+	if (timeout == 0)
+	{
+		Syn_Exception ex(0);
+		ex.SetDescription("FpReadBuff() DUT communication failure.");
+		throw ex;
+	}
 
-	return ((pDst[0] << 8) + pDst[1]);
+	//return ((pDst[0] << 8) + pDst[1]);
+}
+
+
+void Syn_SPCCtrl::FpReadAndCheckBuff(uint16_t numReturn)
+{
+	uint8_t numbytes = 2;
+	uint8_t pDst[4] = { 0 };
+	this->FpReadBuff(pDst, numbytes);
+	
+	uint16_t returnValue = (pDst[0] << 8) + pDst[1];
+	LOG(DEBUG) << "0x" << hex << returnValue;
+
+	if (numReturn != returnValue && returnValue != 0)
+	{
+		Syn_Exception ex(0);
+		ex.SetDescription("FpReadAndCheckBuff() DUT return value unmatch.");
+		throw ex;
+	}
 }
 
 void Syn_SPCCtrl::FpWaitDeviceReady()
@@ -274,7 +283,8 @@ void Syn_SPCCtrl::FpDisableSleep()
 
 	uint8_t pSrc[2] = { 0 };
 	this->FpWrite(1, VCSFW_CMD::TIDLE_SET, pSrc, sizeof(pSrc));
-	this->FpWaitForCMDComplete(0);
+	this->FpWaitForCMDComplete();
+	this->FpReadAndCheckBuff(0);
 }
 
 void Syn_SPCCtrl::FpLoadPatch(uint8_t* pPatch, int numBytes)
@@ -283,7 +293,8 @@ void Syn_SPCCtrl::FpLoadPatch(uint8_t* pPatch, int numBytes)
 	LOG(INFO) << "Load Patch";
 
 	this->FpWrite(1, VCSFW_CMD::PATCH, pPatch, numBytes);
-	this->FpWaitForCMDComplete(0);
+	this->FpWaitForCMDComplete();
+	this->FpReadAndCheckBuff(0);
 }
 
 void Syn_SPCCtrl::FpUnloadPatch()
@@ -292,12 +303,12 @@ void Syn_SPCCtrl::FpUnloadPatch()
 	LOG(INFO) << "Unload Patch";
 
 	this->FpWrite(1, VCSFW_CMD::UNLOAD_PATCH, (uint8_t*)0, 0);
-	this->FpWaitForCMDComplete(0x9104);
+	this->FpWaitForCMDComplete();
+	this->FpReadAndCheckBuff(0x9104);
 }
 
 void Syn_SPCCtrl::FpOtpRomRead(int section, int sector, uint8_t* pDst, int numBytes)
 {
-	//cout << "FpOtpRomRead():" << endl;
 	LOG(INFO) << "OTPRom Read";
 
 	uint16_t err;
@@ -318,7 +329,6 @@ void Syn_SPCCtrl::FpOtpRomRead(int section, int sector, uint8_t* pDst, int numBy
 
 void Syn_SPCCtrl::FpOtpRomWrite(int section, int sector, uint8_t* pDst, int numBytes)
 {
-	//cout << "FpOtpRomWrite():" << endl;
 	LOG(INFO) << "OTPRom Write";
 
 	uint16_t err;
@@ -336,10 +346,28 @@ void Syn_SPCCtrl::FpOtpRomWrite(int section, int sector, uint8_t* pDst, int numB
 	}
 }
 
+uint8_t Syn_SPCCtrl::FpOtpRomTagRead(uint32_t nExtTag, uint8_t* pDst, int numBytes)
+{
+	uint8_t nRecCount = 0;
+	LOG(INFO) << "OTPRom Tag Read";
+
+	uint8_t arReadMs0Args[8] = { 0 };
+	arReadMs0Args[1] = TAG_CAL;
+	*((uint32_t*)(&arReadMs0Args[4])) = nExtTag;
+
+	this->FpWrite(1, VCSFW_CMD::OTPROM_TAG_FIND, arReadMs0Args, sizeof(arReadMs0Args));
+	this->FpWaitForCMDComplete();
+	this->FpReadBuff(pDst, numBytes);
+	
+	nRecCount = (uint8_t)(*(uint32_t*)&pDst[6]);
+	memcpy(pDst, &pDst[22], numBytes - 22);
+
+	return nRecCount;
+}
+
 
 void Syn_SPCCtrl::FpGetVersion(uint8_t *pDst, int numBytes)
 {
-	//cout << "FpGetVersion():" << endl;
 	LOG(INFO) << "Get Version";
 
 	uint16_t err;
