@@ -10,7 +10,7 @@
 //std
 #include <iostream>
 
-//third-part lib
+//third-party
 #include "easylogging++.h"
 INITIALIZE_EASYLOGGINGPP
 
@@ -20,9 +20,9 @@ Syn_Site::Syn_Site()
 {
 	_OTPTestInfo._TestState = TestReady;
 
-	//el::Loggers::setFilename("/logs/myeasylog.log");
-
 	LOG(INFO) << "easylogging++ test!";
+
+	LOG(INFO) << "SITE START";
 }
 
 Syn_Site::~Syn_Site()
@@ -206,14 +206,16 @@ void Syn_Site::Run()
 	int iSize(BS0_SIZE + BS1_SIZE + MS1_SIZE + MS1_SIZE);
 	try
 	{
-		//_pSyn_Dut->ReadOTP(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true, pOTPReadWritePatchArray, iOTPReadWritePatchSize, arMS0, iSize);
-		_pSyn_Dut->ReadOTP(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true, 
-						   pOTPReadWritePatchArray, iOTPReadWritePatchSize, arMS0, iSize);
-
 		_OTPTestInfo._TestState = TestRunning;
+		//_pSyn_Dut->ReadOTP(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true, pOTPReadWritePatchArray, iOTPReadWritePatchSize, arMS0, iSize);
+		_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
+		_pSyn_Dut->ReadOTP(pOTPReadWritePatchArray, iOTPReadWritePatchSize, arMS0, iSize);
+		_pSyn_Dut->PowerOff();
+
 	}
 	catch (Syn_Exception ex)
 	{
+		_pSyn_Dut->PowerOff();
 		std::cout << "Error:ReadOTP is failed!" << std::endl;
 		_OTPTestInfo._strErrorMessage = ex.GetDescription();
 		_OTPTestInfo._TestState = TestFailed;

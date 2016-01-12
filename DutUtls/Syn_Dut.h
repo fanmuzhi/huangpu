@@ -43,9 +43,14 @@ public:
 
 	void PowerOff();
 
-	bool ReadOTP(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep, uint8_t* pPatch, int numBytes, uint8_t* oarMS0, int iSize);
+	bool ReadOTP(uint8_t* pPatch, int numBytes, uint8_t* oarMS0, int iSize);
 
 	inline void SetPatchInfo(vector<Syn_PatchInfo> ilistOfPatchInfo){ _listOfPatchInfo = ilistOfPatchInfo; };
+
+private:
+
+	bool GetFPImage();
+
 
 protected:
 	

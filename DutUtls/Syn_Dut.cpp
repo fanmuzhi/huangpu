@@ -12,6 +12,9 @@
 //std
 #include <iostream>
 
+//third-party
+#include "easylogging++.h"
+
 Syn_Dut::Syn_Dut()
 :_pSyn_DutCtrl(NULL)
 {
@@ -104,46 +107,31 @@ void Syn_Dut::PowerOff()
 	}
 }
 
-bool Syn_Dut::ReadOTP(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep, uint8_t* pPatch, int numBytes, uint8_t* oarMS0, int iSize)
+bool Syn_Dut::ReadOTP(uint8_t* pPatch, int numBytes, uint8_t* oarMS0, int iSize)
 {
-	//uint8_t	arMS0[MS0_SIZE] = {0};
-
 	if (NULL == _pSyn_DutCtrl)
 	{
-		cout << "Error:Syn_Dut::ReadOTP() - _pSyn_DutCtrl is NULL!" << endl;
+		LOG(ERROR) << "_pSyn_DutCtrl is NULL!";
 		return false;
 	}
 
-	/*try
-	{
-		this->PowerOff();
-		this->PowerOn(nPwrVdd, nPwrVio, nPwrVled, nPwrVddh, bDisableSleep);
-		_pSyn_DutCtrl->FpUnloadPatch();
-		_pSyn_DutCtrl->FpLoadPatch(pPatch, numBytes);//OtpReadWritePatch
-		_pSyn_DutCtrl->FpOtpRomRead(BOOT_SEC, 0, oarMS0, BS0_SIZE);
-		_pSyn_DutCtrl->FpOtpRomRead(BOOT_SEC, 1, &oarMS0[64], BS1_SIZE);
-		_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 0, &oarMS0[128], MS1_SIZE);
-		_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 1, &oarMS0[2176], MS1_SIZE);
-		this->PowerOff();
-	}
-	catch (Syn_Exception Exception)
-	{
-		cout << "Error" + Exception.GetDescription() << endl;
-		this->PowerOff();
-		throw Exception;
-		return false;
-	}*/
-
-	
-	this->PowerOff();
-	this->PowerOn(nPwrVdd, nPwrVio, nPwrVled, nPwrVddh, bDisableSleep);
 	_pSyn_DutCtrl->FpUnloadPatch();
 	_pSyn_DutCtrl->FpLoadPatch(pPatch, numBytes);//OtpReadWritePatch
 	_pSyn_DutCtrl->FpOtpRomRead(BOOT_SEC, 0, oarMS0, BS0_SIZE);
 	_pSyn_DutCtrl->FpOtpRomRead(BOOT_SEC, 1, &oarMS0[64], BS1_SIZE);
 	_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 0, &oarMS0[128], MS1_SIZE);
 	_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 1, &oarMS0[2176], MS1_SIZE);
-	this->PowerOff();
+
+	return true;
+}
+
+bool Syn_Dut::GetFPImage()
+{
+	if (NULL == _pSyn_DutCtrl)
+	{
+		LOG(ERROR) << "_pSyn_DutCtrl is NULL!";
+		return false;
+	}
 
 	return true;
 }
