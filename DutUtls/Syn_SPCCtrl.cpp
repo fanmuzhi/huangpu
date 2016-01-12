@@ -52,7 +52,6 @@ bool Syn_SPCCtrl::Init()
 
 	//Get the handle associated to this SPC.
 	err = MPC_GetMpcDeviceHandle(syn_SerialNumber, &syn_DeviceHandle);
-	err = MPC_Connect(syn_DeviceHandle);
 	::Sleep(2);
 
 	if (err != MpcApiError::ERR_OK)
@@ -190,7 +189,7 @@ void Syn_SPCCtrl::FpGetStatus(uint8_t* pDst, int numBytes)
 	cout << "FpGetStatus(): 0x" << hex << *((uint32_t*)pDst) << endl;
 }
 
-void Syn_SPCCtrl::FpWaitForCMDComplete()
+void Syn_SPCCtrl::FpWaitForCMDComplete(uint16_t ErrorCode)
 {
 	uint8_t numBytes = 2;	// the sensor should return FF FF 00 00, and the 2bytes 00 00 should be OK.
 
@@ -198,7 +197,7 @@ void Syn_SPCCtrl::FpWaitForCMDComplete()
 
 	cout << "FpwaitForCMDComplete(): 0x" << hex << err << endl;
 	
-	if (err != 0 && err != 0xA605)
+	if (err != 0 && err != ErrorCode) //0xA605
 	{
 		Syn_Exception ex(err);
 		ex.SetDescription("FpWaitForCommandCompleteAndCheckErrorCode() DUT communication failure.");
@@ -265,49 +264,23 @@ void Syn_SPCCtrl::FpDisableSleep()
 
 	uint8_t pSrc[2] = { 0 };
 	this->FpWrite(1, VCSFW_CMD::TIDLE_SET, pSrc, sizeof(pSrc));
-	this->FpWaitForCMDComplete();
+	this->FpWaitForCMDComplete(0);
 }
 
 void Syn_SPCCtrl::FpLoadPatch(uint8_t* pPatch, int numBytes)
 {
 	cout << "FpLoadPatch():" << endl;
 
-	uint16_t err;
-
-	err = MPC_FpLoadPatch(syn_DeviceHandle, pPatch, numBytes, TIMEOUT);
-
-	Syn_Exception ex(err);
-	if (MpcApiError::ERR_COMMUNICATION_FAILED == err)
-	{
-		ex.SetDescription("FpLoadPatch() Controller communication failure.");
-		throw ex;
-	}
-	else if (MpcApiError::ERR_OK != err)
-	{
-		ex.SetDescription("FpLoadPatch() DUT communication failure.");
-		throw ex;
-	}
+	this->FpWrite(1, VCSFW_CMD::PATCH, pPatch, numBytes);
+	this->FpWaitForCMDComplete(0);
 }
 
 void Syn_SPCCtrl::FpUnloadPatch()
 {
 	cout << "FpUnLoadPatch():" << endl;
 
-	uint16_t err;
-
-	err = MPC_FpUnloadPatch(syn_DeviceHandle, TIMEOUT);
-
-	Syn_Exception ex(err);
-	if (MpcApiError::ERR_COMMUNICATION_FAILED == err)
-	{
-		ex.SetDescription("FpUnloadPatch() Controller communication failure.");
-		throw ex;
-	}
-	else if (MpcApiError::ERR_OK != err)
-	{
-		ex.SetDescription("FpUnloadPatch() DUT communication failure.");
-		throw ex;
-	}
+	this->FpWrite(1, VCSFW_CMD::UNLOAD_PATCH, (uint8_t*)0, 0);
+	this->FpWaitForCMDComplete(0x9104);
 }
 
 void Syn_SPCCtrl::FpOtpRomRead(int section, int sector, uint8_t* pDst, int numBytes)
