@@ -10,11 +10,19 @@
 //std
 #include <iostream>
 
+//third-part lib
+#include "easylogging++.h"
+INITIALIZE_EASYLOGGINGPP
+
 Syn_Site::Syn_Site()
 :_pSyn_Dut(NULL)
 , _iSiteNumber(0)
 {
 	_OTPTestInfo._TestState = TestReady;
+
+	//el::Loggers::setFilename("/logs/myeasylog.log");
+
+	LOG(INFO) << "easylogging++ test!";
 }
 
 Syn_Site::~Syn_Site()
@@ -108,6 +116,8 @@ bool Syn_Site::ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn
 	opSyn_SiteInstance->_SysConfig = iSyn_SysConfigInfo;
 	opSyn_SiteInstance->_uiSerialNumber = iSerialNumber;
 
+	pSyn_Dut->SetPatchInfo(opSyn_SiteInstance->_SysConfig._listPatchInfo);
+
 	return true;
 }
 
@@ -176,7 +186,7 @@ void Syn_Site::Run()
 
 	uint8_t *pOTPReadWritePatchArray = NULL;
 	int iOTPReadWritePatchSize(0);
-	Syn_XepatchInfo NeedSyn_XepatchInfo;
+	Syn_PatchInfo NeedSyn_XepatchInfo;
 	bool rc = _SysConfig.GetSyn_XepatchInfo(std::string("OtpReadWritePatch"), NeedSyn_XepatchInfo);
 	if (rc)
 	{

@@ -1,4 +1,6 @@
-#pragma once
+//#pragma once
+#ifndef SYN_SITE_H
+#define SYN_SITE_H
 
 //local
 #include "Syn_Config.h"
@@ -69,3 +71,4 @@ private:
 	uint32_t _uiSerialNumber;
 };
 
+#endif // SYN_SITE_H

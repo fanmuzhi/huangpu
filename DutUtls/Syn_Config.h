@@ -24,7 +24,7 @@ struct Syn_TestStepInfo
 	string _strTestStepArgs;
 };
 
-struct Syn_XepatchInfo
+struct Syn_PatchInfo
 {
 	string    _strXepatchName;
 	string    _strXepatchFileName;
@@ -38,9 +38,9 @@ struct Syn_SysConfig
 	Syn_SysConfig(){}
 	~Syn_SysConfig()
 	{
-		for (size_t i = _listXepatchInfo.size(); i >= 1; i--)
+		for (size_t i = _listPatchInfo.size(); i >= 1; i--)
 		{
-			Syn_XepatchInfo CurrentXepatchInfo = _listXepatchInfo[i-1];
+			Syn_PatchInfo CurrentXepatchInfo = _listPatchInfo[i - 1];
 			if (NULL != CurrentXepatchInfo._pArrayBuf && 0 != CurrentXepatchInfo._uiArraySize)
 			{
 				delete[] CurrentXepatchInfo._pArrayBuf;
@@ -86,35 +86,35 @@ struct Syn_SysConfig
 
 			_listTestSteps.push_back(CurrentSyn_TestStepInfo);
 		}
-		_listXepatchInfo.clear();
-		for (size_t i = 1; i <= original._listXepatchInfo.size(); i++)
+		_listPatchInfo.clear();
+		for (size_t i = 1; i <= original._listPatchInfo.size(); i++)
 		{
-			Syn_XepatchInfo CurrentSyn_XepatchInfo;
-			CurrentSyn_XepatchInfo._strXepatchFileName = (original._listXepatchInfo)[i - 1]._strXepatchFileName;
-			CurrentSyn_XepatchInfo._strXepatchName = (original._listXepatchInfo)[i - 1]._strXepatchName;
-			CurrentSyn_XepatchInfo._uiArraySize = (original._listXepatchInfo)[i - 1]._uiArraySize;
+			Syn_PatchInfo CurrentSyn_PatchInfo;
+			CurrentSyn_PatchInfo._strXepatchFileName = (original._listPatchInfo)[i - 1]._strXepatchFileName;
+			CurrentSyn_PatchInfo._strXepatchName = (original._listPatchInfo)[i - 1]._strXepatchName;
+			CurrentSyn_PatchInfo._uiArraySize = (original._listPatchInfo)[i - 1]._uiArraySize;
 
-			CurrentSyn_XepatchInfo._pArrayBuf = new uint8_t[CurrentSyn_XepatchInfo._uiArraySize];
-			for (int j = 0; j < CurrentSyn_XepatchInfo._uiArraySize; j++)
+			CurrentSyn_PatchInfo._pArrayBuf = new uint8_t[CurrentSyn_PatchInfo._uiArraySize];
+			for (int j = 0; j < CurrentSyn_PatchInfo._uiArraySize; j++)
 			{
-				(CurrentSyn_XepatchInfo._pArrayBuf)[j] = ((original._listXepatchInfo)[i - 1]._pArrayBuf)[j];
+				(CurrentSyn_PatchInfo._pArrayBuf)[j] = ((original._listPatchInfo)[i - 1]._pArrayBuf)[j];
 			}
 
-			_listXepatchInfo.push_back(CurrentSyn_XepatchInfo);
+			_listPatchInfo.push_back(CurrentSyn_PatchInfo);
 		}
 
 		return *this;
 	}
 
 	//function
-	bool GetSyn_XepatchInfo(const std::string &strXepatchName, Syn_XepatchInfo &oSyn_XepatchInfo)
+	bool GetSyn_XepatchInfo(const std::string &strXepatchName, Syn_PatchInfo &oSyn_XepatchInfo)
 	{
 		bool IsExists(false);
-		for (size_t i = 1; i <= _listXepatchInfo.size(); i++)
+		for (size_t i = 1; i <= _listPatchInfo.size(); i++)
 		{
-			if (strXepatchName == _listXepatchInfo[i - 1]._strXepatchName)
+			if (strXepatchName == _listPatchInfo[i - 1]._strXepatchName)
 			{
-				oSyn_XepatchInfo = _listXepatchInfo[i-1];
+				oSyn_XepatchInfo = _listPatchInfo[i - 1];
 				IsExists = true;
 				break;
 			}
@@ -143,7 +143,7 @@ struct Syn_SysConfig
 
 	vector<Syn_TestStepInfo> _listTestSteps;//TestSeq
 	
-	vector<Syn_XepatchInfo>	 _listXepatchInfo;//All patch
+	vector<Syn_PatchInfo>	 _listPatchInfo;//All patch
 	
 };
 

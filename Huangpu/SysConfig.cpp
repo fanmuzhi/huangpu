@@ -314,10 +314,10 @@ bool SysConfig::GetSyn_SysConfig(Syn_SysConfig &oSyn_SysConfig)
 	listOfXepathName.push_back(std::string("SecurityMgtProdPatch"));
 	listOfXepathName.push_back(std::string("TakeOwnershipBin"));
 
-	std::vector<Syn_XepatchInfo> listofXepatchInfo;
+	std::vector<Syn_PatchInfo> listofXepatchInfo;
 	for (auto i = 0; i < listOfXepathName.size(); i++)
 	{
-		Syn_XepatchInfo CurrentSyn_XepatchInfo;
+		Syn_PatchInfo CurrentSyn_XepatchInfo;
 
 		std::string strXepatchName(listOfXepathName[i]);
 
@@ -374,7 +374,7 @@ bool SysConfig::GetSyn_SysConfig(Syn_SysConfig &oSyn_SysConfig)
 
 	oSyn_SysConfig._listTestSteps = listOfTestSteps;
 
-	oSyn_SysConfig._listXepatchInfo = listofXepatchInfo;
+	oSyn_SysConfig._listPatchInfo = listofXepatchInfo;
 
 	return true;
 }

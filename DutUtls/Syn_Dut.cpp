@@ -134,6 +134,7 @@ bool Syn_Dut::ReadOTP(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool
 		return false;
 	}*/
 
+	
 	this->PowerOff();
 	this->PowerOn(nPwrVdd, nPwrVio, nPwrVled, nPwrVddh, bDisableSleep);
 	_pSyn_DutCtrl->FpUnloadPatch();

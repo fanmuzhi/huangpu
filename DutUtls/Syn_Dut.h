@@ -2,6 +2,7 @@
 
 //Local:DutCtrl
 #include "Syn_DutCtrl.h"
+#include "Syn_Config.h" 
 
 extern "C" {
 #include "inc/SYN_TestUtils.h"
@@ -9,6 +10,7 @@ extern "C" {
 
 //std
 #include <string>
+#include <vector>
 using namespace std;
 
 enum ProjectType {
@@ -43,7 +45,11 @@ public:
 
 	bool ReadOTP(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep, uint8_t* pPatch, int numBytes, uint8_t* oarMS0, int iSize);
 
+	inline void SetPatchInfo(vector<Syn_PatchInfo> ilistOfPatchInfo){ _listOfPatchInfo = ilistOfPatchInfo; };
+
 protected:
+	
 	Syn_DutCtrl *_pSyn_DutCtrl;
 
+	vector<Syn_PatchInfo> _listOfPatchInfo;
 };
