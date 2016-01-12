@@ -31,7 +31,7 @@ public:
 
 	virtual void FpOtpRomWrite(int section, int sector, uint8_t* pDst, int numBytes);
 
-	virtual void FpWaitForCMDComplete();
+	virtual void FpWaitForCMDComplete(uint16_t ErrorCode);
 
 	virtual void FpWaitDeviceReady();
 

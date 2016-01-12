@@ -48,7 +48,7 @@ public:
 
 	virtual void FpOtpRomWrite(int section, int sector, uint8_t* pDst, int numBytes) = 0;
 
-	virtual void FpWaitForCMDComplete() = 0;
+	virtual void FpWaitForCMDComplete(uint16_t ErrorCode) = 0;
 
 	virtual void FpWaitDeviceReady() = 0;
 
