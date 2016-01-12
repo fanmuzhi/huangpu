@@ -1,4 +1,3 @@
-//#pragma once
 #ifndef SYN_SITE_H
 #define SYN_SITE_H
 
@@ -12,7 +11,6 @@
 #include <vector>
 #include <string>
 #include <time.h>
-
 
 enum Syn_TestState{TestReady = 0xAEF0,TestRunning,TestOK,TestError,TestFailed};
 
@@ -58,6 +56,13 @@ public:
 	inline void GetSysConfig(Syn_SysConfig &oSysConfig){ oSysConfig = _SysConfig; };
 
 	inline void SetSysConfig(Syn_SysConfig iSysConfig){ _SysConfig = iSysConfig; };
+
+
+	//xml test
+	static bool ParseSysConfigXML(std::string strConfigFilePath, Syn_SysConfig &oSyn_SysConfig);
+
+	static void ConvertAsciiToBinary(const std::string strAsciiValue, uint8_t *pDst, int nDstSize);
+
 
 private:
 
