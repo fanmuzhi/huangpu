@@ -48,7 +48,7 @@ bool Syn_Dut::CreateDutInstance(ProjectType iType, Syn_Dut * &opSyn_DutInstance)
 	}
 	else
 	{
-		cout << "Error:Syn_Dut::CreateDutInstance() - Can't retrieve the ProjectType!" << endl;
+		LOG(ERROR) << "Can't retrieve the ProjectType!";
 		return false;
 	}
 
@@ -64,7 +64,7 @@ bool Syn_Dut::SetDutCtrl(Syn_DutCtrl * ipSyn_DutCtrl)
 	}
 	else
 	{
-		cout << "Error:Syn_Dut::SetDutCtrl() - ipSyn_DutCtrl is NULL!" << endl;
+		LOG(ERROR) << "ipSyn_DutCtrl is NULL!";
 		return false;
 	}
 }
@@ -78,7 +78,7 @@ void Syn_Dut::PowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool
 {
 	if (NULL == _pSyn_DutCtrl)
 	{
-		cout << "Error:Syn_Dut::ReadOTP() - _pSyn_DutCtrl is NULL!" << endl;
+		LOG(ERROR) << "_pSyn_DutCtrl is NULL!";
 		return;
 	}
 
@@ -107,7 +107,7 @@ void Syn_Dut::PowerOff()
 	}
 }
 
-bool Syn_Dut::ReadOTP(uint8_t* pPatch, int numBytes, uint8_t* oarMS0, int iSize)
+bool Syn_Dut::ReadOTP(uint8_t* oarMS0, int iSize)
 {
 	if (NULL == _pSyn_DutCtrl)
 	{
@@ -115,8 +115,14 @@ bool Syn_Dut::ReadOTP(uint8_t* pPatch, int numBytes, uint8_t* oarMS0, int iSize)
 		return false;
 	}
 
+	Syn_PatchInfo OtpReadWritePatchInfo;
+	if (!FindPatch("OtpReadWritePatch", OtpReadWritePatchInfo))
+	{
+		LOG(ERROR) << "Cannot find 'OtpReadWritePatch' in config file";
+		return false;
+	}
 	_pSyn_DutCtrl->FpUnloadPatch();
-	_pSyn_DutCtrl->FpLoadPatch(pPatch, numBytes);//OtpReadWritePatch
+	_pSyn_DutCtrl->FpLoadPatch(OtpReadWritePatchInfo._pArrayBuf, OtpReadWritePatchInfo._uiArraySize);//OtpReadWritePatch
 	_pSyn_DutCtrl->FpOtpRomRead(BOOT_SEC, 0, oarMS0, BS0_SIZE);
 	_pSyn_DutCtrl->FpOtpRomRead(BOOT_SEC, 1, &oarMS0[64], BS1_SIZE);
 	_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 0, &oarMS0[128], MS1_SIZE);
@@ -135,5 +141,38 @@ bool Syn_Dut::GetFPImage()
 		return false;
 	}
 
+	//load ImgAcqPatch
+	Syn_PatchInfo ImgAcqPatchInfo;
+	if (!FindPatch("ImageAcqPatch", ImgAcqPatchInfo))
+	{
+		LOG(ERROR) << "Cannot find 'ImageAcqPatch' in config file";
+		return false;
+	}
+	_pSyn_DutCtrl->FpUnloadPatch();
+	_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);
+
+	//check LNA tag in OTP
+	uint8_t pLnaValues[MS0_SIZE];
+	_pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, pLnaValues, MS0_SIZE);
+
+	//construct print file
+	
+
+
 	return true;
+}
+
+bool Syn_Dut::FindPatch(std::string patchName, Syn_PatchInfo &patchInfo)
+{
+	bool IsExists(false);
+	for (auto i = 1; i <= _listOfPatchInfo.size(); i++)
+	{
+		if (patchName == _listOfPatchInfo[i-1]._strXepatchName)
+		{
+			patchInfo = _listOfPatchInfo[i - 1];
+			IsExists = true;
+			break;
+		}
+	}
+	return IsExists;
 }

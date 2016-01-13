@@ -48,13 +48,17 @@ public:
 
 	virtual void FpOtpRomWrite(int section, int sector, uint8_t* pDst, int numBytes) = 0;
 
-	virtual void FpWaitForCMDComplete(uint16_t ErrorCode) = 0;
+	virtual uint8_t FpOtpRomTagRead(uint32_t nExtTag, uint8_t* pDst, int numBytes) = 0;
+
+	virtual void FpWaitForCMDComplete() = 0;
+
+	virtual void FpReadBuff(uint8_t *pDst, int numBytes) = 0;
+
+	virtual void FpReadAndCheckBuff(uint16_t numReturn) = 0;
 
 	virtual void FpWaitDeviceReady() = 0;
 
 	virtual void FpDisableSleep() = 0;
-
-	virtual uint16_t FpWaitForCommandCompleteAndReturnErrorCode(uint32_t numBytes) = 0;
 
 	virtual void FpGetVersion(uint8_t *pDst, int numBytes) = 0;
 
