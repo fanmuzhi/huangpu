@@ -2,7 +2,7 @@
 <LocalSettings>
     <SysConfigFile>D:\test.xml</SysConfigFile>
     <NumSites>2</NumSites>
-    <Site1 Voltages="3300 3300 3300 3300" AdcBaseLines="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ">1456665</Site1>
-    <Site2 Voltages="3300 3300 3300 3300" AdcBaseLines="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ">1684806</Site2>
+    <Site1 AdcBaseLines="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 " Voltages="3300 3300 3300 3300">1456665</Site1>
+    <Site2 AdcBaseLines="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 " Voltages="3300 3300 3300 3300">1684806</Site2>
     <AutoController></AutoController>
 </LocalSettings>

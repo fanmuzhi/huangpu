@@ -87,9 +87,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="rapidxml.hpp" />
-    <ClInclude Include="rapidxml_print.hpp" />
-    <ClInclude Include="rapidxml_utils.hpp" />
     <ClInclude Include="Syn_BinCodes.h" />
     <ClInclude Include="Syn_Config.h" />
     <ClInclude Include="Syn_Dut.h" />
