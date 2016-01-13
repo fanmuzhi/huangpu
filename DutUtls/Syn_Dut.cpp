@@ -122,6 +122,8 @@ bool Syn_Dut::ReadOTP(uint8_t* pPatch, int numBytes, uint8_t* oarMS0, int iSize)
 	_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 0, &oarMS0[128], MS1_SIZE);
 	_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 1, &oarMS0[2176], MS1_SIZE);
 
+	//::Sleep(100);
+
 	return true;
 }
 

@@ -41,7 +41,7 @@ public:
 
 	static bool ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn_SysConfigInfo, Syn_Site * &opSyn_SiteInstance);
 
-	static bool ConstructSiteList(Syn_SysConfig &iSyn_SysConfigInfo, std::vector<Syn_Site*> &olistOfSyn_SiteInstance);
+	static bool ConstructSiteList(std::string strConfigFilePath, std::vector<Syn_Site*> &olistOfSyn_SiteInstance);
 
 	void Run();
 
@@ -56,13 +56,6 @@ public:
 	inline void GetSysConfig(Syn_SysConfig &oSysConfig){ oSysConfig = _SysConfig; };
 
 	inline void SetSysConfig(Syn_SysConfig iSysConfig){ _SysConfig = iSysConfig; };
-
-
-	//xml test
-	static bool ParseSysConfigXML(std::string strConfigFilePath, Syn_SysConfig &oSyn_SysConfig);
-
-	static void ConvertAsciiToBinary(const std::string strAsciiValue, uint8_t *pDst, int nDstSize);
-
 
 private:
 

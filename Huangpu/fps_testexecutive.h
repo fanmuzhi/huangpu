@@ -12,7 +12,6 @@
 #include "MpcApiDll.h"
 
 //Local
-#include "SysConfig.h"
 #include "Syn_Thread.h"
 #include "Syn_LocalSettingsDlg.h"
 

@@ -50,9 +50,6 @@
     <ClCompile Include="GeneratedFiles\qrc_fps_testexecutive.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="SysConfig.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Syn_Thread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -98,9 +95,6 @@
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_fps_testexecutive.h">
       <Filter>Generated Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SysConfig.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Syn_LocalSettingConfig.h">
       <Filter>Header Files</Filter>

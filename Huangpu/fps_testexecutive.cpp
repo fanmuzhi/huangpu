@@ -153,7 +153,6 @@ void FPS_TestExecutive::Initialize()
 		}
 	}
 
-
 	//Site TableWidget
 	for (int t = ui.TestTableWidget->columnCount(); t >= 1; t--)
 	{
@@ -183,25 +182,6 @@ bool FPS_TestExecutive::ConstructSiteList(QString strConfigFilePath,bool SendMsg
 		return false;
 	}
 
-	//Parse SysConfig File(xml)
-	SysConfig *pSysConfigOperation = NULL;
-	rc = SysConfig::CreateSysConfigInstance(strConfigFilePath, pSysConfigOperation);
-	if (!rc || NULL == pSysConfigOperation)
-	{
-		if (SendMsg)
-			QMessageBox::critical(this, QString("Error"), QString("Create SysConfig Instance is failed!"));
-		cout << "Error:FPS_TestExecutive::ConstructSiteList() - ::CreateSysConfigInstance is failed!" << endl;
-		return false;
-	}
-	Syn_SysConfig synSysConfig;
-	rc = pSysConfigOperation->GetSyn_SysConfig(synSysConfig);
-	if (!rc)
-	{
-		if (SendMsg)
-			QMessageBox::critical(this, QString("Error"), QString("Can't parse the config file,check it please!"));
-		return false;
-	}
-
 	//clear
 	if (0 != _ListOfSitePtr.size())
 	{
@@ -216,7 +196,7 @@ bool FPS_TestExecutive::ConstructSiteList(QString strConfigFilePath,bool SendMsg
 		_ListOfSitePtr.clear();
 	}
 
-	rc = Syn_Site::ConstructSiteList(synSysConfig, _ListOfSitePtr);
+	rc = Syn_Site::ConstructSiteList(strConfigFilePath.toStdString(), _ListOfSitePtr);
 	size_t ilistCounts = _ListOfSitePtr.size();
 	if (0 == ilistCounts)
 	{
@@ -224,15 +204,21 @@ bool FPS_TestExecutive::ConstructSiteList(QString strConfigFilePath,bool SendMsg
 			QMessageBox::critical(this, QString("Error"), QString("Can't construct the Site list,check it please!"));
 		return false;
 	}
+
+	if (DeviceCounts < ilistCounts)
+	{
+		if (SendMsg)
+			QMessageBox::critical(this, QString("Error"), QString("Current Devices' counts is more than limit,the limit is ") + QString::number(DeviceCounts) + ("!"));
+
+		ilistCounts = DeviceCounts;
+	}
+
 	for (size_t i = 0; i < ilistCounts; i++)
 	{
 		_SynThreadArray[i].SetSite(_ListOfSitePtr[i]);
 		_SynThreadArray[i].SetStopTag(true);
 	}
 	_iRealDeviceCounts = ilistCounts;
-
-	delete pSysConfigOperation;
-	pSysConfigOperation = NULL;
 
 	return true;
 }
@@ -591,6 +577,3 @@ void FPS_TestExecutive::Display(uint8_t* pDst, unsigned int StartPos, unsigned i
 	}
 	//ui.textBrowser->append(s);
 }
-
-
-

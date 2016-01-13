@@ -4,7 +4,7 @@
 
 #include <QReadWriteLock>
 
-//QReadWriteLock Lock;
+QReadWriteLock Lock;
 
 Syn_Thread::Syn_Thread()
 : QThread()
@@ -28,24 +28,8 @@ void Syn_Thread::run()
 	//Lock.tryLockForWrite();
 
 	string strTime("");
-	//while (!_stopped)
-	//{
-	//	/*_pSyn_Site->TestSet();
-
-	//	_pSyn_Site->TestGetValue(strTime);
-
-	//	QString qstrTime(QString::fromStdString(strTime));
-	//	//emit send(qstrTime);
-	//	
-	//	_SynSt.qValue = qstrTime;
-
-	//	emit send(&_SynSt);*/
-
-	//	/*_pSyn_Site->Run();
-
-	//	_pSyn_Site->GetOTPTestInfo(_TestInfo);
-	//	emit send(&_TestInfo);*/
-	//}
+	
+	Lock.lockForWrite();
 
 	_pSyn_Site->Run();
 
@@ -54,7 +38,7 @@ void Syn_Thread::run()
 
 	_stopped = true;
 
-	//Lock.unlock();
+	Lock.unlock();
 
 }
 
