@@ -83,7 +83,7 @@ private:
 
 	bool _bStopTag;
 
-	std::ofstream _logfile;
+	//std::ofstream _logfile;
 
 	Syn_LocalSettingsDlg *_pSyn_LocalSettingsDlg;
 

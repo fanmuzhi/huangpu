@@ -4,7 +4,7 @@
 
 #include <QReadWriteLock>
 
-QReadWriteLock Lock;
+QReadWriteLock Lock(QReadWriteLock::Recursive);
 
 Syn_Thread::Syn_Thread()
 : QThread()
@@ -24,21 +24,24 @@ void Syn_Thread::run()
 	if (NULL == _pSyn_Site)
 		return;
 
-	//Lock.lockForRead();
-	//Lock.tryLockForWrite();
-
 	string strTime("");
+
+	unsigned int iSiteNumber(0);
+	_pSyn_Site->GetSiteNumber(iSiteNumber);
 	
-	Lock.lockForWrite();
+	
+
+	//Lock.lockForWrite();
 
 	_pSyn_Site->Run();
+
+	//Lock.unlock();
 
 	_pSyn_Site->GetOTPTestInfo(_TestInfo);
 	emit send(&_TestInfo);
 
 	_stopped = true;
 
-	Lock.unlock();
 
 }
 

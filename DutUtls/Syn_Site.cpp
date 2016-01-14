@@ -13,7 +13,8 @@
 #include <io.h>
 #include <stdio.h>
 
-//third-party
+#define ELPP_STL_LOGGING
+#define ELPP_THREAD_SAFE
 #include "easylogging++.h"
 INITIALIZE_EASYLOGGINGPP
 
@@ -255,6 +256,8 @@ void Syn_Site::Run()
 	}
 
 	_OTPTestInfo._TestState = TestOK;
+
+	::Sleep(5000);
 
 	return;
 }

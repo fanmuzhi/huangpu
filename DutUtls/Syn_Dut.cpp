@@ -165,9 +165,9 @@ bool Syn_Dut::GetFPImage()
 bool Syn_Dut::FindPatch(std::string patchName, Syn_PatchInfo &patchInfo)
 {
 	bool IsExists(false);
-	for (auto i = 1; i <= _listOfPatchInfo.size(); i++)
+	for (size_t i = 1; i <= _listOfPatchInfo.size(); i++)
 	{
-		if (patchName == _listOfPatchInfo[i-1]._strXepatchName)
+		if (patchName == _listOfPatchInfo[i - 1]._strXepatchName)
 		{
 			patchInfo = _listOfPatchInfo[i - 1];
 			IsExists = true;
