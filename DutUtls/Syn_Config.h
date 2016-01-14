@@ -123,6 +123,7 @@ struct Syn_SysConfig
 		return IsExists;
 	}
 
+
 	//variables
 	string			_strAutoController;//AutoController
 	string			_strDutType;//DutType

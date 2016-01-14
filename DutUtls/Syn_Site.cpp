@@ -24,7 +24,7 @@ Syn_Site::Syn_Site()
 {
 	_OTPTestInfo._TestState = TestReady;
 
-	LOG(INFO) << "easylogging++ test!";
+	//LOG(INFO) << "easylogging++ test!";
 
 	LOG(INFO) << "SITE START";
 }

@@ -1,7 +1,6 @@
 #pragma once
 
-//ATL
-#include <atlstr.h>
+//c
 #include <stdio.h> 
 
 //local
@@ -46,7 +45,12 @@ public:
 
 	virtual void FpGetVersion(uint8_t *pDst, int numBytes);
 
-	//virtual void UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader, uint32_t nRevApplication);
+
+
+
+
+	//test
+	virtual void UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader, uint32_t nRevApplication);
 
 protected:
 

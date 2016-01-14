@@ -6,6 +6,7 @@
 //MPC_API
 #include "MpcApiDll.h"
 #include "MpcApiError.h"
+#include "MPCErrors.h"
 
 //std
 #include <iostream>
@@ -382,5 +383,169 @@ void Syn_SPCCtrl::FpGetVersion(uint8_t *pDst, int numBytes)
 	{
 		ex.SetDescription("FpGetVersion() DUT communication failure.");
 		throw ex;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void Syn_SPCCtrl::UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader, uint32_t nRevApplication)
+{
+	uint16_t error = 0;
+	std::string str("");
+	int fileAppRev = 0, fileBootloaderRev = 0, bSuccess = 0;
+	bool AppUpdate, BootloaderUpdate, sequenceFound;
+	char filename_application[200];
+	char filename_bootloader[200];
+	FILE *pFileApplication, *pFileBootloader;
+	char line[44] = { 0 };
+
+	sprintf_s(filename_application, "Mpc04Application.hex");
+	sprintf_s(filename_bootloader, "Mpc04BootloaderLoader.hex");
+	pFileApplication = fopen(filename_application, "r");
+	pFileBootloader = fopen(filename_bootloader, "r");
+	if ((pFileApplication == NULL) || ((pFileBootloader == NULL)))
+	{
+		LOG(ERROR) << "Mpc04Application.hex or Mpc04BootloaderLoader.hex is null: " << syn_SerialNumber;
+		return;
+	}
+	else
+	{
+		AppUpdate = false;
+		BootloaderUpdate = false;
+		sequenceFound = false;
+
+		//Acquire the bootloader version from Mpc04BootloaderLoader.hex
+		while ((fgets(line, sizeof line, pFileBootloader) != NULL) && (!sequenceFound))
+		{
+			for (int i = 0; i<44 - 7; i++)
+			{
+				if ((line[i + 0] == '4') && (line[i + 1] == 'C') && (line[i + 2] == '5') && (line[i + 3] == '0') && (line[i + 4] == '5') && (line[i + 5] == '0') && (line[i + 6] == '4') && (line[i + 7] == '1'))
+				{
+					fgets(line, sizeof line, pFileBootloader);
+					fgets(line, sizeof line, pFileBootloader);
+					sequenceFound = true;
+					//str.Format("%c%c%c%c%c%c%c%c", line[15], line[16], line[13], line[14], line[11], line[12], line[9], line[10]);
+					str = line[15]+line[16]+line[13]+line[14]+line[11]+line[12]+line[9]+line[10];
+					sscanf(str.c_str(), "%x", &fileBootloaderRev);
+					if (((int)nRevBootLoader != fileBootloaderRev))
+						BootloaderUpdate = true;
+
+					break;
+				}
+			}
+		}
+
+		//Acquire the firmware version from Mpc04Application.hex
+		sequenceFound = false;
+		while ((fgets(line, sizeof line, pFileApplication) != NULL) && (!sequenceFound))
+		{
+			for (int i = 0; i<44 - 7; i++)
+			{
+				if ((line[i + 0] == '4') && (line[i + 1] == 'C') && (line[i + 2] == '5') && (line[i + 3] == '0') && (line[i + 4] == '5') && (line[i + 5] == '0') && (line[i + 6] == '4') && (line[i + 7] == '1'))
+				{
+					fgets(line, sizeof line, pFileApplication);
+					fgets(line, sizeof line, pFileApplication);
+					sequenceFound = true;
+					//str.Format("%c%c%c%c%c%c%c%c", line[15], line[16], line[13], line[14], line[11], line[12], line[9], line[10]);
+					str = line[15]+line[16]+line[13]+line[14]+line[11]+line[12]+line[9]+line[10];
+					sscanf(str.c_str(), "%x", &fileAppRev);
+
+					if (((int)nRevApplication != fileAppRev))
+						AppUpdate = true;
+
+					break;
+				}
+			}
+		}
+	}
+
+	uint32_t serNum;
+	MPC_GetDeviceSerialNumber(syn_DeviceHandle, &serNum);
+	if ((BootloaderUpdate))
+	{
+		LOG(INFO) << "MPC04 Bootloader will be update,Please wait...: " << syn_SerialNumber;
+
+		//Asynchronously, start the update.
+		error = MPC_AsyncUpdateFirmware(syn_DeviceHandle, (LPCTSTR)filename_bootloader, NULL, NULL, NULL);
+
+		//Update the modless progress dialog.
+		uint32_t nPercent = 0;
+		while ((nPercent < 100) && (error == Errors::NO_MPC_ERROR))
+		{
+			error = MPC_GetUpdateFirmwareProgress(syn_DeviceHandle, &nPercent);
+			LOG(INFO) << "MPC04 Bootloader update process: " << nPercent;
+		}
+
+		//Wait for the Update command to complete.
+		::Sleep(6000);
+
+		if (error == Errors::NO_MPC_ERROR)
+			error = MPC_GetMpcDeviceHandle(serNum, &syn_DeviceHandle);
+		if (error == Errors::NO_MPC_ERROR)
+			error = MPC_Connect(syn_DeviceHandle);
+
+		if (error == Errors::NO_MPC_ERROR)
+			LOG(INFO) << "Bootloader update completed sucessfully!: " << syn_SerialNumber;
+		else
+			LOG(ERROR) << "Bootloader update failure!: " << syn_SerialNumber;
+	}
+
+	if (AppUpdate || BootloaderUpdate)
+	{
+		LOG(INFO) << "MPC04 Firmware will be updated.Please wait...: " << syn_SerialNumber;
+
+		//Asynchronously, start the update.
+		error = MPC_AsyncUpdateFirmware(syn_DeviceHandle, (LPCTSTR)filename_application, NULL, NULL, NULL);
+
+		//When the percent goes to zero it means the API has started the download.
+		//We want to wait until the download is started.
+		uint32_t nPercent;
+		error = MPC_GetUpdateFirmwareProgress(syn_DeviceHandle, &nPercent);
+		while ((nPercent == 100) && (error == Errors::NO_MPC_ERROR))
+			error = MPC_GetUpdateFirmwareProgress(syn_DeviceHandle, &nPercent);
+
+		//Update the modeless progress dialog.
+		while ((nPercent < 100) && (error == Errors::NO_MPC_ERROR))
+		{
+			error = MPC_GetUpdateFirmwareProgress(syn_DeviceHandle, &nPercent);
+			LOG(INFO) << "MPC04 Firmware update process: " << nPercent;
+		}
+
+		//Wait for the Update command to complete.
+		::Sleep(8000);
+
+		if (error == Errors::NO_MPC_ERROR)
+			error = MPC_GetMpcDeviceHandle(serNum, &syn_DeviceHandle);
+		if (error == Errors::NO_MPC_ERROR)
+			error = MPC_Connect(syn_DeviceHandle);
+
+		if (error == Errors::NO_MPC_ERROR)
+			LOG(INFO) << "Firmware update completed sucessfully!: " << syn_SerialNumber;
+		else
+			LOG(ERROR) << "Firmware update failure!: " << syn_SerialNumber;
 	}
 }

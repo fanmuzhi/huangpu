@@ -152,7 +152,7 @@ bool Syn_Dut::GetFPImage()
 	_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);
 
 	//check LNA tag in OTP
-	uint8_t pLnaValues[MS0_SIZE];
+	uint8_t pLnaValues[MS0_SIZE] = {0};
 	_pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, pLnaValues, MS0_SIZE);
 
 	//construct print file
