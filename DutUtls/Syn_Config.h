@@ -123,6 +123,23 @@ struct Syn_SysConfig
 		return IsExists;
 	}
 
+	bool GetSyn_TestStepInfo(const std::string &strTestStepName, std::string &ostrArgsValue)
+	{
+		bool IsExists(false);
+		for (size_t i = 1; i <= _listTestSteps.size(); i++)
+		{
+			if (strTestStepName == _listTestSteps[i - 1]._strTestStepName)
+			{
+				ostrArgsValue = _listTestSteps[i - 1]._strTestStepArgs;
+				IsExists = true;
+				break;
+			}
+		}
+
+		return IsExists;
+	}
+
+
 	//variables
 	string			_strAutoController;//AutoController
 	string			_strDutType;//DutType

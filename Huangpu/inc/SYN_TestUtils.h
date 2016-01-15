@@ -10,7 +10,7 @@
 #define SYN_TRUE							!SYN_FALSE
 
 #define MAJOR_VER							1
-#define MINOR_VER							8
+#define MINOR_VER							12
 #define DEVOLOPMENT_VER						0
 
 #define MAXROW								200
@@ -18,8 +18,10 @@
 #define MAXFRAMES							50
 #define MAX_PRINTFILE_SIZE					20000
 #define MAX_OPENS_SHORTS_RES				5000
+#define MAX_AFE_TEST_RES					5000
 #define MAX_PIXEL_PATCH_RES_BYTES			3000
 #define MAX_WOVAR_RES_BYTES					3000
+#define MAX_LED_TEST_MSG_LEN				500
 
 #define NUM_ADC_BASE_READINGS				4
 #define NUM_CURRENT_DRAW_READINGS			5
@@ -44,18 +46,19 @@ typedef unsigned char UINT8; // UINT8 is created to handle MPC04 data
 #define	MAIN_SEC			0
 #define	BOOT_SEC			1
 
-#define	TAG_CAL				0X0E
-#define	EXT_TAG_LNA			0x80000003L
-#define	EXT_TAG_PGA_OOPR	0x80000007L		//PGA one offset per row.
-#define	EXT_TAG_SNR			0x80000005L
-#define	EXT_TAG_FlexId		0x80000008L
-#define	EXT_TAG_WOF_BOT		0x80000009L
-#define	EXT_TAG_DutTempAdc	0x8000000AL
-#define	EXT_TAG_WOF_TOP		0x8000000BL
-#define	EXT_TAG_SCM_WOF_BOT	0x8000000DL
-#define	EXT_TAG_PGA_OOPP	0x8000000CL		//PGA one offset per pixel.
-#define	EXT_TAG_PRODUCT_ID	0x00000002L
-#define	NUM_EXT_TAGS		10
+#define	TAG_CAL					0X0E
+#define	EXT_TAG_LNA				0x80000003L
+#define	EXT_TAG_PGA_OOPR		0x80000007L		//PGA one offset per row.
+#define	EXT_TAG_SNR				0x80000005L
+#define	EXT_TAG_FlexId			0x80000008L
+#define	EXT_TAG_WOF_BOT			0x80000009L
+#define	EXT_TAG_DutTempAdc		0x8000000AL
+#define	EXT_TAG_WOF_TOP			0x8000000BL
+#define	EXT_TAG_SCM_WOF_BOT		0x8000000DL
+#define	EXT_TAG_PGA_OOPP		0x8000000CL		//PGA one offset per pixel.
+#define	EXT_TAG_PRODUCT_ID		0x00000002L
+#define EXT_TAG_PART_NUMBERS	0x8000000FL
+#define	NUM_EXT_TAGS		11
 
 #define	PGA_OOPP_OTP_ROW1					4
 #define	PGA_OOPP_OTP_ROW2					18
@@ -72,15 +75,17 @@ typedef unsigned char UINT8; // UINT8 is created to handle MPC04 data
 
 #define	KNUMGAINS			4
 
-#define NUM_REGISTERS_VIPER_TRIM_OSC 7
-#define SLOW_OSC_CALIBRATION_VALUE 502
-#define SLOW_OSC_FINE_TUNING_RANGE 32
-#define SLOW_OSC_LOW_LIMIT 475
-#define SLOW_OSC_HIGH_LIMIT 501
+#define NUM_REGISTERS_VIPER_TRIM_OSC	  7
+#define NUM_REGISTERS_METAL_TRIM_OSC	  8
+#define NUM_REGISTERS_METAL_TRIM_SLOW_OSC 6
+#define SLOW_OSC_CALIBRATION_VALUE		  502
+#define SLOW_OSC_FINE_TUNING_RANGE		  32
+#define SLOW_OSC_LOW_LIMIT				  475
+#define SLOW_OSC_HIGH_LIMIT				  501
 
 #define MPC_SELF_TEST_BUFFER 32
 
-
+#define MAX_PART_NUMBER_LENGTH 20
 
 
 
@@ -120,7 +125,14 @@ typedef struct
 
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
-
+typedef struct 
+{
+	uint8_t      mt_partnum[MAX_PART_NUMBER_LENGTH];  /* MT SW part number */
+    uint8_t      mt_config[MAX_PART_NUMBER_LENGTH];   /* MT test config */
+    uint8_t      mt_month;       /* 0-11 */
+    uint8_t      mt_day;         /* 0-30 */
+    uint16_t     mt_year;        /* 0-65535 (little-endian format) */
+}MtAndConfigPnInfo;
 //structrues for SNR Test
 // It's possible to provide capability to get args from SysConfig.xml
 // It needs Mike's confirm before we use these parameters in SYN_SNRExecute()
@@ -174,6 +186,46 @@ typedef struct
 }SNRResults;
 //end structrues for SNR Test
 
+
+///////////////////////////// ////////////////////////
+//LEDTest Structures
+typedef struct
+{
+	int		  m_nGPIO1;
+	int		  m_nGPIO2;
+	int		  m_nGPIO3;
+	char	  m_sUserMsg[MAX_LED_TEST_MSG_LEN];
+	int		  m_nMpcGpioPin;
+	uint32_t  m_nRegisterAddress;
+	int		  m_nPokeValue;
+	int		  m_nTimeout;
+	int		  m_bExecuted;
+}LEDTestInfo;
+typedef struct
+{
+	int m_bPass;
+}LEDTestResults;
+
+//SdkBaselineTest Structures
+typedef struct
+{
+	int		  m_nTrimRight;
+	int		  m_nTrimLeft;
+	int		  m_nTrimTop;
+	int		  m_nTrimBottom;
+	int		  m_nRightShiftBits;
+	int		  m_nStrideWidth;
+	int		  m_nMaxSumAllowed;
+	int		  m_nPercentFail;
+	int		  m_bExecuted;
+}SdkBaselineTestInfo;
+typedef struct
+{
+	int m_bPass;
+	int m_nNumBadRows;
+	int m_nNumGoodRows;
+}SdkBaselineTestResults;
+
 ///////////////////////////// ////////////////////////
 //structrues for Initialization Step
 typedef struct
@@ -209,6 +261,9 @@ typedef struct
 	float		m_nMeasuredVio;
 	float		m_nMeasuredVddtx;
 	float		m_nMeasuredVled;
+	uint8_t*	pModuleTestPatchPtr;
+	int			nModuleTestPatchSize;
+	int			bProductionMode;
 }InitializationResults;
 
 ///////////////////////////// ////////////////////////
@@ -229,6 +284,7 @@ typedef struct
 	int			m_nNumPgaSamples;
 	int			m_nPgaVarianceLimit;
 	int			m_nHpfOffset;
+	int			m_bPgaFineTuning;
 }CalibrationInfo;
 
 typedef struct
@@ -238,11 +294,25 @@ typedef struct
 	uint8_t		m_pPrintPatch[MAX_PRINTFILE_SIZE + 4];
 	int			m_nLNA_count, m_nPGA_OOPR_count, m_nPGA_OOPP_count, m_nSNR_count;
 	int			m_nFlexId_count, m_nWofBot_count, m_nWofTop_count, m_nDutTempAdc_count;
-	int			m_nScmWofTop_count, m_nScmWofBot_count, m_nProductId_count;
+	int			m_nScmWofTop_count, m_nScmWofBot_count, m_nProductId_count, m_nPartNumberId_count;
 	uint8_t		m_arPgaOffsets[NUM_PGA_OOPP_OTP_ROWS * MAXCOL];
 	uint8_t     m_pPGAOtpArray[NUM_PGA_OOPP_OTP_ROWS * MAXCOL];
 	int			m_nStage2VarianceScore;
 }CalibrationResults;
+
+///////////////////////////// ////////////////////////
+typedef struct
+{
+	int			m_bExecuted;
+	int			m_nNumResBytes;
+	int			m_nDelay_ms;
+}AFETestInfo;
+
+typedef struct
+{
+	int			m_bPass;	
+	uint8_t		m_pResponse[MAX_AFE_TEST_RES];
+}AFETestResults;
 
 ///////////////////////////	////////////////////////
 #define MAX_WOF_DATA		5 * 1024
@@ -332,6 +402,7 @@ typedef struct
 typedef struct
 {
 	int			m_nNumResBytes;
+	int			m_nDelay_ms;
 	int			m_bExecuted;
 }WoVarInfo;
 
@@ -366,7 +437,9 @@ typedef struct
 //structrues for Pixel Test
 typedef struct
 {
+	int	m_bExecuted;
 	int m_nNumResBytes;
+	int m_nDelay_ms;
 }PixelPatchInfo;
 
 typedef struct
@@ -581,6 +654,7 @@ typedef struct
 {
 	int			m_bExecuted;
 	int			m_nNumResBytes;
+	int			m_nDelay_ms;
 }OpensShortsInfo;
 
 typedef struct
@@ -681,6 +755,21 @@ typedef struct
 	uint8_t			m_pResponse[MAX_SPI_FLASH_RES];
 }SpiFlashResults;
 
+//////////////////////////////////////////////////
+enum	{MAX_SPI_OWNERSHIP_RES = 2048};
+
+typedef struct
+{
+	int				m_bExecuted;
+	int				m_nNumResBytes;
+}SpiOwnershipInfo;
+
+typedef struct
+{
+	int				m_bPass;
+	uint8_t			m_pResponse[MAX_SPI_OWNERSHIP_RES];
+}SpiOwnershipResults;
+
 //////////////////////////// ////////////////////////
 enum	{NUM_BTN_CHECKS = 10};
 
@@ -705,6 +794,7 @@ typedef struct
 {	
 	int     m_bExecuted;
 	int		m_nNumResBytes;
+	int		m_nDelay_ms;
 	uint8_t	m_pResponse[3000];
 }RAMTestInfo;
 
@@ -783,9 +873,12 @@ typedef struct
 //osc trim
 typedef struct
 {
-	int		m_bExecuted;
-	double nUpperLimit;
-	double nLowerLimit;
+	int		  m_bExecuted;
+	uint32_t  nLowerLimit_Hz;
+	uint32_t  nUpperLimit_Hz;
+	uint32_t  nInitialTrim;
+	uint32_t  m_OscTrimDefault;
+	int		  m_bDefaultValueUsed;
 }OscTrimInfo;
 
 typedef struct
@@ -797,15 +890,19 @@ typedef struct
 //Slow Osc
 typedef struct
 {
-	int		m_bExecuted;
-	double nUpperLimit;
-	double nLowerLimit;
+	int	           m_bExecuted;
+	uint32_t	   nUpperLimit_Hz;
+	uint32_t	   nLowerLimit_Hz;
+	uint32_t	   m_nDefaultTrim;
+	uint32_t	   m_nDefaultBias;
 }SlowOscInfo;
 
 typedef struct
 {
-	int			m_bPass;
-	uint32_t	m_nSlowOsc;
+	int        m_bPass;
+	uint32_t   m_nTrim;
+	uint32_t   m_nBias;
+	int		   m_bDefaultValueUsed;
 }SlowOscResults;
 
 //RetainMode:
@@ -824,11 +921,33 @@ typedef struct
 	float		m_nRetainModeCurrent;
 }RetainModeResults;
 
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+typedef struct
+{
+	int			m_bExecuted;
+	int			m_nGain;
+	int			m_nMaxCurrent_uA;
+	int			m_nMinCurrent_uA;
+	int			m_nDelay_ms;
+}WofLowPowerInfo;
+
+typedef struct
+{
+	int			m_bPass;
+	float		m_nCurrent_uA;
+}WofLowPowerResults;
+
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 typedef struct
 {
 	int			m_bProduction; 
 	int			m_bEngineering;	
 	int			m_bExecuted;		
+	int			m_bUsbMode;
+	int			m_bSpiOwnership;
+	int			m_nNumSpiOwnershipRuns;
 }SecurityStepInfo;
 
 typedef struct
@@ -850,7 +969,7 @@ int get_signal_value(FPSFrame* fingerdata, FPSFrame* nofingerdata, SNRInfo* info
 float get_noise_value(FPSFrame* fingerdata, FPSFrame* nofingerdata, SNRInfo* info, int minrow, int maxrow, int mincol, int maxcol,int regions,SNRResults* results);
 void SNR_Fill_Log(FPSFrame* fingerdata, FPSFrame* nofingerdata, SNRResults* pResults, int numRows, int numCols, int numFrames);
 void get_span(int span[MAXFRAMES], int *min, int *max, int numFrames);
-void SYN_SNRExecute(AcquireFPSResults* fingerdata, AcquireFPSResults* nofingerdata, SNRInfo* info,SNRResults* results,int numRows, int numCols);
+void SYN_SNRExecute(AcquireFPSResults* fingerdata, AcquireFPSResults* nofingerdata, SNRInfo* info,SNRResults* results,int numRows, int numCols, int bIsBga);
 FPSFrame* get_snr_frame_ptr(FPSFrame *smp,int frameNo);
 //END OF FUNCTION PROTOTYPES for SNR Test
 
@@ -873,6 +992,7 @@ int max_array(int a[], int num_elements);
 //FUNCTION PROTOTYPES for WofTest
 void SYN_WofTestExecute(WofTestInfo* pInfo, WofTestResults* pResults);
 void SYN_SCMWofTestExecute(SCM_WofTestInfo* pInfo, SCM_WofTestResults* pResults);
+void SYN_WofLowPowerExecute(WofLowPowerInfo*, WofLowPowerResults*);
 
 //FUNCTION PROTOTYPES for WoVarTest
 void SYN_WoVarTestExecute(WoVarInfo* pInfo, WoVarResults* pResults);
@@ -942,7 +1062,7 @@ float std_dev(float pData[], int size);
 /////////////////////////////////////////////////////////////
 int find_min(float* pArray, int size);
 int find_max(float* pArray, int size);
-
+int getWovarLineVariance(uint8_t *pData, int nLength, int nStride, int nBitsIgnored);
 //Imperfections
 void SYN_ImperfectionsTestExecute(SNRResults* fingerdata, ImperfectionsTestInfo* info, ImperfectionsTestResults* results,int nTrimLeft, int nTrimRight, int nTrimTop, int nTrimBottom,int numRows, int numCols);
 
@@ -955,4 +1075,8 @@ void SYN_GetVersion(int* pMajorVer, int* pMinorVer, int* pDevelopmentVer);
 //RetainMode
 void SYN_RetainModeExecute(RetainModeInfo* pInfo, RetainModeResults* pResults);
 
+//FUNCTION PROTOTYPES for AFE Test
+void SYN_AFETestExecute(AFETestInfo* pInfo, AFETestResults* pResults);
+
+void SYN_SDKBaselineTest(SdkBaselineTestInfo* pInfo, SdkBaselineTestResults* pResults, AcquireFPSResults* nofingerdata, int nNumRows, int nNumCols, int numFrames);
 #endif //__SYN_TestUtils__

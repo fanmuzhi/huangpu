@@ -37,10 +37,10 @@ bool Syn_SysConfigOperation::GetSysConfigInstance(std::string strConfigFilePath,
 		delete opSyn_SysConfigOperationInstance;
 		opSyn_SysConfigOperationInstance = NULL;
 		cout << "Error:Syn_SysConfigOperation::GetSysConfigInstance() - ::Parse is failed!" << endl;
-		return NULL;
+		return false;
 	}
 
-	return opSyn_SysConfigOperationInstance;
+	return true;
 }
 
 bool Syn_SysConfigOperation::Parse()
@@ -76,68 +76,68 @@ bool Syn_SysConfigOperation::GetSysConfig(Syn_SysConfig &oSyn_SysConfig)
 		if (std::string("AutoController") == strNodeName)
 		{
 			oSyn_SysConfig._strAutoController = node->value();
-			cout << "" << oSyn_SysConfig._strAutoController << endl;
+			//cout << "" << oSyn_SysConfig._strAutoController << endl;
 			SysConfigJudgeTag += 1;
 		}
 		else if (std::string("DutType") == strNodeName)
 		{
 			oSyn_SysConfig._strDutType = node->value();
-			cout << "" << oSyn_SysConfig._strDutType << endl;
+			//cout << "" << oSyn_SysConfig._strDutType << endl;
 			SysConfigJudgeTag += 1;
 		}
 		else if (std::string("DutController") == strNodeName)
 		{
 			oSyn_SysConfig._strDutController = node->value();
-			cout << "" << oSyn_SysConfig._strDutController << endl;
+			//cout << "" << oSyn_SysConfig._strDutController << endl;
 			SysConfigJudgeTag += 1;
 
 		}
 		else if (std::string("DutCom") == strNodeName)
 		{
 			oSyn_SysConfig._strDutCom = node->value();
-			cout << "" << oSyn_SysConfig._strDutCom << endl;
+			//cout << "" << oSyn_SysConfig._strDutCom << endl;
 			SysConfigJudgeTag += 1;
 
 		}
 		else if (std::string("DutPwrVdd_mV") == strNodeName)
 		{
 			oSyn_SysConfig._uiDutpwrVdd_mV = atoi(node->value());
-			cout << "" << oSyn_SysConfig._uiDutpwrVdd_mV << endl;
+			//cout << "" << oSyn_SysConfig._uiDutpwrVdd_mV << endl;
 			SysConfigJudgeTag += 1;
 
 		}
 		else if (std::string("DutPwrVio_mV") == strNodeName)
 		{
 			oSyn_SysConfig._uiDutpwrVio_mV = atoi(node->value());
-			cout << "" << oSyn_SysConfig._uiDutpwrVio_mV << endl;
+			//cout << "" << oSyn_SysConfig._uiDutpwrVio_mV << endl;
 			SysConfigJudgeTag += 1;
 
 		}
 		else if (std::string("DutPwrVled_mV") == strNodeName)
 		{
 			oSyn_SysConfig._uiDutpwrVled_mV = atoi(node->value());
-			cout << "" << oSyn_SysConfig._uiDutpwrVled_mV << endl;
+			//cout << "" << oSyn_SysConfig._uiDutpwrVled_mV << endl;
 			SysConfigJudgeTag += 1;
 
 		}
 		else if (std::string("DutPwrVddh_mV") == strNodeName)
 		{
 			oSyn_SysConfig._uiDutpwrVddh_mV = atoi(node->value());
-			cout << "" << oSyn_SysConfig._uiDutpwrVddh_mV << endl;
+			//cout << "" << oSyn_SysConfig._uiDutpwrVddh_mV << endl;
 			SysConfigJudgeTag += 1;
 
 		}
 		else if (std::string("NumRows") == strNodeName)
 		{
 			oSyn_SysConfig._uiNumRows = atoi(node->value());
-			cout << "" << oSyn_SysConfig._uiNumRows << endl;
+			//cout << "" << oSyn_SysConfig._uiNumRows << endl;
 			SysConfigJudgeTag += 1;
 
 		}
 		else if (std::string("NumCols") == strNodeName)
 		{
 			oSyn_SysConfig._uiNumRows = atoi(node->value());
-			cout << "" << oSyn_SysConfig._uiNumRows << endl;
+			//cout << "" << oSyn_SysConfig._uiNumRows << endl;
 			SysConfigJudgeTag += 1;
 
 		}
@@ -151,21 +151,21 @@ bool Syn_SysConfigOperation::GetSysConfig(Syn_SysConfig &oSyn_SysConfig)
 			{
 				oSyn_SysConfig._bWriteBootSectors = true;
 			}
-			cout << "" << oSyn_SysConfig._bWriteBootSectors << endl;
+			//cout << "" << oSyn_SysConfig._bWriteBootSectors << endl;
 			SysConfigJudgeTag += 1;
 
 		}
 		else if (std::string("BootSector0") == strNodeName)
 		{
 			ConvertAsciiToBinary(node->value(), oSyn_SysConfig._arrUserSpecifiedBS0, BS0_SIZE);
-			cout << "" << node->value() << endl;
+			//cout << "" << node->value() << endl;
 			SysConfigJudgeTag += 1;
 
 		}
 		else if (std::string("BootSector1") == strNodeName)
 		{
 			ConvertAsciiToBinary(node->value(), oSyn_SysConfig._arrUserSpecifiedBS1, BS1_SIZE);
-			cout << "" << node->value() << endl;
+			//cout << "" << node->value() << endl;
 			SysConfigJudgeTag += 1;
 
 		}
@@ -181,7 +181,7 @@ bool Syn_SysConfigOperation::GetSysConfig(Syn_SysConfig &oSyn_SysConfig)
 				if (NULL != pAttribute)
 				{
 					CurrentSyn_TestStepInfo._strTestStepArgs = pAttribute->value();
-					cout << CurrentSyn_TestStepInfo._strTestStepName << " " << CurrentSyn_TestStepInfo._strTestStepArgs << endl;
+					//cout << CurrentSyn_TestStepInfo._strTestStepName << " " << CurrentSyn_TestStepInfo._strTestStepArgs << endl;
 				}
 
 				oSyn_SysConfig._listTestSteps.push_back(CurrentSyn_TestStepInfo);
@@ -203,11 +203,11 @@ bool Syn_SysConfigOperation::GetSysConfig(Syn_SysConfig &oSyn_SysConfig)
 			if (NULL != attribute)
 			{
 				CurrentSyn_XepatchInfo._strXepatchFileName = attribute->value();
-				cout << strNodeName << " " << CurrentSyn_XepatchInfo._strXepatchFileName << endl;
+				//cout << strNodeName << " " << CurrentSyn_XepatchInfo._strXepatchFileName << endl;
 			}
 			else
 			{
-				cout << strNodeName << " has no args " << endl;
+				//cout << strNodeName << " has no args " << endl;
 			}
 
 			std::string strPatchTextValue(node->value());

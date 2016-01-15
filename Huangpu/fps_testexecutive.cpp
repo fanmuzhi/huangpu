@@ -9,7 +9,7 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 : QMainWindow(parent)
 , _bStopTag(true)
 , _iRealDeviceCounts(0)
-, _logfile("sys.log")
+//, _logfile("sys.log")
 , _pSyn_LocalSettingsDlg(NULL)
 {
 	ui.setupUi(this);
@@ -47,7 +47,7 @@ FPS_TestExecutive::~FPS_TestExecutive()
 {
 	_ListOfSitePtr.clear();
 
-	_logfile.close();
+	//_logfile.close();
 
 	if (NULL != _pSyn_LocalSettingsDlg)
 	{
@@ -61,7 +61,8 @@ void FPS_TestExecutive::Initialize()
 	bool rc(false);
 
 	_ListOfSitePtr.clear();
-	std::cout.rdbuf(_logfile.rdbuf());
+	//std::cout.rdbuf(_logfile.rdbuf());
+
 
 	_pSyn_LocalSettingsDlg = new Syn_LocalSettingsDlg();
 	_pSyn_LocalSettingsDlg->setHidden(true);
@@ -418,6 +419,9 @@ void FPS_TestExecutive::RunningTest()
 
 	}*/
 
+	
+
+
 	//ui.TestTableWidget->clearContents();
 	for (int i = 1; i <= _iRealDeviceCounts; i++)
 	{
@@ -436,7 +440,10 @@ void FPS_TestExecutive::RunningTest()
 			//ui.pushButtonRun->setText(QString("Stop"));
 
 		}
+
 	}
+
+
 
 }
 

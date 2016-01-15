@@ -6,11 +6,10 @@
 
 //Qt
 #include <QThread>
-
 //std
 #include <string>
 
-Q_DECLARE_METATYPE(Syn_OTPTestInfo)
+//Q_DECLARE_METATYPE(Syn_OTPTestInfo)
 
 class Syn_Thread : public QThread
 {

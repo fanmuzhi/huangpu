@@ -12,6 +12,12 @@
 #include <string>
 #include <time.h>
 
+//Reference inc
+extern "C" {
+#include "SYN_TestUtils.h"
+};
+
+
 enum Syn_TestState{TestReady = 0xAEF0,TestRunning,TestOK,TestError,TestFailed};
 
 struct Syn_OTPTestInfo
@@ -28,6 +34,124 @@ struct Syn_OTPTestInfo
 
 	uint32_t _uiSerialNumber;
 	unsigned int _uiSiteNumber;
+
+};
+
+struct Syn_DutTestInfo
+{
+	InitializationInfo			m_initInfo;
+	CalibrationInfo				m_calibrationInfo;
+	AcquireFPSInfo				m_acquireFpsInfo;
+	PeggedPixelsInfo			m_peggedPixelsInfo;
+	CurrentInfo					m_currentInfo;
+	OpensShortsInfo				m_opensShortsInfo;
+	FlooredPixelsInfo			m_flooredPixelsInfo;
+	DeltaPixelInfo				m_deltaPixelsInfo;
+	ConsecutivePixelsInfo		m_consecutivePixelsInfo;
+	PixelInfo					m_pixelInfo;
+	PixelPatchInfo				m_pixelPatchInfo;
+	SNRInfo						m_snrInfo;
+	WofTestInfo					m_wofInfo;
+	SCM_WofTestInfo				m_SCM_wofInfo;//two SCM_WofTestInfo;with f and without f
+	WoVarInfo					m_woVarInfo;
+	DRdyInfo					m_DRdyInfo;
+	UsbCommInfo					m_usbCommInfo;
+	SpiFlashInfo				m_spiFlashInfo;
+	BtnTestInfo				    m_btnTestWithoutStimInfo;
+	BtnTestInfo				    m_btnTestWithStimInfo;
+	SharpnessInfo				m_SharpnessInfo;
+	ReadDutAdcInfo				m_ReadDutAdcInfo;
+	ImperfectionsTestInfo       m_imperfectionsTestInfo;
+	RxStandardDevInfo			m_RxStandardDevInfo;
+	OscTrimInfo					m_OscTrimInfo;
+	SlowOscInfo					m_SlowOscInfo;
+	RAMTestInfo					m_RAMTestInfo;
+	RetainModeInfo				m_retainModeInfo;
+	WofLowPowerInfo				m_wofLowPowerInfo;
+	AdcBaseLineInfo				m_adcBaselineInfo;
+	SecurityStepInfo			m_securityStepInfo;
+	ProductIDTestInfo			m_productIdTestInfo;
+	AFETestInfo					m_AFETestInfo;
+	LEDTestInfo					m_LEDTestInfo;
+	SdkBaselineTestInfo		    m_SdkBaselineInfo;
+
+	SpiOwnershipInfo		    m_SpiOwnershipInfo;
+
+};
+
+struct Syn_DutTestResultInfo
+{
+	//InitializationInfo			m_initInfo;
+	InitializationResults		m_initResults;
+	//CalibrationInfo				m_calibrationInfo;
+	CalibrationResults			m_calibrationResults;
+	/*AcquireFPSInfo				m_acquireFpsInfo;
+	AcquireFPSResults			m_acquireFpsResults;
+	PeggedPixelsInfo			m_peggedPixelsInfo;
+	PeggedPixelsResults			m_peggedPixelsResults;
+	CurrentInfo					m_currentInfo;
+	CurrentResults				m_currentResults;
+	OpensShortsInfo				m_opensShortsInfo;
+	OpensShortsResults			m_opensShortsResults;
+	FlooredPixelsInfo			m_flooredPixelsInfo;
+	FlooredPixelsResults		m_flooredPixelsResults;
+	DeltaPixelInfo				m_deltaPixelsInfo;
+	DeltaPixelResults			m_deltaPixelsResults;
+	ConsecutivePixelsInfo		m_consecutivePixelsInfo;
+	ConsecutivePixelsResults	m_consecutivePixelsResults;
+	PixelInfo					m_pixelInfo;
+	PixelResults				m_pixelResults;
+	PixelPatchInfo				m_pixelPatchInfo;
+	PixelPatchResults			m_pixelPatchResults;
+	SNRInfo						m_snrInfo;
+	SNRResults					m_snrResults;
+	WofTestInfo					m_wofInfo;
+	WofTestResults				m_wofResults;
+	SCM_WofTestInfo				m_SCM_wofInfo;
+	SCM_WofTestResults			m_SCM_wofResults;
+	WoVarInfo					m_woVarInfo;
+	WoVarResults				m_woVarResults;
+	DRdyInfo					m_DRdyInfo;
+	DRdyResults					m_DRdyResults;
+	UsbCommInfo					m_usbCommInfo;
+	UsbCommResults				m_usbCommResults;
+	SpiFlashInfo				m_spiFlashInfo;
+	SpiFlashResults				m_spiFlashResults;
+	BtnTestInfo				    m_btnTestWithoutStimInfo;
+	BtnTestResults			    m_btnTestWithoutStimResults;
+	BtnTestInfo				    m_btnTestWithStimInfo;
+	BtnTestResults			    m_btnTestWithStimResults;
+	SharpnessInfo				m_SharpnessInfo;
+	SharpnessResults			m_SharpnessResults;
+	ReadDutAdcInfo				m_ReadDutAdcInfo;
+	ReadDutAdcResults			m_ReadDutAdcResults;
+	ImperfectionsTestInfo       m_imperfectionsTestInfo;
+	ImperfectionsTestResults    m_imperfectionsTestResults;
+	RxStandardDevInfo			m_RxStandardDevInfo;
+	RxStandardDevResults		m_RxStandardDevResults;
+	OscTrimInfo					m_OscTrimInfo;
+	OscTrimResults				m_OscTrimResults;
+	SlowOscInfo					m_SlowOscInfo;
+	SlowOscResults				m_SlowOscResults;
+	RAMTestInfo					m_RAMTestInfo;
+	RAMTestResults				m_RAMTestResults;
+	RetainModeInfo				m_retainModeInfo;
+	RetainModeResults			m_retainModeResults;
+	WofLowPowerInfo				m_wofLowPowerInfo;
+	WofLowPowerResults			m_wofLowPowerResults;
+	AdcBaseLineInfo				m_adcBaselineInfo;
+	SecurityStepInfo			m_securityStepInfo;
+	SecurityStepResults			m_securityStepResults;
+	ProductIDTestInfo			m_productIdTestInfo;
+	ProductIDTestResults		m_productIdTestResults;
+	AFETestInfo					m_AFETestInfo;
+	AFETestResults				m_AFETestResults;
+	LEDTestInfo					m_LEDTestInfo;
+	LEDTestResults				m_LEDTestResults;
+	SdkBaselineTestInfo		    m_SdkBaselineInfo;
+	SdkBaselineTestResults	    m_SdkBaselineResults;
+	SpiOwnershipInfo		    m_SpiOwnershipInfo;
+	SpiOwnershipResults			m_SpiOwnershipResults;*/
 };
 
 class Syn_Site
@@ -57,6 +181,16 @@ public:
 
 	inline void SetSysConfig(Syn_SysConfig iSysConfig){ _SysConfig = iSysConfig; };
 
+
+protected:
+
+	//function
+
+	//parse args test
+	void InitDutTestInfo();
+
+	bool ParseTestStepArgs(const std::string &strArgsValue, std::vector<std::string> &olistOfArgValue, std::string strSymbol = std::string(" "));
+
 private:
 
 	Syn_SysConfig _SysConfig;
@@ -68,6 +202,9 @@ private:
 	unsigned int _iSiteNumber;
 
 	uint32_t _uiSerialNumber;
+
+	Syn_DutTestInfo			_DutTestInfo;
+	Syn_DutTestResultInfo	_DutTestResultInfo;
 };
 
 #endif // SYN_SITE_H

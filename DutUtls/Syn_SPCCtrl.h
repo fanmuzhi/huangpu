@@ -1,7 +1,6 @@
 #pragma once
 
-//ATL
-#include <atlstr.h>
+//c
 #include <stdio.h> 
 
 //local
@@ -51,6 +50,9 @@ public:
 	virtual void FpGetImage2(uint16_t nRows, uint16_t nCols, uint8_t *pDst, uint16_t nBlobSize, uint8_t *pBlob);
 
 	//virtual void UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader, uint32_t nRevApplication);
+
+	//test
+	virtual void UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader, uint32_t nRevApplication);
 
 protected:
 
