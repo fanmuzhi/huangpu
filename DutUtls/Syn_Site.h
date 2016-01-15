@@ -52,6 +52,31 @@ struct Syn_DutTestInfo
 	PixelPatchInfo				m_pixelPatchInfo;
 	SNRInfo						m_snrInfo;
 	WofTestInfo					m_wofInfo;
+	SCM_WofTestInfo				m_SCM_wofInfo;//two SCM_WofTestInfo;with f and without f
+	WoVarInfo					m_woVarInfo;
+	DRdyInfo					m_DRdyInfo;
+	UsbCommInfo					m_usbCommInfo;
+	SpiFlashInfo				m_spiFlashInfo;
+	BtnTestInfo				    m_btnTestWithoutStimInfo;
+	BtnTestInfo				    m_btnTestWithStimInfo;
+	SharpnessInfo				m_SharpnessInfo;
+	ReadDutAdcInfo				m_ReadDutAdcInfo;
+	ImperfectionsTestInfo       m_imperfectionsTestInfo;
+	RxStandardDevInfo			m_RxStandardDevInfo;
+	OscTrimInfo					m_OscTrimInfo;
+	SlowOscInfo					m_SlowOscInfo;
+	RAMTestInfo					m_RAMTestInfo;
+	RetainModeInfo				m_retainModeInfo;
+	WofLowPowerInfo				m_wofLowPowerInfo;
+	AdcBaseLineInfo				m_adcBaselineInfo;
+	SecurityStepInfo			m_securityStepInfo;
+	ProductIDTestInfo			m_productIdTestInfo;
+	AFETestInfo					m_AFETestInfo;
+	LEDTestInfo					m_LEDTestInfo;
+	SdkBaselineTestInfo		    m_SdkBaselineInfo;
+
+	SpiOwnershipInfo		    m_SpiOwnershipInfo;
+
 };
 
 struct Syn_DutTestResultInfo

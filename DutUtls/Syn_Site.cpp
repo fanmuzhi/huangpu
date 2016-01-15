@@ -727,6 +727,490 @@ void Syn_Site::InitDutTestInfo()
 	}
 
 	//WakeOnFinger
+	_DutTestInfo.m_wofInfo.m_bExecutedWithoutStimulus = false;
+	_DutTestInfo.m_wofInfo.m_bExecutedWithStimulus = false;
+	_DutTestInfo.m_wofInfo.m_bWithStimulus = 0;
+	_DutTestInfo.m_wofInfo.m_nDelta_100 = 7;
+	_DutTestInfo.m_wofInfo.m_nMinTriggerThreshold = 25;
+	_DutTestInfo.m_wofInfo.m_nMaxTriggerThreshold = 60;
+	_DutTestInfo.m_wofInfo.m_nNumResponseBytes = 2000;
+	_DutTestInfo.m_wofInfo.m_nNumNoiseSamples = 10;
+	_DutTestInfo.m_wofInfo.m_nThresholdOffsetHigh = 3;
+	_DutTestInfo.m_wofInfo.m_nThresholdOffsetLow = 3;
+	_DutTestInfo.m_wofInfo.m_nStdDevThreshold = (float)0.9;
+	_DutTestInfo.m_wofInfo.m_nDelta_200 = 20;
+	_DutTestInfo.m_wofInfo.m_nDelta_200_3p7 = 13;
+	_DutTestInfo.m_wofInfo.m_nVCC = (float)3.7;
+	if (_SysConfig.GetSyn_TestStepInfo(std::string("WakeOnFinger"), strArgsValue))
+	{
+		ParseTestStepArgs(strArgsValue, listOfArgValue);
+		size_t ilistSize = listOfArgValue.size();
+		if (ilistSize < 18)
+		{
+			for (size_t t = 1; t <= 18 - ilistSize; t++)
+				listOfArgValue.push_back(std::string(""));
+		}
+
+		if (0 != listOfArgValue[0].length())
+			_DutTestInfo.m_wofInfo.m_bWithStimulus = atoi(listOfArgValue[0].c_str());
+		if (0 != listOfArgValue[1].length())
+			_DutTestInfo.m_wofInfo.m_nDelta_100 = atoi(listOfArgValue[1].c_str());
+		if (0 != listOfArgValue[2].length())
+			_DutTestInfo.m_wofInfo.m_nMinTriggerThreshold = atoi(listOfArgValue[2].c_str());
+		if (0 != listOfArgValue[3].length())
+			_DutTestInfo.m_wofInfo.m_nMaxTriggerThreshold = atoi(listOfArgValue[3].c_str());
+		if (0 != listOfArgValue[4].length())
+			_DutTestInfo.m_wofInfo.m_nNumResponseBytes = atoi(listOfArgValue[4].c_str());
+		if (0 != listOfArgValue[5].length())
+			_DutTestInfo.m_wofInfo.m_nNumNoiseSamples = atoi(listOfArgValue[5].c_str());
+		if (0 != listOfArgValue[6].length())
+			_DutTestInfo.m_wofInfo.m_nThresholdOffsetHigh = atoi(listOfArgValue[6].c_str());
+		if (0 != listOfArgValue[7].length())
+			_DutTestInfo.m_wofInfo.m_nThresholdOffsetLow = atoi(listOfArgValue[7].c_str());
+		if (0 != listOfArgValue[8].length())
+			_DutTestInfo.m_wofInfo.m_nStdDevThreshold = stof(listOfArgValue[8]);
+		if (0 != listOfArgValue[9].length())
+			_DutTestInfo.m_wofInfo.m_nDelta_200 = atoi(listOfArgValue[9].c_str());
+		if (0 != listOfArgValue[10].length())
+			_DutTestInfo.m_wofInfo.m_nDelta_200_3p7 = atoi(listOfArgValue[10].c_str());
+		if (0 != listOfArgValue[11].length())
+			_DutTestInfo.m_wofInfo.m_nVCC = stof(listOfArgValue[11]);
+	}
+
+
+	//SCM_WOFWithoutStimulus
+
+	//SCM_WOFWithStimulus
+
+
+	//WoVarTest
+	_DutTestInfo.m_woVarInfo.m_bExecuted = false;
+	_DutTestInfo.m_woVarInfo.m_nNumResBytes = 1000;
+	_DutTestInfo.m_woVarInfo.m_nDelay_ms = 500;
+	if (_SysConfig.GetSyn_TestStepInfo(std::string("WoVarTest"), strArgsValue))
+	{
+		ParseTestStepArgs(strArgsValue, listOfArgValue);
+		size_t ilistSize = listOfArgValue.size();
+		if (ilistSize < 2)
+		{
+			for (size_t t = 1; t <= 2 - ilistSize; t++)
+				listOfArgValue.push_back(std::string(""));
+		}
+
+		if (0 != listOfArgValue[0].length())
+			_DutTestInfo.m_woVarInfo.m_nNumResBytes = atoi(listOfArgValue[0].c_str());
+		if (0 != listOfArgValue[1].length())
+			_DutTestInfo.m_woVarInfo.m_nDelay_ms = atoi(listOfArgValue[1].c_str());
+	}
+
+	//DRdyTest
+	_DutTestInfo.m_DRdyInfo.m_bExecuted = false;
+	_DutTestInfo.m_DRdyInfo.m_portId = 1;
+	_DutTestInfo.m_DRdyInfo.m_pinMsk = 0x10;
+	if (_SysConfig.GetSyn_TestStepInfo(std::string("DRdyTest"), strArgsValue))
+	{
+		ParseTestStepArgs(strArgsValue, listOfArgValue);
+		size_t ilistSize = listOfArgValue.size();
+		if (ilistSize < 2)
+		{
+			for (size_t t = 1; t <= 2 - ilistSize; t++)
+				listOfArgValue.push_back(std::string(""));
+		}
+
+		if (0 != listOfArgValue[0].length())
+			_DutTestInfo.m_DRdyInfo.m_portId = atoi(listOfArgValue[0].c_str());
+		if (0 != listOfArgValue[1].length())
+			_DutTestInfo.m_DRdyInfo.m_pinMsk = strtoul(listOfArgValue[1].c_str(), NULL, 16);
+	}
+
+	//UsbCommTest
+	_DutTestInfo.m_usbCommInfo.m_bExecuted = false;
+	_DutTestInfo.m_usbCommInfo.m_nExpectedVid = 0x0000;
+	_DutTestInfo.m_usbCommInfo.m_nExpectedPid = 0x0000;
+	_DutTestInfo.m_usbCommInfo.m_nExpectedMaximRev = 0x13;
+	_DutTestInfo.m_usbCommInfo.m_nSlaveSelPin = 17;
+	_DutTestInfo.m_usbCommInfo.m_nMisoPin = 19;
+	_DutTestInfo.m_usbCommInfo.m_nMosiPin = 21;
+	_DutTestInfo.m_usbCommInfo.m_nSclkPin = 23;
+	if (_SysConfig.GetSyn_TestStepInfo(std::string("UsbCommTest"), strArgsValue))
+	{
+		ParseTestStepArgs(strArgsValue, listOfArgValue);
+		size_t ilistSize = listOfArgValue.size();
+		if (ilistSize < 7)
+		{
+			for (size_t t = 1; t <= 7 - ilistSize; t++)
+				listOfArgValue.push_back(std::string(""));
+		}
+
+		if (0 != listOfArgValue[0].length())
+			_DutTestInfo.m_usbCommInfo.m_nExpectedVid = strtol(listOfArgValue[0].c_str(), NULL, 0);
+		if (0 != listOfArgValue[1].length())
+			_DutTestInfo.m_usbCommInfo.m_nExpectedPid = strtol(listOfArgValue[1].c_str(), NULL, 0);
+		if (0 != listOfArgValue[2].length())
+			_DutTestInfo.m_usbCommInfo.m_nExpectedMaximRev = strtol(listOfArgValue[2].c_str(), NULL, 0);
+		if (0 != listOfArgValue[3].length())
+			_DutTestInfo.m_usbCommInfo.m_nSlaveSelPin = atoi(listOfArgValue[3].c_str());
+		if (0 != listOfArgValue[4].length())
+			_DutTestInfo.m_usbCommInfo.m_nMisoPin = atoi(listOfArgValue[4].c_str());
+		if (0 != listOfArgValue[5].length())
+			_DutTestInfo.m_usbCommInfo.m_nMosiPin = atoi(listOfArgValue[5].c_str());
+		if (0 != listOfArgValue[6].length())
+			_DutTestInfo.m_usbCommInfo.m_nSclkPin = atoi(listOfArgValue[6].c_str());
+	}
+
+	//SpiFlashRam
+	_DutTestInfo.m_spiFlashInfo.m_bExecuted = false;
+	_DutTestInfo.m_spiFlashInfo.m_nNumResBytes = 1024;
+	/*if (_SysConfig.GetSyn_TestStepInfo(std::string("SpiFlashRam"), strArgsValue))
+	{
+		ParseTestStepArgs(strArgsValue, listOfArgValue);
+		size_t ilistSize = listOfArgValue.size();
+		if (ilistSize >= 1)
+		{
+			_DutTestInfo.m_spiFlashInfo.m_nNumResBytes = atoi(listOfArgValue[0].c_str());
+		}
+	}*/
+	
+	//ButtonTestWithoutStimulus
+	_DutTestInfo.m_btnTestWithoutStimInfo.m_bExecuted = false;
+	_DutTestInfo.m_btnTestWithoutStimInfo.m_portId = 8;
+	_DutTestInfo.m_btnTestWithoutStimInfo.m_pinMsk = 0x10;
+	_DutTestInfo.m_btnTestWithoutStimInfo.m_expectedState = 1;
+	if (_SysConfig.GetSyn_TestStepInfo(std::string("ButtonTestWithoutStimulus"), strArgsValue))
+	{
+		ParseTestStepArgs(strArgsValue, listOfArgValue);
+		size_t ilistSize = listOfArgValue.size();
+		if (ilistSize < 3)
+		{
+			for (size_t t = 1; t <= 3 - ilistSize; t++)
+				listOfArgValue.push_back(std::string(""));
+		}
+
+		if (0 != listOfArgValue[0].length())
+			_DutTestInfo.m_btnTestWithoutStimInfo.m_portId = atoi(listOfArgValue[0].c_str());
+		if (0 != listOfArgValue[1].length())
+			_DutTestInfo.m_btnTestWithoutStimInfo.m_pinMsk = strtoul(listOfArgValue[1].c_str(), NULL, 16);
+		if (0 != listOfArgValue[2].length())
+			_DutTestInfo.m_btnTestWithoutStimInfo.m_expectedState = atoi(listOfArgValue[2].c_str());
+	}
+
+	//ButtonTestWithStimulus
+	_DutTestInfo.m_btnTestWithStimInfo.m_bExecuted = false;
+	_DutTestInfo.m_btnTestWithStimInfo.m_portId = 8;
+	_DutTestInfo.m_btnTestWithStimInfo.m_pinMsk = 0x10;
+	_DutTestInfo.m_btnTestWithStimInfo.m_expectedState = 0;
+	if (_SysConfig.GetSyn_TestStepInfo(std::string("ButtonTestWithStimulus"), strArgsValue))
+	{
+		ParseTestStepArgs(strArgsValue, listOfArgValue);
+		size_t ilistSize = listOfArgValue.size();
+		if (ilistSize < 3)
+		{
+			for (size_t t = 1; t <= 3 - ilistSize; t++)
+				listOfArgValue.push_back(std::string(""));
+		}
+
+		if (0 != listOfArgValue[0].length())
+			_DutTestInfo.m_btnTestWithStimInfo.m_portId = atoi(listOfArgValue[0].c_str());
+		if (0 != listOfArgValue[1].length())
+			_DutTestInfo.m_btnTestWithStimInfo.m_pinMsk = strtoul(listOfArgValue[1].c_str(), NULL, 16);
+		if (0 != listOfArgValue[2].length())
+			_DutTestInfo.m_btnTestWithStimInfo.m_expectedState = atoi(listOfArgValue[2].c_str());
+	}
+
+	//SharpnessTest
+	_DutTestInfo.m_SharpnessInfo.m_bExecuted = false;
+	_DutTestInfo.m_SharpnessInfo.limit = 30;
+	if (_SysConfig.GetSyn_TestStepInfo(std::string("SharpnessTest"), strArgsValue))
+	{
+		ParseTestStepArgs(strArgsValue, listOfArgValue);
+		size_t ilistSize = listOfArgValue.size();
+		if (ilistSize >= 1)
+		{
+			_DutTestInfo.m_SharpnessInfo.limit = atoi(listOfArgValue[0].c_str());
+		}
+	}
+
+	//ReadDutAdc
+	_DutTestInfo.m_ReadDutAdcInfo.m_bExecuted = false;
+
+	//Imperfections
+	_DutTestInfo.m_imperfectionsTestInfo.m_bExecuted = false;
+	_DutTestInfo.m_imperfectionsTestInfo.m_peggedThreshold = 138;
+	_DutTestInfo.m_imperfectionsTestInfo.m_flooredThreshold = 118;
+	_DutTestInfo.m_imperfectionsTestInfo.m_maxAdjacentPixelsAllowed = 10;
+	_DutTestInfo.m_imperfectionsTestInfo.numFrames = _DutTestInfo.m_acquireFpsInfo.m_nNumImagesWithStimulus;
+	if (_SysConfig.GetSyn_TestStepInfo(std::string("Imperfections"), strArgsValue))
+	{
+		ParseTestStepArgs(strArgsValue, listOfArgValue);
+		size_t ilistSize = listOfArgValue.size();
+		if (ilistSize < 3)
+		{
+			for (size_t t = 1; t <= 3 - ilistSize; t++)
+				listOfArgValue.push_back(std::string(""));
+		}
+
+		if (0 != listOfArgValue[0].length())
+			_DutTestInfo.m_imperfectionsTestInfo.m_peggedThreshold = atoi(listOfArgValue[0].c_str());
+		if (0 != listOfArgValue[1].length())
+			_DutTestInfo.m_imperfectionsTestInfo.m_flooredThreshold = atoi(listOfArgValue[1].c_str());
+		if (0 != listOfArgValue[2].length())
+			_DutTestInfo.m_imperfectionsTestInfo.m_maxAdjacentPixelsAllowed = atoi(listOfArgValue[2].c_str());
+	}
+
+	//RxStandardDev
+	_DutTestInfo.m_RxStandardDevInfo.m_bExecuted = false;
+	//_DutTestInfo.m_RxStandardDevInfo.numFrames = 30;
+	_DutTestInfo.m_RxStandardDevInfo.limit = 80;
+	_DutTestInfo.m_RxStandardDevInfo.numFrames = _DutTestInfo.m_acquireFpsInfo.m_nNumImagesWithStimulus;
+	if (_SysConfig.GetSyn_TestStepInfo(std::string("RxStandardDev"), strArgsValue))
+	{
+		ParseTestStepArgs(strArgsValue, listOfArgValue);
+		size_t ilistSize = listOfArgValue.size();
+		if (ilistSize >=1)
+		{
+			_DutTestInfo.m_RxStandardDevInfo.limit = atoi(listOfArgValue[0].c_str());
+		}
+	}
+
+	//OscTrim
+	_DutTestInfo.m_OscTrimInfo.m_bExecuted = false;
+	_DutTestInfo.m_OscTrimInfo.nLowerLimit_Hz = 122;
+	_DutTestInfo.m_OscTrimInfo.nUpperLimit_Hz = 123;
+	_DutTestInfo.m_OscTrimInfo.nInitialTrim = 0x380;
+	_DutTestInfo.m_OscTrimInfo.m_OscTrimDefault = 0x0;
+	if (_SysConfig.GetSyn_TestStepInfo(std::string("OscTrim"), strArgsValue))
+	{
+		ParseTestStepArgs(strArgsValue, listOfArgValue);
+		size_t ilistSize = listOfArgValue.size();
+		if (ilistSize < 4)
+		{
+			for (size_t t = 1; t <= 4 - ilistSize; t++)
+				listOfArgValue.push_back(std::string(""));
+		}
+
+		if (0 != listOfArgValue[0].length())
+			_DutTestInfo.m_OscTrimInfo.nLowerLimit_Hz = strtoul(listOfArgValue[0].c_str(), NULL, 0);
+		if (0 != listOfArgValue[1].length())
+			_DutTestInfo.m_OscTrimInfo.nUpperLimit_Hz = strtoul(listOfArgValue[1].c_str(), NULL, 0);
+		if (0 != listOfArgValue[2].length())
+			_DutTestInfo.m_OscTrimInfo.nInitialTrim = strtoul(listOfArgValue[2].c_str(), NULL, 0);
+		if (0 != listOfArgValue[3].length())
+			_DutTestInfo.m_OscTrimInfo.m_OscTrimDefault = strtoul(listOfArgValue[3].c_str(), NULL, 0);
+	}
+
+	//SlowOsc
+	_DutTestInfo.m_SlowOscInfo.m_bExecuted = false;
+	_DutTestInfo.m_SlowOscInfo.nLowerLimit_Hz = 475000;
+	_DutTestInfo.m_SlowOscInfo.nUpperLimit_Hz = 501000;
+	_DutTestInfo.m_SlowOscInfo.m_nDefaultTrim = 0x0;
+	_DutTestInfo.m_SlowOscInfo.m_nDefaultBias = 0x0;
+	if (_SysConfig.GetSyn_TestStepInfo(std::string("SlowOsc"), strArgsValue))
+	{
+		ParseTestStepArgs(strArgsValue, listOfArgValue);
+		size_t ilistSize = listOfArgValue.size();
+		if (ilistSize < 4)
+		{
+			for (size_t t = 1; t <= 4 - ilistSize; t++)
+				listOfArgValue.push_back(std::string(""));
+		}
+
+		if (0 != listOfArgValue[0].length())
+			_DutTestInfo.m_SlowOscInfo.nLowerLimit_Hz = atoi(listOfArgValue[0].c_str());
+		if (0 != listOfArgValue[1].length())
+			_DutTestInfo.m_SlowOscInfo.nUpperLimit_Hz = atoi(listOfArgValue[1].c_str());
+		if (0 != listOfArgValue[2].length())
+			_DutTestInfo.m_SlowOscInfo.m_nDefaultTrim = atoi(listOfArgValue[2].c_str());
+		if (0 != listOfArgValue[3].length())
+			_DutTestInfo.m_SlowOscInfo.m_nDefaultBias = atoi(listOfArgValue[3].c_str());
+	}
+
+	//RAMTest
+	_DutTestInfo.m_RAMTestInfo.m_bExecuted = false;
+	//Set defaults.
+
+	//RetainModeCurrentTest
+	_DutTestInfo.m_retainModeInfo.m_bExecuted = false;
+	_DutTestInfo.m_retainModeInfo.m_nGain = 2;
+	_DutTestInfo.m_retainModeInfo.m_nMaxCurrent = 1;
+	_DutTestInfo.m_retainModeInfo.m_nMinCurrent = (float)0.1;
+	_DutTestInfo.m_retainModeInfo.m_nDelay = 0;
+	if (_SysConfig.GetSyn_TestStepInfo(std::string("RetainModeCurrentTest"), strArgsValue))
+	{
+		ParseTestStepArgs(strArgsValue, listOfArgValue);
+		size_t ilistSize = listOfArgValue.size();
+		if (ilistSize < 4)
+		{
+			for (size_t t = 1; t <= 4 - ilistSize; t++)
+				listOfArgValue.push_back(std::string(""));
+		}
+
+		if (0 != listOfArgValue[0].length())
+			_DutTestInfo.m_retainModeInfo.m_nGain = atoi(listOfArgValue[0].c_str());
+		if (0 != listOfArgValue[1].length())
+			_DutTestInfo.m_retainModeInfo.m_nMaxCurrent = stof(listOfArgValue[1]);
+		if (0 != listOfArgValue[2].length())
+			_DutTestInfo.m_retainModeInfo.m_nMinCurrent = stof(listOfArgValue[2]);
+		if (0 != listOfArgValue[3].length())
+			_DutTestInfo.m_retainModeInfo.m_nDelay = atoi(listOfArgValue[3].c_str());
+	}
+
+	//WOF-LowPower
+	_DutTestInfo.m_wofLowPowerInfo.m_bExecuted = false;
+	_DutTestInfo.m_wofLowPowerInfo.m_nGain = 2;
+	_DutTestInfo.m_wofLowPowerInfo.m_nMaxCurrent_uA = 50;
+	_DutTestInfo.m_wofLowPowerInfo.m_nMinCurrent_uA = 0;
+	_DutTestInfo.m_wofLowPowerInfo.m_nDelay_ms = 200;
+	if (_SysConfig.GetSyn_TestStepInfo(std::string("WOF-LowPower"), strArgsValue))
+	{
+		ParseTestStepArgs(strArgsValue, listOfArgValue);
+		size_t ilistSize = listOfArgValue.size();
+		if (ilistSize < 4)
+		{
+			for (size_t t = 1; t <= 4 - ilistSize; t++)
+				listOfArgValue.push_back(std::string(""));
+		}
+
+		if (0 != listOfArgValue[0].length())
+			_DutTestInfo.m_wofLowPowerInfo.m_nGain = atoi(listOfArgValue[0].c_str());
+		if (0 != listOfArgValue[1].length())
+			_DutTestInfo.m_wofLowPowerInfo.m_nMaxCurrent_uA = atoi(listOfArgValue[1].c_str());
+		if (0 != listOfArgValue[2].length())
+			_DutTestInfo.m_wofLowPowerInfo.m_nMinCurrent_uA = atoi(listOfArgValue[2].c_str());
+		if (0 != listOfArgValue[3].length())
+			_DutTestInfo.m_wofLowPowerInfo.m_nDelay_ms = atoi(listOfArgValue[3].c_str());
+	}
+
+	//AdcBaseLineInfo????????????????????????????????????????
+
+	//Security
+	_DutTestInfo.m_securityStepInfo.m_bExecuted = false;
+	_DutTestInfo.m_securityStepInfo.m_bEngineering = 0;
+	_DutTestInfo.m_securityStepInfo.m_bProduction = 0;
+	_DutTestInfo.m_securityStepInfo.m_bUsbMode = 0;
+	_DutTestInfo.m_securityStepInfo.m_bSpiOwnership = 0;
+	_DutTestInfo.m_securityStepInfo.m_nNumSpiOwnershipRuns = 5;
+	if (_SysConfig.GetSyn_TestStepInfo(std::string("Security"), strArgsValue))
+	{
+		ParseTestStepArgs(strArgsValue, listOfArgValue);
+		size_t ilistSize = listOfArgValue.size();
+		if (ilistSize < 5)
+		{
+			for (size_t t = 1; t <= 5 - ilistSize; t++)
+				listOfArgValue.push_back(std::string(""));
+		}
+
+		if (0 != listOfArgValue[0].length())
+			_DutTestInfo.m_securityStepInfo.m_bEngineering = atoi(listOfArgValue[0].c_str());
+		if (0 != listOfArgValue[1].length())
+			_DutTestInfo.m_securityStepInfo.m_bProduction = atoi(listOfArgValue[1].c_str());
+		if (0 != listOfArgValue[2].length())
+			_DutTestInfo.m_securityStepInfo.m_bUsbMode = atoi(listOfArgValue[2].c_str());
+		if (0 != listOfArgValue[3].length())
+			_DutTestInfo.m_securityStepInfo.m_bSpiOwnership = atoi(listOfArgValue[3].c_str());
+		if (0 != listOfArgValue[4].length())
+			_DutTestInfo.m_securityStepInfo.m_nNumSpiOwnershipRuns = atoi(listOfArgValue[4].c_str());
+	}
+
+	//ProductIdTest
+	_DutTestInfo.m_productIdTestInfo.m_bExecuted = false;
+
+	//AFETest
+	_DutTestInfo.m_AFETestInfo.m_bExecuted = false;
+	_DutTestInfo.m_AFETestInfo.m_nNumResBytes = 2056;
+	_DutTestInfo.m_AFETestInfo.m_nDelay_ms = 500;
+	if (_SysConfig.GetSyn_TestStepInfo(std::string("AFETest"), strArgsValue))
+	{
+		ParseTestStepArgs(strArgsValue, listOfArgValue);
+		size_t ilistSize = listOfArgValue.size();
+		if (ilistSize < 2)
+		{
+			for (size_t t = 1; t <= 2 - ilistSize; t++)
+				listOfArgValue.push_back(std::string(""));
+		}
+
+		if (0 != listOfArgValue[0].length())
+			_DutTestInfo.m_AFETestInfo.m_nNumResBytes = atoi(listOfArgValue[0].c_str());
+		if (0 != listOfArgValue[1].length())
+			_DutTestInfo.m_AFETestInfo.m_nDelay_ms = atoi(listOfArgValue[1].c_str());
+	}
+	
+	//LEDTest
+	_DutTestInfo.m_LEDTestInfo.m_bExecuted = false;
+	_DutTestInfo.m_LEDTestInfo.m_nGPIO1 = 0x02;
+	_DutTestInfo.m_LEDTestInfo.m_nGPIO2 = 0x04;
+	_DutTestInfo.m_LEDTestInfo.m_nGPIO3 = 0x08;
+	memset(_DutTestInfo.m_LEDTestInfo.m_sUserMsg, NULL, MAX_LED_TEST_MSG_LEN);
+	_DutTestInfo.m_LEDTestInfo.m_nMpcGpioPin = 22;
+	_DutTestInfo.m_LEDTestInfo.m_nRegisterAddress = 0x80001600;
+	_DutTestInfo.m_LEDTestInfo.m_nPokeValue = 0x04;
+	_DutTestInfo.m_LEDTestInfo.m_nTimeout = 5000;
+	if (_SysConfig.GetSyn_TestStepInfo(std::string("LEDTest"), strArgsValue))
+	{
+		ParseTestStepArgs(strArgsValue, listOfArgValue);
+		size_t ilistSize = listOfArgValue.size();
+		if (ilistSize < 8)
+		{
+			for (size_t t = 1; t <= 8 - ilistSize; t++)
+				listOfArgValue.push_back(std::string(""));
+		}
+
+		if (0 != listOfArgValue[0].length())
+			_DutTestInfo.m_LEDTestInfo.m_nGPIO1 = atoi(listOfArgValue[0].c_str());
+		if (0 != listOfArgValue[1].length())
+			_DutTestInfo.m_LEDTestInfo.m_nGPIO2 = atoi(listOfArgValue[1].c_str());
+		if (0 != listOfArgValue[2].length())
+			_DutTestInfo.m_LEDTestInfo.m_nGPIO3 = atoi(listOfArgValue[2].c_str());
+		if (0 != listOfArgValue[3].length())
+			memcpy(_DutTestInfo.m_LEDTestInfo.m_sUserMsg, listOfArgValue[3].c_str(), listOfArgValue[3].length());
+		if (0 != listOfArgValue[4].length())
+			_DutTestInfo.m_LEDTestInfo.m_nMpcGpioPin = atoi(listOfArgValue[4].c_str());
+		if (0 != listOfArgValue[5].length())
+			_DutTestInfo.m_LEDTestInfo.m_nRegisterAddress = strtoul(listOfArgValue[5].c_str(), NULL, 0);
+		if (0 != listOfArgValue[6].length())
+			_DutTestInfo.m_LEDTestInfo.m_nPokeValue = strtoul(listOfArgValue[6].c_str(), NULL, 0);
+		if (0 != listOfArgValue[7].length())
+			_DutTestInfo.m_LEDTestInfo.m_nTimeout = atoi(listOfArgValue[7].c_str());
+	}
+
+	//SDKBaselineTest
+	_DutTestInfo.m_SdkBaselineInfo.m_bExecuted = false;
+	_DutTestInfo.m_SdkBaselineInfo.m_nTrimTop = 0;
+	_DutTestInfo.m_SdkBaselineInfo.m_nTrimBottom = 0;
+	_DutTestInfo.m_SdkBaselineInfo.m_nTrimLeft = 0;
+	_DutTestInfo.m_SdkBaselineInfo.m_nTrimRight = 0;
+	_DutTestInfo.m_SdkBaselineInfo.m_nRightShiftBits = 3;
+	_DutTestInfo.m_SdkBaselineInfo.m_nStrideWidth = 3;
+	_DutTestInfo.m_SdkBaselineInfo.m_nMaxSumAllowed = 250;
+	_DutTestInfo.m_SdkBaselineInfo.m_nPercentFail = 25;
+	if (_SysConfig.GetSyn_TestStepInfo(std::string("SDKBaselineTest"), strArgsValue))
+	{
+		ParseTestStepArgs(strArgsValue, listOfArgValue);
+		size_t ilistSize = listOfArgValue.size();
+		if (ilistSize < 8)
+		{
+			for (size_t t = 1; t <= 8 - ilistSize; t++)
+				listOfArgValue.push_back(std::string(""));
+		}
+
+		if (0 != listOfArgValue[0].length())
+			_DutTestInfo.m_SdkBaselineInfo.m_nTrimTop = atoi(listOfArgValue[0].c_str());
+		if (0 != listOfArgValue[1].length())
+			_DutTestInfo.m_SdkBaselineInfo.m_nTrimBottom = atoi(listOfArgValue[0].c_str());
+		if (0 != listOfArgValue[2].length())
+			_DutTestInfo.m_SdkBaselineInfo.m_nTrimLeft = atoi(listOfArgValue[0].c_str());
+		if (0 != listOfArgValue[3].length())
+			_DutTestInfo.m_SdkBaselineInfo.m_nTrimRight = atoi(listOfArgValue[0].c_str());
+		if (0 != listOfArgValue[4].length())
+			_DutTestInfo.m_SdkBaselineInfo.m_nRightShiftBits = atoi(listOfArgValue[0].c_str());
+		if (0 != listOfArgValue[5].length())
+			_DutTestInfo.m_SdkBaselineInfo.m_nStrideWidth = atoi(listOfArgValue[0].c_str());
+		if (0 != listOfArgValue[6].length())
+			_DutTestInfo.m_SdkBaselineInfo.m_nMaxSumAllowed = atoi(listOfArgValue[0].c_str());
+		if (0 != listOfArgValue[7].length())
+			_DutTestInfo.m_SdkBaselineInfo.m_nPercentFail = atoi(listOfArgValue[0].c_str());
+	}
+
+
 }
 
 
