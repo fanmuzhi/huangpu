@@ -41,6 +41,17 @@ struct Syn_DutTestInfo
 {
 	InitializationInfo			m_initInfo;
 	CalibrationInfo				m_calibrationInfo;
+	AcquireFPSInfo				m_acquireFpsInfo;
+	PeggedPixelsInfo			m_peggedPixelsInfo;
+	CurrentInfo					m_currentInfo;
+	OpensShortsInfo				m_opensShortsInfo;
+	FlooredPixelsInfo			m_flooredPixelsInfo;
+	DeltaPixelInfo				m_deltaPixelsInfo;
+	ConsecutivePixelsInfo		m_consecutivePixelsInfo;
+	PixelInfo					m_pixelInfo;
+	PixelPatchInfo				m_pixelPatchInfo;
+	SNRInfo						m_snrInfo;
+	WofTestInfo					m_wofInfo;
 };
 
 struct Syn_DutTestResultInfo
@@ -144,6 +155,16 @@ public:
 	inline void GetSysConfig(Syn_SysConfig &oSysConfig){ oSysConfig = _SysConfig; };
 
 	inline void SetSysConfig(Syn_SysConfig iSysConfig){ _SysConfig = iSysConfig; };
+
+
+protected:
+
+	//function
+
+	//parse args test
+	void InitDutTestInfo();
+
+	bool ParseTestStepArgs(const std::string &strArgsValue, std::vector<std::string> &olistOfArgValue, std::string strSymbol = std::string(" "));
 
 private:
 
