@@ -141,6 +141,42 @@ bool Syn_Dut::GetFPImage()
 		return false;
 	}
 
+
+	//get print file
+	Syn_PatchInfo PrintFileInfo;
+	if (!FindPatch("PrintFile", PrintFileInfo))
+	{
+		LOG(ERROR) << "Cannot find 'PrintFileInfo' in config file";
+		return false;
+	}
+
+	//construct print file
+	uint8_t pPrintPatch[MAX_PRINTFILE_SIZE + 4];		//put into CalibrationResult later
+	uint8_t NumCols = 104;							    //put into CalibrationInfo later	
+	uint8_t NumRows = 96;								//put into CalibrationInfo later
+	uint8_t nLnaIdx = 1228;								//put into CalibrationInfo later
+
+	pPrintPatch[0] = NumCols;
+	pPrintPatch[1] = NumCols >> 8;
+	pPrintPatch[2] = NumRows;
+	pPrintPatch[3] = NumRows >> 8;
+
+	memcpy(&pPrintPatch[4], PrintFileInfo._pArrayBuf, PrintFileInfo._uiArraySize);
+
+	//High Pass Filter(HPF)
+	//TODO
+	
+	//check LNA tag in OTP
+	uint8_t pLnaValues[MS0_SIZE];
+	if (_pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, pLnaValues, MS0_SIZE) > 0)
+	{
+		CopyToPrintPatch(&pLnaValues[4], pPrintPatch, NumRows, nLnaIdx);
+	}
+	else
+	{
+		//calibration LNA
+	}
+	
 	//load ImgAcqPatch
 	Syn_PatchInfo ImgAcqPatchInfo;
 	if (!FindPatch("ImageAcqPatch", ImgAcqPatchInfo))
@@ -151,14 +187,13 @@ bool Syn_Dut::GetFPImage()
 	_pSyn_DutCtrl->FpUnloadPatch();
 	_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);
 
-	//check LNA tag in OTP
-	uint8_t pLnaValues[MS0_SIZE];
-	_pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, pLnaValues, MS0_SIZE);
+	//load print file
+	//_pSyn_DutCtrl->FpWritePrintFile(pPrintPatch, PrintFileInfo._uiArraySize);
 
-	//construct print file
-	
+	uint8_t *pImgBuff = new uint8_t[NumCols * NumRows];
 
-
+	::Sleep(100);
+	_pSyn_DutCtrl->FpGetImage2(NumRows, NumCols, pImgBuff, PrintFileInfo._uiArraySize - 4, &pPrintPatch[4]);
 	return true;
 }
 

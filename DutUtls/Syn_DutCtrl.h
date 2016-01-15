@@ -54,13 +54,17 @@ public:
 
 	virtual void FpReadBuff(uint8_t *pDst, int numBytes) = 0;
 
-	virtual void FpReadAndCheckBuff(uint16_t numReturn) = 0;
+	virtual void FpReadAndCheckStatus(uint16_t statusIgnore) = 0;		//check status of VCSFW_STATUS
 
 	virtual void FpWaitDeviceReady() = 0;
 
 	virtual void FpDisableSleep() = 0;
 
 	virtual void FpGetVersion(uint8_t *pDst, int numBytes) = 0;
+
+	virtual void FpWritePrintFile(uint8_t *pPrintPatch, int numBytes) = 0;
+	
+	virtual void FpGetImage2(uint16_t nRows, uint16_t nCols, uint8_t *pDst, uint16_t nBlobSize, uint8_t *pBlob) = 0;
 
 protected:
 

@@ -34,8 +34,8 @@ public:
 	Syn_DutCtrl * GetDutCtrl();
 
 	//virtual function
-	//virtual void InitializeForRun() = 0;
 	virtual void GetProjectType(ProjectType &oProjectType) = 0;
+	virtual	void CopyToPrintPatch(uint8_t* pSrc, uint8_t* pPrintPatch, int nNumBytes, int nPatchIdx) = 0;
 
 
 	//list all test itmes here

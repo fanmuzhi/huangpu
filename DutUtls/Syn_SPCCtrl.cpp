@@ -237,16 +237,17 @@ void Syn_SPCCtrl::FpReadBuff(uint8_t *pDst, int numBytes)
 }
 
 
-void Syn_SPCCtrl::FpReadAndCheckBuff(uint16_t numReturn)
+void Syn_SPCCtrl::FpReadAndCheckStatus(uint16_t statusIgnore)
 {
 	uint8_t numbytes = 2;
 	uint8_t pDst[4] = { 0 };
 	this->FpReadBuff(pDst, numbytes);
 	
-	uint16_t returnValue = (pDst[0] << 8) + pDst[1];
+	//uint16_t returnValue = (pDst[0] << 8) + pDst[1];
+	uint16_t returnValue = *((uint16_t*)pDst);
 	LOG(DEBUG) << "0x" << hex << returnValue;
 
-	if (numReturn != returnValue && returnValue != 0)
+	if (statusIgnore != returnValue && returnValue != 0)
 	{
 		Syn_Exception ex(0);
 		ex.SetDescription("FpReadAndCheckBuff() DUT return value unmatch.");
@@ -284,7 +285,7 @@ void Syn_SPCCtrl::FpDisableSleep()
 	uint8_t pSrc[2] = { 0 };
 	this->FpWrite(1, VCSFW_CMD::TIDLE_SET, pSrc, sizeof(pSrc));
 	this->FpWaitForCMDComplete();
-	this->FpReadAndCheckBuff(0);
+	this->FpReadAndCheckStatus(0);
 }
 
 void Syn_SPCCtrl::FpLoadPatch(uint8_t* pPatch, int numBytes)
@@ -294,7 +295,7 @@ void Syn_SPCCtrl::FpLoadPatch(uint8_t* pPatch, int numBytes)
 
 	this->FpWrite(1, VCSFW_CMD::PATCH, pPatch, numBytes);
 	this->FpWaitForCMDComplete();
-	this->FpReadAndCheckBuff(0);
+	this->FpReadAndCheckStatus(0);
 }
 
 void Syn_SPCCtrl::FpUnloadPatch()
@@ -304,7 +305,7 @@ void Syn_SPCCtrl::FpUnloadPatch()
 
 	this->FpWrite(1, VCSFW_CMD::UNLOAD_PATCH, (uint8_t*)0, 0);
 	this->FpWaitForCMDComplete();
-	this->FpReadAndCheckBuff(0x9104);
+	this->FpReadAndCheckStatus(0x0491);
 }
 
 void Syn_SPCCtrl::FpOtpRomRead(int section, int sector, uint8_t* pDst, int numBytes)
@@ -384,3 +385,26 @@ void Syn_SPCCtrl::FpGetVersion(uint8_t *pDst, int numBytes)
 		throw ex;
 	}
 }
+
+
+void Syn_SPCCtrl::FpWritePrintFile(uint8_t *pPrintPatch, int numBytes)
+{
+	LOG(INFO) << "Write Print File";
+
+	this->FpWrite(1, VCSFW_CMD::GET_PRINT, pPrintPatch, numBytes);
+	this->FpWaitForCMDComplete();
+	this->FpReadAndCheckStatus(0);
+}
+
+
+	
+void Syn_SPCCtrl::FpGetImage2(uint16_t nRows, uint16_t nCols, uint8_t *pDst, uint16_t nBlobSize, uint8_t *pBlob)
+{
+	LOG(INFO) << "Get Image 2";
+	
+	uint16_t err;
+	//this->FpWaitDeviceReady();
+	
+	err = MPC_FpGetImage2(syn_DeviceHandle, nRows, nCols, pDst, nBlobSize, pBlob, NULL, NULL, NULL, TIMEOUT);
+}
+	
