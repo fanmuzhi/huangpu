@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>584</width>
-    <height>654</height>
+    <width>690</width>
+    <height>671</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,58 +38,107 @@
       </property>
       <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
-        <widget class="QTableWidget" name="TestTableWidget">
-         <row>
-          <property name="text">
-           <string>Status</string>
-          </property>
-         </row>
-         <row>
-          <property name="text">
-           <string>Test</string>
-          </property>
-         </row>
-         <row>
-          <property name="text">
-           <string>Result</string>
-          </property>
-         </row>
-         <row>
-          <property name="text">
-           <string>Bin</string>
-          </property>
-         </row>
-         <row>
-          <property name="text">
-           <string>Pass/Total</string>
-          </property>
-         </row>
-         <row>
-          <property name="text">
-           <string>Image</string>
-          </property>
-         </row>
-         <row>
-          <property name="text">
-           <string>Test Info</string>
-          </property>
-         </row>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QGroupBox" name="TestOperationGroupBox">
-      <property name="title">
-       <string>Test Operation</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_3">
-       <item row="0" column="0">
-        <widget class="QPushButton" name="pushButtonRun">
-         <property name="text">
-          <string>Run</string>
+        <widget class="QTabWidget" name="tabWidget">
+         <property name="currentIndex">
+          <number>0</number>
          </property>
+         <widget class="QWidget" name="tab">
+          <attribute name="title">
+           <string>Main</string>
+          </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <item>
+              <widget class="QTableWidget" name="TestTableWidget">
+               <row>
+                <property name="text">
+                 <string>Status</string>
+                </property>
+               </row>
+               <row>
+                <property name="text">
+                 <string>Test</string>
+                </property>
+               </row>
+               <row>
+                <property name="text">
+                 <string>Result</string>
+                </property>
+               </row>
+               <row>
+                <property name="text">
+                 <string>Bin</string>
+                </property>
+               </row>
+               <row>
+                <property name="text">
+                 <string>Pass/Total</string>
+                </property>
+               </row>
+               <row>
+                <property name="text">
+                 <string>Image</string>
+                </property>
+               </row>
+               <row>
+                <property name="text">
+                 <string>Test Info</string>
+                </property>
+               </row>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="TestOperationGroupBox">
+             <property name="title">
+              <string>Test Operation</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_3">
+              <item row="0" column="0">
+               <widget class="QPushButton" name="pushButtonRun">
+                <property name="text">
+                 <string>Run</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tab_2">
+          <attribute name="title">
+           <string>OTPDump</string>
+          </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QComboBox" name="comboBox"/>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButtonGetVer">
+               <property name="text">
+                <string>GetVer</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButtonReadOTP">
+               <property name="text">
+                <string>ReadOTP</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QTextBrowser" name="textBrowser"/>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
       </layout>

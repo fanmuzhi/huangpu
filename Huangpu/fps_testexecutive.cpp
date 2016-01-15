@@ -18,7 +18,7 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	ui.TestTableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 	ui.TestTableWidget->setRowHeight(5, 200);
 	ui.TestTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	//ui.TestTableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	//ui.TestTableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 	ui.TestTableWidget->verticalHeader()->setStretchLastSection(true);
 	Initialize();
 
@@ -35,6 +35,9 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 
 	//Testing Operation
 	QObject::connect(ui.pushButtonRun, SIGNAL(clicked()), this, SLOT(RunningTest()));
+
+	//OTP Dump
+
 
 	//Thread
 	for (int i = 1; i <= DeviceCounts; i++)
