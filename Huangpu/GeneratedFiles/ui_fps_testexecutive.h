@@ -127,6 +127,7 @@ public:
         QTableWidgetItem *__qtablewidgetitem6 = new QTableWidgetItem();
         TestTableWidget->setVerticalHeaderItem(6, __qtablewidgetitem6);
         TestTableWidget->setObjectName(QStringLiteral("TestTableWidget"));
+        TestTableWidget->setAutoScroll(false);
 
         horizontalLayout->addWidget(TestTableWidget);
 

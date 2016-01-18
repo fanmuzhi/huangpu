@@ -97,6 +97,7 @@
     <ClInclude Include="Syn_Site.h" />
     <ClInclude Include="Syn_SPCCtrl.h" />
     <ClInclude Include="Syn_SysConfigOperation.h" />
+    <ClInclude Include="SYN_TestUtils.h" />
     <ClInclude Include="Syn_Vcsfw.h" />
     <ClInclude Include="Syn_Viper.h" />
     <ClInclude Include="Syn_Viper1.h" />
@@ -111,6 +112,7 @@
     <ClCompile Include="Syn_Site.cpp" />
     <ClCompile Include="Syn_SPCCtrl.cpp" />
     <ClCompile Include="Syn_SysConfigOperation.cpp" />
+    <ClCompile Include="SYN_TestUtils.c" />
     <ClCompile Include="Syn_Viper.cpp" />
     <ClCompile Include="Syn_Viper1.cpp" />
     <ClCompile Include="Syn_Viper2.cpp" />

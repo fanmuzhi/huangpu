@@ -51,6 +51,9 @@
             <layout class="QHBoxLayout" name="horizontalLayout">
              <item>
               <widget class="QTableWidget" name="TestTableWidget">
+               <property name="autoScroll">
+                <bool>false</bool>
+               </property>
                <row>
                 <property name="text">
                  <string>Status</string>

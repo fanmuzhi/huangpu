@@ -28,21 +28,18 @@ void Syn_Thread::run()
 
 	unsigned int iSiteNumber(0);
 	_pSyn_Site->GetSiteNumber(iSiteNumber);
-	
-	
 
 	//Lock.lockForWrite();
 
-	_pSyn_Site->Run();
+	//_pSyn_Site->Run();
+	_pSyn_Site->ReadOTP();
 
 	//Lock.unlock();
 
-	_pSyn_Site->GetOTPTestInfo(_TestInfo);
-	emit send(&_TestInfo);
+	_pSyn_Site->GetSiteInfo(_SiteInfo);
+	emit send(&_SiteInfo);
 
 	_stopped = true;
-
-
 }
 
 void Syn_Thread::SetSite(Syn_Site *ipSyn_Site)
