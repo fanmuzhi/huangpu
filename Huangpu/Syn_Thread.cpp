@@ -37,7 +37,7 @@ void Syn_Thread::run()
 
 	//Lock.unlock();
 
-	_pSyn_Site->GetOTPTestInfo(_TestInfo);
+	_pSyn_Site->GetTestInfo(_TestInfo);
 	emit send(&_TestInfo);
 
 	_stopped = true;

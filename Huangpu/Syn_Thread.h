@@ -37,8 +37,9 @@ private:
 
 	Syn_Site *_pSyn_Site;
 
-	Syn_OTPTestInfo _TestInfo;
-
+	Syn_SiteInfo		_SiteInfo;
+	Syn_DutTestInfo		_TestInfo;
+	Syn_DutTestResult	_TestResult;
 };
 
 #endif // SYN_THREAD_H

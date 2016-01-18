@@ -5,7 +5,7 @@
 #include "Syn_Config.h" 
 
 extern "C" {
-#include "inc/SYN_TestUtils.h"
+#include "SYN_TestUtils.h"
 }
 
 //std

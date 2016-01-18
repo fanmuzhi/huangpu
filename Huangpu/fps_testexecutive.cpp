@@ -450,7 +450,7 @@ void FPS_TestExecutive::RunningTest()
 
 }
 
-void FPS_TestExecutive::ReceiveOTPTestSlot(void * pOTPTestInfo)
+void FPS_TestExecutive::ReceiveDutTestInfoSlot(void * pOTPTestInfo)
 {
 
 	/*if (!_synThread.isRunning())
@@ -459,7 +459,7 @@ void FPS_TestExecutive::ReceiveOTPTestSlot(void * pOTPTestInfo)
 	if (NULL == pOTPTestInfo)
 		return;
 
-	Syn_OTPTestInfo *pTestInfo = static_cast<Syn_OTPTestInfo*>(pOTPTestInfo);
+	Syn_DutTestInfo *pTestInfo = static_cast<Syn_DutTestInfo*>(pOTPTestInfo);
 	if (NULL == pTestInfo)
 	{
 		clog << "FPS_TestExecutive::ReceiveOTPTestSlot() - pTestInfo is NULL!" << endl;

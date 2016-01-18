@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
-    <SysConfigFile>C:/Users/bqiling/Google Drive/Metallica 109A0/MT_FM146_config_R2_updated_3.3.xml</SysConfigFile>
-    <NumSites>1</NumSites>
+    <SysConfigFile>C:/Users/bqiling/Google Drive/Viper 86A/580-005337-01rB (Viper B2 86A Module).xml</SysConfigFile>
+    <NumSites>2</NumSites>
     <Site1 AdcBaseLines="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 " Voltages="1800 1800 3300 3300">1405853</Site1>
+    <Site2 AdcBaseLines="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 " Voltages="1800 1800 3300 3300">1630130</Site2>
     <AutoController></AutoController>
 </LocalSettings>

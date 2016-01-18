@@ -9,7 +9,7 @@
 #include "ui_fps_testexecutive.h"
 
 //MPC DLL
-#include "MpcApiDll.h"
+//#include "MpcApiDll.h"
 
 //Local
 #include "Syn_Thread.h"
@@ -63,9 +63,11 @@ public Q_SLOTS:
 
 	void RunningTest();
 
-	void ReceiveOTPTestSlot(void * pOTPTestInfo);
+	void ReceiveDutTestInfoSlot(void * pDutTestInfo);
 
-	
+	void ReceiveDutTestResultSlot(void * pDutTestResult);
+
+	void ReceiveSiteInfoSlot(void * pSiteInfo);
 
 private:
 
