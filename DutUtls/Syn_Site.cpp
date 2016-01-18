@@ -122,7 +122,6 @@ bool Syn_Site::ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn
 
 	pSyn_Dut->SetPatchInfo(opSyn_SiteInstance->_SysConfig._listPatchInfo);
 
-
 	return true;
 }
 
@@ -187,6 +186,8 @@ bool Syn_Site::ConstructSiteList(std::string strConfigFilePath, std::vector<Syn_
 			pSyn_SiteInstance->_OTPTestInfo._uiSiteNumber = pSyn_SiteInstance->_iSiteNumber;
 
 			pSyn_SiteInstance->InitDutTestInfo();
+
+			pSyn_SiteInstance->SetLoggingConfiguration();
 
 			olistOfSyn_SiteInstance.push_back(pSyn_SiteInstance);
 		}
@@ -1244,4 +1245,36 @@ bool Syn_Site::ParseTestStepArgs(const std::string &strArgsValue, std::vector<st
 	}
 
 	return true;
+}
+
+
+void Syn_Site::SetLoggingConfiguration()
+{
+	if (0 == _iSiteNumber)
+	{
+		return;
+	}
+
+	std::string strSiteNumber("");
+	strSiteNumber = to_string(_iSiteNumber);
+	std::string strCurrentLogFilePath = std::string(".\\logs\\Site") + strSiteNumber + std::string(".log");
+
+	el::Configuration confFilenameInfo(el::Level::Info, el::ConfigurationType::Filename, strCurrentLogFilePath);
+
+	el::Configurations defaultConf;
+	defaultConf.setToDefault();
+	
+	
+	/*
+	// Values are always std::string
+	defaultConf.set(el::Level::Info,el::ConfigurationType::Format, "%datetime %level %msg");
+	// default logger uses default configurations
+	el::Loggers::reconfigureLogger("default", defaultConf);
+	LOG(INFO) << "Log using default file";
+	// To set GLOBAL configurations you may use
+	defaultConf.setGlobally(el::ConfigurationType::Format, "%date %msg");*/
+
+	defaultConf.set(&confFilenameInfo);
+
+	el::Loggers::reconfigureLogger("default", defaultConf);
 }

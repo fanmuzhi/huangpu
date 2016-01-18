@@ -65,7 +65,9 @@ public Q_SLOTS:
 
 	void ReceiveOTPTestSlot(void * pOTPTestInfo);
 
-	
+	void GetVersionForDutDump();
+
+	void ReadOTPForDutDump();
 
 private:
 
