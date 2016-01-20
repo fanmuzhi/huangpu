@@ -133,14 +133,13 @@ bool Syn_Dut::ReadOTP(uint8_t* oarMS0, int iSize)
 	return true;
 }
 
-bool Syn_Dut::GetFPImage()
+bool Syn_Dut::Calibration(uint16_t numCols, uint16_t numRows, CalibrationInfo &calInfo, CalibrationResults &calResult)
 {
 	if (NULL == _pSyn_DutCtrl)
 	{
 		LOG(ERROR) << "_pSyn_DutCtrl is NULL!";
 		return false;
 	}
-
 
 	//get print file
 	Syn_PatchInfo PrintFileInfo;
@@ -151,17 +150,17 @@ bool Syn_Dut::GetFPImage()
 	}
 
 	//construct print file
-	uint8_t pPrintPatch[MAX_PRINTFILE_SIZE + 4];		//put into CalibrationResult later
-	uint8_t NumCols = 104;							    //put into CalibrationInfo later	
-	uint8_t NumRows = 96;								//put into CalibrationInfo later
-	uint8_t nLnaIdx = 1228;								//put into CalibrationInfo later
+	uint8_t* pPrintPatch = new uint8_t[PrintFileInfo._uiArraySize];		//put into CalibrationResult later
+	//uint8_t NumCols = 104;							    //put into CalibrationInfo later	
+	//uint8_t NumRows = 96;								//put into CalibrationInfo later
+	uint8_t nLnaIdx = calInfo.m_nLnaIdx;			
 
-	pPrintPatch[0] = NumCols;
-	pPrintPatch[1] = NumCols >> 8;
-	pPrintPatch[2] = NumRows;
-	pPrintPatch[3] = NumRows >> 8;
+	//pPrintPatch[0] = (uint8_t)numCols;
+	//pPrintPatch[1] = (uint8_t)numCols >> 8;
+	//pPrintPatch[2] = (uint8_t)numRows;
+	//pPrintPatch[3] = (uint8_t)numRows >> 8;
 
-	memcpy(&pPrintPatch[4], PrintFileInfo._pArrayBuf, PrintFileInfo._uiArraySize);
+	memcpy(pPrintPatch, PrintFileInfo._pArrayBuf, PrintFileInfo._uiArraySize);
 
 	//High Pass Filter(HPF)
 	//TODO
@@ -170,7 +169,7 @@ bool Syn_Dut::GetFPImage()
 	uint8_t pLnaValues[MS0_SIZE];
 	if (_pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, pLnaValues, MS0_SIZE) > 0)
 	{
-		CopyToPrintPatch(&pLnaValues[4], pPrintPatch, NumRows, nLnaIdx);
+		CopyToPrintPatch(&pLnaValues[4], pPrintPatch, numRows, nLnaIdx);	//skip LNA first 4 bytes 00 00 00 07
 	}
 	else
 	{
@@ -189,11 +188,17 @@ bool Syn_Dut::GetFPImage()
 
 	//load print file
 	//_pSyn_DutCtrl->FpWritePrintFile(pPrintPatch, PrintFileInfo._uiArraySize);
+	//_pSyn_DutCtrl->FpWritePrintFile(PrintFileInfo._pArrayBuf, PrintFileInfo._uiArraySize);
 
-	uint8_t *pImgBuff = new uint8_t[NumCols * NumRows];
+	uint8_t *pImgBuff = new uint8_t[numCols * numRows];
 
 	::Sleep(100);
-	_pSyn_DutCtrl->FpGetImage2(NumRows, NumCols, pImgBuff, PrintFileInfo._uiArraySize - 4, &pPrintPatch[4]);
+	//_pSyn_DutCtrl->FpGetImage(pImgBuff, numCols*numRows);
+	//_pSyn_DutCtrl->FpGetImage2(numRows, numCols, pImgBuff, PrintFileInfo._uiArraySize, pPrintPatch);
+	_pSyn_DutCtrl->FpGetImage2(numRows, numCols, pImgBuff, PrintFileInfo._uiArraySize, PrintFileInfo._pArrayBuf);
+
+
+	delete[] pImgBuff;
 	return true;
 }
 

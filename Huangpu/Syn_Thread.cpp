@@ -31,8 +31,8 @@ void Syn_Thread::run()
 
 	//Lock.lockForWrite();
 
-	//_pSyn_Site->Run();
-	_pSyn_Site->ReadOTP();
+	_pSyn_Site->Run();
+	//_pSyn_Site->ReadOTP();
 
 	//Lock.unlock();
 

@@ -281,7 +281,33 @@ void Syn_Site::ReadOTP()
 
 void Syn_Site::Run()
 {
-	::Sleep(5000);
+	if (NULL == _pSyn_Dut)
+	{
+		cout << "Error:Syn_Site::Run() - _pSyn_Dut is NULL!" << endl;
+		_siteInfo._TestState = TestError;
+		return;
+	}
+
+	//test get image
+	try
+	{
+		_siteInfo._TestState = TestRunning;
+		_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
+		_pSyn_Dut->Calibration(_SysConfig._uiNumCols,_SysConfig._uiNumRows, _DutTestInfo._calibrationInfo, _DutTestResult._calibrationResults);
+		_pSyn_Dut->PowerOff();
+
+	}
+	catch (Syn_Exception ex)
+	{
+		_pSyn_Dut->PowerOff();
+		std::cout << "Error:ReadOTP is failed!" << std::endl;
+		_siteInfo._strErrorMessage = ex.GetDescription();
+		_siteInfo._TestState = TestFailed;
+
+		return;
+	}
+
+
 	return;
 }
 

@@ -45,7 +45,7 @@ public:
 
 	bool ReadOTP(uint8_t* oarMS0, int iSize);
 
-	bool GetFPImage();
+	bool Calibration(uint16_t numCols, uint16_t numRows, CalibrationInfo &calInfo, CalibrationResults &calResult);
 
 	inline void SetPatchInfo(vector<Syn_PatchInfo> ilistOfPatchInfo){ _listOfPatchInfo = ilistOfPatchInfo; };
 

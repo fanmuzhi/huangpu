@@ -63,6 +63,8 @@ public:
 	virtual void FpGetVersion(uint8_t *pDst, int numBytes) = 0;
 
 	virtual void FpWritePrintFile(uint8_t *pPrintPatch, int numBytes) = 0;
+
+	virtual void FpGetImage(uint8_t *pDst, int numBytes) = 0;
 	
 	virtual void FpGetImage2(uint16_t nRows, uint16_t nCols, uint8_t *pDst, uint16_t nBlobSize, uint8_t *pBlob) = 0;
 

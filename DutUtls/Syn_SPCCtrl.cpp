@@ -79,11 +79,12 @@ bool Syn_SPCCtrl::Init()
 				MPC_Disconnect(syn_DeviceHandle);
 				MPC_CloseMpcDeviceHandle(syn_DeviceHandle);
 				syn_DeviceHandle = NULL;
+				LOG(ERROR) << "Cannot Get Identity of MPC04: " << syn_SerialNumber;
 			}
 			else
 			{
 				//If necessary, update the firmware.
-				//UpdateMPC04Firmware(uiDevType, uiRevBootLoader, uiRevApplication);
+				UpdateMPC04Firmware(uiDevType, uiRevBootLoader, uiRevApplication);
 				//SetValidFlg(true);
 
 				//Set the MPC04 voltages to zero.
@@ -397,15 +398,30 @@ void Syn_SPCCtrl::FpWritePrintFile(uint8_t *pPrintPatch, int numBytes)
 }
 
 
+//
+//FpGetImage, used to current draw reading
+//
+void Syn_SPCCtrl::FpGetImage(uint8_t *pDst, int numBytes)
+{
+	LOG(INFO) << "Get Image";
+
+	//this->FpWaitDeviceReady();
+	this->FpRead(0x02, 0x00, pDst, numBytes);
+}
+
 	
+//
+//FpGetImage2, to capture image
+//
 void Syn_SPCCtrl::FpGetImage2(uint16_t nRows, uint16_t nCols, uint8_t *pDst, uint16_t nBlobSize, uint8_t *pBlob)
 {
 	LOG(INFO) << "Get Image 2";
 	
 	uint16_t err;
-	//this->FpWaitDeviceReady();
+	this->FpWaitDeviceReady();
 	
-	err = MPC_FpGetImage2(syn_DeviceHandle, nRows, nCols, pDst, nBlobSize, pBlob, NULL, NULL, NULL, TIMEOUT);
+	//err = MPC_FpGetImage2(syn_DeviceHandle, nRows, nCols, pDst, nBlobSize, pBlob, NULL, NULL, NULL, TIMEOUT);
+	err = MPC_FpGetImage2(syn_DeviceHandle, nRows, nCols, pDst, nBlobSize, pBlob, 0, 0, 0, TIMEOUT);
 }
 	
 
