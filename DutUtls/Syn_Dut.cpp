@@ -200,12 +200,13 @@ bool Syn_Dut::Calibration(uint16_t numCols, uint16_t numRows, CalibrationInfo &c
 	::Sleep(100);
 	//_pSyn_DutCtrl->FpGetImage(pImgBuff, numCols*numRows);
 	//_pSyn_DutCtrl->FpGetImage2(numRows, numCols, pImgBuff, PrintFileInfo._uiArraySize, pPrintPatch);
-	_pSyn_DutCtrl->FpGetImage2(numRows, numCols, pImgBuff, PrintFileInfo._uiArraySize, PrintFileInfo._pArrayBuf);
-	//_pSyn_DutCtrl->FpGetImage2(numRows, numCols, pImgBuff, PrintFileInfo._uiArraySize-4,&PrintFileInfo._pArrayBuf[4]);
+	//_pSyn_DutCtrl->FpGetImage2(numRows, numCols, pImgBuff, PrintFileInfo._uiArraySize, PrintFileInfo._pArrayBuf);
+	_pSyn_DutCtrl->FpGetImage2(numRows, numCols, pImgBuff, PrintFileInfo._uiArraySize-4,&PrintFileInfo._pArrayBuf[4]);
 
 	for (int i = 0; i < numCols * numRows; i++)
 	{
-		LOG(INFO) <<i<<" is "<< pImgBuff[i]<<",";
+		std::string strTempValue = to_string(pImgBuff[i]);
+		LOG(INFO) << i << " is " << strTempValue ;
 	}
 
 	delete[] pImgBuff;
