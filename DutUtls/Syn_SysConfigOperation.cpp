@@ -136,7 +136,7 @@ bool Syn_SysConfigOperation::GetSysConfig(Syn_SysConfig &oSyn_SysConfig)
 		}
 		else if (std::string("NumCols") == strNodeName)
 		{
-			oSyn_SysConfig._uiNumRows = atoi(node->value());
+			oSyn_SysConfig._uiNumCols = atoi(node->value());
 			//cout << "" << oSyn_SysConfig._uiNumRows << endl;
 			SysConfigJudgeTag += 1;
 

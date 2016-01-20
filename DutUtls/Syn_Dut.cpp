@@ -190,13 +190,23 @@ bool Syn_Dut::Calibration(uint16_t numCols, uint16_t numRows, CalibrationInfo &c
 	//_pSyn_DutCtrl->FpWritePrintFile(pPrintPatch, PrintFileInfo._uiArraySize);
 	//_pSyn_DutCtrl->FpWritePrintFile(PrintFileInfo._pArrayBuf, PrintFileInfo._uiArraySize);
 
+	//There is a bug in the FPS firmware. This bug shows when the number of cols times the
+	//number of rows is a multiple of 64. To avoid this problem we add 1 to the number of rows
+	//when the number of bytes in the image is a multiple of 64.
+	if (((numRows * numCols) % 64) == 0)
+		numRows++;
 	uint8_t *pImgBuff = new uint8_t[numCols * numRows];
 
 	::Sleep(100);
 	//_pSyn_DutCtrl->FpGetImage(pImgBuff, numCols*numRows);
 	//_pSyn_DutCtrl->FpGetImage2(numRows, numCols, pImgBuff, PrintFileInfo._uiArraySize, pPrintPatch);
 	_pSyn_DutCtrl->FpGetImage2(numRows, numCols, pImgBuff, PrintFileInfo._uiArraySize, PrintFileInfo._pArrayBuf);
+	//_pSyn_DutCtrl->FpGetImage2(numRows, numCols, pImgBuff, PrintFileInfo._uiArraySize-4,&PrintFileInfo._pArrayBuf[4]);
 
+	for (int i = 0; i < numCols * numRows; i++)
+	{
+		LOG(INFO) <<i<<" is "<< pImgBuff[i]<<",";
+	}
 
 	delete[] pImgBuff;
 	return true;
