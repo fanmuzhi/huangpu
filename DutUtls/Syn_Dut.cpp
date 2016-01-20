@@ -200,13 +200,24 @@ bool Syn_Dut::Calibration(uint16_t numCols, uint16_t numRows, CalibrationInfo &c
 	::Sleep(100);
 	//_pSyn_DutCtrl->FpGetImage(pImgBuff, numCols*numRows);
 	//_pSyn_DutCtrl->FpGetImage2(numRows, numCols, pImgBuff, PrintFileInfo._uiArraySize, pPrintPatch);
-	//_pSyn_DutCtrl->FpGetImage2(numRows, numCols, pImgBuff, PrintFileInfo._uiArraySize, PrintFileInfo._pArrayBuf);
-	_pSyn_DutCtrl->FpGetImage2(numRows, numCols, pImgBuff, PrintFileInfo._uiArraySize-4,&PrintFileInfo._pArrayBuf[4]);
+	_pSyn_DutCtrl->FpGetImage2(numRows, numCols, pImgBuff, PrintFileInfo._uiArraySize, PrintFileInfo._pArrayBuf);
+	//_pSyn_DutCtrl->FpGetImage2(numRows, numCols, pImgBuff, PrintFileInfo._uiArraySize-4,&PrintFileInfo._pArrayBuf[4]);
 
-	for (int i = 0; i < numCols * numRows; i++)
+	/*for (int i = 0; i < numCols * numRows; i++)
 	{
 		std::string strTempValue = to_string(pImgBuff[i]);
-		LOG(INFO) << i << " is " << strTempValue ;
+		LOG(INFO) << i << " is " << strTempValue;
+	}*/
+
+	for (int i = 0; i < numRows; i++)
+	{
+		std::string strTempRowValue;
+		for (int j = 0; j < numCols; j++)
+		{
+			strTempRowValue += to_string(pImgBuff[i*numRows + j]) + std::string(" ");
+		}
+
+		LOG(INFO) << "row " << to_string(i) << " is " << strTempRowValue;
 	}
 
 	delete[] pImgBuff;
