@@ -38,11 +38,15 @@ Syn_SPCCtrl::~Syn_SPCCtrl()
 
 bool Syn_SPCCtrl::Init()
 {
-	uint32_t	err;
+	uint32_t	err(0);
 
 	uint16_t	uiDevType;
 	uint32_t	uiRevBootLoader;
 	uint32_t	uiRevApplication;
+
+	bool rc(false);
+
+	Syn_Exception Exception(err);
 
 	//SetValidFlg(false);
 
@@ -105,7 +109,11 @@ bool Syn_SPCCtrl::Init()
 	{
 		//cout << "ERROR:Syn_SPCCtrl::Init() - syn_DeviceHandle is NULL!" << endl;
 		LOG(ERROR) << "syn_DeviceHandle is NULL";
-		return false;
+		rc = false;
+
+		Exception = err;
+		Exception.SetDescription("syn_DeviceHandle is NULL:" + to_string(syn_SerialNumber));
+		throw Exception;
 	}
 
 	if (MPC_IsConnected(syn_DeviceHandle))
@@ -117,16 +125,25 @@ bool Syn_SPCCtrl::Init()
 			syn_DeviceHandle = NULL;
 			//cout << "ERROR:Syn_SPCCtrl::Init() - MPC_SetPortFpSensor failed with MPC04 " << syn_SerialNumber << endl;
 			LOG(ERROR) << "MPC_SetPortFpSensor failed with MPC04: " << syn_SerialNumber;
-			return false;
+			rc = false;
+
+			Exception = err;
+			Exception.SetDescription("MPC_SetPortFpSensor failed with MPC04:" + to_string(syn_SerialNumber));
+			throw Exception;
 		}
-		return true;
+		rc = true;
 	}
 	else
 	{
+		Exception = err;
+		Exception.SetDescription("MPC_IsConnected is failed:" + to_string(syn_SerialNumber));
+		throw Exception;
 		//cout << "ERROR:Syn_SPCCtrl::Init() - ::MPC_IsConnected is failed!" << endl;
 		LOG(ERROR) << "MPC_IsConnected is failed!";
-		return false;
+		rc = false;
 	}
+
+	return rc;
 }
 
 //--------------------
