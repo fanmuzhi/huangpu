@@ -12,6 +12,7 @@
 #include <iostream>
 #include <io.h>
 #include <stdio.h>
+#include <time.h>
 
 #define ELPP_STL_LOGGING
 #define ELPP_THREAD_SAFE
@@ -23,8 +24,6 @@ Syn_Site::Syn_Site()
 , _iSiteNumber(0)
 {
 	_siteInfo._TestState = TestReady;
-
-	LOG(INFO) << "SITE START";
 }
 
 Syn_Site::~Syn_Site()
@@ -47,7 +46,8 @@ bool Syn_Site::ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn
 	opSyn_SiteInstance = NULL;
 	if (0 == iSerialNumber)
 	{
-		cout << "Error:Syn_Site::ConstructSiteInstance() - iSerialNumber is 0!" << endl;
+		//cout << "Error:Syn_Site::ConstructSiteInstance() - iSerialNumber is 0!" << endl;
+		LOG(ERROR) << "Error:Syn_Site::ConstructSiteInstance() - iSerialNumber is 0!" ;
 		return false;
 	}
 
@@ -69,7 +69,7 @@ bool Syn_Site::ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn
 	else
 	{
 		iProjectType = Viper1;
-		cout << "Error:Syn_Site::ConstructSiteInstance() - an unknown ProjectType,construct it to Viper1!" << endl;
+		LOG(ERROR) << "Error:Syn_Site::ConstructSiteInstance() - an unknown ProjectType,construct it to Viper1!" ;
 	}
 
 	//DutController:SPC,MPC04
@@ -86,7 +86,7 @@ bool Syn_Site::ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn
 	else
 	{
 		iDutControllerType = Syn_SPC;
-		cout << "Error:Syn_Site::ConstructSiteInstance() - an unknown DutController,construct it to SPC!" << endl;
+		LOG(ERROR) << "Error:Syn_Site::ConstructSiteInstance() - an unknown DutController,construct it to SPC!" ;
 	}
 
 	//Create Dut
@@ -94,7 +94,7 @@ bool Syn_Site::ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn
 	rc = Syn_Dut::CreateDutInstance(iProjectType, pSyn_Dut);
 	if (!rc || NULL == pSyn_Dut)
 	{
-		cout << "Error:Syn_Site::ConstructSiteInstance() - CreateDutInstance is failed!" << endl;
+		LOG(ERROR) << "Error:Syn_Site::ConstructSiteInstance() - CreateDutInstance is failed!" ;
 		return false;
 	}
 
@@ -105,7 +105,7 @@ bool Syn_Site::ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn
 	{
 		delete pSyn_Dut;
 		pSyn_Dut = NULL;
-		cout << "Error:Syn_Site::ConstructSiteInstance() - CreateDutInstance is failed!" << endl;
+		LOG(ERROR) << "Error:Syn_Site::ConstructSiteInstance() - CreateDutInstance is failed!" ;
 		return false;
 	}
 
@@ -129,19 +129,21 @@ bool Syn_Site::ConstructSiteList(std::string strConfigFilePath, std::vector<Syn_
 
 	olistOfSyn_SiteInstance.clear();
 
+	rc = Syn_Site::RegisterLoggingConfig();
+
 	//xml config file parse
 	Syn_SysConfigOperation *pSyn_SysConfigOperationInstance = NULL;
 	rc = Syn_SysConfigOperation::GetSysConfigInstance(strConfigFilePath, pSyn_SysConfigOperationInstance);
 	if (!rc||NULL == pSyn_SysConfigOperationInstance)
 	{
-		cout << "Error:Syn_Site::ConstructSiteList() - pSyn_SysConfigOperationInstance is NULL!" << endl;
+		LOG(ERROR) << "Error:Syn_Site::ConstructSiteList() - pSyn_SysConfigOperationInstance is NULL!" << endl;
 		return false;
 	}
 	Syn_SysConfig TempSyn_SysConfig;
 	rc = pSyn_SysConfigOperationInstance->GetSysConfig(TempSyn_SysConfig);
 	if (!rc)
 	{
-		cout << "Error:Syn_Site::ConstructSiteList() - ::GetSysConfig is failed!" << endl;
+		LOG(ERROR) << "Error:Syn_Site::ConstructSiteList() - ::GetSysConfig is failed!" << endl;
 		return false;
 	}
 
@@ -151,7 +153,7 @@ bool Syn_Site::ConstructSiteList(std::string strConfigFilePath, std::vector<Syn_
 	uResult = MPC_Initialize();
 	if (0 != uResult)
 	{
-		cout << "Error:Syn_Site::ConstructSiteList() - ::MPC_Initialize is failed!" << endl;
+		LOG(ERROR) << "Error:Syn_Site::ConstructSiteList() - ::MPC_Initialize is failed!" << endl;
 		return false;
 	}
 
@@ -159,7 +161,7 @@ bool Syn_Site::ConstructSiteList(std::string strConfigFilePath, std::vector<Syn_
 	MPC_GetNumberOfDevices(&iDeviceCounts);
 	if (0 == iDeviceCounts)
 	{
-		cout << "Error:Syn_Site::ConstructSiteList() - iDeviceCounts is 0!" << endl;
+		LOG(ERROR) << "Error:Syn_Site::ConstructSiteList() - iDeviceCounts is 0!" << endl;
 		return false;
 	}
 
@@ -174,7 +176,7 @@ bool Syn_Site::ConstructSiteList(std::string strConfigFilePath, std::vector<Syn_
 			bool rc = Syn_Site::ConstructSiteInstance(uiSerialNumber, TempSyn_SysConfig, pSyn_SiteInstance);
 			if (!rc&&NULL==pSyn_SiteInstance)
 			{
-				cout << "Error:Syn_Site::ConstructSiteList() - ConstructSiteInstance is failed,i is " << i << "!" << endl;
+				LOG(ERROR) << "Error:Syn_Site::ConstructSiteList() - ConstructSiteInstance is failed,i is " << i << "!" << endl;
 				continue;
 			}
 			
@@ -183,9 +185,6 @@ bool Syn_Site::ConstructSiteList(std::string strConfigFilePath, std::vector<Syn_
 			pSyn_SiteInstance->_siteInfo._uiSiteNumber = pSyn_SiteInstance->_iSiteNumber;
 
 			pSyn_SiteInstance->InitDutTestInfo();
-
-			//pSyn_SiteInstance->SetLoggingConfiguration();
-
 			olistOfSyn_SiteInstance.push_back(pSyn_SiteInstance);
 		}
 	}
@@ -198,6 +197,25 @@ bool Syn_Site::ConstructSiteList(std::string strConfigFilePath, std::vector<Syn_
 		delete pSyn_SysConfigOperationInstance;
 		pSyn_SysConfigOperationInstance = NULL;
 	}
+
+	return true;
+}
+
+bool Syn_Site::RegisterLoggingConfig()
+{
+	el::Configurations defaultConf;
+	defaultConf.setToDefault();
+	const time_t t = time(NULL);
+	struct tm* current_time = localtime(&t);
+	std::string strMonthValue = to_string(current_time->tm_mon + 1);
+	if (1 == strMonthValue.length())
+		strMonthValue = "0" + strMonthValue;
+	std::string strTimeValue = to_string(current_time->tm_year + 1900) + "_" + strMonthValue + "_" + to_string(current_time->tm_mday);
+	std::string strLogFilePath = std::string(".\\logs\\") + strTimeValue + std::string(".log");
+	el::Configuration confFilenameInfo(el::Level::Global, el::ConfigurationType::Filename, strLogFilePath);
+	defaultConf.set(&confFilenameInfo);
+	defaultConf.parseFromText("*GLOBAL:\n FORMAT = %thread %level %func %msg");
+	el::Loggers::reconfigureLogger("default", defaultConf);
 
 	return true;
 }
@@ -216,7 +234,7 @@ void Syn_Site::GetVersion()
 	catch (Syn_Exception ex)
 	{
 		_pSyn_Dut->PowerOff();
-		std::cout << "Error:GetVersion is failed!" << std::endl;
+		LOG(ERROR) << "Error:GetVersion is failed!" ;
 		_siteInfo._strErrorMessage = ex.GetDescription();
 		_siteInfo._TestState = TestFailed;
 		return;
@@ -230,7 +248,7 @@ void Syn_Site::ReadOTP()
 {
 	if (NULL == _pSyn_Dut)
 	{
-		cout << "Error:Syn_Site::Run() - _pSyn_Dut is NULL!" << endl;
+		LOG(ERROR) << "Error:Syn_Site::Run() - _pSyn_Dut is NULL!" << endl;
 		_siteInfo._TestState = TestError;
 		return;
 	}
@@ -247,7 +265,7 @@ void Syn_Site::ReadOTP()
 	catch (Syn_Exception ex)
 	{
 		_pSyn_Dut->PowerOff();
-		std::cout << "Error:ReadOTP is failed!" << std::endl;
+		LOG(ERROR) << "Error:ReadOTP is failed!" << std::endl;
 		_siteInfo._strErrorMessage = ex.GetDescription();
 		_siteInfo._TestState = TestFailed;
 
@@ -283,7 +301,7 @@ void Syn_Site::Run()
 {
 	if (NULL == _pSyn_Dut)
 	{
-		cout << "Error:Syn_Site::Run() - _pSyn_Dut is NULL!" << endl;
+		LOG(ERROR) << "Error:Syn_Site::Run() - _pSyn_Dut is NULL!" << endl;
 		_siteInfo._TestState = TestError;
 		return;
 	}
@@ -300,7 +318,7 @@ void Syn_Site::Run()
 	catch (Syn_Exception ex)
 	{
 		_pSyn_Dut->PowerOff();
-		std::cout << "Error:ReadOTP is failed!" << std::endl;
+		LOG(ERROR) << "Error:ReadOTP is failed!" << std::endl;
 		_siteInfo._strErrorMessage = ex.GetDescription();
 		_siteInfo._TestState = TestFailed;
 
@@ -1306,26 +1324,36 @@ void Syn_Site::SetLoggingConfiguration()
 		return;
 	}
 
-	std::string strSiteNumber("");
+	/*std::string strSiteNumber("");
 	strSiteNumber = to_string(_iSiteNumber);
 	std::string strCurrentLogFilePath = std::string(".\\logs\\Site") + strSiteNumber + std::string(".log");
 
-	el::Configuration confFilenameInfo(el::Level::Debug, el::ConfigurationType::Filename, strCurrentLogFilePath);
+	std::string strSiteValue = "Site" + strSiteNumber;
+
+	el::Logger* businessLogger = el::Loggers::getLogger(strSiteValue);
+
+	el::Configuration confFilenameInfo(el::Level::Global, el::ConfigurationType::Filename, strCurrentLogFilePath);
+
+	el::Configurations * businessConfigs = businessLogger->configurations();
+	businessConfigs->set(&confFilenameInfo);
+	el::Loggers::reconfigureLogger(strSiteValue, *businessConfigs);
+
+	el::Configurations defaultConf;
+	defaultConf.parseFromText("*GLOBAL:\n FORMAT = %thread %level %func %msg");
+
+	CLOG(DEBUG, strSiteValue.c_str()) << "Site" + strSiteNumber << " debug";
+	//CLOG(INFO, strSiteValue.c_str()) << "Site" + strSiteNumber << " info";
+	CLOG(INFO, strSiteValue.c_str()) << businessLogger->id() << " id"*/
+	
+	//businessLogger->debug("My first ultimate log message %v %v %v", 123, 123, strSiteValue.c_str());
+	//businessLogger->debug("My first ultimate log message %v", strSiteValue);
+
+
+	//CLOG(INFO, strSiteValue.c_str()) << businessLogger->id() << " id";
 
 	el::Configurations defaultConf;
 	defaultConf.setToDefault();
-	
-	
-	/*
-	// Values are always std::string
-	defaultConf.set(el::Level::Info,el::ConfigurationType::Format, "%datetime %level %msg");
-	// default logger uses default configurations
-	el::Loggers::reconfigureLogger("default", defaultConf);
-	LOG(INFO) << "Log using default file";
-	// To set GLOBAL configurations you may use
-	defaultConf.setGlobally(el::ConfigurationType::Format, "%date %msg");*/
-
-	defaultConf.set(&confFilenameInfo);
+	defaultConf.parseFromText("*GLOBAL:\n FORMAT = %thread %level %func %msg");
 
 	el::Loggers::reconfigureLogger("default", defaultConf);
 }
