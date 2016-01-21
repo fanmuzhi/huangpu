@@ -151,31 +151,31 @@ bool Syn_Dut::Calibration(uint16_t numCols, uint16_t numRows, CalibrationInfo &c
 
 	//construct print file
 	uint8_t* pPrintPatch = new uint8_t[PrintFileInfo._uiArraySize];		//put into CalibrationResult later
-	//uint8_t NumCols = 104;							    //put into CalibrationInfo later	
-	//uint8_t NumRows = 96;								//put into CalibrationInfo later
-	uint8_t nLnaIdx = calInfo.m_nLnaIdx;			
-
-	//pPrintPatch[0] = (uint8_t)numCols;
-	//pPrintPatch[1] = (uint8_t)numCols >> 8;
-	//pPrintPatch[2] = (uint8_t)numRows;
-	//pPrintPatch[3] = (uint8_t)numRows >> 8;
+	uint32_t nLnaIdx = calInfo.m_nLnaIdx;			
 
 	memcpy(pPrintPatch, PrintFileInfo._pArrayBuf, PrintFileInfo._uiArraySize);
+
+	string debugInfo;
+	for (auto i = 0; i < PrintFileInfo._uiArraySize; i++)
+	{
+		debugInfo += to_string(pPrintPatch[i]) + ",";
+	}
+	LOG(DEBUG) << debugInfo;
 
 	//High Pass Filter(HPF)
 	//TODO
 	
-	//check LNA tag in OTP
-	uint8_t pLnaValues[MS0_SIZE];
-	if (_pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, pLnaValues, MS0_SIZE) > 0)
-	{
-		CopyToPrintPatch(&pLnaValues[4], pPrintPatch, numRows, nLnaIdx);	//skip LNA first 4 bytes 00 00 00 07
-	}
-	else
-	{
-		//calibration LNA
-	}
 	
+	_pSyn_DutCtrl->FpUnloadPatch();
+	////load OTPReadWritePatch
+	//Syn_PatchInfo OtpReadWritePatchInfo;
+	//if (!FindPatch("OtpReadWritePatch", OtpReadWritePatchInfo))
+	//{
+	//	LOG(ERROR) << "Cannot find 'OtpReadWritePatch' in config file";
+	//	return false;
+	//}
+	//_pSyn_DutCtrl->FpLoadPatch(OtpReadWritePatchInfo._pArrayBuf, OtpReadWritePatchInfo._uiArraySize);//OtpReadWritePatch
+
 	//load ImgAcqPatch
 	Syn_PatchInfo ImgAcqPatchInfo;
 	if (!FindPatch("ImageAcqPatch", ImgAcqPatchInfo))
@@ -183,8 +183,24 @@ bool Syn_Dut::Calibration(uint16_t numCols, uint16_t numRows, CalibrationInfo &c
 		LOG(ERROR) << "Cannot find 'ImageAcqPatch' in config file";
 		return false;
 	}
-	_pSyn_DutCtrl->FpUnloadPatch();
 	_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);
+
+	//check LNA tag in OTP
+	uint8_t pLnaValues[MS0_SIZE];
+	if (_pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, pLnaValues, MS0_SIZE) > 0)
+	{
+		CopyToPrintPatch(&pLnaValues[4], pPrintPatch, numRows, nLnaIdx);	//skip LNA first 4 bytes 00 00 00 07
+		debugInfo = "";
+		for (auto i = 0; i < PrintFileInfo._uiArraySize; i++)
+		{
+			debugInfo += to_string(pPrintPatch[i]) + ",";
+		}
+		LOG(DEBUG) << debugInfo;
+	}
+	else
+	{
+		//calibration LNA
+	}
 
 	//load print file
 	//_pSyn_DutCtrl->FpWritePrintFile(pPrintPatch, PrintFileInfo._uiArraySize);
@@ -195,12 +211,17 @@ bool Syn_Dut::Calibration(uint16_t numCols, uint16_t numRows, CalibrationInfo &c
 	//when the number of bytes in the image is a multiple of 64.
 	if (((numRows * numCols) % 64) == 0)
 		numRows++;
+
+	if (calInfo.m_nHpfOffset)
+		pPrintPatch[calInfo.m_nHpfOffset] &= 0xFE;
+
+	
 	uint8_t *pImgBuff = new uint8_t[numCols * numRows];
 
 	::Sleep(100);
 	//_pSyn_DutCtrl->FpGetImage(pImgBuff, numCols*numRows);
-	//_pSyn_DutCtrl->FpGetImage2(numRows, numCols, pImgBuff, PrintFileInfo._uiArraySize, pPrintPatch);
-	_pSyn_DutCtrl->FpGetImage2(numRows, numCols, pImgBuff, PrintFileInfo._uiArraySize, PrintFileInfo._pArrayBuf);
+	_pSyn_DutCtrl->FpGetImage2(numRows, numCols, pImgBuff, PrintFileInfo._uiArraySize, pPrintPatch);
+	//_pSyn_DutCtrl->FpGetImage2(numRows, numCols, pImgBuff, PrintFileInfo._uiArraySize, PrintFileInfo._pArrayBuf);
 	//_pSyn_DutCtrl->FpGetImage2(numRows, numCols, pImgBuff, PrintFileInfo._uiArraySize-4,&PrintFileInfo._pArrayBuf[4]);
 
 	/*for (int i = 0; i < numCols * numRows; i++)
@@ -214,7 +235,7 @@ bool Syn_Dut::Calibration(uint16_t numCols, uint16_t numRows, CalibrationInfo &c
 		std::string strTempRowValue;
 		for (int j = 0; j < numCols; j++)
 		{
-			strTempRowValue += to_string(pImgBuff[i*numRows + j]) + std::string(" ");
+			strTempRowValue += to_string(pImgBuff[i*numRows + j]) + std::string(",");
 		}
 
 		LOG(INFO) << "row " << to_string(i) << " is " << strTempRowValue;
