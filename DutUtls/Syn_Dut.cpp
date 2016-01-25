@@ -124,9 +124,9 @@ bool Syn_Dut::ReadOTP(uint8_t* oarMS0, int iSize)
 	_pSyn_DutCtrl->FpUnloadPatch();
 	_pSyn_DutCtrl->FpLoadPatch(OtpReadWritePatchInfo._pArrayBuf, OtpReadWritePatchInfo._uiArraySize);//OtpReadWritePatch
 	_pSyn_DutCtrl->FpOtpRomRead(BOOT_SEC, 0, oarMS0, BS0_SIZE);
-	_pSyn_DutCtrl->FpOtpRomRead(BOOT_SEC, 1, &oarMS0[64], BS1_SIZE);
-	_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 0, &oarMS0[128], MS1_SIZE);
-	_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 1, &oarMS0[2176], MS1_SIZE);
+	_pSyn_DutCtrl->FpOtpRomRead(BOOT_SEC, 1, &oarMS0[BS0_SIZE], BS1_SIZE);
+	_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 0, &oarMS0[BS0_SIZE + BS1_SIZE], MS0_SIZE);
+	_pSyn_DutCtrl->FpOtpRomRead(MAIN_SEC, 1, &oarMS0[BS0_SIZE + BS1_SIZE + MS0_SIZE], MS1_SIZE);
 
 	//::Sleep(100);
 
