@@ -74,6 +74,8 @@ public:
 
 	virtual void GpioPinWrite(uint16_t portId, uint32_t mskPins, uint32_t pMskPinState) = 0;
 
+	virtual void GetCurrentSenseValues(uint16_t gainIdx, uint16_t oversample, uint32_t arCurrentSenseValues[4]) {}
+
 protected:
 
 	uint32_t syn_SerialNumber;

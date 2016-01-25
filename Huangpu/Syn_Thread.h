@@ -9,7 +9,7 @@
 //std
 #include <string>
 
-//Q_DECLARE_METATYPE(Syn_OTPTestInfo)
+//Q_DECLARE_METATYPE(Syn_SiteInfo)
 
 class Syn_Thread : public QThread
 {

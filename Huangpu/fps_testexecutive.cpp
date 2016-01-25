@@ -502,6 +502,8 @@ void FPS_TestExecutive::ReceiveSiteInfoSlot(void * pSiteInfo)
 	//retrieve current site with sitenumber from sitelist
 	bool synFind(false);
 	Syn_DutTestInfo CurrentDutTestInfo;
+	Syn_DutTestResult *pCurrentDutTestResult;
+	Syn_SysConfig CurrentSysConfig;
 	for (size_t i = 0; i < _ListOfSitePtr.size(); i++)
 	{
 		unsigned int iTempSiteNumber(0);
@@ -509,6 +511,8 @@ void FPS_TestExecutive::ReceiveSiteInfoSlot(void * pSiteInfo)
 		if (iSiteNumber == iTempSiteNumber)
 		{
 			_ListOfSitePtr[i]->GetTestInfo(CurrentDutTestInfo);
+			_ListOfSitePtr[i]->GetTestResult(pCurrentDutTestResult);
+			_ListOfSitePtr[i]->GetSysConfig(CurrentSysConfig);
 			synFind = true;
 			break;
 		}
@@ -602,6 +606,36 @@ void FPS_TestExecutive::ReceiveSiteInfoSlot(void * pSiteInfo)
 
 	ui.TestTableWidget->setItem(6, iColumnIndex, new QTableWidgetItem(strTestInfo));
 	ui.TestTableWidget->resizeRowToContents(6);
+
+	//picture
+	for (int i = 0; i < MAXFRAMES; i++)
+	{
+		uint8_t *parr = new uint8_t[(CurrentSysConfig._uiNumRows + 1)*CurrentSysConfig._uiNumCols];
+		for (int m = 0; m < CurrentSysConfig._uiNumRows + 1; m++)
+		{
+			for (int n = 0; n < CurrentSysConfig._uiNumCols; n++)
+			{
+				parr[m*(CurrentSysConfig._uiNumRows + 1) + n] = (pCurrentDutTestResult->_calibrationResults).arr_calibration[i].arr[m][n];
+			}
+		}
+
+		QImage image = QImage(parr, CurrentSysConfig._uiNumRows, CurrentSysConfig._uiNumCols, QImage::Format_RGB32);
+
+		image.save("D:\\"+QString::number(i)+".jpg");
+
+		delete[] parr;
+		parr = NULL;
+
+	}
+	//image.save("D:\\1.jpg");
+	/*QPixmap pixmap;
+	pixmap.convertFromImage(image);
+	QIcon qicon;
+	qicon.addPixmap(pixmap);
+
+	ui.TestTableWidget->setItem(5, iColumnIndex, new QTableWidgetItem(qicon,""));
+	ui.TestTableWidget->resizeRowToContents(5);*/
+
 }
 
 

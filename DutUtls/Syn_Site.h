@@ -170,7 +170,7 @@ public:
 
 	void GetSiteInfo(Syn_SiteInfo &oSyn_SiteInfo);
 	void GetTestInfo(Syn_DutTestInfo &oSyn_DutTestInfo);
-	void GetTestResult(Syn_DutTestResult &oSyn_DutTestResult);
+	void GetTestResult(Syn_DutTestResult * &opSyn_DutTestResult);
 
 	inline void SetSiteNumber(unsigned int iSiteNumber){ _iSiteNumber = iSiteNumber; };
 
@@ -202,7 +202,11 @@ private:
 
 	Syn_SiteInfo		_siteInfo;
 	Syn_DutTestInfo		_DutTestInfo;
-	Syn_DutTestResult   _DutTestResult;
+	//Syn_DutTestResult   _DutTestResult;
+
+	//Syn_DutTestInfo		*_pDutTestInfo;
+	Syn_DutTestResult   *_pDutTestResult;
+
 };
 
 #endif // SYN_SITE_H

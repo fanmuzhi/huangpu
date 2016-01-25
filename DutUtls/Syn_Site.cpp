@@ -22,8 +22,13 @@ INITIALIZE_EASYLOGGINGPP
 Syn_Site::Syn_Site()
 :_pSyn_Dut(NULL)
 , _iSiteNumber(0)
+
+
+, _pDutTestResult(NULL)
 {
 	_siteInfo._TestState = TestReady;
+
+	_pDutTestResult = new Syn_DutTestResult();
 }
 
 Syn_Site::~Syn_Site()
@@ -32,6 +37,12 @@ Syn_Site::~Syn_Site()
 	{
 		delete _pSyn_Dut;
 		_pSyn_Dut = NULL;
+	}
+
+	if (NULL != _pDutTestResult)
+	{
+		delete _pDutTestResult;
+		_pDutTestResult = NULL;
 	}
 }
 
@@ -310,10 +321,11 @@ void Syn_Site::Run()
 	try
 	{
 		_siteInfo._TestState = TestRunning;
-		//_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
-		//_pSyn_Dut->Calibration(_SysConfig._uiNumCols,_SysConfig._uiNumRows, _DutTestInfo._calibrationInfo, _DutTestResult._calibrationResults);
+		_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
 		_pSyn_Dut->CheckDUTexists();
-		//_pSyn_Dut->PowerOff();
+		_pSyn_Dut->Calibration(_SysConfig._uiNumCols, _SysConfig._uiNumRows, _DutTestInfo._calibrationInfo, _pDutTestResult->_calibrationResults);
+		//_pSyn_Dut->Calibration(_SysConfig._uiNumCols, _SysConfig._uiNumRows, _DutTestInfo._calibrationInfo, _DutTestResult._calibrationResults);
+		_pSyn_Dut->PowerOff();
 
 	}
 	catch (Syn_Exception ex)
@@ -326,6 +338,7 @@ void Syn_Site::Run()
 		return;
 	}
 
+	::Sleep(1000);
 
 	return;
 }
@@ -341,9 +354,9 @@ void Syn_Site::GetTestInfo(Syn_DutTestInfo &oSyn_DutTestInfo)
 	oSyn_DutTestInfo = _DutTestInfo;
 }
 
-void Syn_Site::GetTestResult(Syn_DutTestResult &oSyn_DutTestResult)
+void Syn_Site::GetTestResult(Syn_DutTestResult * &opSyn_DutTestResult)
 {
-	oSyn_DutTestResult = _DutTestResult;
+	opSyn_DutTestResult = _pDutTestResult;
 }
 
 
