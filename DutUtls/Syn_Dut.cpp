@@ -142,8 +142,6 @@ bool Syn_Dut::Calibration(uint16_t numCols, uint16_t numRows, CalibrationInfo &c
 		return false;
 	}
 
-	
-
 	//get print file
 	Syn_PatchInfo PrintFileInfo;
 	if (!FindPatch("PrintFile", PrintFileInfo))
@@ -153,23 +151,18 @@ bool Syn_Dut::Calibration(uint16_t numCols, uint16_t numRows, CalibrationInfo &c
 	}
 
 	//construct print file
-	uint8_t* pPrintPatch = new uint8_t[PrintFileInfo._uiArraySize];		//put into CalibrationResult later
-	uint32_t nLnaIdx = calInfo.m_nLnaIdx;			
-
-	memcpy(pPrintPatch, PrintFileInfo._pArrayBuf, PrintFileInfo._uiArraySize);
-
-	string debugInfo;
-	for (auto i = 0; i < PrintFileInfo._uiArraySize; i++)
-	{
-		debugInfo += to_string(pPrintPatch[i]) + ",";
-	}
-	LOG(DEBUG) << debugInfo;
+	//uint8_t* pPrintPatch = new uint8_t[PrintFileInfo._uiArraySize];		//put into CalibrationResult later
+	memcpy(calResult.m_pPrintPatch, PrintFileInfo._pArrayBuf, PrintFileInfo._uiArraySize);
+	calResult.m_nPrintPatchSize = PrintFileInfo._uiArraySize;
 
 	//High Pass Filter(HPF)
-	//TODO
-	
+	//If the configuration file specifies the High Pass Filter (HPF) be disabled during calibration.
+	//Will be re-enabled at end of calibration step.
+	if (calInfo.m_nHpfOffset)
+		calResult.m_pPrintPatch[calInfo.m_nHpfOffset] &= 0xFE;
 	
 	_pSyn_DutCtrl->FpUnloadPatch();
+
 	////load OTPReadWritePatch
 	//Syn_PatchInfo OtpReadWritePatchInfo;
 	//if (!FindPatch("OtpReadWritePatch", OtpReadWritePatchInfo))
@@ -188,27 +181,15 @@ bool Syn_Dut::Calibration(uint16_t numCols, uint16_t numRows, CalibrationInfo &c
 	}
 	_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);
 
-
-
-	//If the configuration file specifies the High Pass Filter (HPF) be disabled during calibration.
-	//Will be re-enabled at end of calibration step.
-	if (calInfo.m_nHpfOffset)
-		calResult.m_pPrintPatch[calInfo.m_nHpfOffset] &= 0xFE;
-
 	//check LNA tag in OTP
 	uint8_t		pSrc[2] = { 0, 0 };
 	uint8_t		pLnaValues[MS0_SIZE];
 	uint8_t		pPgaValues[MS0_SIZE] = {0};
 	bool		bSuccess(false);
+	uint32_t nLnaIdx = calInfo.m_nLnaIdx;			
 	if (_pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, pLnaValues, MS0_SIZE) > 0)
 	{
-		CopyToPrintPatch(&pLnaValues[4], pPrintPatch, numRows, nLnaIdx);	//skip LNA first 4 bytes 00 00 00 07
-		debugInfo = "";
-		for (auto i = 0; i < PrintFileInfo._uiArraySize; i++)
-		{
-			debugInfo += to_string(pPrintPatch[i]) + ",";
-		}
-		LOG(DEBUG) << debugInfo;
+		CopyToPrintPatch(&pLnaValues[4], calResult.m_pPrintPatch, numRows, nLnaIdx);	//skip LNA first 4 bytes 00 00 00 07
 	}
 	else
 	{
@@ -222,29 +203,17 @@ bool Syn_Dut::Calibration(uint16_t numCols, uint16_t numRows, CalibrationInfo &c
 	//There is a bug in the FPS firmware. This bug shows when the number of cols times the
 	//number of rows is a multiple of 64. To avoid this problem we add 1 to the number of rows
 	//when the number of bytes in the image is a multiple of 64.
-	if (((numRows * numCols) % 64) == 0)
-		numRows++;
-
-	if (calInfo.m_nHpfOffset)
-		pPrintPatch[calInfo.m_nHpfOffset] &= 0xFE;
-
-	
-	uint8_t *pImgBuff = new uint8_t[numCols * numRows];
-
-	::Sleep(100);
-	//_pSyn_DutCtrl->FpGetImage(pImgBuff, numCols*numRows);
-	_pSyn_DutCtrl->FpGetImage2(numRows, numCols, pImgBuff, PrintFileInfo._uiArraySize, pPrintPatch);
 	//_pSyn_DutCtrl->FpGetImage2(numRows, numCols, pImgBuff, PrintFileInfo._uiArraySize, PrintFileInfo._pArrayBuf);
 	//_pSyn_DutCtrl->FpGetImage2(numRows, numCols, pImgBuff, PrintFileInfo._uiArraySize-4,&PrintFileInfo._pArrayBuf[4]);
 
+	/*
 	for (int i = 0; i < numCols * numRows; i++)
 	{
-		calResult.m_pPrintPatch[i] = pImgBuff[i];
 		std::string strTempValue = to_string(pImgBuff[i]);
 		LOG(INFO) << i << " is " << strTempValue;
-	}
-
+	}*/
 	
+	/*
 	//test fill FPSFrame
 	FPSFrame *pFirstFPSFrameArray = new FPSFrame[MAXFRAMES];
 	for (int i = 0; i < numRows; i++)
@@ -253,11 +222,7 @@ bool Syn_Dut::Calibration(uint16_t numCols, uint16_t numRows, CalibrationInfo &c
 		{
 			pFirstFPSFrameArray[0].arr[i][j] = pImgBuff[numCols*i + j];
 		}
-	}
-
-
-
-
+	}*/
 
 	//If cal type is One Offset Per Pixel.
 	if (calInfo.m_nCalType == kPgaCalTypeOneOffsetPerPixel)
@@ -291,134 +256,44 @@ bool Syn_Dut::Calibration(uint16_t numCols, uint16_t numRows, CalibrationInfo &c
 		}
 	}
 
-	for (int i = 0; i < numRows; i++)
+	FPSFrame *pFrame = new FPSFrame();
+	GetFingerprintImage(calResult, pFrame, numCols, numRows);
+
+	delete pFrame;
+	return true;
+}
+
+void Syn_Dut::GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *pFrame, int nNumRows, int nNumCols)
+{
+	int			nRows = nNumRows;
+	int			nCols = nNumCols;
+
+	if (((nRows * nCols) % 64) == 0)
+		nRows++;
+	
+	uint8_t *pImgBuff = new uint8_t[nCols * nRows];
+
+	//_pSyn_DutCtrl->FpGetImage(pImgBuff, numCols*numRows);
+	_pSyn_DutCtrl->FpGetImage2(nRows, nCols, pImgBuff, pCalResults.m_nPrintPatchSize, pCalResults.m_pPrintPatch);
+
+
+	for (int i = 0; i < (nRows * nCols); i++)
+	{
+		pFrame->arr[i / nCols][i%nCols] = pImgBuff[i];
+	}
+
+	for (int i = 0; i < nRows; i++)
 	{
 		std::string strTempRowValue;
-		for (int j = 0; j < numCols; j++)
+		for (int j = 0; j < nCols; j++)
 		{
-			strTempRowValue += to_string(pImgBuff[i*numRows + j]) + std::string(",");
+			strTempRowValue += to_string(pImgBuff[i*nRows + j]) + std::string(",");
 		}
 
 		LOG(INFO) << "row " << to_string(i) << " is " << strTempRowValue;
 	}
-
+	
 	delete[] pImgBuff;
-	
-	delete[]pFirstFPSFrameArray;
-	pFirstFPSFrameArray = NULL;
-
-	return true;
-
-	
-}
-
-void Syn_Dut::GetFingerprintImage(CalibrationResults &CalResults, FPSFrame *pFrame, int nNumRows, int nNumCols, uint32_t* pCurrentDrawVals, int nGain)
-{
-	uint32_t	currentDrawSums[NUM_CURRENT_VALUES] = { 0 };
-	uint32_t	arCurrentSenseVals[NUM_CURRENT_VALUES] = { 0 };
-	int			nRows = nNumRows;
-	int			nCols = nNumCols;
-	uint8_t*	pImgBuf = NULL;
-
-	//If present, write the get print patch. Must go right before image aquisition.
-	/*if (GetSysConfig().GetSize("ImageAcqPatch") != 0)
-	{
-		GetDutCtrl().FpUnloadPatch();
-		WriteImageAcqPatch(GetSysConfig().GetPtr("ImageAcqPatch"), GetSysConfig().GetSize("ImageAcqPatch"));
-	}*/
-	Syn_PatchInfo ImgAcqPatchInfo;
-	if (FindPatch("ImageAcqPatch", ImgAcqPatchInfo))
-	{
-		_pSyn_DutCtrl->FpUnloadPatch();
-		_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);
-	}
-
-	//There is a bug in the FPS firmware. This bug shows when the number of cols times the
-	//number of rows is a multiple of 64. To avoid this problem we add 1 to the number of rows
-	//when the number of bytes in the image is a multiple of 64.
-	if (((nRows * nCols) % 64) == 0)
-		nRows++;
-
-	//If the caller is requesting current draw readings.
-	if (pCurrentDrawVals != NULL)
-	{
-		//	WritePrintFile(pCalResults);
-		Syn_PatchInfo PrintPatchInfo;
-		if (FindPatch("PrintFile", PrintPatchInfo))
-		{
-			_pSyn_DutCtrl->FpWrite(1, VCSFW_CMD::GET_PRINT, PrintPatchInfo._pArrayBuf, PrintPatchInfo._uiArraySize);
-			//_pSyn_DutCtrl->FpWaitForCommandCompleteAndCheckErrorCode(2);
-			_pSyn_DutCtrl->FpWaitForCMDComplete();
-			_pSyn_DutCtrl->FpReadAndCheckStatus(0);
-		}
-
-		
-
-		for (int i = 0; i<2; i++)
-		{
-			//Get the current draw reading while the part is active.
-			_pSyn_DutCtrl->GetCurrentSenseValues(nGain, 64, arCurrentSenseVals);// DutCtrl::CURRENT_SENSE_BASE_OVERSAMPLE
-
-			for (int curIdx = 0; curIdx<NUM_CURRENT_VALUES; curIdx++)
-				currentDrawSums[curIdx] += arCurrentSenseVals[curIdx];
-		}
-
-		for (int curIdx = 0; curIdx<NUM_CURRENT_VALUES; curIdx++)
-			pCurrentDrawVals[curIdx] = currentDrawSums[curIdx] / 2;
-
-
-		//Wait for the sensor to generate complete image.
-		int timeout = 300;
-		uint8_t		pDst[4];
-		_pSyn_DutCtrl->FpGetStatus(pDst, sizeof(pDst));
-		while (timeout-- && ((pDst[3] & 0x02) == 0))
-			_pSyn_DutCtrl->FpGetStatus(pDst, sizeof(pDst));
-
-		if (timeout == 0)
-		{
-			Syn_Exception ex(0);
-			ex.SetDescription("Timeout waiting for image.");
-			throw ex;
-		}
-
-		//Pull sensor's image data.
-		uint8_t* pImgBuf = new uint8_t[(nRows * nCols)];
-		_pSyn_DutCtrl->FpGetImage(pImgBuf, nRows * nCols);
-		delete[] pImgBuf;
-	}
-	else //if (pCurrentDrawVals == NULL)
-	{
-		try
-		{
-			//If this sensor's image is too large for it's internal buffer, use a semaphore.
-			if ((nRows * nCols) > 18000)
-			{
-				//Use a lock.
-				//CSingleLock myLock(&m_criticalSection, TRUE);
-
-				//Get the image.
-				pImgBuf = new uint8_t[(nRows * nCols)];
-				_pSyn_DutCtrl->FpGetImage2(nRows, nCols, pImgBuf, CalResults.m_nPrintPatchSize - 4, &CalResults.m_pPrintPatch[4]);
-				for (int i = 0; i<(nRows*nCols); i++)
-					pFrame->arr[i / nCols][i % nCols] = pImgBuf[i];
-				delete[] pImgBuf;
-			}
-			else //Don't use a lock.
-			{
-				//Get the image.
-				pImgBuf = new uint8_t[(nRows * nCols)];
-				_pSyn_DutCtrl->FpGetImage2(nRows, nCols, pImgBuf, CalResults.m_nPrintPatchSize - 4, &CalResults.m_pPrintPatch[4]);
-				for (int i = 0; i<(nRows*nCols); i++)
-					pFrame->arr[i / nCols][i % nCols] = pImgBuf[i];
-				delete[] pImgBuf;
-			}
-		}
-		catch (Syn_Exception e)
-		{
-			delete[] pImgBuf;
-			throw e;
-		}
-	}
 }
 
 bool Syn_Dut::FindPatch(std::string patchName, Syn_PatchInfo &patchInfo)

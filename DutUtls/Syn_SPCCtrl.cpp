@@ -435,7 +435,7 @@ void Syn_SPCCtrl::FpGetImage2(uint16_t nRows, uint16_t nCols, uint8_t *pDst, uin
 	LOG(INFO) << "Get Image 2";
 	
 	uint16_t err;
-	this->FpWaitDeviceReady();
+	//this->FpWaitDeviceReady();
 
 	//err = MPC_FpGetImage2(syn_DeviceHandle, nRows, nCols, pDst, nBlobSize, pBlob, NULL, NULL, NULL, TIMEOUT);
 	err = MPC_FpGetImage2(syn_DeviceHandle, nRows, nCols, pDst, nBlobSize, pBlob, 0, 0, 0, TIMEOUT);
