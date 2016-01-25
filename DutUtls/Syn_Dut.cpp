@@ -259,3 +259,20 @@ bool Syn_Dut::FindPatch(std::string patchName, Syn_PatchInfo &patchInfo)
 	}
 	return IsExists;
 }
+
+
+bool Syn_Dut::CheckDUTexists()
+{
+	bool IsExists(true);
+	_pSyn_DutCtrl->GpioSetPinType(8, 0x10, 5);
+
+	uint32_t nPinState = 0;
+	_pSyn_DutCtrl->GpioPinRead(8, 0x10, &nPinState);
+
+	if (0x10 & nPinState)
+	{
+		IsExists = false;
+	}
+
+	return IsExists;
+}

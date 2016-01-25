@@ -68,6 +68,12 @@ public:
 	
 	virtual void FpGetImage2(uint16_t nRows, uint16_t nCols, uint8_t *pDst, uint16_t nBlobSize, uint8_t *pBlob) = 0;
 
+	virtual void GpioSetPinType(uint16_t portId, uint32_t mskPins, uint16_t pinType) = 0;
+
+	virtual void GpioPinRead(uint16_t portId, uint32_t mskPins, uint32_t* pMskPinState) = 0;
+
+	virtual void GpioPinWrite(uint16_t portId, uint32_t mskPins, uint32_t pMskPinState) = 0;
+
 protected:
 
 	uint32_t syn_SerialNumber;

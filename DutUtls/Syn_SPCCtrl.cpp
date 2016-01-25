@@ -439,10 +439,88 @@ void Syn_SPCCtrl::FpGetImage2(uint16_t nRows, uint16_t nCols, uint8_t *pDst, uin
 
 	//err = MPC_FpGetImage2(syn_DeviceHandle, nRows, nCols, pDst, nBlobSize, pBlob, NULL, NULL, NULL, TIMEOUT);
 	err = MPC_FpGetImage2(syn_DeviceHandle, nRows, nCols, pDst, nBlobSize, pBlob, 0, 0, 0, TIMEOUT);
+	Syn_Exception ex(err);
+	if (err == MpcApiError::ERR_COMMUNICATION_FAILED)
+	{
+		ex.SetDescription("FpGetImage2() Controller communication failure.");
+		throw ex;
+	}
+	else if (err != MpcApiError::ERR_OK)
+	{
+		ex.SetDescription("FpGetImage2() DUT communication failure.");
+		throw ex;
+	}
+}
 
-	cout << "test!" << endl;
+
+//
+//Set GPIO pin to in, out, timer and others.
+//
+void Syn_SPCCtrl::GpioSetPinType(uint16_t portId, uint32_t mskPins, uint16_t pinType)
+{
+	LOG(INFO) << "GPIO Set Pin Type";
+
+	uint16_t err;
+	err = MPC_GpioSetPinType(syn_DeviceHandle, portId, mskPins, pinType, TIMEOUT);
+	Syn_Exception ex(err);
+	if (err == MpcApiError::ERR_COMMUNICATION_FAILED)
+	{
+		ex.SetDescription("GpioSetPinType() Controller communication failure.");
+		throw ex;
+	}
+	else if (err != MpcApiError::ERR_OK)
+	{
+		ex.SetDescription("GpioSetPinType() DUT communication failure.");
+		throw ex;
+	}
 }
 	
+
+//
+//Read from GPIO pin, pMskPinState is the return state.
+//
+void Syn_SPCCtrl::GpioPinRead(uint16_t portID, uint32_t mskPins, uint32_t* pMskPinState)
+{
+	LOG(INFO) << "Read from GPIO";
+
+	uint16_t err;
+	err = MPC_GpioPinRead(syn_DeviceHandle, portID, mskPins, pMskPinState, TIMEOUT);
+	Syn_Exception ex(err);
+	if (err == MpcApiError::ERR_COMMUNICATION_FAILED)
+	{
+		ex.SetDescription("GpioPinRead() Controller communication failure.");
+		throw ex;
+	}
+	else if (err != MpcApiError::ERR_OK)
+	{
+		ex.SetDescription("GpioPinRead() DUT communication failure.");
+		throw ex;
+	}
+}
+
+
+//
+//Write GPIO pin, value is mskPinState
+//
+void Syn_SPCCtrl::GpioPinWrite(uint16_t portID, uint32_t mskPins, uint32_t mskPinState)
+{
+	LOG(INFO) << "Write GPIO";
+
+	uint16_t err;
+	err = MPC_GpioPinWrite(syn_DeviceHandle, portID, mskPins, mskPinState, TIMEOUT);
+	Syn_Exception ex(err);
+	if (err == MpcApiError::ERR_COMMUNICATION_FAILED)
+	{
+		ex.SetDescription("GpioPinWrite() Controller communication failure.");
+		throw ex;
+	}
+	else if (err != MpcApiError::ERR_OK)
+	{
+		ex.SetDescription("GpioPinWrite() DUT communication failure.");
+		throw ex;
+	}
+}
+
 
 void Syn_SPCCtrl::UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader, uint32_t nRevApplication)
 {
