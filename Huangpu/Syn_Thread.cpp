@@ -36,8 +36,9 @@ void Syn_Thread::run()
 
 	//Lock.unlock();
 
+
 	_pSyn_Site->GetSiteInfo(_SiteInfo);
-	emit send(&_SiteInfo);
+	emit send((void*)&_SiteInfo);
 
 	_stopped = true;
 }

@@ -68,6 +68,12 @@ public:
 	
 	virtual void FpGetImage2(uint16_t nRows, uint16_t nCols, uint8_t *pDst, uint16_t nBlobSize, uint8_t *pBlob) = 0;
 
+
+
+
+	virtual void GetCurrentSenseValues(uint16_t gainIdx, uint16_t oversample, uint32_t arCurrentSenseValues[4]) {}
+
+
 protected:
 
 	uint32_t syn_SerialNumber;

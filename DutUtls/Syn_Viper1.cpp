@@ -14,3 +14,4 @@ void Syn_Viper1::GetProjectType(ProjectType &oProjectType)
 {
 	oProjectType = Viper1;
 }
+

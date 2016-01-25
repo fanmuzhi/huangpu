@@ -93,6 +93,11 @@ private:
 	Syn_LocalSettingsDlg *_pSyn_LocalSettingsDlg;
 
 	Syn_LocalSettings _LocalSettingsInfo;
+
+
+
+
+	//Syn_DutTestResult _VeryTempResults;
 };
 
 #endif // FPS_TESTEXECUTIVE_H

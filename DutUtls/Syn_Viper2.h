@@ -9,5 +9,10 @@ public:
 
 	void GetProjectType(ProjectType &oProjectType);
 
+	//just for test and debug,noc ontent
+	inline virtual bool CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRows, CalibrationInfo &calInfo, CalibrationResults &calResult)
+	{
+		return false;
+	};
 };
 
