@@ -38,11 +38,15 @@ Syn_SPCCtrl::~Syn_SPCCtrl()
 
 bool Syn_SPCCtrl::Init()
 {
-	uint32_t	err;
+	uint32_t	err(0);
 
 	uint16_t	uiDevType;
 	uint32_t	uiRevBootLoader;
 	uint32_t	uiRevApplication;
+
+	bool rc(false);
+
+	Syn_Exception Exception(err);
 
 	//SetValidFlg(false);
 
@@ -79,11 +83,12 @@ bool Syn_SPCCtrl::Init()
 				MPC_Disconnect(syn_DeviceHandle);
 				MPC_CloseMpcDeviceHandle(syn_DeviceHandle);
 				syn_DeviceHandle = NULL;
+				LOG(ERROR) << "Cannot Get Identity of MPC04: " << syn_SerialNumber;
 			}
 			else
 			{
 				//If necessary, update the firmware.
-				//UpdateMPC04Firmware(uiDevType, uiRevBootLoader, uiRevApplication);
+				UpdateMPC04Firmware(uiDevType, uiRevBootLoader, uiRevApplication);
 				//SetValidFlg(true);
 
 				//Set the MPC04 voltages to zero.
@@ -104,7 +109,11 @@ bool Syn_SPCCtrl::Init()
 	{
 		//cout << "ERROR:Syn_SPCCtrl::Init() - syn_DeviceHandle is NULL!" << endl;
 		LOG(ERROR) << "syn_DeviceHandle is NULL";
-		return false;
+		rc = false;
+
+		Exception = err;
+		Exception.SetDescription("syn_DeviceHandle is NULL:" + to_string(syn_SerialNumber));
+		throw Exception;
 	}
 
 	if (MPC_IsConnected(syn_DeviceHandle))
@@ -116,16 +125,25 @@ bool Syn_SPCCtrl::Init()
 			syn_DeviceHandle = NULL;
 			//cout << "ERROR:Syn_SPCCtrl::Init() - MPC_SetPortFpSensor failed with MPC04 " << syn_SerialNumber << endl;
 			LOG(ERROR) << "MPC_SetPortFpSensor failed with MPC04: " << syn_SerialNumber;
-			return false;
+			rc = false;
+
+			Exception = err;
+			Exception.SetDescription("MPC_SetPortFpSensor failed with MPC04:" + to_string(syn_SerialNumber));
+			throw Exception;
 		}
-		return true;
+		rc = true;
 	}
 	else
 	{
+		Exception = err;
+		Exception.SetDescription("MPC_IsConnected is failed:" + to_string(syn_SerialNumber));
+		throw Exception;
 		//cout << "ERROR:Syn_SPCCtrl::Init() - ::MPC_IsConnected is failed!" << endl;
 		LOG(ERROR) << "MPC_IsConnected is failed!";
-		return false;
+		rc = false;
 	}
+
+	return rc;
 }
 
 //--------------------
@@ -238,16 +256,17 @@ void Syn_SPCCtrl::FpReadBuff(uint8_t *pDst, int numBytes)
 }
 
 
-void Syn_SPCCtrl::FpReadAndCheckBuff(uint16_t numReturn)
+void Syn_SPCCtrl::FpReadAndCheckStatus(uint16_t statusIgnore)
 {
 	uint8_t numbytes = 2;
 	uint8_t pDst[4] = { 0 };
 	this->FpReadBuff(pDst, numbytes);
 	
-	uint16_t returnValue = (pDst[0] << 8) + pDst[1];
+	//uint16_t returnValue = (pDst[0] << 8) + pDst[1];
+	uint16_t returnValue = *((uint16_t*)pDst);
 	LOG(DEBUG) << "0x" << hex << returnValue;
 
-	if (numReturn != returnValue && returnValue != 0)
+	if (statusIgnore != returnValue && returnValue != 0)
 	{
 		Syn_Exception ex(0);
 		ex.SetDescription("FpReadAndCheckBuff() DUT return value unmatch.");
@@ -285,7 +304,7 @@ void Syn_SPCCtrl::FpDisableSleep()
 	uint8_t pSrc[2] = { 0 };
 	this->FpWrite(1, VCSFW_CMD::TIDLE_SET, pSrc, sizeof(pSrc));
 	this->FpWaitForCMDComplete();
-	this->FpReadAndCheckBuff(0);
+	this->FpReadAndCheckStatus(0);
 }
 
 void Syn_SPCCtrl::FpLoadPatch(uint8_t* pPatch, int numBytes)
@@ -295,7 +314,7 @@ void Syn_SPCCtrl::FpLoadPatch(uint8_t* pPatch, int numBytes)
 
 	this->FpWrite(1, VCSFW_CMD::PATCH, pPatch, numBytes);
 	this->FpWaitForCMDComplete();
-	this->FpReadAndCheckBuff(0);
+	this->FpReadAndCheckStatus(0);
 }
 
 void Syn_SPCCtrl::FpUnloadPatch()
@@ -305,7 +324,7 @@ void Syn_SPCCtrl::FpUnloadPatch()
 
 	this->FpWrite(1, VCSFW_CMD::UNLOAD_PATCH, (uint8_t*)0, 0);
 	this->FpWaitForCMDComplete();
-	this->FpReadAndCheckBuff(0x9104);
+	this->FpReadAndCheckStatus(0x0491);
 }
 
 void Syn_SPCCtrl::FpOtpRomRead(int section, int sector, uint8_t* pDst, int numBytes)
@@ -386,31 +405,44 @@ void Syn_SPCCtrl::FpGetVersion(uint8_t *pDst, int numBytes)
 	}
 }
 
+void Syn_SPCCtrl::FpWritePrintFile(uint8_t *pPrintPatch, int numBytes)
+{
+	LOG(INFO) << "Write Print File";
+
+	this->FpWrite(1, VCSFW_CMD::GET_PRINT, pPrintPatch, numBytes);
+	this->FpWaitForCMDComplete();
+	this->FpReadAndCheckStatus(0);
+}
 
 
+//
+//FpGetImage, used to current draw reading
+//
+void Syn_SPCCtrl::FpGetImage(uint8_t *pDst, int numBytes)
+{
+	LOG(INFO) << "Get Image";
 
+	//this->FpWaitDeviceReady();
+	this->FpRead(0x02, 0x00, pDst, numBytes);
+}
 
+	
+//
+//FpGetImage2, to capture image
+//
+void Syn_SPCCtrl::FpGetImage2(uint16_t nRows, uint16_t nCols, uint8_t *pDst, uint16_t nBlobSize, uint8_t *pBlob)
+{
+	LOG(INFO) << "Get Image 2";
+	
+	uint16_t err;
+	this->FpWaitDeviceReady();
 
+	//err = MPC_FpGetImage2(syn_DeviceHandle, nRows, nCols, pDst, nBlobSize, pBlob, NULL, NULL, NULL, TIMEOUT);
+	err = MPC_FpGetImage2(syn_DeviceHandle, nRows, nCols, pDst, nBlobSize, pBlob, 0, 0, 0, TIMEOUT);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	cout << "test!" << endl;
+}
+	
 
 void Syn_SPCCtrl::UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader, uint32_t nRevApplication)
 {

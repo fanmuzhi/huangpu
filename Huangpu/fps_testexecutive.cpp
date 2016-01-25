@@ -18,7 +18,7 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	ui.TestTableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 	ui.TestTableWidget->setRowHeight(5, 200);
 	ui.TestTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	//ui.TestTableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	//ui.TestTableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 	ui.TestTableWidget->verticalHeader()->setStretchLastSection(true);
 	Initialize();
 
@@ -39,8 +39,12 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	//Thread
 	for (int i = 1; i <= DeviceCounts; i++)
 	{
-		QObject::connect(&(_SynThreadArray[i - 1]), SIGNAL(send(void*)), this, SLOT(ReceiveOTPTestSlot(void*)));
+		QObject::connect(&(_SynThreadArray[i - 1]), SIGNAL(send(void*)), this, SLOT(ReceiveSiteInfoSlot(void*)));
 	}
+
+	//OTP Dump
+	QObject::connect(ui.pushButtonGetVer, SIGNAL(clicked()), this, SLOT(GetVersionForDutDump()));
+	QObject::connect(ui.pushButtonReadOTP, SIGNAL(clicked()), this, SLOT(ReadOTPForDutDump()));
 }
 
 FPS_TestExecutive::~FPS_TestExecutive()
@@ -170,6 +174,16 @@ void FPS_TestExecutive::Initialize()
 		ui.TestTableWidget->setColumnWidth(t - 1, 200);
 	}
 	ui.TestTableWidget->setHorizontalHeaderLabels(strListOfHeader);
+
+	//DutDump
+	ui.comboBox->clear();
+	ui.textBrowser->clear();
+	for (size_t i = 1; i <= _ListOfSitePtr.size(); i++)
+	{
+		unsigned int iSiteNumber(0);
+		_ListOfSitePtr[i - 1]->GetSiteNumber(iSiteNumber);
+		ui.comboBox->addItem(QString("Site") + QString::number(iSiteNumber));
+	}
 }
 
 bool FPS_TestExecutive::ConstructSiteList(QString strConfigFilePath,bool SendMsg)
@@ -371,6 +385,16 @@ bool FPS_TestExecutive::UpdateSiteLocalSettings()
 	}
 	ui.TestTableWidget->setHorizontalHeaderLabels(strListOfHeader);
 
+	//DutDump
+	ui.comboBox->clear();
+	ui.textBrowser->clear();
+	for (size_t i = 1; i <=_ListOfSitePtr.size(); i++)
+	{
+		unsigned int iSiteNumber(0);
+		_ListOfSitePtr[i - 1]->GetSiteNumber(iSiteNumber);
+		ui.comboBox->addItem(QString("Site") + QString::number(iSiteNumber));
+	}
+
 	return true;
 }
 
@@ -447,23 +471,22 @@ void FPS_TestExecutive::RunningTest()
 
 }
 
-void FPS_TestExecutive::ReceiveOTPTestSlot(void * pOTPTestInfo)
+void FPS_TestExecutive::ReceiveSiteInfoSlot(void * pSiteInfo)
 {
-
 	/*if (!_synThread.isRunning())
-		return;*/
+	return;*/
 
-	if (NULL == pOTPTestInfo)
+	if (NULL == pSiteInfo)
 		return;
 
-	Syn_OTPTestInfo *pTestInfo = static_cast<Syn_OTPTestInfo*>(pOTPTestInfo);
-	if (NULL == pTestInfo)
+	Syn_SiteInfo *pSyn_SiteInfo = static_cast<Syn_SiteInfo*>(pSiteInfo);
+	if (NULL == pSyn_SiteInfo)
 	{
-		clog << "FPS_TestExecutive::ReceiveOTPTestSlot() - pTestInfo is NULL!" << endl;
+		clog << "FPS_TestExecutive::ReceiveOTPTestSlot() - pSyn_SiteInfo is NULL!" << endl;
 		return;
 	}
 
-	int iSiteNumber = pTestInfo->_uiSiteNumber;
+	int iSiteNumber = pSyn_SiteInfo->_uiSiteNumber;
 	int iColumnIndex(iSiteNumber - 1);
 
 	if (NULL != ui.TestTableWidget->item(6, iColumnIndex))
@@ -471,18 +494,43 @@ void FPS_TestExecutive::ReceiveOTPTestSlot(void * pOTPTestInfo)
 		ui.TestTableWidget->item(6, iColumnIndex)->setText(QString(" "));
 		//return;
 	}
-	
+
 	QString strTestInfo("");
 	//ui.textBrowser->append(strSerialNumber);
-	strTestInfo += QString("Serial Number:") + QString::number(pTestInfo->_uiSerialNumber)+QString("\n");
+	strTestInfo += QString("Serial Number:") + QString::number(pSyn_SiteInfo->_uiSiteNumber) + QString("\n");
 
-	std::string strErrorMsg = pTestInfo->_strErrorMessage;
-	Syn_TestState TestResult = pTestInfo->_TestState;
+	//retrieve current site with sitenumber from sitelist
+	bool synFind(false);
+	Syn_DutTestInfo CurrentDutTestInfo;
+	Syn_DutTestResult *pCurrentDutTestResult;
+	Syn_SysConfig CurrentSysConfig;
+	for (size_t i = 0; i < _ListOfSitePtr.size(); i++)
+	{
+		unsigned int iTempSiteNumber(0);
+		_ListOfSitePtr[i]->GetSiteNumber(iTempSiteNumber);
+		if (iSiteNumber == iTempSiteNumber)
+		{
+			_ListOfSitePtr[i]->GetTestInfo(CurrentDutTestInfo);
+			_ListOfSitePtr[i]->GetTestResult(pCurrentDutTestResult);
+			_ListOfSitePtr[i]->GetSysConfig(CurrentSysConfig);
+			synFind = true;
+			break;
+		}
+	}
+
+	if (!synFind)
+	{
+		cout << "Error:FPS_TestExecutive::ReceiveSiteInfoSlot() - Site is not found!" << endl;
+		return;
+	}
+
+	std::string strErrorMsg = pSyn_SiteInfo->_strErrorMessage;
+	Syn_TestState TestResult = pSyn_SiteInfo->_TestState;
 	if (TestError == TestResult)
 	{
 		//QMessageBox::critical(this, QString("Error"), strSerialNumber+QString(" Test is error,reason is ") + QString::fromStdString(strErrorMsg));
 		//ui.TestTableWidget->setItem->append(QString("Test is Error,reason is ") + QString::fromStdString(strErrorMsg));
-		strTestInfo += QString(" Serial Number:") + QString::number(pTestInfo->_uiSerialNumber) + QString("\n");
+		strTestInfo += QString(" Serial Number:") + QString::number(pSyn_SiteInfo->_uiSiteNumber) + QString("\n");
 		ui.TestTableWidget->setItem(6, iColumnIndex, new QTableWidgetItem(strTestInfo));
 		return;
 	}
@@ -500,11 +548,11 @@ void FPS_TestExecutive::ReceiveOTPTestSlot(void * pOTPTestInfo)
 	{
 		int StartPos = (i - 1) * 8;
 		int EndPos = i * 8 - 1;
-		
+
 		QString s = "";
 		for (int i = StartPos; i <= EndPos; i++)
 		{
-			s += (QString::number(pTestInfo->_BootSector0Array[i], 16)).toUpper() + ",";
+			s += (QString::number(CurrentDutTestInfo._otpInfo._BootSector0Array[i], 16)).toUpper() + ",";
 		}
 
 		strTestInfo += s + QString("\n");
@@ -519,7 +567,7 @@ void FPS_TestExecutive::ReceiveOTPTestSlot(void * pOTPTestInfo)
 		QString s = "";
 		for (int i = StartPos; i <= EndPos; i++)
 		{
-			s += (QString::number(pTestInfo->_BootSector1Array[i], 16)).toUpper() + ",";
+			s += (QString::number(CurrentDutTestInfo._otpInfo._BootSector1Array[i], 16)).toUpper() + ",";
 		}
 
 		strTestInfo += s + QString("\n");
@@ -535,7 +583,7 @@ void FPS_TestExecutive::ReceiveOTPTestSlot(void * pOTPTestInfo)
 		QString s = "";
 		for (int i = StartPos; i <= EndPos; i++)
 		{
-			s += (QString::number(pTestInfo->_MainSector0Array[i], 16)).toUpper() + ",";
+			s += (QString::number(CurrentDutTestInfo._otpInfo._MainSector0Array[i], 16)).toUpper() + ",";
 		}
 
 		strTestInfo += s + QString("\n");
@@ -550,7 +598,7 @@ void FPS_TestExecutive::ReceiveOTPTestSlot(void * pOTPTestInfo)
 		QString s = "";
 		for (int i = StartPos; i <= EndPos; i++)
 		{
-			s += (QString::number(pTestInfo->_MainSector1Array[i], 16)).toUpper() + ",";
+			s += (QString::number(CurrentDutTestInfo._otpInfo._MainSector1Array[i], 16)).toUpper() + ",";
 		}
 
 		strTestInfo += s + QString("\n");
@@ -558,6 +606,163 @@ void FPS_TestExecutive::ReceiveOTPTestSlot(void * pOTPTestInfo)
 
 	ui.TestTableWidget->setItem(6, iColumnIndex, new QTableWidgetItem(strTestInfo));
 	ui.TestTableWidget->resizeRowToContents(6);
+
+	//picture
+	for (int i = 0; i < MAXFRAMES; i++)
+	{
+		uint8_t *parr = new uint8_t[(CurrentSysConfig._uiNumRows + 1)*CurrentSysConfig._uiNumCols];
+		for (int m = 0; m < CurrentSysConfig._uiNumRows + 1; m++)
+		{
+			for (int n = 0; n < CurrentSysConfig._uiNumCols; n++)
+			{
+				parr[m*(CurrentSysConfig._uiNumRows + 1) + n] = (pCurrentDutTestResult->_calibrationResults).arr_calibration[i].arr[m][n];
+			}
+		}
+
+		QImage image = QImage(parr, CurrentSysConfig._uiNumRows, CurrentSysConfig._uiNumCols, QImage::Format_RGB32);
+
+		image.save("D:\\"+QString::number(i)+".jpg");
+
+		delete[] parr;
+		parr = NULL;
+
+	}
+	//image.save("D:\\1.jpg");
+	/*QPixmap pixmap;
+	pixmap.convertFromImage(image);
+	QIcon qicon;
+	qicon.addPixmap(pixmap);
+
+	ui.TestTableWidget->setItem(5, iColumnIndex, new QTableWidgetItem(qicon,""));
+	ui.TestTableWidget->resizeRowToContents(5);*/
+
+}
+
+
+
+void FPS_TestExecutive::GetVersionForDutDump()
+{
+	int iSiteCurrentIndex = ui.comboBox->currentIndex();
+	if (iSiteCurrentIndex<0)
+	{
+		cout << "Error:FPS_TestExecutive::GetVersionForDutDump() - iSiteCurrentIndex is less than 0!" << endl;
+		return;
+	}
+
+	size_t iSiteCounts = _ListOfSitePtr.size();
+	if (0 == iSiteCounts)
+	{
+		cout << "Error:FPS_TestExecutive::GetVersionForDutDump() - iSiteCounts is 0!" << endl;
+		return;
+	}
+
+	if (iSiteCurrentIndex > iSiteCounts)
+	{
+		cout << "Error:FPS_TestExecutive::GetVersionForDutDump() - iSiteCounts is less than iSiteCurrentIndex!" << endl;
+		return;
+	}
+
+	Syn_Site *pSelectedSite = _ListOfSitePtr[iSiteCurrentIndex];
+	if (NULL == pSelectedSite)
+	{
+		cout << "Error:FPS_TestExecutive::GetVersionForDutDump() - pSelectedSite is NULL!" << endl;
+		return;
+	}
+
+	pSelectedSite->GetVersion();
+
+	Syn_SiteInfo oSiteInfo;
+	pSelectedSite->GetSiteInfo(oSiteInfo);
+	Syn_DutTestInfo oDutTestInfo;
+	pSelectedSite->GetTestInfo(oDutTestInfo);
+
+	ui.textBrowser->clear();
+	ui.textBrowser->append(QString("SiteNumber:") + QString::number(oSiteInfo._uiSiteNumber));
+	ui.textBrowser->append(QString("SerialNumber:") + QString::number(oSiteInfo._uiSerialNumber));
+	ui.textBrowser->append(QString("Version:"));
+	for (int i = 1; i <= VERSION_SIZE / 4; i++)
+	{
+		int StartPos = (i - 1) * 4;
+		int EndPos = i * 4 - 1;
+
+		Display(oDutTestInfo._getVerInfo._GerVerArray, StartPos, EndPos);
+	}
+
+}
+
+void FPS_TestExecutive::ReadOTPForDutDump()
+{
+	int iSiteCurrentIndex = ui.comboBox->currentIndex();
+	if (iSiteCurrentIndex<0)
+	{
+		cout << "Error:FPS_TestExecutive::GetVersionForDutDump() - ReadOTPForDutDump is less than 0!" << endl;
+		return;
+	}
+
+	size_t iSiteCounts = _ListOfSitePtr.size();
+	if (0 == iSiteCounts)
+	{
+		cout << "Error:FPS_TestExecutive::ReadOTPForDutDump() - iSiteCounts is 0!" << endl;
+		return;
+	}
+
+	if (iSiteCurrentIndex > iSiteCounts)
+	{
+		cout << "Error:FPS_TestExecutive::ReadOTPForDutDump() - iSiteCounts is less than iSiteCurrentIndex!" << endl;
+		return;
+	}
+
+	Syn_Site *pSelectedSite = _ListOfSitePtr[iSiteCurrentIndex];
+	if (NULL == pSelectedSite)
+	{
+		cout << "Error:FPS_TestExecutive::ReadOTPForDutDump() - pSelectedSite is NULL!" << endl;
+		return;
+	}
+
+	pSelectedSite->ReadOTP();
+
+	Syn_SiteInfo oSiteInfo;
+	pSelectedSite->GetSiteInfo(oSiteInfo);
+	Syn_DutTestInfo oDutTestInfo;
+	pSelectedSite->GetTestInfo(oDutTestInfo);
+
+	ui.textBrowser->clear();
+	ui.textBrowser->append(QString("SiteNumber:") + QString::number(oSiteInfo._uiSiteNumber));
+	ui.textBrowser->append(QString("SerialNumber:") + QString::number(oSiteInfo._uiSerialNumber));
+
+	ui.textBrowser->append(QString("Boot Sector 0:"));
+	for (int i = 1; i <= BS0_SIZE / 8; i++)
+	{
+		int StartPos = (i - 1) * 8;
+		int EndPos = i * 8 - 1;
+
+		Display(oDutTestInfo._otpInfo._BootSector0Array, StartPos, EndPos);
+	}
+
+	ui.textBrowser->append(QString("Boot Sector 1:"));
+	for (int i = 1; i <= BS1_SIZE / 8; i++)
+	{
+		int StartPos = (i - 1) * 8;
+		int EndPos = i * 8 - 1;
+
+		Display(oDutTestInfo._otpInfo._BootSector1Array, StartPos, EndPos);
+	}
+
+	ui.textBrowser->append(QString("Main Sector 0:"));
+	for (int i = 1; i <= MS0_SIZE / 8; i++)
+	{
+		int StartPos = (i - 1) * 8;
+		int EndPos = i * 8 - 1;
+		Display(oDutTestInfo._otpInfo._MainSector0Array, StartPos, EndPos);
+	}
+
+	ui.textBrowser->append(QString("Main Sector 1:"));
+	for (int i = 1; i <= MS1_SIZE / 8; i++)
+	{
+		int StartPos = (i - 1) * 8;
+		int EndPos = i * 8 - 1;
+		Display(oDutTestInfo._otpInfo._MainSector1Array, StartPos, EndPos);
+	}
 }
 
 void FPS_TestExecutive::Display(uint8_t* pDst, int DstSize)
@@ -582,5 +787,5 @@ void FPS_TestExecutive::Display(uint8_t* pDst, unsigned int StartPos, unsigned i
 	{
 		s += (QString::number(pDst[i], 16)).toUpper() + ",";
 	}
-	//ui.textBrowser->append(s);
+	ui.textBrowser->append(s);
 }

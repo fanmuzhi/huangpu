@@ -1,6 +1,9 @@
 //local
 #include "Syn_SysConfigOperation.h"
 
+//third-party
+#include "easylogging++.h"
+
 //std
 #include <iostream>
 #include <io.h>
@@ -24,7 +27,7 @@ bool Syn_SysConfigOperation::GetSysConfigInstance(std::string strConfigFilePath,
 
 	if (-1 == _access(strConfigFilePath.c_str(), 4))
 	{
-		cout << "Error:Syn_SysConfigOperation::GetSysConfigInstance() - strConfigFilePath is not exists!" << endl;
+		LOG(ERROR) << "Error:Syn_SysConfigOperation::GetSysConfigInstance() - strConfigFilePath is not exists!" << endl;
 		return NULL;
 	}
 
@@ -36,7 +39,7 @@ bool Syn_SysConfigOperation::GetSysConfigInstance(std::string strConfigFilePath,
 	{
 		delete opSyn_SysConfigOperationInstance;
 		opSyn_SysConfigOperationInstance = NULL;
-		cout << "Error:Syn_SysConfigOperation::GetSysConfigInstance() - ::Parse is failed!" << endl;
+		LOG(ERROR) << "Error:Syn_SysConfigOperation::GetSysConfigInstance() - ::Parse is failed!" << endl;
 		return false;
 	}
 
@@ -52,7 +55,7 @@ bool Syn_SysConfigOperation::Parse()
 	_rapidxmlrootNode = _rapidxmldoc.first_node();
 	if (NULL == _rapidxmlrootNode)
 	{
-		cout << "Error:Syn_SysConfigOperation::Parse() - _rapidxmlrootNode is NULL!" << endl;
+		LOG(ERROR) << "Error:Syn_SysConfigOperation::Parse() - _rapidxmlrootNode is NULL!" << endl;
 		return false;
 	}
 
@@ -136,7 +139,7 @@ bool Syn_SysConfigOperation::GetSysConfig(Syn_SysConfig &oSyn_SysConfig)
 		}
 		else if (std::string("NumCols") == strNodeName)
 		{
-			oSyn_SysConfig._uiNumRows = atoi(node->value());
+			oSyn_SysConfig._uiNumCols = atoi(node->value());
 			//cout << "" << oSyn_SysConfig._uiNumRows << endl;
 			SysConfigJudgeTag += 1;
 
@@ -241,6 +244,7 @@ bool Syn_SysConfigOperation::GetSysConfig(Syn_SysConfig &oSyn_SysConfig)
 
 	if (SysConfigJudgeTag < 20)
 	{
+		LOG(ERROR) <<"SysConfigJudgeTag IS LESS THAN 20" ;
 		rc = false;
 	}
 

@@ -9,11 +9,12 @@
 #include "ui_fps_testexecutive.h"
 
 //MPC DLL
-#include "MpcApiDll.h"
+//#include "MpcApiDll.h"
 
 //Local
 #include "Syn_Thread.h"
 #include "Syn_LocalSettingsDlg.h"
+#include "Ui_Syn_LocalSettingsDlg.h"
 
 //DutUtls
 #include "Syn_Site.h"
@@ -63,9 +64,13 @@ public Q_SLOTS:
 
 	void RunningTest();
 
-	void ReceiveOTPTestSlot(void * pOTPTestInfo);
+	//void ReceiveDutTestResultSlot(void * pDutTestResult);
 
-	
+	void ReceiveSiteInfoSlot(void * pSiteInfo);
+
+	void GetVersionForDutDump();
+
+	void ReadOTPForDutDump();
 
 private:
 
@@ -88,6 +93,11 @@ private:
 	Syn_LocalSettingsDlg *_pSyn_LocalSettingsDlg;
 
 	Syn_LocalSettings _LocalSettingsInfo;
+
+
+
+
+	//Syn_DutTestResult _VeryTempResults;
 };
 
 #endif // FPS_TESTEXECUTIVE_H

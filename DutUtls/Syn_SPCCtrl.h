@@ -37,7 +37,7 @@ public:
 
 	virtual void FpReadBuff(uint8_t *pDst, int numBytes);
 
-	virtual void FpReadAndCheckBuff(uint16_t numReturn);
+	virtual void FpReadAndCheckStatus(uint16_t statusIgnore);
 
 	virtual void FpWaitDeviceReady();
 
@@ -45,9 +45,13 @@ public:
 
 	virtual void FpGetVersion(uint8_t *pDst, int numBytes);
 
+	virtual void FpWritePrintFile(uint8_t *pPrintPatch, int numBytes);
 
+	virtual void FpGetImage(uint8_t *pDst, int numBytes);
 
+	virtual void FpGetImage2(uint16_t nRows, uint16_t nCols, uint8_t *pDst, uint16_t nBlobSize, uint8_t *pBlob);
 
+	//virtual void UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader, uint32_t nRevApplication);
 
 	//test
 	virtual void UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader, uint32_t nRevApplication);

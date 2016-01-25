@@ -8,6 +8,7 @@ public:
 
 	//void InitializeForRun();
 	virtual void GetProjectType(ProjectType &oProjectType);
+	virtual	void CopyToPrintPatch(uint8_t* pSrc, uint8_t* pPrintPatch, int nNumBytes, int nPatchIdx);
 
 };
 

@@ -2,6 +2,7 @@
 #include "Syn_DutCtrl.h"
 #include "Syn_SPCCtrl.h"
 #include "Syn_MPC04Ctrl.h"
+#include "Syn_Exception.h"
 
 //std
 #include <iostream>
@@ -21,13 +22,35 @@ bool Syn_DutCtrl::CreateDutCtrlInstance(DutController iType, uint32_t iSerialNum
 	opSyn_DutCtrlInstance = NULL;
 	if (Syn_SPC == iType)
 	{
-		opSyn_DutCtrlInstance = new Syn_SPCCtrl(iSerialNumber);
-		//opSyn_DutCtrlInstance->syn_SerialNumber = iSerialNumber;
+		try
+		{
+			opSyn_DutCtrlInstance = new Syn_SPCCtrl(iSerialNumber);
+		}
+		catch (Syn_Exception ex)
+		{
+			if (NULL != opSyn_DutCtrlInstance)
+			{
+				delete opSyn_DutCtrlInstance;
+				opSyn_DutCtrlInstance = NULL;
+			}
+			return false;
+		}
 	}
 	else if (Syn_MPC04 == iType)
 	{
-		opSyn_DutCtrlInstance = new Syn_MPC04Ctrl(iSerialNumber);
-		//opSyn_DutCtrlInstance->syn_SerialNumber = iSerialNumber;
+		try
+		{
+			opSyn_DutCtrlInstance = new Syn_MPC04Ctrl(iSerialNumber);
+		}
+		catch (Syn_Exception ex)
+		{
+			if (NULL != opSyn_DutCtrlInstance)
+			{
+				delete opSyn_DutCtrlInstance;
+				opSyn_DutCtrlInstance = NULL;
+			}
+			return false;
+		}
 	}
 	else
 	{
