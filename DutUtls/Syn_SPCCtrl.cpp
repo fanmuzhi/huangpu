@@ -307,6 +307,18 @@ void Syn_SPCCtrl::FpDisableSleep()
 	this->FpReadAndCheckStatus(0);
 }
 
+
+void Syn_SPCCtrl::FpNoop()
+{
+	LOG(INFO) << "No Op";
+
+	uint8_t pSrc[2] = { 0 };
+	this->FpWaitDeviceReady();
+	this->FpWrite(1, VCSFW_CMD::NOOP, pSrc, sizeof(pSrc));
+	this->FpWaitForCMDComplete();
+	this->FpReadAndCheckStatus(0);
+}
+
 void Syn_SPCCtrl::FpLoadPatch(uint8_t* pPatch, int numBytes)
 {
 	//cout << "FpLoadPatch():" << endl;
@@ -435,7 +447,7 @@ void Syn_SPCCtrl::FpGetImage2(uint16_t nRows, uint16_t nCols, uint8_t *pDst, uin
 	LOG(INFO) << "Get Image 2";
 	
 	uint16_t err;
-	//this->FpWaitDeviceReady();
+	this->FpNoop();
 
 	//err = MPC_FpGetImage2(syn_DeviceHandle, nRows, nCols, pDst, nBlobSize, pBlob, NULL, NULL, NULL, TIMEOUT);
 	err = MPC_FpGetImage2(syn_DeviceHandle, nRows, nCols, pDst, nBlobSize, pBlob, 0, 0, 0, TIMEOUT);

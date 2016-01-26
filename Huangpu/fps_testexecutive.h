@@ -1,6 +1,9 @@
 #ifndef FPS_TESTEXECUTIVE_H
 #define FPS_TESTEXECUTIVE_H
 
+//
+#include <windows.h>
+
 //Qt
 #include <QtWidgets/QMainWindow>
 #include <QVector>
@@ -67,6 +70,9 @@ public Q_SLOTS:
 	//void ReceiveDutTestResultSlot(void * pDutTestResult);
 
 	void ReceiveSiteInfoSlot(void * pSiteInfo);
+
+	QImage Pk8bitGrayToQIm(const BYTE *pBuffer, const int &bufWidth, const int &bufHight);
+
 
 	void GetVersionForDutDump();
 

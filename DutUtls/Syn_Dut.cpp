@@ -249,10 +249,20 @@ bool Syn_Dut::Calibration(uint16_t numCols, uint16_t numRows, CalibrationInfo &c
 
 	FPSFrame *pFrame = new FPSFrame();
 	GetFingerprintImage(calResult, pFrame, numRows, numCols);
+	calResult.testarr_calibration = *pFrame;
+	//delete pFrame;
 
-	//calResult.testarr_calibration = *pFrame;
+	for (int i = 0; i < numRows; i++)
+	{
+		std::string strTempRowValue;
+		for (int j = 0; j < numCols; j++)
+		{
+			strTempRowValue += to_string(pFrame->arr[i][j]) + std::string(" ");
+		}
 
-	delete pFrame;
+		LOG(INFO)<< to_string(i) << " is " << strTempRowValue;
+	}
+
 	
 	return true;
 }
@@ -276,7 +286,7 @@ void Syn_Dut::GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *pFr
 		pFrame->arr[i / nCols][i%nCols] = pImgBuff[i];
 	}
 
-	for (int i = 0; i < nRows; i++)
+	/*for (int i = 0; i < nRows; i++)
 	{
 		std::string strTempRowValue;
 		for (int j = 0; j < nCols; j++)
@@ -286,7 +296,7 @@ void Syn_Dut::GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *pFr
 
 		LOG(INFO) << "row " << to_string(i) << " is " << strTempRowValue;
 	}
-	
+	*/
 	delete[] pImgBuff;
 	pImgBuff = NULL;
 }

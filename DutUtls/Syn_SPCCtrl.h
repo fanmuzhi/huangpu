@@ -43,6 +43,8 @@ public:
 
 	virtual void FpDisableSleep();
 
+	virtual void FpNoop();
+
 	virtual void FpGetVersion(uint8_t *pDst, int numBytes);
 
 	virtual void FpWritePrintFile(uint8_t *pPrintPatch, int numBytes);
