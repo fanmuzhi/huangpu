@@ -155,6 +155,7 @@ bool Syn_Dut::Calibration(uint16_t numCols, uint16_t numRows, CalibrationInfo &c
 	memcpy(calResult.m_pPrintPatch, PrintFileInfo._pArrayBuf, PrintFileInfo._uiArraySize);
 	calResult.m_nPrintPatchSize = PrintFileInfo._uiArraySize;
 
+
 	//High Pass Filter(HPF)
 	//If the configuration file specifies the High Pass Filter (HPF) be disabled during calibration.
 	//Will be re-enabled at end of calibration step.
@@ -247,11 +248,12 @@ bool Syn_Dut::Calibration(uint16_t numCols, uint16_t numRows, CalibrationInfo &c
 	}
 
 	FPSFrame *pFrame = new FPSFrame();
-	GetFingerprintImage(calResult, pFrame, numCols, numRows);
+	GetFingerprintImage(calResult, pFrame, numRows, numCols);
 
-	calResult.testarr_calibration = *pFrame;
+	//calResult.testarr_calibration = *pFrame;
 
-	//delete pFrame;
+	delete pFrame;
+	
 	return true;
 }
 
@@ -286,6 +288,7 @@ void Syn_Dut::GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *pFr
 	}
 	
 	delete[] pImgBuff;
+	pImgBuff = NULL;
 }
 
 bool Syn_Dut::FindPatch(std::string patchName, Syn_PatchInfo &patchInfo)
