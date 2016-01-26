@@ -257,7 +257,7 @@ bool Syn_Dut::Calibration(uint16_t numCols, uint16_t numRows, CalibrationInfo &c
 	}
 
 	FPSFrame *pFrame = new FPSFrame();
-	GetFingerprintImage(calResult, pFrame, numCols, numRows);
+	GetFingerprintImage(calResult, pFrame, numRows, numCols);
 
 	delete pFrame;
 	return true;
