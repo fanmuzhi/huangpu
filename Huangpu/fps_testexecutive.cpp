@@ -608,14 +608,14 @@ void FPS_TestExecutive::ReceiveSiteInfoSlot(void * pSiteInfo)
 	ui.TestTableWidget->resizeRowToContents(6);
 
 	//picture
-	for (int i = 0; i < MAXFRAMES; i++)
+	/*for (int i = 0; i < MAXFRAMES; i++)
 	{
 		uint8_t *parr = new uint8_t[(CurrentSysConfig._uiNumRows + 1)*CurrentSysConfig._uiNumCols];
 		for (int m = 0; m < CurrentSysConfig._uiNumRows + 1; m++)
 		{
 			for (int n = 0; n < CurrentSysConfig._uiNumCols; n++)
 			{
-				parr[m*(CurrentSysConfig._uiNumRows + 1) + n] = (pCurrentDutTestResult->_calibrationResults).arr_calibration[i].arr[m][n];
+				parr[m*(CurrentSysConfig._uiNumCols ) + n] = (pCurrentDutTestResult->_calibrationResults).arr_calibration[i].arr[m][n];
 			}
 		}
 
@@ -626,7 +626,26 @@ void FPS_TestExecutive::ReceiveSiteInfoSlot(void * pSiteInfo)
 		delete[] parr;
 		parr = NULL;
 
+	}*/
+
+
+	uint8_t *parr = new uint8_t[(CurrentSysConfig._uiNumRows + 1)*CurrentSysConfig._uiNumCols];
+	for (int m = 0; m < CurrentSysConfig._uiNumRows + 1; m++)
+	{
+		for (int n = 0; n < CurrentSysConfig._uiNumCols; n++)
+		{
+			parr[m*(CurrentSysConfig._uiNumCols) + n] = (pCurrentDutTestResult->_calibrationResults).testarr_calibration.arr[m][n];
+		}
 	}
+
+	QImage image = QImage(parr, CurrentSysConfig._uiNumRows, CurrentSysConfig._uiNumCols, QImage::Format_RGB32);
+
+	image.save("D:\\pic\\1.jpg");
+
+	delete[] parr;
+	parr = NULL;
+
+
 	//image.save("D:\\1.jpg");
 	/*QPixmap pixmap;
 	pixmap.convertFromImage(image);

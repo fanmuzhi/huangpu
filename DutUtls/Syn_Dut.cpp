@@ -213,17 +213,7 @@ bool Syn_Dut::Calibration(uint16_t numCols, uint16_t numRows, CalibrationInfo &c
 		LOG(INFO) << i << " is " << strTempValue;
 	}*/
 	
-	/*
-	//test fill FPSFrame
-	FPSFrame *pFirstFPSFrameArray = new FPSFrame[MAXFRAMES];
-	for (int i = 0; i < numRows; i++)
-	{
-		for (int j = 0; j < numCols; j++)
-		{
-			pFirstFPSFrameArray[0].arr[i][j] = pImgBuff[numCols*i + j];
-		}
-	}*/
-
+	
 	//If cal type is One Offset Per Pixel.
 	if (calInfo.m_nCalType == kPgaCalTypeOneOffsetPerPixel)
 	{
@@ -259,7 +249,9 @@ bool Syn_Dut::Calibration(uint16_t numCols, uint16_t numRows, CalibrationInfo &c
 	FPSFrame *pFrame = new FPSFrame();
 	GetFingerprintImage(calResult, pFrame, numCols, numRows);
 
-	delete pFrame;
+	calResult.testarr_calibration = *pFrame;
+
+	//delete pFrame;
 	return true;
 }
 

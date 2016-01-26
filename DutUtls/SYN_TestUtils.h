@@ -313,6 +313,9 @@ typedef struct
 	int			m_nStage2VarianceScore;
 
 	FPSFrame	arr_calibration[MAXFRAMES];
+
+	FPSFrame	testarr_calibration;
+
 }CalibrationResults;
 
 ///////////////////////////// ////////////////////////
