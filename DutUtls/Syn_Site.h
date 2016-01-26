@@ -188,8 +188,6 @@ protected:
 	void InitDutTestInfo();
 	bool ParseTestStepArgs(const std::string &strArgsValue, std::vector<std::string> &olistOfArgValue, std::string strSymbol = std::string(" "));
 
-	void SetLoggingConfiguration();
-
 private:
 
 	Syn_SysConfig _SysConfig;

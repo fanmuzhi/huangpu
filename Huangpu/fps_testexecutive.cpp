@@ -485,7 +485,7 @@ void FPS_TestExecutive::ReceiveSiteInfoSlot(void * pSiteInfo)
 	Syn_SiteInfo *pSyn_SiteInfo = static_cast<Syn_SiteInfo*>(pSiteInfo);
 	if (NULL == pSyn_SiteInfo)
 	{
-		clog << "FPS_TestExecutive::ReceiveOTPTestSlot() - pSyn_SiteInfo is NULL!" << endl;
+		cout << "FPS_TestExecutive::ReceiveOTPTestSlot() - pSyn_SiteInfo is NULL!" << endl;
 		return;
 	}
 
@@ -633,77 +633,57 @@ void FPS_TestExecutive::ReceiveSiteInfoSlot(void * pSiteInfo)
 
 
 	int imgWidth = CurrentSysConfig._uiNumRows;
-	int imgHeight = CurrentSysConfig._uiNumCols;
+	int imgHeight = CurrentSysConfig._uiNumCols-HEADER;
 
-	uint8_t *parr = new uint8_t[(imgWidth)*(imgHeight)];
+	//QImage myImage(imgWidth, imgHeight-HEADER, QImage::Format_Indexed8);
+	//QPainter painter;
+	//painter.begin(&myImage);            // paint in myImage
+	
+	QVector<QRgb> vcolorTable;
+	for (int i = 0; i < 256; i++)
+	{
+		vcolorTable.append(qRgb(i, i, i));
+	}
+	//myImage.setColorTable(vcolorTable);
+	
+	//uint8_t *parr = new uint8_t[(imgWidth)*(imgHeight)];
+	//uint8_t *parr = new uint8_t[(imgWidth)*(imgHeight - HEADER)];
+	QByteArray data;
+	data.resize((imgWidth)*(imgHeight));
 	for (int m = 0; m < imgWidth; m++)
 	{
+		
+
+		//for (int n = HEADER; n < imgHeight; n++)// HEADER defined the first 8 cols to ignore.
 		for (int n = 0; n < imgHeight; n++)
 		{
-			parr[m*imgHeight + n] = (pCurrentDutTestResult->_calibrationResults).testarr_calibration.arr[m][n];
+			//parr[m*(imgHeight - HEADER) + n] = (pCurrentDutTestResult->_calibrationResults).testarr_calibration.arr[m][n];
 
-			//QRgb value;
-			//value = qRgba(189, 149, 39, (pCurrentDutTestResult->_calibrationResults).testarr_calibration.arr[m][n]); // 0xffbd9527
-			//image.setPixel(m, n, value);
+			QString tempvalue = QString::fromStdString(to_string((pCurrentDutTestResult->_calibrationResults).testarr_calibration.arr[m][n]));
+			data[m*(imgHeight) + n] = (pCurrentDutTestResult->_calibrationResults).testarr_calibration.arr[m][n];
+
+			//painter.drawPicture(m, n - HEADER, picture); // draw the picture at (0,0)
+			
+			//myImage.setPixel(m, n-HEADER, (pCurrentDutTestResult->_calibrationResults).testarr_calibration.arr[m][n]);
+			
 		}
+
+		
+		//QRgb value;
+		//value = qRgb(128, 128, 128); // 0xff7aa327
+		//myImage.setColor(m, value);
 	}
 
-	QImage image = QImage::fromData(parr, (imgWidth)*(imgHeight),"PNG");
 	
+	QImage image((uchar*)data.constData(), imgWidth, imgHeight, QImage::Format_Indexed8);
+	image.setColorTable(vcolorTable);
+	image.save("D:\\pic\\1.bmp");
 
-	//QImage image = QImage(parr, CurrentSysConfig._uiNumRows, CurrentSysConfig._uiNumCols, QImage::Format_RGB32);
+	//painter.end();
 
-	//QImage image = Pk8bitGrayToQIm(parr, imgWidth, imgHeight);
+	//Pk8bitGrayToQIm(parr, (imgWidth), (imgHeight - HEADER)).save("D:\\pic\\1.bmp");
 
-	//DWORD wsize = CurrentSysConfig._uiNumRows*CurrentSysConfig._uiNumCols;
-	/*DWORD wsize = CurrentSysConfig._uiNumRows*CurrentSysConfig._uiNumCols;
-	DWORD *pSrc = (DWORD*)malloc(wsize*sizeof(DWORD));
-	for (unsigned int i = 0; i < wsize; ++i)
-	{
-		BYTE *pb = (BYTE *)(pSrc + i);
-		pSrc[i] = 0;
-		pb[0] = parr[i];
-		pb[1] = parr[i];
-		pb[2] = parr[i];
-	}
-
-	QByteArray imageByteArray = QByteArray((const char*)pSrc, wsize * 4);
-	uchar*  transData = (unsigned char*)imageByteArray.data();
-	QImage image = QImage(transData, CurrentSysConfig._uiNumRows, CurrentSysConfig._uiNumCols, QImage::Format_RGB32);
-	free(pSrc);*/
-
-
-	
-	//QImage image = QImage(imgWidth, imgHeight, QImage::Format_RGB32); //RGB32
-
-	//for (int i = 0; i<imgHeight; i++)
-	//{
-	//	for (int j = 0; j<imgWidth; j++)
-	//	{
-	//		int b = (int)*(parr + i*imgWidth + j);
-	//		int g = b;
-	//		int r = g;
-	//		image.setPixel(j, i, qRgb(r, g, b));
-	//	}
-	//}
-
-
-	image.save("D:\\pic\\1.png");
-
-
-	delete[] parr;
-	parr = NULL;
-
-
-	//image.save("D:\\1.jpg");
-	/*QPixmap pixmap;
-	pixmap.convertFromImage(image);
-	QIcon qicon;
-	qicon.addPixmap(pixmap);
-
-	ui.TestTableWidget->setItem(5, iColumnIndex, new QTableWidgetItem(qicon,""));
-	ui.TestTableWidget->resizeRowToContents(5);*/
-
+	//myImage.save("D:\\pic\\1.bmp");
 }
 
 QImage FPS_TestExecutive::Pk8bitGrayToQIm(const BYTE *pBuffer, const int &bufWidth, const int &bufHight)
@@ -723,6 +703,7 @@ QImage FPS_TestExecutive::Pk8bitGrayToQIm(const BYTE *pBuffer, const int &bufWid
 	{
 		QImage qIm = QImage(pBuffer, bufWidth, bufHight, QImage::Format_Indexed8);   
 		qIm.setColorTable(vcolorTable);   
+		qIm.scaled(bufWidth * 5, bufHight * 5);
 
 		return qIm;
 	}

@@ -252,7 +252,7 @@ bool Syn_Dut::Calibration(uint16_t numCols, uint16_t numRows, CalibrationInfo &c
 	calResult.testarr_calibration = *pFrame;
 	//delete pFrame;
 
-	for (int i = 0; i < numRows; i++)
+	/*for (int i = 0; i < numRows; i++)
 	{
 		std::string strTempRowValue;
 		for (int j = 0; j < numCols; j++)
@@ -261,7 +261,7 @@ bool Syn_Dut::Calibration(uint16_t numCols, uint16_t numRows, CalibrationInfo &c
 		}
 
 		LOG(INFO)<< to_string(i) << " is " << strTempRowValue;
-	}
+	}*/
 
 	
 	return true;
@@ -286,17 +286,19 @@ void Syn_Dut::GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *pFr
 		pFrame->arr[i / nCols][i%nCols] = pImgBuff[i];
 	}
 
-	/*for (int i = 0; i < nRows; i++)
+	//for (int i = 0; i < nRows; i++)
+	for (int i = 0; i < nNumRows; i++)
 	{
 		std::string strTempRowValue;
-		for (int j = 0; j < nCols; j++)
+		for (int j = HEADER; j < nNumCols; j++)		// HEADER defined the first 8 cols to ignore.
 		{
-			strTempRowValue += to_string(pImgBuff[i*nRows + j]) + std::string(",");
+			//strTempRowValue += to_string(pImgBuff[i*nRows + j]) + std::string(",");
+			strTempRowValue += to_string(pFrame->arr[i][j]) + std::string(",");
 		}
 
 		LOG(INFO) << "row " << to_string(i) << " is " << strTempRowValue;
 	}
-	*/
+	
 	delete[] pImgBuff;
 	pImgBuff = NULL;
 }

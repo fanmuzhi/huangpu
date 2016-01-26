@@ -72,7 +72,6 @@ bool Syn_SPCCtrl::Init()
 		if (err != MpcApiError::ERR_OK)
 		{
 			syn_DeviceHandle = NULL;
-			//cout << "ERROR:Syn_SPCCtrl::Init() - cannot connect to MPC04 " << syn_SerialNumber << endl;
 			LOG(ERROR) << "Cannot connect to MPC04: " << syn_SerialNumber;
 		}
 		else
@@ -107,7 +106,6 @@ bool Syn_SPCCtrl::Init()
 	//If this site has been assigned a serial number and the connection was NOT successful.
 	if (0!=syn_SerialNumber && NULL==syn_DeviceHandle)
 	{
-		//cout << "ERROR:Syn_SPCCtrl::Init() - syn_DeviceHandle is NULL!" << endl;
 		LOG(ERROR) << "syn_DeviceHandle is NULL";
 		rc = false;
 
@@ -123,7 +121,6 @@ bool Syn_SPCCtrl::Init()
 		if (err != MpcApiError::ERR_OK)
 		{
 			syn_DeviceHandle = NULL;
-			//cout << "ERROR:Syn_SPCCtrl::Init() - MPC_SetPortFpSensor failed with MPC04 " << syn_SerialNumber << endl;
 			LOG(ERROR) << "MPC_SetPortFpSensor failed with MPC04: " << syn_SerialNumber;
 			rc = false;
 
@@ -138,7 +135,6 @@ bool Syn_SPCCtrl::Init()
 		Exception = err;
 		Exception.SetDescription("MPC_IsConnected is failed:" + to_string(syn_SerialNumber));
 		throw Exception;
-		//cout << "ERROR:Syn_SPCCtrl::Init() - ::MPC_IsConnected is failed!" << endl;
 		LOG(ERROR) << "MPC_IsConnected is failed!";
 		rc = false;
 	}
@@ -212,7 +208,6 @@ void Syn_SPCCtrl::FpGetStatus(uint8_t* pDst, int numBytes)
 
 	this->FpRead(endpoint, cmd, pDst, numBytes);
 
-	//cout << "FpGetStatus(): 0x" << hex << *((uint32_t*)pDst) << endl;
 	LOG(DEBUG) << "0x" << hex << *((uint32_t*)pDst);
 }
 
@@ -276,7 +271,6 @@ void Syn_SPCCtrl::FpReadAndCheckStatus(uint16_t statusIgnore)
 
 void Syn_SPCCtrl::FpWaitDeviceReady()
 {
-	//cout << "FpWaitDeviceReady():" << endl;
 	LOG(INFO) << "Wait Device Ready";
 
 	uint8_t pDst[4];
@@ -298,7 +292,6 @@ void Syn_SPCCtrl::FpWaitDeviceReady()
 
 void Syn_SPCCtrl::FpDisableSleep()
 {
-	//cout << "FpDisableSleep():" << endl;
 	LOG(INFO) << "Disable Sleep";
 
 	uint8_t pSrc[2] = { 0 };
@@ -321,7 +314,6 @@ void Syn_SPCCtrl::FpNoop()
 
 void Syn_SPCCtrl::FpLoadPatch(uint8_t* pPatch, int numBytes)
 {
-	//cout << "FpLoadPatch():" << endl;
 	LOG(INFO) << "Load Patch";
 
 	this->FpWrite(1, VCSFW_CMD::PATCH, pPatch, numBytes);
@@ -331,7 +323,6 @@ void Syn_SPCCtrl::FpLoadPatch(uint8_t* pPatch, int numBytes)
 
 void Syn_SPCCtrl::FpUnloadPatch()
 {
-	//cout << "FpUnLoadPatch():" << endl;
 	LOG(INFO) << "Unload Patch";
 
 	this->FpWrite(1, VCSFW_CMD::UNLOAD_PATCH, (uint8_t*)0, 0);
