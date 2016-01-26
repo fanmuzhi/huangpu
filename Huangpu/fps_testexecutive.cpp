@@ -482,7 +482,7 @@ void FPS_TestExecutive::ReceiveSiteInfoSlot(void * pSiteInfo)
 	Syn_SiteInfo *pSyn_SiteInfo = static_cast<Syn_SiteInfo*>(pSiteInfo);
 	if (NULL == pSyn_SiteInfo)
 	{
-		clog << "FPS_TestExecutive::ReceiveOTPTestSlot() - pSyn_SiteInfo is NULL!" << endl;
+		cout << "FPS_TestExecutive::ReceiveOTPTestSlot() - pSyn_SiteInfo is NULL!" << endl;
 		return;
 	}
 

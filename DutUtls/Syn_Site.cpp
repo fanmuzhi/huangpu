@@ -57,7 +57,6 @@ bool Syn_Site::ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn
 	opSyn_SiteInstance = NULL;
 	if (0 == iSerialNumber)
 	{
-		//cout << "Error:Syn_Site::ConstructSiteInstance() - iSerialNumber is 0!" << endl;
 		LOG(ERROR) << "Error:Syn_Site::ConstructSiteInstance() - iSerialNumber is 0!" ;
 		return false;
 	}
@@ -215,7 +214,7 @@ bool Syn_Site::ConstructSiteList(std::string strConfigFilePath, std::vector<Syn_
 bool Syn_Site::RegisterLoggingConfig()
 {
 	el::Configurations defaultConf;
-	defaultConf.setToDefault();
+	//defaultConf.setToDefault();
 	const time_t t = time(NULL);
 	struct tm* current_time = localtime(&t);
 	std::string strMonthValue = to_string(current_time->tm_mon + 1);
@@ -225,7 +224,7 @@ bool Syn_Site::RegisterLoggingConfig()
 	std::string strLogFilePath = std::string(".\\logs\\") + strTimeValue + std::string(".log");
 	el::Configuration confFilenameInfo(el::Level::Global, el::ConfigurationType::Filename, strLogFilePath);
 	defaultConf.set(&confFilenameInfo);
-	defaultConf.parseFromText("*GLOBAL:\n FORMAT = %thread %level %func %msg");
+	defaultConf.parseFromText("*GLOBAL:\n FORMAT = [%datetime] [%thread] [%level] [%func] %msg");
 	el::Loggers::reconfigureLogger("default", defaultConf);
 
 	return true;
@@ -1328,46 +1327,4 @@ bool Syn_Site::ParseTestStepArgs(const std::string &strArgsValue, std::vector<st
 	}
 
 	return true;
-}
-
-
-void Syn_Site::SetLoggingConfiguration()
-{
-	if (0 == _iSiteNumber)
-	{
-		return;
-	}
-
-	/*std::string strSiteNumber("");
-	strSiteNumber = to_string(_iSiteNumber);
-	std::string strCurrentLogFilePath = std::string(".\\logs\\Site") + strSiteNumber + std::string(".log");
-
-	std::string strSiteValue = "Site" + strSiteNumber;
-
-	el::Logger* businessLogger = el::Loggers::getLogger(strSiteValue);
-
-	el::Configuration confFilenameInfo(el::Level::Global, el::ConfigurationType::Filename, strCurrentLogFilePath);
-
-	el::Configurations * businessConfigs = businessLogger->configurations();
-	businessConfigs->set(&confFilenameInfo);
-	el::Loggers::reconfigureLogger(strSiteValue, *businessConfigs);
-
-	el::Configurations defaultConf;
-	defaultConf.parseFromText("*GLOBAL:\n FORMAT = %thread %level %func %msg");
-
-	CLOG(DEBUG, strSiteValue.c_str()) << "Site" + strSiteNumber << " debug";
-	//CLOG(INFO, strSiteValue.c_str()) << "Site" + strSiteNumber << " info";
-	CLOG(INFO, strSiteValue.c_str()) << businessLogger->id() << " id"*/
-	
-	//businessLogger->debug("My first ultimate log message %v %v %v", 123, 123, strSiteValue.c_str());
-	//businessLogger->debug("My first ultimate log message %v", strSiteValue);
-
-
-	//CLOG(INFO, strSiteValue.c_str()) << businessLogger->id() << " id";
-
-	el::Configurations defaultConf;
-	defaultConf.setToDefault();
-	defaultConf.parseFromText("*GLOBAL:\n FORMAT = %thread %level %func %msg");
-
-	el::Loggers::reconfigureLogger("default", defaultConf);
 }
