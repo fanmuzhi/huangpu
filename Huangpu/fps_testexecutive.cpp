@@ -648,7 +648,7 @@ void FPS_TestExecutive::ReceiveSiteInfoSlot(void * pSiteInfo)
 		}
 	}
 
-	QImage image(QImage::fromData(parr, (imgWidth)*(imgHeight)));
+	QImage image = QImage::fromData(parr, (imgWidth)*(imgHeight),"PNG");
 	
 
 	//QImage image = QImage(parr, CurrentSysConfig._uiNumRows, CurrentSysConfig._uiNumCols, QImage::Format_RGB32);
