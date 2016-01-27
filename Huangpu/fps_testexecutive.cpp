@@ -610,122 +610,46 @@ void FPS_TestExecutive::ReceiveSiteInfoSlot(void * pSiteInfo)
 	ui.TestTableWidget->setItem(6, iColumnIndex, new QTableWidgetItem(strTestInfo));
 	ui.TestTableWidget->resizeRowToContents(6);
 
-	//picture
-	/*for (int i = 0; i < MAXFRAMES; i++)
-	{
-		uint8_t *parr = new uint8_t[(CurrentSysConfig._uiNumRows + 1)*CurrentSysConfig._uiNumCols];
-		for (int m = 0; m < CurrentSysConfig._uiNumRows + 1; m++)
-		{
-			for (int n = 0; n < CurrentSysConfig._uiNumCols; n++)
-			{
-				parr[m*(CurrentSysConfig._uiNumCols ) + n] = (pCurrentDutTestResult->_calibrationResults).arr_calibration[i].arr[m][n];
-			}
-		}
 
-		QImage image = QImage(parr, CurrentSysConfig._uiNumRows, CurrentSysConfig._uiNumCols, QImage::Format_RGB32);
-
-		image.save("D:\\"+QString::number(i)+".jpg");
-
-		delete[] parr;
-		parr = NULL;
-
-	}*/
-
-
-	int imgWidth = CurrentSysConfig._uiNumRows;
-	int imgHeight = CurrentSysConfig._uiNumCols-HEADER;
-
-	//QImage myImage(imgWidth, imgHeight-HEADER, QImage::Format_Indexed8);
-	//QPainter painter;
-	//painter.begin(&myImage);            // paint in myImage
+	int rowNumber = CurrentSysConfig._uiNumRows;
+	int columnNumber = CurrentSysConfig._uiNumCols;
 	
 	QVector<QRgb> vcolorTable;
 	for (int i = 0; i < 256; i++)
 	{
 		vcolorTable.append(qRgb(i, i, i));
 	}
-	//myImage.setColorTable(vcolorTable);
 	
-	//uint8_t *parr = new uint8_t[(imgWidth)*(imgHeight)];
-	//uint8_t *parr = new uint8_t[(imgWidth)*(imgHeight - HEADER)];
 	QByteArray data;
-	data.resize((imgWidth)*(imgHeight));
-	for (int m = 0; m < imgWidth; m++)
+	//data.resize((rowNumber)*(columnNumber - HEADER));
+	data.resize((rowNumber)*(columnNumber));
+	//uint8_t *pArray = new uint8_t[(rowNumber)*(columnNumber - HEADER)];
+	for (int m = 0; m < rowNumber; m++)
 	{
-		
-
-		//for (int n = HEADER; n < imgHeight; n++)// HEADER defined the first 8 cols to ignore.
-		for (int n = 0; n < imgHeight; n++)
+		//for (int n = HEADER; n < columnNumber; n++)// HEADER defined the first 8 cols to ignore.
+		for (int n = 0; n < columnNumber; n++)
 		{
-			//parr[m*(imgHeight - HEADER) + n] = (pCurrentDutTestResult->_calibrationResults).testarr_calibration.arr[m][n];
-
-			QString tempvalue = QString::fromStdString(to_string((pCurrentDutTestResult->_calibrationResults).testarr_calibration.arr[m][n]));
-			data[m*(imgHeight) + n] = (pCurrentDutTestResult->_calibrationResults).testarr_calibration.arr[m][n];
-
-			//painter.drawPicture(m, n - HEADER, picture); // draw the picture at (0,0)
-			
-			//myImage.setPixel(m, n-HEADER, (pCurrentDutTestResult->_calibrationResults).testarr_calibration.arr[m][n]);
-			
+			//QString tempvalue = QString::fromStdString(to_string((pCurrentDutTestResult->_calibrationResults).testarr_calibration.arr[m][n]));
+			//data[m*(columnNumber - HEADER) + n] = (pCurrentDutTestResult->_calibrationResults).testarr_calibration.arr[m][n];
+			data[m*(columnNumber)+n] = (pCurrentDutTestResult->_calibrationResults).testarr_calibration.arr[m][n];
 		}
-
-		
-		//QRgb value;
-		//value = qRgb(128, 128, 128); // 0xff7aa327
-		//myImage.setColor(m, value);
 	}
-
 	
-	QImage image((uchar*)data.constData(), imgWidth, imgHeight, QImage::Format_Indexed8);
+	QImage image((uchar*)data.constData(), columnNumber, rowNumber,QImage::Format_Indexed8);
+	//QImage image(pArray, columnNumber - HEADER, rowNumber, QImage::Format_Indexed8);
+	//QImage image = Pk8bitGrayToQIm((uchar*)data.constData(), rowNumber, columnNumber - HEADER);
 	image.setColorTable(vcolorTable);
+
+	image = image.copy(HEADER,0, columnNumber - HEADER, rowNumber);
+
 	image.save("D:\\pic\\1.bmp");
 
-	//painter.end();
+	QLabel *LabelPixmap = new QLabel();
+	LabelPixmap->setPixmap(QPixmap::fromImage(image));
+	ui.TestTableWidget->setCellWidget(5, iColumnIndex, LabelPixmap);
+	ui.TestTableWidget->resizeRowToContents(5);
 
-	//Pk8bitGrayToQIm(parr, (imgWidth), (imgHeight - HEADER)).save("D:\\pic\\1.bmp");
-
-	//myImage.save("D:\\pic\\1.bmp");
 }
-
-QImage FPS_TestExecutive::Pk8bitGrayToQIm(const BYTE *pBuffer, const int &bufWidth, const int &bufHight)
-{
-	assert((pBuffer != NULL) && (bufWidth>0) && (bufHight>0));
-
-	int biBitCount = 8; 
-	int lineByte = (bufWidth * biBitCount / 8 + 3) / 4 * 4; 
-
-	QVector<QRgb> vcolorTable;
-	for (int i = 0; i < 256; i++)
-	{
-		vcolorTable.append(qRgb(i, i, i));
-	}
-
-	if (bufWidth == lineByte) 
-	{
-		QImage qIm = QImage(pBuffer, bufWidth, bufHight, QImage::Format_Indexed8);   
-		qIm.setColorTable(vcolorTable);   
-		qIm.scaled(bufWidth * 5, bufHight * 5);
-
-		return qIm;
-	}
-	else
-	{
-		BYTE *qImageBuffer = new BYTE[lineByte * bufHight]; 
-		uchar *QImagePtr = qImageBuffer;
-
-		for (int i = 0; i < bufHight; i++) //Copy line by line  
-		{
-			memcpy(QImagePtr, pBuffer, bufWidth);
-			QImagePtr += lineByte;
-			pBuffer += bufWidth;
-		}
-
-		QImage qImage = QImage(qImageBuffer, bufWidth, bufHight, QImage::Format_Indexed8);  
-		qImage.setColorTable(vcolorTable);   
-
-		return qImage;
-	}
-}
-
 
 void FPS_TestExecutive::GetVersionForDutDump()
 {
