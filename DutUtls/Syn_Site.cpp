@@ -231,6 +231,40 @@ bool Syn_Site::RegisterLoggingConfig()
 }
 
 
+void Syn_Site::Run()
+{
+	if (NULL == _pSyn_Dut)
+	{
+		LOG(ERROR) << "Error:Syn_Site::Run() - _pSyn_Dut is NULL!" << endl;
+		_siteInfo._TestState = TestError;
+		return;
+	}
+
+	//test get image
+	try
+	{
+		_siteInfo._TestState = TestRunning;
+		_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
+		_pSyn_Dut->CheckDUTexists();
+		_pSyn_Dut->Calibration(_SysConfig._uiNumCols, _SysConfig._uiNumRows, _DutTestInfo._calibrationInfo, _pDutTestResult->_calibrationResults);
+		//_pSyn_Dut->Calibration(_SysConfig._uiNumCols, _SysConfig._uiNumRows, _DutTestInfo._calibrationInfo, _DutTestResult._calibrationResults);
+		_pSyn_Dut->PowerOff();
+
+	}
+	catch (Syn_Exception ex)
+	{
+		_pSyn_Dut->PowerOff();
+		LOG(ERROR) << "Error:ReadOTP is failed!" << std::endl;
+		_siteInfo._strErrorMessage = ex.GetDescription();
+		_siteInfo._TestState = TestFailed;
+
+		return;
+	}
+
+	return;
+}
+
+
 void Syn_Site::GetVersion()
 {
 	try
@@ -307,41 +341,56 @@ void Syn_Site::ReadOTP()
 }
 
 
-void Syn_Site::Run()
-{
-	if (NULL == _pSyn_Dut)
-	{
-		LOG(ERROR) << "Error:Syn_Site::Run() - _pSyn_Dut is NULL!" << endl;
-		_siteInfo._TestState = TestError;
-		return;
-	}
 
-	//test get image
+void Syn_Site::Calibration()
+{
 	try
 	{
 		_siteInfo._TestState = TestRunning;
 		_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
 		_pSyn_Dut->CheckDUTexists();
 		_pSyn_Dut->Calibration(_SysConfig._uiNumCols, _SysConfig._uiNumRows, _DutTestInfo._calibrationInfo, _pDutTestResult->_calibrationResults);
-		//_pSyn_Dut->Calibration(_SysConfig._uiNumCols, _SysConfig._uiNumRows, _DutTestInfo._calibrationInfo, _DutTestResult._calibrationResults);
-		_pSyn_Dut->PowerOff();
+		_pSyn_Dut->GetFingerprintImage(_pDutTestResult->_calibrationResults, &(_pDutTestResult->_acquireFpsResults.arr_ImageFPSFrame), _SysConfig._uiNumRows, _SysConfig._uiNumCols);
+		//_pSyn_Dut->PowerOff();
 
 	}
 	catch (Syn_Exception ex)
 	{
 		_pSyn_Dut->PowerOff();
-		LOG(ERROR) << "Error:ReadOTP is failed!" << std::endl;
+		LOG(ERROR) << "Error:Calibration is failed!";
 		_siteInfo._strErrorMessage = ex.GetDescription();
 		_siteInfo._TestState = TestFailed;
-
 		return;
 	}
 
-	::Sleep(1000);
-
-	return;
+	_siteInfo._TestState = TestOK;
 }
 
+void Syn_Site::GetFingerprintImage()
+{
+	try
+	{
+		_siteInfo._TestState = TestRunning;
+		_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
+		_pSyn_Dut->GetFingerprintImage(_pDutTestResult->_calibrationResults, &(_pDutTestResult->_acquireFpsResults.arr_ImageFPSFrame), _SysConfig._uiNumRows, _SysConfig._uiNumCols);
+		//_pSyn_Dut->PowerOff();
+	}
+	catch (Syn_Exception ex)
+	{
+		_pSyn_Dut->PowerOff();
+		LOG(ERROR) << "Error:GetFingerprintImage is failed!";
+		_siteInfo._strErrorMessage = ex.GetDescription();
+		_siteInfo._TestState = TestFailed;
+		return;
+	}
+
+	_siteInfo._TestState = TestOK;
+}
+
+void Syn_Site::PowerOff()
+{
+	_pSyn_Dut->PowerOff();
+}
 
 void Syn_Site::GetSiteInfo(Syn_SiteInfo &oSyn_SiteInfo)
 {

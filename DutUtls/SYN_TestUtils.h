@@ -312,10 +312,7 @@ typedef struct
 	uint8_t     m_pPGAOtpArray[NUM_PGA_OOPP_OTP_ROWS * MAXCOL];
 	int			m_nStage2VarianceScore;
 
-	FPSFrame	arr_calibration[MAXFRAMES];
-
-	FPSFrame	testarr_calibration;
-
+	FPSFrame arr_ImageFPSFrame;
 }CalibrationResults;
 
 ///////////////////////////// ////////////////////////
@@ -712,6 +709,8 @@ typedef struct
 	FPSFrame	m_arImagesWithStimulus[MAXFRAMES];//NONCDM
 	FPSFrame	arr_finger[MAXFRAMES];//CDM
 	FPSFrame	arr_nofinger[MAXFRAMES];//CDM
+
+	FPSFrame	arr_ImageFPSFrame;
 }AcquireFPSResults;
 
 ///////////////////////////// ////////////////////////

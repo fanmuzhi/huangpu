@@ -18,6 +18,7 @@
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
@@ -58,6 +59,16 @@ public:
     QPushButton *pushButtonGetVer;
     QPushButton *pushButtonReadOTP;
     QTextBrowser *textBrowser;
+    QWidget *tab_3;
+    QGroupBox *CalibtrationGroupBox;
+    QLabel *CalibrationImageLabel;
+    QGroupBox *FingerprintImageGroupBox;
+    QLabel *FingerprintImageLabel;
+    QWidget *layoutWidget;
+    QHBoxLayout *horizontalLayout_3;
+    QComboBox *ImageSiteComboBox;
+    QPushButton *ImageCalibrationPushButton;
+    QPushButton *FigerprintImagePushButton;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
@@ -65,7 +76,7 @@ public:
     {
         if (FPS_TestExecutiveClass->objectName().isEmpty())
             FPS_TestExecutiveClass->setObjectName(QStringLiteral("FPS_TestExecutiveClass"));
-        FPS_TestExecutiveClass->resize(690, 671);
+        FPS_TestExecutiveClass->resize(632, 671);
         openAct = new QAction(FPS_TestExecutiveClass);
         openAct->setObjectName(QStringLiteral("openAct"));
         saveAsAct = new QAction(FPS_TestExecutiveClass);
@@ -182,6 +193,44 @@ public:
         verticalLayout->addWidget(textBrowser);
 
         tabWidget->addTab(tab_2, QString());
+        tab_3 = new QWidget();
+        tab_3->setObjectName(QStringLiteral("tab_3"));
+        CalibtrationGroupBox = new QGroupBox(tab_3);
+        CalibtrationGroupBox->setObjectName(QStringLiteral("CalibtrationGroupBox"));
+        CalibtrationGroupBox->setGeometry(QRect(20, 60, 171, 161));
+        CalibrationImageLabel = new QLabel(CalibtrationGroupBox);
+        CalibrationImageLabel->setObjectName(QStringLiteral("CalibrationImageLabel"));
+        CalibrationImageLabel->setGeometry(QRect(10, 20, 151, 131));
+        FingerprintImageGroupBox = new QGroupBox(tab_3);
+        FingerprintImageGroupBox->setObjectName(QStringLiteral("FingerprintImageGroupBox"));
+        FingerprintImageGroupBox->setGeometry(QRect(20, 230, 171, 171));
+        FingerprintImageLabel = new QLabel(FingerprintImageGroupBox);
+        FingerprintImageLabel->setObjectName(QStringLiteral("FingerprintImageLabel"));
+        FingerprintImageLabel->setGeometry(QRect(10, 20, 151, 141));
+        layoutWidget = new QWidget(tab_3);
+        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
+        layoutWidget->setGeometry(QRect(10, 10, 561, 25));
+        horizontalLayout_3 = new QHBoxLayout(layoutWidget);
+        horizontalLayout_3->setSpacing(6);
+        horizontalLayout_3->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
+        horizontalLayout_3->setContentsMargins(0, 0, 0, 0);
+        ImageSiteComboBox = new QComboBox(layoutWidget);
+        ImageSiteComboBox->setObjectName(QStringLiteral("ImageSiteComboBox"));
+
+        horizontalLayout_3->addWidget(ImageSiteComboBox);
+
+        ImageCalibrationPushButton = new QPushButton(layoutWidget);
+        ImageCalibrationPushButton->setObjectName(QStringLiteral("ImageCalibrationPushButton"));
+
+        horizontalLayout_3->addWidget(ImageCalibrationPushButton);
+
+        FigerprintImagePushButton = new QPushButton(layoutWidget);
+        FigerprintImagePushButton->setObjectName(QStringLiteral("FigerprintImagePushButton"));
+
+        horizontalLayout_3->addWidget(FigerprintImagePushButton);
+
+        tabWidget->addTab(tab_3, QString());
 
         gridLayout->addWidget(tabWidget, 0, 0, 1, 1);
 
@@ -233,6 +282,13 @@ public:
         pushButtonGetVer->setText(QApplication::translate("FPS_TestExecutiveClass", "GetVer", 0));
         pushButtonReadOTP->setText(QApplication::translate("FPS_TestExecutiveClass", "ReadOTP", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("FPS_TestExecutiveClass", "OTPDump", 0));
+        CalibtrationGroupBox->setTitle(QApplication::translate("FPS_TestExecutiveClass", "Calibration Image", 0));
+        CalibrationImageLabel->setText(QString());
+        FingerprintImageGroupBox->setTitle(QApplication::translate("FPS_TestExecutiveClass", "Fingerprint Image", 0));
+        FingerprintImageLabel->setText(QString());
+        ImageCalibrationPushButton->setText(QApplication::translate("FPS_TestExecutiveClass", "Calibration", 0));
+        FigerprintImagePushButton->setText(QApplication::translate("FPS_TestExecutiveClass", "Get Figerprint Image", 0));
+        tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("FPS_TestExecutiveClass", "Image", 0));
     } // retranslateUi
 
 };

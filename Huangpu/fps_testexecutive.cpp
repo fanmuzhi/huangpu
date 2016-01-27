@@ -14,6 +14,7 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 , _iRealDeviceCounts(0)
 //, _logfile("sys.log")
 , _pSyn_LocalSettingsDlg(NULL)
+, _debugtag(false)
 {
 	ui.setupUi(this);
 	ui.TestTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -45,9 +46,14 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 		QObject::connect(&(_SynThreadArray[i - 1]), SIGNAL(send(void*)), this, SLOT(ReceiveSiteInfoSlot(void*)));
 	}
 
+	//Debug
 	//OTP Dump
 	QObject::connect(ui.pushButtonGetVer, SIGNAL(clicked()), this, SLOT(GetVersionForDutDump()));
 	QObject::connect(ui.pushButtonReadOTP, SIGNAL(clicked()), this, SLOT(ReadOTPForDutDump()));
+
+	//Calibration,Fingerprint
+	QObject::connect(ui.ImageCalibrationPushButton, SIGNAL(clicked()), this, SLOT(ImageCalibration()));
+	QObject::connect(ui.FigerprintImagePushButton, SIGNAL(clicked()), this, SLOT(PushFigerprintImageButton()));
 }
 
 FPS_TestExecutive::~FPS_TestExecutive()
@@ -178,6 +184,7 @@ void FPS_TestExecutive::Initialize()
 	}
 	ui.TestTableWidget->setHorizontalHeaderLabels(strListOfHeader);
 
+	//Debug,not release
 	//DutDump
 	ui.comboBox->clear();
 	ui.textBrowser->clear();
@@ -186,6 +193,15 @@ void FPS_TestExecutive::Initialize()
 		unsigned int iSiteNumber(0);
 		_ListOfSitePtr[i - 1]->GetSiteNumber(iSiteNumber);
 		ui.comboBox->addItem(QString("Site") + QString::number(iSiteNumber));
+	}
+
+	//Calibration,Fingerprint
+	ui.ImageSiteComboBox->clear();
+	for (size_t i = 1; i <= _ListOfSitePtr.size(); i++)
+	{
+		unsigned int iSiteNumber(0);
+		_ListOfSitePtr[i - 1]->GetSiteNumber(iSiteNumber);
+		ui.ImageSiteComboBox->addItem(QString("Site") + QString::number(iSiteNumber));
 	}
 }
 
@@ -388,14 +404,19 @@ bool FPS_TestExecutive::UpdateSiteLocalSettings()
 	}
 	ui.TestTableWidget->setHorizontalHeaderLabels(strListOfHeader);
 
+	//debug,not realease
 	//DutDump
 	ui.comboBox->clear();
 	ui.textBrowser->clear();
+	//Calibration,Fingerprint
+	ui.ImageSiteComboBox->clear();
 	for (size_t i = 1; i <=_ListOfSitePtr.size(); i++)
 	{
 		unsigned int iSiteNumber(0);
 		_ListOfSitePtr[i - 1]->GetSiteNumber(iSiteNumber);
-		ui.comboBox->addItem(QString("Site") + QString::number(iSiteNumber));
+
+		ui.comboBox->addItem(QString("Site") + QString::number(iSiteNumber));//DutDump
+		ui.ImageSiteComboBox->addItem(QString("Site") + QString::number(iSiteNumber));//Calibration,Fingerprint
 	}
 
 	return true;
@@ -489,6 +510,9 @@ void FPS_TestExecutive::ReceiveSiteInfoSlot(void * pSiteInfo)
 		return;
 	}
 
+	//debug  must delete at end
+	return FigerprintImage(pSyn_SiteInfo);
+
 	int iSiteNumber = pSyn_SiteInfo->_uiSiteNumber;
 	int iColumnIndex(iSiteNumber - 1);
 
@@ -546,7 +570,7 @@ void FPS_TestExecutive::ReceiveSiteInfoSlot(void * pSiteInfo)
 		return;
 	}
 
-	strTestInfo += QString("Boot Sector0:") + QString("\n");
+	/*strTestInfo += QString("Boot Sector0:") + QString("\n");
 	for (int i = 1; i <= BS0_SIZE / 8; i++)
 	{
 		int StartPos = (i - 1) * 8;
@@ -608,45 +632,32 @@ void FPS_TestExecutive::ReceiveSiteInfoSlot(void * pSiteInfo)
 	}
 
 	ui.TestTableWidget->setItem(6, iColumnIndex, new QTableWidgetItem(strTestInfo));
-	ui.TestTableWidget->resizeRowToContents(6);
+	ui.TestTableWidget->resizeRowToContents(6);*/
 
 
 	int rowNumber = CurrentSysConfig._uiNumRows;
 	int columnNumber = CurrentSysConfig._uiNumCols;
-	
 	QVector<QRgb> vcolorTable;
 	for (int i = 0; i < 256; i++)
 	{
 		vcolorTable.append(qRgb(i, i, i));
 	}
-	
 	QByteArray data;
-	//data.resize((rowNumber)*(columnNumber - HEADER));
 	data.resize((rowNumber)*(columnNumber));
-	//uint8_t *pArray = new uint8_t[(rowNumber)*(columnNumber - HEADER)];
 	for (int m = 0; m < rowNumber; m++)
 	{
-		//for (int n = HEADER; n < columnNumber; n++)// HEADER defined the first 8 cols to ignore.
 		for (int n = 0; n < columnNumber; n++)
 		{
-			//QString tempvalue = QString::fromStdString(to_string((pCurrentDutTestResult->_calibrationResults).testarr_calibration.arr[m][n]));
-			//data[m*(columnNumber - HEADER) + n] = (pCurrentDutTestResult->_calibrationResults).testarr_calibration.arr[m][n];
-			data[m*(columnNumber)+n] = (pCurrentDutTestResult->_calibrationResults).testarr_calibration.arr[m][n];
+			data[m*(columnNumber)+n] = (pCurrentDutTestResult->_calibrationResults).arr_ImageFPSFrame.arr[m][n];
 		}
 	}
-	
 	QImage image((uchar*)data.constData(), columnNumber, rowNumber,QImage::Format_Indexed8);
-	//QImage image(pArray, columnNumber - HEADER, rowNumber, QImage::Format_Indexed8);
-	//QImage image = Pk8bitGrayToQIm((uchar*)data.constData(), rowNumber, columnNumber - HEADER);
 	image.setColorTable(vcolorTable);
-
 	image = image.copy(HEADER,0, columnNumber - HEADER, rowNumber);
-
 	image.save("D:\\pic\\1.bmp");
-
-	QLabel *LabelPixmap = new QLabel();
-	LabelPixmap->setPixmap(QPixmap::fromImage(image));
-	ui.TestTableWidget->setCellWidget(5, iColumnIndex, LabelPixmap);
+	QLabel *pImageLabel = new QLabel();
+	pImageLabel->setPixmap(QPixmap::fromImage(image));
+	ui.TestTableWidget->setCellWidget(5, iColumnIndex, pImageLabel);
 	ui.TestTableWidget->resizeRowToContents(5);
 
 }
@@ -706,7 +717,7 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 	int iSiteCurrentIndex = ui.comboBox->currentIndex();
 	if (iSiteCurrentIndex<0)
 	{
-		cout << "Error:FPS_TestExecutive::GetVersionForDutDump() - ReadOTPForDutDump is less than 0!" << endl;
+		cout << "Error:FPS_TestExecutive::GetVersionForDutDump() - iSiteCurrentIndex is less than 0!" << endl;
 		return;
 	}
 
@@ -773,6 +784,175 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 		int StartPos = (i - 1) * 8;
 		int EndPos = i * 8 - 1;
 		Display(oDutTestInfo._otpInfo._MainSector1Array, StartPos, EndPos);
+	}
+}
+
+void FPS_TestExecutive::ImageCalibration()
+{
+	int iSiteCurrentIndex = ui.comboBox->currentIndex();
+	if (iSiteCurrentIndex<0)
+	{
+		cout << "Error:FPS_TestExecutive::ImageCalibration() - iSiteCurrentIndex is less than 0!" << endl;
+		return;
+	}
+
+	size_t iSiteCounts = _ListOfSitePtr.size();
+	if (0 == iSiteCounts)
+	{
+		cout << "Error:FPS_TestExecutive::ImageCalibration() - iSiteCounts is 0!" << endl;
+		return;
+	}
+
+	if (iSiteCurrentIndex > iSiteCounts)
+	{
+		cout << "Error:FPS_TestExecutive::ImageCalibration() - iSiteCounts is less than iSiteCurrentIndex!" << endl;
+		return;
+	}
+
+	Syn_Site *pSelectedSite = _ListOfSitePtr[iSiteCurrentIndex];
+	if (NULL == pSelectedSite)
+	{
+		cout << "Error:FPS_TestExecutive::ImageCalibration() - pSelectedSite is NULL!" << endl;
+		return;
+	}
+
+	pSelectedSite->Calibration();
+
+	Syn_SiteInfo SiteInfo;
+	Syn_DutTestInfo CurrentDutTestInfo;
+	Syn_DutTestResult *pCurrentDutTestResult;
+	Syn_SysConfig CurrentSysConfig;
+	pSelectedSite->GetSiteInfo(SiteInfo);
+	pSelectedSite->GetTestInfo(CurrentDutTestInfo);
+	pSelectedSite->GetTestResult(pCurrentDutTestResult);
+	pSelectedSite->GetSysConfig(CurrentSysConfig);
+
+	std::string strErrorMsg = SiteInfo._strErrorMessage;
+	Syn_TestState TestResult = SiteInfo._TestState;
+	if (TestError == TestResult)
+	{
+		QMessageBox::critical(this, QString("Error"), QString("Select Site Calibration is error,reason is ") + QString::fromStdString(strErrorMsg));
+		return;
+	}
+	else if (TestFailed == TestResult)
+	{
+		QMessageBox::critical(this, QString("Failed"), QString(" Select Site Calibration is failed,reason is ") + QString::fromStdString(strErrorMsg));
+		return;
+	}
+
+	int rowNumber = CurrentSysConfig._uiNumRows;
+	int columnNumber = CurrentSysConfig._uiNumCols;
+	
+	QVector<QRgb> vcolorTable;
+	for (int i = 0; i < 256; i++)
+	{
+		vcolorTable.append(qRgb(i, i, i));
+	}
+	QByteArray data;
+	data.resize((rowNumber)*(columnNumber));
+	for (int m = 0; m < rowNumber; m++)
+	{
+		for (int n = 0; n < columnNumber; n++)
+		{
+			data[m*(columnNumber)+n] = (pCurrentDutTestResult->_acquireFpsResults).arr_ImageFPSFrame.arr[m][n];
+		}
+	}
+	QImage image((uchar*)data.constData(), columnNumber, rowNumber,QImage::Format_Indexed8);
+	image.setColorTable(vcolorTable);
+	image = image.copy(HEADER,0, columnNumber - HEADER, rowNumber);
+
+	ui.CalibrationImageLabel->setPixmap(QPixmap::fromImage(image));
+	ui.CalibrationImageLabel->adjustSize();
+	ui.CalibtrationGroupBox->adjustSize();
+}
+
+void FPS_TestExecutive::PushFigerprintImageButton()
+{
+	int iSiteCurrentIndex = ui.comboBox->currentIndex();
+	if (iSiteCurrentIndex >= 0)
+	{
+		size_t iSiteCounts = _ListOfSitePtr.size();
+		if (0 != iSiteCounts)
+		{
+			if (iSiteCurrentIndex <= iSiteCounts)
+			{
+				if (_SynThreadArray[iSiteCurrentIndex].isRunning())
+				{
+					_SynThreadArray[iSiteCurrentIndex].SetStopTag(true);
+
+					_ListOfSitePtr[iSiteCurrentIndex]->PowerOff();
+				}
+				else
+				{
+					_SynThreadArray[iSiteCurrentIndex].start();
+					_SynThreadArray[iSiteCurrentIndex].SetStopTag(false);
+
+					//ui.pushButtonRun->setText(QString("Stop"));
+
+				}
+			}
+		}
+	}
+}
+
+void FPS_TestExecutive::FigerprintImage(Syn_SiteInfo *pSyn_SiteInfo)
+{
+	if (NULL == pSyn_SiteInfo)
+		return;
+
+	int iSiteNumber = pSyn_SiteInfo->_uiSiteNumber;
+
+	//retrieve current site with sitenumber from sitelist
+	bool synFind(false);
+	Syn_DutTestInfo CurrentDutTestInfo;
+	Syn_DutTestResult *pCurrentDutTestResult;
+	Syn_SysConfig CurrentSysConfig;
+	for (size_t i = 0; i < _ListOfSitePtr.size(); i++)
+	{
+		unsigned int iTempSiteNumber(0);
+		_ListOfSitePtr[i]->GetSiteNumber(iTempSiteNumber);
+		if (iSiteNumber == iTempSiteNumber)
+		{
+			_ListOfSitePtr[i]->GetTestInfo(CurrentDutTestInfo);
+			_ListOfSitePtr[i]->GetTestResult(pCurrentDutTestResult);
+			_ListOfSitePtr[i]->GetSysConfig(CurrentSysConfig);
+			synFind = true;
+			break;
+		}
+	}
+
+	if (!synFind)
+		return;
+
+	std::string strErrorMsg = pSyn_SiteInfo->_strErrorMessage;
+	Syn_TestState TestResult = pSyn_SiteInfo->_TestState;
+	if (TestError != TestResult&&TestFailed != TestResult)
+	{
+
+		int rowNumber = CurrentSysConfig._uiNumRows;
+		int columnNumber = CurrentSysConfig._uiNumCols;
+
+		QVector<QRgb> vcolorTable;
+		for (int i = 0; i < 256; i++)
+		{
+			vcolorTable.append(qRgb(i, i, i));
+		}
+		QByteArray data;
+		data.resize((rowNumber)*(columnNumber));
+		for (int m = 0; m < rowNumber; m++)
+		{
+			for (int n = 0; n < columnNumber; n++)
+			{
+				data[m*(columnNumber)+n] = (pCurrentDutTestResult->_acquireFpsResults).arr_ImageFPSFrame.arr[m][n];
+			}
+		}
+		QImage image((uchar*)data.constData(), columnNumber, rowNumber, QImage::Format_Indexed8);
+		image.setColorTable(vcolorTable);
+		image = image.copy(HEADER, 0, columnNumber - HEADER, rowNumber);
+
+		ui.FingerprintImageLabel->setPixmap(QPixmap::fromImage(image));
+		ui.FingerprintImageLabel->adjustSize();
+		ui.FingerprintImageGroupBox->adjustSize();
 	}
 }
 

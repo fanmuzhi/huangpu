@@ -24,23 +24,25 @@ void Syn_Thread::run()
 	if (NULL == _pSyn_Site)
 		return;
 
-	string strTime("");
-
-	unsigned int iSiteNumber(0);
+	/*unsigned int iSiteNumber(0);
 	_pSyn_Site->GetSiteNumber(iSiteNumber);
 
-	//Lock.lockForWrite();
-
 	_pSyn_Site->Run();
-	//_pSyn_Site->ReadOTP();
-
-	//Lock.unlock();
-
 
 	_pSyn_Site->GetSiteInfo(_SiteInfo);
 	emit send((void*)&_SiteInfo);
 
-	_stopped = true;
+	_stopped = true;*/
+
+	//fingerprint debug,delete at end
+	while (!_stopped)
+	{
+		_pSyn_Site->GetFingerprintImage();
+
+		_pSyn_Site->GetSiteInfo(_SiteInfo);
+		emit send((void*)&_SiteInfo);
+	}
+
 }
 
 void Syn_Thread::SetSite(Syn_Site *ipSyn_Site)

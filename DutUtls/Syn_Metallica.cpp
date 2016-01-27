@@ -25,7 +25,8 @@ void Syn_Metallica::CopyToPrintPatch(uint8_t* pSrc, uint8_t* pPrintPatch, int nN
 bool Syn_Metallica::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRows, CalibrationInfo &calInfo, CalibrationResults &calResult)
 {
 	//FPSFrame*			arFrames = ArrAayFPSFrame;//site.m_acquireFpsResults.m_arImagesWithoutStimulus;
-	FPSFrame*			arFrames = calResult.arr_calibration;//site.m_acquireFpsResults.m_arImagesWithoutStimulus;
+	//FPSFrame*			arFrames = calResult.arr_calibration;//site.m_acquireFpsResults.m_arImagesWithoutStimulus;
+	FPSFrame*			arFrames = new FPSFrame[MAXFRAMES];
 	//CalibrationInfo*	pCalInfo = &calInfo;
 	//CalibrationResults* pCalResults = &calResult;
 	int					nNumRows = numRows;
@@ -139,6 +140,9 @@ bool Syn_Metallica::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRows,
 		if (pOffsetArr[i - 1] != pOffsetArr[i])
 			bStage2AllEqual = false;
 	}
+
+	delete[] arFrames;
+	arFrames = NULL;
 
 	return !bStage2AllEqual;
 }

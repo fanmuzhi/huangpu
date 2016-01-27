@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>690</width>
+    <width>632</width>
     <height>671</height>
    </rect>
   </property>
@@ -141,6 +141,92 @@
             <widget class="QTextBrowser" name="textBrowser"/>
            </item>
           </layout>
+         </widget>
+         <widget class="QWidget" name="tab_3">
+          <attribute name="title">
+           <string>Image</string>
+          </attribute>
+          <widget class="QGroupBox" name="CalibtrationGroupBox">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>60</y>
+             <width>171</width>
+             <height>161</height>
+            </rect>
+           </property>
+           <property name="title">
+            <string>Calibration Image</string>
+           </property>
+           <widget class="QLabel" name="CalibrationImageLabel">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>20</y>
+              <width>151</width>
+              <height>131</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QGroupBox" name="FingerprintImageGroupBox">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>230</y>
+             <width>171</width>
+             <height>171</height>
+            </rect>
+           </property>
+           <property name="title">
+            <string>Fingerprint Image</string>
+           </property>
+           <widget class="QLabel" name="FingerprintImageLabel">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>20</y>
+              <width>151</width>
+              <height>141</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QWidget" name="layoutWidget">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>10</y>
+             <width>561</width>
+             <height>25</height>
+            </rect>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QComboBox" name="ImageSiteComboBox"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="ImageCalibrationPushButton">
+              <property name="text">
+               <string>Calibration</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="FigerprintImagePushButton">
+              <property name="text">
+               <string>Get Figerprint Image</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </widget>
         </widget>
        </item>

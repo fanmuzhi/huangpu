@@ -164,9 +164,15 @@ public:
 
 	void Run();				//main test entrance.
 
-	void GetVersion();		//for debug.
+	void GetVersion();				//for debug.
 
-	void ReadOTP();			//for debug.
+	void ReadOTP();					//for debug.
+
+	void Calibration();				//for debug
+
+	void GetFingerprintImage();		//for debug
+	void PowerOff();//debug
+
 
 	void GetSiteInfo(Syn_SiteInfo &oSyn_SiteInfo);
 	void GetTestInfo(Syn_DutTestInfo &oSyn_DutTestInfo);

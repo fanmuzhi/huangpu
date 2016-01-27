@@ -28,6 +28,7 @@
 #include <vector>
 #include <iostream>
 #include <string>
+#include <thread>
 
 //Construct Device Counts(large enough)
 #define DeviceCounts 20
@@ -50,6 +51,7 @@ public:
 
 	bool ConstructSiteList(QString strConfigFilePath, bool SendMsg = false);
 
+
 public Q_SLOTS:
 
 	void CreateLocalSettings();
@@ -68,10 +70,16 @@ public Q_SLOTS:
 
 	void ReceiveSiteInfoSlot(void * pSiteInfo);
 
-
+	//Dubug
+	//Dut dump
 	void GetVersionForDutDump();
 
 	void ReadOTPForDutDump();
+
+	//Calibration,Fingerprint
+	void ImageCalibration();
+	void PushFigerprintImageButton();
+	void FigerprintImage(Syn_SiteInfo *pSyn_SiteInfo);
 
 private:
 
@@ -95,10 +103,8 @@ private:
 
 	Syn_LocalSettings _LocalSettingsInfo;
 
-
-
-
-	//Syn_DutTestResult _VeryTempResults;
+	//debug
+	bool _debugtag;
 };
 
 #endif // FPS_TESTEXECUTIVE_H
