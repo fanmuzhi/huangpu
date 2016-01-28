@@ -15,6 +15,7 @@
 #include "Syn_Thread.h"
 #include "Syn_LocalSettingsDlg.h"
 #include "Ui_Syn_LocalSettingsDlg.h"
+#include "Syn_ThreadDebug.h"//for debug
 
 //DutUtls
 #include "Syn_Site.h"
@@ -79,7 +80,7 @@ public Q_SLOTS:
 	//Calibration,Fingerprint
 	void ImageCalibration();
 	void PushFigerprintImageButton();
-	void FigerprintImage(Syn_SiteInfo *pSyn_SiteInfo);
+	void FigerprintImage(void * pSiteInfo);
 
 private:
 
@@ -104,7 +105,7 @@ private:
 	Syn_LocalSettings _LocalSettingsInfo;
 
 	//debug
-	bool _debugtag;
+	Syn_ThreadDebug _threadForDebug;
 };
 
 #endif // FPS_TESTEXECUTIVE_H

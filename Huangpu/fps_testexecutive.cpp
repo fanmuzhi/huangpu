@@ -14,7 +14,6 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 , _iRealDeviceCounts(0)
 //, _logfile("sys.log")
 , _pSyn_LocalSettingsDlg(NULL)
-, _debugtag(false)
 {
 	ui.setupUi(this);
 	ui.TestTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -53,7 +52,9 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 
 	//Calibration,Fingerprint
 	QObject::connect(ui.ImageCalibrationPushButton, SIGNAL(clicked()), this, SLOT(ImageCalibration()));
-	QObject::connect(ui.FigerprintImagePushButton, SIGNAL(clicked()), this, SLOT(PushFigerprintImageButton()));
+	QObject::connect(ui.FigerprintImagePushButton, SIGNAL(clicked()), this, SLOT(PushFigerprintImageButton())); 
+
+	QObject::connect(&(_threadForDebug), SIGNAL(send(void*)), this, SLOT(FigerprintImage(void*)));
 }
 
 FPS_TestExecutive::~FPS_TestExecutive()
@@ -511,7 +512,7 @@ void FPS_TestExecutive::ReceiveSiteInfoSlot(void * pSiteInfo)
 	}
 
 	//debug  must delete at end
-	return FigerprintImage(pSyn_SiteInfo);
+	//return FigerprintImage(pSyn_SiteInfo);
 
 	int iSiteNumber = pSyn_SiteInfo->_uiSiteNumber;
 	int iColumnIndex(iSiteNumber - 1);
@@ -868,37 +869,78 @@ void FPS_TestExecutive::ImageCalibration()
 
 void FPS_TestExecutive::PushFigerprintImageButton()
 {
+	//int iSiteCurrentIndex = ui.comboBox->currentIndex();
+	//if (iSiteCurrentIndex >= 0)
+	//{
+	//	size_t iSiteCounts = _ListOfSitePtr.size();
+	//	if (0 != iSiteCounts)
+	//	{
+	//		if (iSiteCurrentIndex <= iSiteCounts)
+	//		{
+	//			if (_SynThreadArray[iSiteCurrentIndex].isRunning())
+	//			{
+	//				_SynThreadArray[iSiteCurrentIndex].SetStopTag(true);
+
+	//				_ListOfSitePtr[iSiteCurrentIndex]->PowerOff();
+	//			}
+	//			else
+	//			{
+	//				_SynThreadArray[iSiteCurrentIndex].start();
+	//				_SynThreadArray[iSiteCurrentIndex].SetStopTag(false);
+
+	//				//ui.pushButtonRun->setText(QString("Stop"));
+
+	//			}
+	//		}
+	//	}
+	//}
+
+
 	int iSiteCurrentIndex = ui.comboBox->currentIndex();
-	if (iSiteCurrentIndex >= 0)
+	if (iSiteCurrentIndex < 0)
+		return;
+
+	size_t iSiteCounts = _ListOfSitePtr.size();
+	if (0 == iSiteCounts)
+		return;
+
+	if (iSiteCounts < iSiteCurrentIndex)
+		return;
+
+	if (_threadForDebug.isRunning())
 	{
-		size_t iSiteCounts = _ListOfSitePtr.size();
-		if (0 != iSiteCounts)
-		{
-			if (iSiteCurrentIndex <= iSiteCounts)
-			{
-				if (_SynThreadArray[iSiteCurrentIndex].isRunning())
-				{
-					_SynThreadArray[iSiteCurrentIndex].SetStopTag(true);
+		_threadForDebug.SetRunTag(false);
 
-					_ListOfSitePtr[iSiteCurrentIndex]->PowerOff();
-				}
-				else
-				{
-					_SynThreadArray[iSiteCurrentIndex].start();
-					_SynThreadArray[iSiteCurrentIndex].SetStopTag(false);
+		_ListOfSitePtr[iSiteCurrentIndex]->PowerOff();
 
-					//ui.pushButtonRun->setText(QString("Stop"));
+		ui.FigerprintImagePushButton->setText(QString("Get Figerprint Image"));
 
-				}
-			}
-		}
+	}
+	else
+	{
+		_threadForDebug.SetSite(_ListOfSitePtr[iSiteCurrentIndex]);
+		_threadForDebug.SetRunTag(true);
+		_threadForDebug.start();
+
+		ui.FigerprintImagePushButton->setText(QString("Stop"));
+
 	}
 }
 
-void FPS_TestExecutive::FigerprintImage(Syn_SiteInfo *pSyn_SiteInfo)
+//void FPS_TestExecutive::FigerprintImage(Syn_SiteInfo *pSyn_SiteInfo)
+void FPS_TestExecutive::FigerprintImage(void * pSiteInfo)
 {
-	if (NULL == pSyn_SiteInfo)
+	//debug  must delete at end
+
+	if (NULL == pSiteInfo)
 		return;
+
+	Syn_SiteInfo *pSyn_SiteInfo = static_cast<Syn_SiteInfo*>(pSiteInfo);
+	if (NULL == pSyn_SiteInfo)
+	{
+		cout << "FPS_TestExecutive::ReceiveOTPTestSlot() - pSyn_SiteInfo is NULL!" << endl;
+		return;
+	}
 
 	int iSiteNumber = pSyn_SiteInfo->_uiSiteNumber;
 
