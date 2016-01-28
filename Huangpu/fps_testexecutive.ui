@@ -151,8 +151,8 @@
             <rect>
              <x>20</x>
              <y>60</y>
-             <width>171</width>
-             <height>161</height>
+             <width>261</width>
+             <height>301</height>
             </rect>
            </property>
            <property name="title">
@@ -163,8 +163,8 @@
              <rect>
               <x>10</x>
               <y>20</y>
-              <width>151</width>
-              <height>131</height>
+              <width>231</width>
+              <height>241</height>
              </rect>
             </property>
             <property name="text">
@@ -175,10 +175,10 @@
           <widget class="QGroupBox" name="FingerprintImageGroupBox">
            <property name="geometry">
             <rect>
-             <x>20</x>
-             <y>230</y>
-             <width>171</width>
-             <height>171</height>
+             <x>290</x>
+             <y>60</y>
+             <width>271</width>
+             <height>301</height>
             </rect>
            </property>
            <property name="title">
@@ -189,8 +189,8 @@
              <rect>
               <x>10</x>
               <y>20</y>
-              <width>151</width>
-              <height>141</height>
+              <width>241</width>
+              <height>261</height>
              </rect>
             </property>
             <property name="text">

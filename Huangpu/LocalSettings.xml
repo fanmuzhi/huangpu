@@ -2,6 +2,6 @@
 <LocalSettings>
     <SysConfigFile>D:/test.xml</SysConfigFile>
     <NumSites>1</NumSites>
-    <Site1 Voltages="3300 3300 3300 3300" AdcBaseLines="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ">1684806</Site1>
+    <Site1 AdcBaseLines="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 " Voltages="3300 3300 3300 3300">1684806</Site1>
     <AutoController></AutoController>
 </LocalSettings>

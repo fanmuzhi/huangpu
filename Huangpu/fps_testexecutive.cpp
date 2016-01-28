@@ -862,6 +862,9 @@ void FPS_TestExecutive::ImageCalibration()
 	image.setColorTable(vcolorTable);
 	image = image.copy(HEADER,0, columnNumber - HEADER, rowNumber);
 
+	//scale
+	image = image.scaled((columnNumber - HEADER) * 2, rowNumber * 2, Qt::KeepAspectRatio);
+
 	ui.CalibrationImageLabel->setPixmap(QPixmap::fromImage(image));
 	ui.CalibrationImageLabel->adjustSize();
 	ui.CalibtrationGroupBox->adjustSize();
@@ -991,6 +994,9 @@ void FPS_TestExecutive::FigerprintImage(void * pSiteInfo)
 		QImage image((uchar*)data.constData(), columnNumber, rowNumber, QImage::Format_Indexed8);
 		image.setColorTable(vcolorTable);
 		image = image.copy(HEADER, 0, columnNumber - HEADER, rowNumber);
+
+		//scale
+		image = image.scaled((columnNumber - HEADER) * 2, rowNumber * 2, Qt::KeepAspectRatio);
 
 		ui.FingerprintImageLabel->setPixmap(QPixmap::fromImage(image));
 		ui.FingerprintImageLabel->adjustSize();
