@@ -1,6 +1,5 @@
 //local
 #include "Syn_Site.h"
-#include "Syn_Exception.h"
 #include "Syn_SysConfigOperation.h"
 
 //MPC_API
@@ -251,16 +250,15 @@ void Syn_Site::Run()
 		_pSyn_Dut->PowerOff();
 
 	}
-	catch (Syn_Exception ex)
+	catch (exception ex)
 	{
 		_pSyn_Dut->PowerOff();
-		LOG(ERROR) << "Error:ReadOTP is failed!" << std::endl;
-		_siteInfo._strErrorMessage = ex.GetDescription();
+		LOG(ERROR) << "Error:ReadOTP is failed!";
+		_siteInfo._strErrorMessage = ex.what();
 		_siteInfo._TestState = TestFailed;
 
 		return;
 	}
-
 	return;
 }
 
@@ -275,11 +273,11 @@ void Syn_Site::GetVersion()
 		_pSyn_Dut->PowerOff();
 
 	}
-	catch (Syn_Exception ex)
+	catch (exception ex)
 	{
 		_pSyn_Dut->PowerOff();
 		LOG(ERROR) << "Error:GetVersion is failed!" ;
-		_siteInfo._strErrorMessage = ex.GetDescription();
+		_siteInfo._strErrorMessage = ex.what();
 		_siteInfo._TestState = TestFailed;
 		return;
 	}
@@ -306,11 +304,11 @@ void Syn_Site::ReadOTP()
 		_pSyn_Dut->PowerOff();
 
 	}
-	catch (Syn_Exception ex)
+	catch (exception ex)
 	{
 		_pSyn_Dut->PowerOff();
-		LOG(ERROR) << "Error:ReadOTP is failed!" << std::endl;
-		_siteInfo._strErrorMessage = ex.GetDescription();
+		LOG(ERROR) << "Error:ReadOTP is failed!";
+		_siteInfo._strErrorMessage = ex.what();
 		_siteInfo._TestState = TestFailed;
 
 		return;
@@ -354,11 +352,11 @@ void Syn_Site::Calibration()
 		//_pSyn_Dut->PowerOff();
 
 	}
-	catch (Syn_Exception ex)
+	catch (exception ex)
 	{
 		_pSyn_Dut->PowerOff();
 		LOG(ERROR) << "Error:Calibration is failed!";
-		_siteInfo._strErrorMessage = ex.GetDescription();
+		_siteInfo._strErrorMessage = ex.what();
 		_siteInfo._TestState = TestFailed;
 		return;
 	}
@@ -375,11 +373,11 @@ void Syn_Site::GetFingerprintImage()
 		_pSyn_Dut->GetFingerprintImage(_pDutTestResult->_calibrationResults, &(_pDutTestResult->_acquireFpsResults.arr_ImageFPSFrame), _SysConfig._uiNumRows, _SysConfig._uiNumCols);
 		//_pSyn_Dut->PowerOff();
 	}
-	catch (Syn_Exception ex)
+	catch (exception ex)
 	{
 		_pSyn_Dut->PowerOff();
 		LOG(ERROR) << "Error:GetFingerprintImage is failed!";
-		_siteInfo._strErrorMessage = ex.GetDescription();
+		_siteInfo._strErrorMessage = ex.what();
 		_siteInfo._TestState = TestFailed;
 		return;
 	}
@@ -552,18 +550,17 @@ void Syn_Site::InitDutTestInfo()
 
 		if (_DutTestInfo._acquireFpsInfo.m_nNumImagesWithoutStimulus > MAXFRAMES)
 		{
-			Syn_Exception ex(0);
-			//str.Format("The maximum of %d images without the stimulus has been exceeded.", MAXFRAMES);
-			ex.SetDescription("Timeout waiting for stimulus.");
-			throw(ex);
+			//Syn_Exception ex(0);
+			//ex.SetDescription("Exceed max frames without stimulus in config file");
+			//throw(ex);
+			_DutTestInfo._acquireFpsInfo.m_nNumImagesWithoutStimulus = MAXFRAMES;
 		}
 		if (_DutTestInfo._acquireFpsInfo.m_nNumImagesWithStimulus > MAXFRAMES)
 		{
-			Syn_Exception ex(0);
-			//CString str;
-			//str.Format("The maximum of %d images with the stimulus has been exceeded.", MAXFRAMES);
-			ex.SetDescription("Timeout waiting for stimulus.");
-			throw(ex);
+			//Syn_Exception ex(0);
+			//ex.SetDescription("Exceed min frames without stimulus in config file");
+			//throw(ex);
+			_DutTestInfo._acquireFpsInfo.m_nNumImagesWithStimulus = MAXFRAMES;
 		}
 	}
 

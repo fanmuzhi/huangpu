@@ -28,6 +28,12 @@ public:
 		return _strDescription + "(" + to_string(_uiErrorNumber) + ")";
 	}
 
+	inline const char* what()
+	{
+		std::string descrip = GetDescription();
+		return descrip.c_str();
+	}
+
 private:
 
 	string		_strDescription;

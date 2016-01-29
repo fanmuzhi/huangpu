@@ -71,7 +71,7 @@ public Q_SLOTS:
 
 	void ReceiveSiteInfoSlot(void * pSiteInfo);
 
-	//Dubug
+	//Debug
 	//Dut dump
 	void GetVersionForDutDump();
 

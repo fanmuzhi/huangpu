@@ -817,6 +817,7 @@ void FPS_TestExecutive::ImageCalibration()
 		return;
 	}
 
+
 	pSelectedSite->Calibration();
 
 	Syn_SiteInfo SiteInfo;
