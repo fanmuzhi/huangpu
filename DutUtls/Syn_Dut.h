@@ -23,7 +23,6 @@ class Syn_Dut
 {
 public:
 
-	enum { kPgaCalTypeOneOffsetPerRow, kPgaCalTypeOneOffsetPerPixel };
 
 	Syn_Dut();
 	virtual ~Syn_Dut();
@@ -40,9 +39,7 @@ public:
 	virtual void GetProjectType(ProjectType &oProjectType) = 0;
 	virtual	void CopyToPrintPatch(uint8_t* pSrc, uint8_t* pPrintPatch, int nNumBytes, int nPatchIdx) = 0;
 
-	virtual bool CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRows, CalibrationInfo &calInfo, CalibrationResults &calResult) = 0;
-
-	void GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *pFrame, int nNumRows, int nNumCols);
+	inline void SetPatchInfo(vector<Syn_PatchInfo> ilistOfPatchInfo){ _listOfPatchInfo = ilistOfPatchInfo; };
 
 	//list all test itmes here
 	void PowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep);
@@ -55,27 +52,22 @@ public:
 
 	bool CheckDUTexists();
 
+	void GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *pFrame, int nNumRows, int nNumCols);
+
+private:
+	enum { kPgaCalTypeOneOffsetPerRow, kPgaCalTypeOneOffsetPerPixel };
+
 	void CalculateLnaOffsetsBinarySearch(FPSFrame* pFrame, uint8_t* pLnaValues, int nNumRows, int nNumCols, CalibrationInfo &CalInfo, CalibrationResults &CalResults);
 
 	void GetRowAverages(FPSFrame* pFrame, int nColBegin, int nColEnd, uint8_t* pAverages, int nNumRows);
 
-
-
-
-
-
-	inline void SetPatchInfo(vector<Syn_PatchInfo> ilistOfPatchInfo){ _listOfPatchInfo = ilistOfPatchInfo; };
-
-
-
-private:
-
 	bool FindPatch(std::string patchName, Syn_PatchInfo &patchInfo);
+
+	virtual bool CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRows, CalibrationInfo &calInfo, CalibrationResults &calResult) = 0;
 
 protected:
 	
 	Syn_DutCtrl *_pSyn_DutCtrl;
 
 	vector<Syn_PatchInfo> _listOfPatchInfo;
-
 };

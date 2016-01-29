@@ -372,7 +372,7 @@ void Syn_Dut::CalculateLnaOffsetsBinarySearch(FPSFrame* pFrame, uint8_t* pLnaVal
 		//Prepare print-file with latest LNA offsets.
 		for (int i = 0; i<nNumRows; i++)
 			arMid[i] = ((arHi[i] - arLo[i]) / 2) + arLo[i];
-		CopyToPrintPatch(arMid, &CalResults.m_pPrintPatch[4], nNumRows, CalInfo.m_nLnaIdx);
+		CopyToPrintPatch(arMid, CalResults.m_pPrintPatch, nNumRows, CalInfo.m_nLnaIdx);
 
 		GetFingerprintImage(CalResults, pFrame, nNumRows, nNumCols);
 		GetRowAverages(pFrame, cal_colbegin, cal_colend, row_avgs, nNumRows);
