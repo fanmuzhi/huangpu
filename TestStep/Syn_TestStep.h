@@ -1,7 +1,7 @@
 #pragma once
 
 //Local
-#include "Syn_ModuleDecorator.h"
+#include "Syn_Module.h"
 
 //DutUtls
 #include "Syn_DutCtrl.h"
@@ -21,8 +21,8 @@ public:
 
 	
 	
-	Syn_TestStep(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut, Syn_ModuleDecorator * &pSyn_ModuleDecorator) 
-		:_strName(strName), _pSyn_DutCtrl(pDutCtrl), _pSyn_Dut(pDut), _pSyn_ModuleDecorator(pSyn_ModuleDecorator)
+	Syn_TestStep(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut, Syn_Module * &pSyn_Module)
+		:_strName(strName), _pSyn_DutCtrl(pDutCtrl), _pSyn_Dut(pDut), _pSyn_Module(pSyn_Module)
 	{
 		//if (pDut)
 		//_pSyn_ModuleDecorator = 
@@ -54,6 +54,6 @@ protected:
 	
 	Syn_Dut *_pSyn_Dut;
 
-	Syn_ModuleDecorator *_pSyn_ModuleDecorator;
+	Syn_Module *_pSyn_Module;
 };
 

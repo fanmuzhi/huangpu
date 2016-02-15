@@ -4,8 +4,8 @@
 //windows
 #include "windows.h" 
 
-Syn_FingerprintTest::Syn_FingerprintTest(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut, Syn_ModuleDecorator * &pSyn_ModuleDecorator)
-:Syn_TestStep(strName, pDutCtrl, pDut, pSyn_ModuleDecorator)
+Syn_FingerprintTest::Syn_FingerprintTest(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut, Syn_Module * &pSyn_Module)
+:Syn_TestStep(strName, pDutCtrl, pDut, pSyn_Module)
 {
 }
 
@@ -125,7 +125,7 @@ void Syn_FingerprintTest::CalculateLnaOffsetsBinarySearch(FPSFrame* pFrame, uint
 		for (int i = 0; i<nNumRows; i++)
 			arMid[i] = ((arHi[i] - arLo[i]) / 2) + arLo[i];
 		//CopyToPrintPatch(arMid, CalResults.m_pPrintPatch, nNumRows, CalInfo.m_nLnaIdx);
-		_pSyn_ModuleDecorator->CopyToPrintPatch(arMid, CalResults.m_pPrintPatch, nNumRows, CalInfo.m_nLnaIdx);
+		_pSyn_Module->CopyToPrintPatch(arMid, CalResults.m_pPrintPatch, nNumRows, CalInfo.m_nLnaIdx);
 
 		GetFingerprintImage(CalResults, pFrame, nNumRows, nNumCols);
 		GetRowAverages(pFrame, cal_colbegin, cal_colend, row_avgs, nNumRows);

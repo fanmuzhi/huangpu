@@ -8,7 +8,7 @@ class Syn_FingerprintTest :public Syn_TestStep
 
 public:
 
-	Syn_FingerprintTest(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut, Syn_ModuleDecorator * &pSyn_ModuleDecorator);
+	Syn_FingerprintTest(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut, Syn_Module * &pSyn_Module);
 
 	virtual ~Syn_FingerprintTest();
 	

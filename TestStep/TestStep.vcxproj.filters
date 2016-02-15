@@ -24,10 +24,10 @@
     <ClInclude Include="Syn_Calibrate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Syn_ModuleDecorator.h">
+    <ClInclude Include="Syn_Metallica.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Syn_Metallica.h">
+    <ClInclude Include="Syn_Module.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -38,10 +38,10 @@
     <ClCompile Include="Syn_Calibrate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Syn_ModuleDecorator.cpp">
+    <ClCompile Include="Syn_Metallica.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Syn_Metallica.cpp">
+    <ClCompile Include="Syn_Module.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

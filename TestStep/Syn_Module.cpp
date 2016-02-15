@@ -1,16 +1,16 @@
-#include "Syn_ModuleDecorator.h"
+#include "Syn_Module.h"
 
 
-Syn_ModuleDecorator::Syn_ModuleDecorator()
+Syn_Module::Syn_Module()
 {
 }
 
 
-Syn_ModuleDecorator::~Syn_ModuleDecorator()
+Syn_Module::~Syn_Module()
 {
 }
 
-void Syn_ModuleDecorator::GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *pFrame, int nNumRows, int nNumCols, Syn_DutCtrl * &pDutCtrl)
+void Syn_Module::GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *pFrame, int nNumRows, int nNumCols, Syn_DutCtrl * &pDutCtrl)
 {
 	if (NULL == pDutCtrl)
 	{

@@ -1,8 +1,8 @@
 #include "Syn_Calibrate.h"
 
 
-Syn_Calibrate::Syn_Calibrate(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut, Syn_ModuleDecorator * &pSyn_ModuleDecorator)
-:Syn_FingerprintTest(strName, pDutCtrl, pDut, pSyn_ModuleDecorator)
+Syn_Calibrate::Syn_Calibrate(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut, Syn_Module * &pSyn_Module)
+:Syn_FingerprintTest(strName, pDutCtrl, pDut, pSyn_Module)
 {
 }
 
@@ -21,7 +21,7 @@ int Syn_Calibrate::Excute()
 	{
 		return 0;
 	}
-	if (NULL == _pSyn_ModuleDecorator)
+	if (NULL == _pSyn_Module)
 	{
 		return 0;
 	}
@@ -71,7 +71,7 @@ int Syn_Calibrate::Excute()
 	uint32_t nLnaIdx = _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nLnaIdx;
 	if (_pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, pLnaValues, MS0_SIZE) > 0)
 	{
-		_pSyn_ModuleDecorator->CopyToPrintPatch(&pLnaValues[4], _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch, numRows, nLnaIdx);	//skip LNA first 4 bytes 00 00 00 07
+		_pSyn_Module->CopyToPrintPatch(&pLnaValues[4], _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch, numRows, nLnaIdx);	//skip LNA first 4 bytes 00 00 00 07
 	}
 	else
 	{
@@ -80,7 +80,7 @@ int Syn_Calibrate::Excute()
 		FPSFrame *pLnaFrame = new FPSFrame();
 		CalculateLnaOffsetsBinarySearch(pLnaFrame, pLnaValues, numRows, numCols, _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults);
 		//CopyToPrintPatch(pLnaValues, &site.m_calibrationResults.m_pPrintPatch[4], GetSysConfig().GetNumRows(), site.m_calibrationInfo.m_nLnaIdx);
-		_pSyn_ModuleDecorator->CopyToPrintPatch(pLnaValues, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch, numRows, nLnaIdx);
+		_pSyn_Module->CopyToPrintPatch(pLnaValues, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch, numRows, nLnaIdx);
 
 		delete pLnaFrame;
 		pLnaFrame = NULL;
@@ -94,7 +94,7 @@ int Syn_Calibrate::Excute()
 		int nPgaRecCount = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPP, pPgaValues, MS0_SIZE);
 		memcpy(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPGAOtpArray, &pPgaValues[4], NUM_PGA_OOPP_OTP_ROWS * numCols);
 
-		bSuccess = _pSyn_ModuleDecorator->CalculatePgaOffsets_OOPP(_pSyn_DutCtrl,numCols, numRows, _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults);
+		bSuccess = _pSyn_Module->CalculatePgaOffsets_OOPP(_pSyn_DutCtrl, numCols, numRows, _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults);
 		if (!bSuccess)
 		{
 			//site.PushBinCodes(BinCodes::m_sStages1Or2CalFail);

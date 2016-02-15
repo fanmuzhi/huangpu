@@ -1,8 +1,11 @@
 #pragma once
-#include "Syn_ModuleDecorator.h"
-class Syn_Metallica :
-	public Syn_ModuleDecorator
+
+//Local
+#include "Syn_Module.h"
+
+class Syn_Metallica :public Syn_Module
 {
+
 public:
 	Syn_Metallica();
 	virtual ~Syn_Metallica();

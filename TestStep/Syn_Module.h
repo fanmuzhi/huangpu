@@ -15,11 +15,11 @@ enum Syn_ProjectType {
 };
 
 
-class Syn_ModuleDecorator
+class Syn_Module
 {
 public:
-	Syn_ModuleDecorator();
-	virtual ~Syn_ModuleDecorator();
+	Syn_Module();
+	virtual ~Syn_Module();
 
 	//function
 	virtual	void CopyToPrintPatch(uint8_t* pSrc, uint8_t* pPrintPatch, int nNumBytes, int nPatchIdx) = 0;
