@@ -80,15 +80,17 @@
   <ItemGroup>
     <ClInclude Include="Syn_Calibrate.h" />
     <ClInclude Include="Syn_FingerprintTest.h" />
-    <ClInclude Include="Syn_Metallica.h" />
+    <ClInclude Include="Syn_MetallicaModule.h" />
     <ClInclude Include="Syn_Module.h" />
     <ClInclude Include="Syn_TestStep.h" />
+    <ClInclude Include="Syn_TestStepFactory.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Syn_Calibrate.cpp" />
     <ClCompile Include="Syn_FingerprintTest.cpp" />
-    <ClCompile Include="Syn_Metallica.cpp" />
+    <ClCompile Include="Syn_MetallicaModule.cpp" />
     <ClCompile Include="Syn_Module.cpp" />
+    <ClCompile Include="Syn_TestStepFactory.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

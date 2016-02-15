@@ -2,6 +2,7 @@
 
 //Local
 #include "Syn_Module.h"
+#include "Syn_MetallicaModule.h"
 
 //DutUtls
 #include "Syn_DutCtrl.h"
@@ -21,11 +22,18 @@ public:
 
 	
 	
-	Syn_TestStep(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut, Syn_Module * &pSyn_Module)
-		:_strName(strName), _pSyn_DutCtrl(pDutCtrl), _pSyn_Dut(pDut), _pSyn_Module(pSyn_Module)
+	Syn_TestStep(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
+		:_strName(strName), _pSyn_DutCtrl(pDutCtrl), _pSyn_Dut(pDut), _pSyn_Module(NULL)
 	{
-		//if (pDut)
-		//_pSyn_ModuleDecorator = 
+		if (Metallica == _pSyn_Dut->_eProjectType)
+		{
+			_pSyn_Module = new Syn_MetallicaModule();
+		}
+		else
+		{
+			_pSyn_Module = new Syn_MetallicaModule();
+		}
+		//
 	}
 
 	virtual ~Syn_TestStep()
@@ -40,7 +48,7 @@ public:
 	//pure virtual function
 	virtual int	SetUp() = 0;
 
-	virtual int	Execute() = 0;
+	virtual int	Excute() = 0;
 
 	virtual int ProcessData() = 0;
 

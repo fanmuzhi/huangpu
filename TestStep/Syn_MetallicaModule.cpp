@@ -1,21 +1,21 @@
-#include "Syn_Metallica.h"
+#include "Syn_MetallicaModule.h"
 
-Syn_Metallica::Syn_Metallica()
+Syn_MetallicaModule::Syn_MetallicaModule()
 {
 }
 
 
-Syn_Metallica::~Syn_Metallica()
+Syn_MetallicaModule::~Syn_MetallicaModule()
 {
 }
 
-void Syn_Metallica::CopyToPrintPatch(uint8_t* pSrc, uint8_t* pPrintPatch, int nNumBytes, int nPatchIdx)
+void Syn_MetallicaModule::CopyToPrintPatch(uint8_t* pSrc, uint8_t* pPrintPatch, int nNumBytes, int nPatchIdx)
 {
 	//For Metallica sensors, we copy once into Print Patch.
 	memcpy(&pPrintPatch[nPatchIdx], pSrc, nNumBytes);
 }
 
-bool Syn_Metallica::CalculatePgaOffsets_OOPP(Syn_DutCtrl * &pDutCtrl,uint16_t numCols, uint16_t numRows, CalibrationInfo &calInfo, CalibrationResults &calResult)
+bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(Syn_DutCtrl * &pDutCtrl, uint16_t numCols, uint16_t numRows, CalibrationInfo &calInfo, CalibrationResults &calResult)
 {
 	//FPSFrame*			arFrames = ArrAayFPSFrame;//site.m_acquireFpsResults.m_arImagesWithoutStimulus;
 	//FPSFrame*			arFrames = calResult.arr_calibration;//site.m_acquireFpsResults.m_arImagesWithoutStimulus;

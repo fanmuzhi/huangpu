@@ -3,12 +3,12 @@
 //Local
 #include "Syn_Module.h"
 
-class Syn_Metallica :public Syn_Module
+class Syn_MetallicaModule :public Syn_Module
 {
 
 public:
-	Syn_Metallica();
-	virtual ~Syn_Metallica();
+	Syn_MetallicaModule();
+	virtual ~Syn_MetallicaModule();
 
 	void CopyToPrintPatch(uint8_t* pSrc, uint8_t* pPrintPatch, int nNumBytes, int nPatchIdx);
 

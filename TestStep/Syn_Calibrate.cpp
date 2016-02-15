@@ -1,8 +1,8 @@
 #include "Syn_Calibrate.h"
 
 
-Syn_Calibrate::Syn_Calibrate(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut, Syn_Module * &pSyn_Module)
-:Syn_FingerprintTest(strName, pDutCtrl, pDut, pSyn_Module)
+Syn_Calibrate::Syn_Calibrate(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
+:Syn_FingerprintTest(strName, pDutCtrl, pDut)
 {
 }
 
@@ -124,5 +124,20 @@ int Syn_Calibrate::Excute()
 	/*delete pFrame;
 	pFrame = NULL;*/
 
+	return 0;
+}
+
+int	Syn_Calibrate::SetUp()
+{
+	return 0;
+}
+
+int	Syn_Calibrate::ProcessData()
+{
+	return 0;
+}
+
+int	Syn_Calibrate::CleanUp()
+{
 	return 0;
 }

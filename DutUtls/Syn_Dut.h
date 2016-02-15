@@ -174,6 +174,8 @@ public:
 	uint16_t		_RowNumber;//NumRows
 	uint16_t		_ColumnNumber;//NumCols
 
+	ProjectType _eProjectType;
+
 private:
 
 	//bool FindPatch(std::string patchName, Syn_PatchInfo &patchInfo);

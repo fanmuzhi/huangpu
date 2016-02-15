@@ -4,8 +4,8 @@
 //windows
 #include "windows.h" 
 
-Syn_FingerprintTest::Syn_FingerprintTest(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut, Syn_Module * &pSyn_Module)
-:Syn_TestStep(strName, pDutCtrl, pDut, pSyn_Module)
+Syn_FingerprintTest::Syn_FingerprintTest(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
+:Syn_TestStep(strName, pDutCtrl, pDut)
 {
 }
 

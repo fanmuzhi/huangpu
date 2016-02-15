@@ -9,9 +9,16 @@ public:
 
 	enum { kPgaCalTypeOneOffsetPerRow, kPgaCalTypeOneOffsetPerPixel };
 
-	Syn_Calibrate(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut, Syn_Module * &pSyn_Module);
+	Syn_Calibrate(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
 	virtual ~Syn_Calibrate();
 
-	int Excute();
+
+	virtual int	SetUp();
+
+	virtual int	Excute();
+
+	virtual int ProcessData();
+
+	virtual int	CleanUp();
 };
 
