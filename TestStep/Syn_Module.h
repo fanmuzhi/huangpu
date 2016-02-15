@@ -21,13 +21,16 @@ public:
 	Syn_Module();
 	virtual ~Syn_Module();
 
-	//function
+	void GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *pFrame, int nNumRows, int nNumCols);
+
+	void SetDutCtrl(Syn_DutCtrl * &pDutCtrl);
+
+	//virtual function
 	virtual	void CopyToPrintPatch(uint8_t* pSrc, uint8_t* pPrintPatch, int nNumBytes, int nPatchIdx) = 0;
 
 	virtual bool CalculatePgaOffsets_OOPP(Syn_DutCtrl * &pDutCtrl,uint16_t numCols, uint16_t numRows, CalibrationInfo &calInfo, CalibrationResults &calResult) = 0;
 
 protected:
 
-	void GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *pFrame, int nNumRows, int nNumCols,Syn_DutCtrl * &pDutCtrl);
-
+	Syn_DutCtrl * _pDutCtrl;
 };

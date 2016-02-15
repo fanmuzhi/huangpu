@@ -2,6 +2,7 @@
 
 
 Syn_Module::Syn_Module()
+:_pDutCtrl(NULL)
 {
 }
 
@@ -10,9 +11,14 @@ Syn_Module::~Syn_Module()
 {
 }
 
-void Syn_Module::GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *pFrame, int nNumRows, int nNumCols, Syn_DutCtrl * &pDutCtrl)
+void Syn_Module::SetDutCtrl(Syn_DutCtrl * &pDutCtrl)
 {
-	if (NULL == pDutCtrl)
+	_pDutCtrl = pDutCtrl;
+}
+
+void Syn_Module::GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *pFrame, int nNumRows, int nNumCols)
+{
+	if (NULL == _pDutCtrl)
 	{
 		return;
 	}
@@ -25,8 +31,8 @@ void Syn_Module::GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *
 
 	uint8_t *pImgBuff = new uint8_t[nCols * nRows];
 
-	//pDutCtrl->FpGetImage(pImgBuff, numCols*numRows);
-	pDutCtrl->FpGetImage2(nRows, nCols, pImgBuff, pCalResults.m_nPrintPatchSize, pCalResults.m_pPrintPatch);
+	//_pDutCtrl->FpGetImage(pImgBuff, numCols*numRows);
+	_pDutCtrl->FpGetImage2(nRows, nCols, pImgBuff, pCalResults.m_nPrintPatchSize, pCalResults.m_pPrintPatch);
 
 
 	for (int i = 0; i < (nRows * nCols); i++)
@@ -48,3 +54,4 @@ void Syn_Module::GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *
 	delete[] pImgBuff;
 	pImgBuff = NULL;
 }
+

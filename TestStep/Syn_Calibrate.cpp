@@ -6,7 +6,6 @@ Syn_Calibrate::Syn_Calibrate(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut *
 {
 }
 
-
 Syn_Calibrate::~Syn_Calibrate()
 {
 }

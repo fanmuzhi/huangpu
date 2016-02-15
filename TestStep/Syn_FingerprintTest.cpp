@@ -52,7 +52,7 @@ void Syn_FingerprintTest::PowerOff()
 
 void Syn_FingerprintTest::GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *pFrame, int nNumRows, int nNumCols)
 {
-	int			nRows = nNumRows;
+	/*int			nRows = nNumRows;
 	int			nCols = nNumCols;
 
 	if (((nRows * nCols) % 64) == 0)
@@ -60,7 +60,6 @@ void Syn_FingerprintTest::GetFingerprintImage(CalibrationResults &pCalResults, F
 
 	uint8_t *pImgBuff = new uint8_t[nCols * nRows];
 
-	//_pSyn_DutCtrl->FpGetImage(pImgBuff, numCols*numRows);
 	_pSyn_DutCtrl->FpGetImage2(nRows, nCols, pImgBuff, pCalResults.m_nPrintPatchSize, pCalResults.m_pPrintPatch);
 
 
@@ -75,13 +74,20 @@ void Syn_FingerprintTest::GetFingerprintImage(CalibrationResults &pCalResults, F
 		std::string strTempRowValue;
 		for (int j = HEADER; j < nNumCols; j++)		// HEADER defined the first 8 cols to ignore.
 		{
-			//strTempRowValue += to_string(pImgBuff[i*nRows + j]) + std::string(",");
 			strTempRowValue += to_string(pFrame->arr[i][j]) + std::string(",");
 		}
 	}
 
 	delete[] pImgBuff;
 	pImgBuff = NULL;
+	*/
+
+	if (NULL == _pSyn_Module)
+	{
+		return;
+	}
+
+	_pSyn_Module->GetFingerprintImage(pCalResults, pFrame, nNumRows, nNumCols);
 }
 
 void Syn_FingerprintTest::CalculateLnaOffsetsBinarySearch(FPSFrame* pFrame, uint8_t* pLnaValues, int nNumRows, int nNumCols, CalibrationInfo &CalInfo, CalibrationResults &CalResults)
