@@ -13,8 +13,9 @@ extern "C" {
 #include <vector>
 using namespace std;
 
-enum ProjectType {
-	Viper1 = 0x1000,
+enum ProjectType
+{
+	Viper1 = 0x1001,
 	Viper2,
 	Metallica
 };
@@ -103,6 +104,7 @@ struct Syn_DutTestResult
 
 class Syn_Dut
 {
+
 public:
 
 	enum { kPgaCalTypeOneOffsetPerRow, kPgaCalTypeOneOffsetPerPixel };
@@ -150,19 +152,27 @@ public:
 
 
 
-	//
+	//function
 	void InitDutTestInfo(Syn_SysConfig &sysConfig);
 
 	bool ParseTestStepArgs(const std::string &strArgsValue, std::vector<std::string> &olistOfArgValue, std::string strSymbol = std::string(" "));
 
 	bool FindPatch(std::string patchName, Syn_PatchInfo &patchInfo);
 
+	//variable
 	Syn_DutTestInfo			*_pSyn_DutTestInfo;
 
 	Syn_DutTestResult		*_pSyn_DutTestResult;
 
 	vector<Syn_PatchInfo>	_listOfPatchInfo;
 
+	uint16_t		_uiDutpwrVdd_mV;//DutpwrVdd_mV
+	uint16_t		_uiDutpwrVio_mV;//DutpwrVio_mV
+	uint16_t		_uiDutpwrVled_mV;//DutpwrVled_mV
+	uint16_t		_uiDutpwrVddh_mV;//DutpwrVddh_mV
+
+	uint16_t		_RowNumber;//NumRows
+	uint16_t		_ColumnNumber;//NumCols
 
 private:
 

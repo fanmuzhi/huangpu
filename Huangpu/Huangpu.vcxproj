@@ -84,7 +84,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Sqld.lib;Qt5OpenGLd.lib;opengl32.lib;glu32.lib;Qt5Widgetsd.lib;Qt5Xmld.lib;$(SolutionDir)$(Platform)\$(Configuration)\TestEngine.lib;$(SolutionDir)$(Platform)\$(Configuration)\DutUtls.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Sqld.lib;Qt5OpenGLd.lib;opengl32.lib;glu32.lib;Qt5Widgetsd.lib;Qt5Xmld.lib;$(SolutionDir)$(Platform)\$(Configuration)\DutUtls.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <StackReserveSize>
       </StackReserveSize>
     </Link>

@@ -57,6 +57,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(SolutionDir)$(Platform)\$(Configuration)\DutUtls.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -79,11 +80,15 @@
   <ItemGroup>
     <ClInclude Include="Syn_Calibrate.h" />
     <ClInclude Include="Syn_FingerprintTest.h" />
+    <ClInclude Include="Syn_Metallica.h" />
+    <ClInclude Include="Syn_ModuleDecorator.h" />
     <ClInclude Include="Syn_TestStep.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Syn_Calibrate.cpp" />
     <ClCompile Include="Syn_FingerprintTest.cpp" />
+    <ClCompile Include="Syn_Metallica.cpp" />
+    <ClCompile Include="Syn_ModuleDecorator.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
