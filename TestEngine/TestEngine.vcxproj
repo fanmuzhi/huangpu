@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{F7594FD8-6194-49E4-A3DD-8520123F8D56}</ProjectGuid>
+    <ProjectGuid>{9E3AC4D9-AE3D-44D5-A514-2DFAA67C641E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>TestStep</RootNamespace>
+    <RootNamespace>TestEngine</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -52,13 +52,14 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;TESTSTEP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)inc;$(SolutionDir)DutUtls;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;TESTENGINE_EXPORTS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)inc;$(SolutionDir)DutUtls;$(SolutionDir)TestStep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)$(Platform)\$(Configuration)\DutUtls.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)$(Platform)\$(Configuration)\DutUtls.lib;$(SolutionDir)$(Platform)\$(Configuration)\TestStep.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -69,7 +70,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;TESTSTEP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;TESTENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -79,21 +81,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Syn_Calibrate.h" />
-    <ClInclude Include="Syn_FingerprintTest.h" />
-    <ClInclude Include="Syn_MetallicaModule.h" />
-    <ClInclude Include="Syn_Module.h" />
-    <ClInclude Include="Syn_TestStep.h" />
-    <ClInclude Include="Syn_TestStepFactory.h" />
-    <ClInclude Include="Syn_ViperModule.h" />
+    <ClCompile Include="Syn_Site.cpp" />
+    <ClCompile Include="Syn_SysConfigOperation.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Syn_Calibrate.cpp" />
-    <ClCompile Include="Syn_FingerprintTest.cpp" />
-    <ClCompile Include="Syn_MetallicaModule.cpp" />
-    <ClCompile Include="Syn_Module.cpp" />
-    <ClCompile Include="Syn_TestStepFactory.cpp" />
-    <ClCompile Include="Syn_ViperModule.cpp" />
+    <ClInclude Include="Syn_Site.h" />
+    <ClInclude Include="Syn_SysConfigOperation.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
