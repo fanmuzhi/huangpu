@@ -1,8 +1,8 @@
 #pragma once
 
-//Local:DutCtrl
+//Local
 #include "Syn_DutCtrl.h"
-#include "Syn_Config.h" 
+#include "Syn_Config.h"
 
 extern "C" {
 #include "SYN_TestUtils.h"
@@ -11,7 +11,7 @@ extern "C" {
 //std
 #include <string>
 #include <vector>
-using namespace std;
+//using namespace std;
 
 enum ProjectType
 {
@@ -107,8 +107,6 @@ class Syn_Dut
 
 public:
 
-	enum { kPgaCalTypeOneOffsetPerRow, kPgaCalTypeOneOffsetPerPixel };
-
 	Syn_Dut();
 	virtual ~Syn_Dut();
 
@@ -139,5 +137,4 @@ public:
 	uint16_t		_ColumnNumber;//NumCols
 
 	ProjectType		_eProjectType;
-
 };

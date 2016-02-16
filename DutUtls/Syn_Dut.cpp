@@ -3,10 +3,6 @@
 
 //Local
 #include "Syn_Dut.h"
-#include "Syn_Viper.h"
-#include "Syn_Viper1.h"
-#include "Syn_Viper2.h"
-#include "Syn_Metallica.h"
 #include "Syn_Exception.h"
 #include "Syn_Vcsfw.h"
 

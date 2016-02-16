@@ -2,14 +2,15 @@
 
 //Local
 #include "Syn_Module.h"
-#include "Syn_MetallicaModule.h"
 
 //DutUtls
-#include "Syn_DutCtrl.h"
 #include "Syn_Dut.h"
+#include "Syn_DutCtrl.h"
+#include "Syn_Config.h"
 
 //C++
 #include <string>
+#include <vector>
 using namespace std;
 
 extern "C" {
@@ -50,7 +51,5 @@ protected:
 	Syn_DutCtrl *_pSyn_DutCtrl;
 	
 	Syn_Dut *_pSyn_Dut;
-
-	
 };
 

@@ -7,7 +7,6 @@ Syn_TestStepFactory::Syn_TestStepFactory()
 {
 }
 
-
 Syn_TestStepFactory::~Syn_TestStepFactory()
 {
 }

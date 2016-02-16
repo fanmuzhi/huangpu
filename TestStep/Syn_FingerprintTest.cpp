@@ -1,5 +1,7 @@
 //Local
 #include "Syn_FingerprintTest.h"
+#include "Syn_MetallicaModule.h"
+#include "Syn_ViperModule.h"
 
 //windows
 #include "windows.h" 
@@ -109,4 +111,14 @@ void Syn_FingerprintTest::GetRowAverages(FPSFrame* pFrame, int nColBegin, int nC
 	}
 
 	_pSyn_Module->GetRowAverages(pFrame, nColBegin, nColEnd, pAverages, nNumRows);
+}
+
+bool Syn_FingerprintTest::CheckDUTexists()
+{
+	if (NULL == _pSyn_Module)
+	{
+		return false;
+	}
+
+	return _pSyn_Module->CheckDUTexists();
 }

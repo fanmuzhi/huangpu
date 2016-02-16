@@ -26,6 +26,9 @@ public:
 
 	void GetRowAverages(FPSFrame* pFrame, int nColBegin, int nColEnd, uint8_t* pAverages, int nNumRows);
 
+	bool CheckDUTexists();
+
+
 protected:
 
 	Syn_Module *_pSyn_Module;

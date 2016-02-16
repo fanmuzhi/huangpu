@@ -20,6 +20,8 @@ int Syn_Calibrate::Excute()
 	{
 		return 0;
 	}
+
+	this->CheckDUTexists();
 	
 	uint16_t numRows = _pSyn_Dut->_RowNumber;
 	uint16_t numCols = _pSyn_Dut->_ColumnNumber;
@@ -115,7 +117,7 @@ int Syn_Calibrate::Excute()
 
 	FPSFrame *pFrame = new FPSFrame();
 	GetFingerprintImage(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults, pFrame, numRows, numCols);
-	_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.arr_ImageFPSFrame = *pFrame;
+	_pSyn_Dut->_pSyn_DutTestResult->_acquireFpsResults.arr_ImageFPSFrame = *pFrame;
 	/*delete pFrame;
 	pFrame = NULL;*/
 
@@ -124,15 +126,24 @@ int Syn_Calibrate::Excute()
 
 int	Syn_Calibrate::SetUp()
 {
+	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+
 	return 0;
 }
 
 int	Syn_Calibrate::ProcessData()
 {
+	uint16_t numRows = _pSyn_Dut->_RowNumber;
+	uint16_t numCols = _pSyn_Dut->_ColumnNumber;
+
+	GetFingerprintImage(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults, &(_pSyn_Dut->_pSyn_DutTestResult->_acquireFpsResults.arr_ImageFPSFrame), numRows, numCols);
+
 	return 0;
 }
 
 int	Syn_Calibrate::CleanUp()
 {
+	PowerOff();
+
 	return 0;
 }

@@ -21,18 +21,6 @@
     <ClInclude Include="Syn_Dut.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Syn_Viper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Syn_Viper1.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Syn_Viper2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Syn_Metallica.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Syn_BinCodes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -45,39 +33,21 @@
     <ClInclude Include="Syn_MPC04Ctrl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Syn_Config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Syn_Site.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Syn_Exception.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Syn_Vcsfw.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Syn_SysConfigOperation.h">
+    <ClInclude Include="SYN_TestUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SYN_TestUtils.h">
+    <ClInclude Include="Syn_Config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Syn_Dut.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Syn_Viper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Syn_Viper1.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Syn_Viper2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Syn_Metallica.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Syn_BinCodes.cpp">
@@ -89,13 +59,7 @@
     <ClCompile Include="Syn_MPC04Ctrl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Syn_Site.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Syn_DutCtrl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Syn_SysConfigOperation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SYN_TestUtils.c">

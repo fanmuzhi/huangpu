@@ -183,3 +183,19 @@ void Syn_Module::GetRowAverages(FPSFrame* pFrame, int nColBegin, int nColEnd, ui
 		pAverages[nRow] = temp;
 	}
 }
+
+bool Syn_Module::CheckDUTexists()
+{
+	bool IsExists(true);
+	_pSyn_DutCtrl->GpioSetPinType(8, 0x10, 5);
+
+	uint32_t nPinState = 0;
+	_pSyn_DutCtrl->GpioPinRead(8, 0x10, &nPinState);
+
+	if (0x10 & nPinState)
+	{
+		IsExists = false;
+	}
+
+	return IsExists;
+}
