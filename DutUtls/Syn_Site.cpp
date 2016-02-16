@@ -119,7 +119,7 @@ bool Syn_Site::ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn
 		return false;
 	}
 
-	pSyn_Dut->SetDutCtrl(pSyn_DutCtrl);
+	//pSyn_Dut->SetDutCtrl(pSyn_DutCtrl);
 
 	opSyn_SiteInstance = new Syn_Site();
 	
@@ -243,17 +243,16 @@ void Syn_Site::Run()
 	//test get image
 	try
 	{
-		_siteInfo._TestState = TestRunning;
+		/*_siteInfo._TestState = TestRunning;
 		_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
 		_pSyn_Dut->CheckDUTexists();
 		_pSyn_Dut->Calibration(_SysConfig._uiNumCols, _SysConfig._uiNumRows, _DutTestInfo._calibrationInfo, _pDutTestResult->_calibrationResults);
-		//_pSyn_Dut->Calibration(_SysConfig._uiNumCols, _SysConfig._uiNumRows, _DutTestInfo._calibrationInfo, _DutTestResult._calibrationResults);
-		_pSyn_Dut->PowerOff();
+		_pSyn_Dut->PowerOff();*/
 
 	}
 	catch (Syn_Exception ex)
 	{
-		_pSyn_Dut->PowerOff();
+		//_pSyn_Dut->PowerOff();
 		LOG(ERROR) << "Error:ReadOTP is failed!" << std::endl;
 		_siteInfo._strErrorMessage = ex.GetDescription();
 		_siteInfo._TestState = TestFailed;
@@ -270,14 +269,14 @@ void Syn_Site::GetVersion()
 	try
 	{
 		_siteInfo._TestState = TestRunning;
-		_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
+		/*_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
 		_pSyn_Dut->GetDutCtrl()->FpGetVersion(_DutTestInfo._getVerInfo._GerVerArray, VERSION_SIZE);
-		_pSyn_Dut->PowerOff();
+		_pSyn_Dut->PowerOff();*/
 
 	}
 	catch (Syn_Exception ex)
 	{
-		_pSyn_Dut->PowerOff();
+		//_pSyn_Dut->PowerOff();
 		LOG(ERROR) << "Error:GetVersion is failed!" ;
 		_siteInfo._strErrorMessage = ex.GetDescription();
 		_siteInfo._TestState = TestFailed;
@@ -301,14 +300,14 @@ void Syn_Site::ReadOTP()
 	try
 	{
 		_siteInfo._TestState = TestRunning;
-		_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
+		/*_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
 		_pSyn_Dut->ReadOTP(arMS0, iSize);
-		_pSyn_Dut->PowerOff();
+		_pSyn_Dut->PowerOff();*/
 
 	}
 	catch (Syn_Exception ex)
 	{
-		_pSyn_Dut->PowerOff();
+		//_pSyn_Dut->PowerOff();
 		LOG(ERROR) << "Error:ReadOTP is failed!" << std::endl;
 		_siteInfo._strErrorMessage = ex.GetDescription();
 		_siteInfo._TestState = TestFailed;
@@ -347,16 +346,16 @@ void Syn_Site::Calibration()
 	try
 	{
 		_siteInfo._TestState = TestRunning;
-		_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
+		/*_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
 		_pSyn_Dut->CheckDUTexists();
 		_pSyn_Dut->Calibration(_SysConfig._uiNumCols, _SysConfig._uiNumRows, _DutTestInfo._calibrationInfo, _pDutTestResult->_calibrationResults);
-		_pSyn_Dut->GetFingerprintImage(_pDutTestResult->_calibrationResults, &(_pDutTestResult->_acquireFpsResults.arr_ImageFPSFrame), _SysConfig._uiNumRows, _SysConfig._uiNumCols);
+		_pSyn_Dut->GetFingerprintImage(_pDutTestResult->_calibrationResults, &(_pDutTestResult->_acquireFpsResults.arr_ImageFPSFrame), _SysConfig._uiNumRows, _SysConfig._uiNumCols);*/
 		//_pSyn_Dut->PowerOff();
 
 	}
 	catch (Syn_Exception ex)
 	{
-		_pSyn_Dut->PowerOff();
+		//_pSyn_Dut->PowerOff();
 		LOG(ERROR) << "Error:Calibration is failed!";
 		_siteInfo._strErrorMessage = ex.GetDescription();
 		_siteInfo._TestState = TestFailed;
@@ -371,13 +370,13 @@ void Syn_Site::GetFingerprintImage()
 	try
 	{
 		_siteInfo._TestState = TestRunning;
-		_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
-		_pSyn_Dut->GetFingerprintImage(_pDutTestResult->_calibrationResults, &(_pDutTestResult->_acquireFpsResults.arr_ImageFPSFrame), _SysConfig._uiNumRows, _SysConfig._uiNumCols);
+		/*_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
+		_pSyn_Dut->GetFingerprintImage(_pDutTestResult->_calibrationResults, &(_pDutTestResult->_acquireFpsResults.arr_ImageFPSFrame), _SysConfig._uiNumRows, _SysConfig._uiNumCols);*/
 		//_pSyn_Dut->PowerOff();
 	}
 	catch (Syn_Exception ex)
 	{
-		_pSyn_Dut->PowerOff();
+		//_pSyn_Dut->PowerOff();
 		LOG(ERROR) << "Error:GetFingerprintImage is failed!";
 		_siteInfo._strErrorMessage = ex.GetDescription();
 		_siteInfo._TestState = TestFailed;
@@ -389,7 +388,7 @@ void Syn_Site::GetFingerprintImage()
 
 void Syn_Site::PowerOff()
 {
-	_pSyn_Dut->PowerOff();
+	//_pSyn_Dut->PowerOff();
 }
 
 void Syn_Site::GetSiteInfo(Syn_SiteInfo &oSyn_SiteInfo)

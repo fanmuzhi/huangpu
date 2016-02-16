@@ -20,11 +20,7 @@ int Syn_Calibrate::Excute()
 	{
 		return 0;
 	}
-	if (NULL == _pSyn_Module)
-	{
-		return 0;
-	}
-
+	
 	uint16_t numRows = _pSyn_Dut->_RowNumber;
 	uint16_t numCols = _pSyn_Dut->_ColumnNumber;
 
@@ -70,7 +66,7 @@ int Syn_Calibrate::Excute()
 	uint32_t nLnaIdx = _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nLnaIdx;
 	if (_pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, pLnaValues, MS0_SIZE) > 0)
 	{
-		_pSyn_Module->CopyToPrintPatch(&pLnaValues[4], _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch, numRows, nLnaIdx);	//skip LNA first 4 bytes 00 00 00 07
+		//CopyToPrintPatch(&pLnaValues[4], _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch, numRows, nLnaIdx);	//skip LNA first 4 bytes 00 00 00 07
 	}
 	else
 	{
@@ -79,7 +75,7 @@ int Syn_Calibrate::Excute()
 		FPSFrame *pLnaFrame = new FPSFrame();
 		CalculateLnaOffsetsBinarySearch(pLnaFrame, pLnaValues, numRows, numCols, _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults);
 		//CopyToPrintPatch(pLnaValues, &site.m_calibrationResults.m_pPrintPatch[4], GetSysConfig().GetNumRows(), site.m_calibrationInfo.m_nLnaIdx);
-		_pSyn_Module->CopyToPrintPatch(pLnaValues, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch, numRows, nLnaIdx);
+		CopyToPrintPatch(pLnaValues, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch, numRows, nLnaIdx);
 
 		delete pLnaFrame;
 		pLnaFrame = NULL;
@@ -93,7 +89,7 @@ int Syn_Calibrate::Excute()
 		int nPgaRecCount = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPP, pPgaValues, MS0_SIZE);
 		memcpy(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPGAOtpArray, &pPgaValues[4], NUM_PGA_OOPP_OTP_ROWS * numCols);
 
-		bSuccess = _pSyn_Module->CalculatePgaOffsets_OOPP(_pSyn_DutCtrl, numCols, numRows, _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults);
+		bSuccess = CalculatePgaOffsets_OOPP(numCols, numRows, _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults);
 		if (!bSuccess)
 		{
 			//site.PushBinCodes(BinCodes::m_sStages1Or2CalFail);

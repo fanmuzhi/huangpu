@@ -5,7 +5,6 @@ Syn_Metallica::Syn_Metallica()
 {
 }
 
-
 Syn_Metallica::~Syn_Metallica()
 {
 }
@@ -46,7 +45,7 @@ bool Syn_Metallica::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRows,
 
 	//Get user-specified number of images with the PGA offsets set to 0 (no offset).
 	for (int nFrame = 0; nFrame<nNumFrames; nFrame++)
-		GetFingerprintImage(calResult, &arFrames[nFrame], nNumRows, nNumCols);
+		//GetFingerprintImage(calResult, &arFrames[nFrame], nNumRows, nNumCols);
 	//Get the average.
 	for (int nRow = 0; nRow<nNumRows; nRow++)
 	{
@@ -66,7 +65,7 @@ bool Syn_Metallica::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRows,
 
 	//Get user-specified number of images with the PGA offsets set according to config. file.
 	for (int nFrame = 0; nFrame<nNumFrames; nFrame++)
-		GetFingerprintImage(calResult, &arFrames[nFrame], nNumRows, nNumCols);
+		//GetFingerprintImage(calResult, &arFrames[nFrame], nNumRows, nNumCols);
 	//Get the average.
 	for (int nRow = 0; nRow<nNumRows; nRow++)
 	{

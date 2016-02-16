@@ -15,7 +15,7 @@ void Syn_MetallicaModule::CopyToPrintPatch(uint8_t* pSrc, uint8_t* pPrintPatch, 
 	memcpy(&pPrintPatch[nPatchIdx], pSrc, nNumBytes);
 }
 
-bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(Syn_DutCtrl * &pDutCtrl, uint16_t numCols, uint16_t numRows, CalibrationInfo &calInfo, CalibrationResults &calResult)
+bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRows, CalibrationInfo &calInfo, CalibrationResults &calResult)
 {
 	//FPSFrame*			arFrames = ArrAayFPSFrame;//site.m_acquireFpsResults.m_arImagesWithoutStimulus;
 	//FPSFrame*			arFrames = calResult.arr_calibration;//site.m_acquireFpsResults.m_arImagesWithoutStimulus;

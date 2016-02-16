@@ -6,82 +6,83 @@
 
 Syn_FingerprintTest::Syn_FingerprintTest(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_TestStep(strName, pDutCtrl, pDut)
+, _pSyn_Module(NULL)
 {
+	switch (_pSyn_Dut->_eProjectType)
+	{
+		case Metallica:
+			_pSyn_Module = new Syn_MetallicaModule();
+			_pSyn_Module->SetDutCtrl(_pSyn_DutCtrl);
+			break;
+
+		case Viper1:
+			_pSyn_Module = new Syn_MetallicaModule();
+			_pSyn_Module->SetDutCtrl(_pSyn_DutCtrl);
+			break;
+			
+		case Viper2:
+			_pSyn_Module = new Syn_MetallicaModule();
+			_pSyn_Module->SetDutCtrl(_pSyn_DutCtrl);
+			break;
+
+		default:
+			_pSyn_Module = new Syn_MetallicaModule();
+			_pSyn_Module->SetDutCtrl(_pSyn_DutCtrl);
+			break;		
+	}
 }
 
 Syn_FingerprintTest::~Syn_FingerprintTest()
 {
+	if (NULL != _pSyn_Module)
+	{
+		delete _pSyn_Module;
+		_pSyn_Module = NULL;
+	}
 }
 
 void Syn_FingerprintTest::PowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep)
 {
-	if (NULL == _pSyn_DutCtrl)
+	if (NULL == _pSyn_Module)
 	{
 		return;
 	}
 
-	_pSyn_DutCtrl->SetVoltages(nPwrVdd, nPwrVio, nPwrVled, nPwrVddh);
-	::Sleep(50);
-
-	//If requested by the caller, disable the sensor's sleep feature.
-	if (bDisableSleep)
-	{
-		//Wake sensor from sleep mode.
-		_pSyn_DutCtrl->FpWaitDeviceReady();
-		//Configure sensor not to go back to sleep.
-		_pSyn_DutCtrl->FpDisableSleep();
-	}
+	_pSyn_Module->PowerOn(nPwrVdd, nPwrVio, nPwrVled, nPwrVddh, bDisableSleep);
 }
 
 void Syn_FingerprintTest::PowerOff()
 {
-	if (NULL == _pSyn_DutCtrl)
+	if (NULL == _pSyn_Module)
 	{
 		return;
 	}
 
-	try
+	_pSyn_Module->PowerOff();
+}
+
+void Syn_FingerprintTest::CopyToPrintPatch(uint8_t* pSrc, uint8_t* pPrintPatch, int nNumBytes, int nPatchIdx)
+{
+	if (NULL == _pSyn_Module)
 	{
-		_pSyn_DutCtrl->SetVoltages(0, 0, 0, 0);
-		::Sleep(50);
+		return;
 	}
-	catch (...)
+
+	_pSyn_Module->CopyToPrintPatch(pSrc, pPrintPatch, nNumBytes, nPatchIdx);
+}
+
+bool Syn_FingerprintTest::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRows, CalibrationInfo &calInfo, CalibrationResults &calResult)
+{
+	if (NULL == _pSyn_Module)
 	{
+		return false;
 	}
+
+	return _pSyn_Module->CalculatePgaOffsets_OOPP(numCols, numRows, calInfo, calResult);
 }
 
 void Syn_FingerprintTest::GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *pFrame, int nNumRows, int nNumCols)
 {
-	/*int			nRows = nNumRows;
-	int			nCols = nNumCols;
-
-	if (((nRows * nCols) % 64) == 0)
-		nRows++;
-
-	uint8_t *pImgBuff = new uint8_t[nCols * nRows];
-
-	_pSyn_DutCtrl->FpGetImage2(nRows, nCols, pImgBuff, pCalResults.m_nPrintPatchSize, pCalResults.m_pPrintPatch);
-
-
-	for (int i = 0; i < (nRows * nCols); i++)
-	{
-		pFrame->arr[i / nCols][i%nCols] = pImgBuff[i];
-	}
-
-	//for (int i = 0; i < nRows; i++)
-	for (int i = 0; i < nNumRows; i++)
-	{
-		std::string strTempRowValue;
-		for (int j = HEADER; j < nNumCols; j++)		// HEADER defined the first 8 cols to ignore.
-		{
-			strTempRowValue += to_string(pFrame->arr[i][j]) + std::string(",");
-		}
-	}
-
-	delete[] pImgBuff;
-	pImgBuff = NULL;
-	*/
-
 	if (NULL == _pSyn_Module)
 	{
 		return;
