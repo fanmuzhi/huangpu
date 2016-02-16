@@ -23,12 +23,10 @@ public:
 	Syn_TestStep(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
 		:_strName(strName), _pSyn_DutCtrl(pDutCtrl), _pSyn_Dut(pDut)
 	{
-		
 	}
 
 	virtual ~Syn_TestStep()
 	{
-		
 	}
 
 	string GetName()

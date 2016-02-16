@@ -84,6 +84,7 @@
     <ClInclude Include="Syn_Module.h" />
     <ClInclude Include="Syn_TestStep.h" />
     <ClInclude Include="Syn_TestStepFactory.h" />
+    <ClInclude Include="Syn_ViperModule.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Syn_Calibrate.cpp" />
@@ -91,6 +92,7 @@
     <ClCompile Include="Syn_MetallicaModule.cpp" />
     <ClCompile Include="Syn_Module.cpp" />
     <ClCompile Include="Syn_TestStepFactory.cpp" />
+    <ClCompile Include="Syn_ViperModule.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

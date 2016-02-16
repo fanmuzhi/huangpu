@@ -8,12 +8,6 @@ extern "C" {
 #include <string.h>
 }
 
-//enum Syn_ProjectType {
-//	Syn_Viper1 = 0x1000,
-//	Syn_Viper2,
-//	Syn_Metallica
-//};
-
 class Syn_Module
 {
 public:
@@ -22,12 +16,16 @@ public:
 
 	void SetDutCtrl(Syn_DutCtrl * &pDutCtrl);
 
-	//
+	//comman function
 	void PowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep);
 
 	void PowerOff();
 
 	void GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *pFrame, int nNumRows, int nNumCols);
+
+	void CalculateLnaOffsetsBinarySearch(FPSFrame* pFrame, uint8_t* pLnaValues, int nNumRows, int nNumCols, CalibrationInfo &CalInfo, CalibrationResults &CalResults);
+
+	void GetRowAverages(FPSFrame* pFrame, int nColBegin, int nColEnd, uint8_t* pAverages, int nNumRows);
 
 	//virtual function
 	virtual	void CopyToPrintPatch(uint8_t* pSrc, uint8_t* pPrintPatch, int nNumBytes, int nPatchIdx) = 0;
