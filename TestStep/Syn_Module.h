@@ -20,14 +20,14 @@ public:
 	Syn_Module();
 	virtual ~Syn_Module();
 
-	void GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *pFrame, int nNumRows, int nNumCols);
-
 	void SetDutCtrl(Syn_DutCtrl * &pDutCtrl);
 
 	//
 	void PowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep);
 
 	void PowerOff();
+
+	void GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *pFrame, int nNumRows, int nNumCols);
 
 	//virtual function
 	virtual	void CopyToPrintPatch(uint8_t* pSrc, uint8_t* pPrintPatch, int nNumBytes, int nPatchIdx) = 0;
