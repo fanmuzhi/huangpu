@@ -817,6 +817,7 @@ void FPS_TestExecutive::ImageCalibration()
 		return;
 	}
 
+	ui.CalibrationImageLabel->clear();
 
 	pSelectedSite->Calibration();
 
@@ -998,6 +999,8 @@ void FPS_TestExecutive::FigerprintImage(void * pSiteInfo)
 
 		//scale
 		image = image.scaled((columnNumber - HEADER) * 2, rowNumber * 2, Qt::KeepAspectRatio);
+		
+		ui.FingerprintImageLabel->clear();
 
 		ui.FingerprintImageLabel->setPixmap(QPixmap::fromImage(image));
 		ui.FingerprintImageLabel->adjustSize();
