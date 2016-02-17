@@ -22,14 +22,25 @@ INITIALIZE_EASYLOGGINGPP
 Syn_Site::Syn_Site()
 :_pSyn_Dut(NULL)
 ,_pSyn_DutCtrl(NULL)
-, _iSiteNumber(0)
-, _pDutTestResult(NULL)
-
-//, _pTempTestStep(NULL)
+,_iSiteNumber(0)
+//,_pDutTestResult(NULL)
 {
 	_siteInfo._TestState = TestReady;
 
-	_pDutTestResult = new Syn_DutTestResult();
+	//_pDutTestResult = new Syn_DutTestResult();
+}
+
+Syn_Site::Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath)
+:_pSyn_Dut(NULL)
+, _pSyn_DutCtrl(NULL)
+, _iSiteNumber(siteNumber)
+,_uiSerialNumber(deviceSerNumber)
+, _strConfigFilePath(strConfigFilePath)
+//, _pDutTestResult(NULL)
+,_sitState(Closed)
+,_stopFlag(false)
+{
+	this->Init();
 }
 
 Syn_Site::~Syn_Site()
@@ -46,19 +57,336 @@ Syn_Site::~Syn_Site()
 		_pSyn_DutCtrl = NULL;
 	}
 
-	if (NULL != _pDutTestResult)
+	/*if (NULL != _pDutTestResult)
 	{
 		delete _pDutTestResult;
 		_pDutTestResult = NULL;
-	}
-
-
-	/*if (NULL != _pTempTestStep)
-	{
-		delete _pTempTestStep;
-		_pTempTestStep = NULL;
 	}*/
 }
+
+uint32_t Syn_Site::Init()
+{
+	bool rc(false);
+
+	//_pDutTestResult = new Syn_DutTestResult();
+
+	//xml config file parse
+	Syn_SysConfigOperation *pConfigOperationInstance = NULL;
+	rc = Syn_SysConfigOperation::GetSysConfigInstance(_strConfigFilePath, pConfigOperationInstance);
+	if (!rc || NULL == pConfigOperationInstance)
+	{
+		LOG(ERROR) << "Error:Syn_Site::Init() - pConfigOperationInstance is NULL!" << endl;
+		return false;
+	}
+	
+	rc = pConfigOperationInstance->GetSysConfig(_SysConfig);
+	if (!rc)
+	{
+		LOG(ERROR) << "Error:Syn_Site::Init() - ::GetSysConfig is failed!" << endl;
+		return false;
+	}
+
+	//ProejctType:Viper1,Viper2,Metallica
+	std::string strProjectType(_SysConfig._strDutType);
+	ProjectType iProjectType;
+	if (std::string("Viper") == strProjectType || std::string("Viper1") == strProjectType)
+	{
+		iProjectType = Viper1;
+	}
+	else if (std::string("Viper2") == strProjectType)
+	{
+		iProjectType = Viper2;
+	}
+	else if (std::string("Metallica") == strProjectType)
+	{
+		iProjectType = Metallica;
+	}
+	else
+	{
+		iProjectType = Viper1;
+		LOG(ERROR) << "Error:Syn_Site::Init() - an unknown ProjectType,construct it to Viper1!";
+	}
+
+	//DutController:SPC,MPC04
+	std::string strDutController(_SysConfig._strDutController);
+	DutController iDutControllerType;
+	if (std::string("SPC") == strDutController)
+	{
+		iDutControllerType = Syn_SPC;
+	}
+	else if (std::string("MPC04") == strDutController)
+	{
+		iDutControllerType = Syn_MPC04;
+	}
+	else
+	{
+		iDutControllerType = Syn_SPC;
+		LOG(ERROR) << "Error:Syn_Site::Init() - an unknown DutController,construct it to SPC!";
+	}
+
+	//Create Dut
+	rc = Syn_Dut::CreateDutInstance(iProjectType, _pSyn_Dut);
+	if (!rc || NULL == _pSyn_Dut)
+	{
+		LOG(ERROR) << "Error:Syn_Site::Init() - CreateDutInstance is failed!";
+		return false;
+	}
+
+	//Create DutCtrl
+	rc = Syn_DutCtrl::CreateDutCtrlInstance(iDutControllerType, _uiSerialNumber, _pSyn_DutCtrl);
+	if (!rc || NULL == _pSyn_DutCtrl)
+	{
+		LOG(ERROR) << "Error:Syn_Site::Init() - CreateDutInstance is failed!";
+		return false;
+	}
+
+	_pSyn_Dut->SetPatchInfo(_SysConfig._listPatchInfo);
+
+	//fill info
+	//_pSyn_Dut->InitData(_SysConfig);
+
+	_siteInfo._uiSerialNumber = _uiSerialNumber;
+
+	if (pConfigOperationInstance)
+	{
+		delete pConfigOperationInstance;
+		pConfigOperationInstance = NULL;
+	}
+
+	_sitState = Idle;
+
+	return 1;
+}
+
+void Syn_Site::RunScript(Syn_Site * pSiteInstance, uint8_t scriptID)
+{
+	if (NULL == pSiteInstance)
+	{
+		return;
+	}
+
+	pSiteInstance->_pSyn_Dut->InitData(pSiteInstance->_SysConfig);
+
+	Syn_TestScript ExceteScriptInfo;
+	bool rc = pSiteInstance->GetTestScriptInfo(scriptID, ExceteScriptInfo);
+	if (!rc)
+	{
+		return;
+	}
+
+	unsigned int listSize = ExceteScriptInfo._listOfTestStep.size();
+	if (0 == listSize)
+	{
+		return;
+	}
+
+	bool errorFlag(false);
+	for (unsigned int i = 1; i <= listSize; i++)
+	{
+		if (!errorFlag&&pSiteInstance->_stopFlag)
+		{
+			break;
+		}
+		
+		Syn_TestStepInfo CurrentTestStepInfo = ExceteScriptInfo._listOfTestStep[i - 1];
+		Syn_TestStep *pTestStep = NULL;
+		rc = Syn_TestStepFactory::CreateTestStepInstance(CurrentTestStepInfo._strTestStepName, pSiteInstance->_pSyn_DutCtrl, pSiteInstance->_pSyn_Dut, pTestStep);
+		if (rc && NULL != pTestStep)
+		{
+			try
+			{
+				if (1 == i)
+				{
+					pTestStep->SetUp();
+				}
+
+				pTestStep->Excute();
+
+				if (listSize == i)
+				{
+					pTestStep->CleanUp();
+				}
+
+				delete pTestStep;
+				pTestStep = NULL;
+			}
+			catch (Syn_Exception ex)
+			{
+				//pTestStep->CleanUp();
+				//LOG(ERROR) << "Error:Calibration is failed!";
+				pSiteInstance->_siteInfo._strErrorMessage = ex.GetDescription();
+				errorFlag = true;
+				break;
+			}
+		}
+	}
+
+	pSiteInstance->_stopFlag = false;
+
+	if (errorFlag)
+	{
+		pSiteInstance->_sitState = Error;
+	}
+	else
+	{
+		pSiteInstance->_sitState = TestDataReady;
+	}
+}
+
+uint32_t Syn_Site::ExecuteScript(uint8_t scriptID)
+{
+	bool rc(false);
+
+	if (Idle != _sitState)
+	{
+		return false;
+	}
+
+	_sitState = Running;
+
+	std::thread siteThread(RunScript, this, scriptID);
+	siteThread.join();
+
+
+	/*_sitState = Running;
+
+	_pSyn_Dut->InitData(_SysConfig);
+
+	Syn_TestScript ExceteScriptInfo;
+	rc = GetTestScriptInfo(scriptID, ExceteScriptInfo);
+	if (!rc)
+	{
+		return false;
+	}
+
+	unsigned int listSize = ExceteScriptInfo._listOfTestStep.size();
+	if (0 == listSize)
+	{
+		return false;
+	}
+
+	for (unsigned int i = 1; i <= listSize; i++)
+	{
+		Syn_TestStepInfo CurrentTestStepInfo = ExceteScriptInfo._listOfTestStep[i - 1];
+		Syn_TestStep *pTestStep = NULL;
+		rc = Syn_TestStepFactory::CreateTestStepInstance(CurrentTestStepInfo._strTestStepName, _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
+		if (rc && NULL != pTestStep)
+		{
+			try
+			{
+				if (1 == i)
+				{
+					pTestStep->SetUp();
+				}
+
+				pTestStep->Excute();
+
+				if (listSize == i)
+				{
+					pTestStep->CleanUp();
+				}
+
+				delete pTestStep;
+				pTestStep = NULL;
+			}
+			catch (Syn_Exception ex)
+			{
+				//pTestStep->CleanUp();
+				//LOG(ERROR) << "Error:Calibration is failed!";
+				_siteInfo._strErrorMessage = ex.GetDescription();
+				continue;
+			}
+		}
+		
+	}*/
+
+
+	return true;
+}
+
+bool Syn_Site::GetTestScriptInfo(uint8_t scriptID, Syn_TestScript &oTestScriptInfo)
+{
+	std::string strScriptName;
+
+	switch (scriptID)
+	{
+		case 1:
+			strScriptName = "PreCheck";
+			break;
+		case 2:
+			strScriptName = "PatchTest";
+			break;
+		case 3:
+			strScriptName = "WithoutStimulus";
+			break;
+		case 4:
+			strScriptName = "WithStimulus";
+			break;
+		case 5:
+			strScriptName = "ImageQuality";
+			break;
+		case 6:
+			strScriptName = "PostCheck";
+			break;
+		default:
+			strScriptName = "PreCheck";
+			break;
+	}
+
+	bool IsExists(false);
+
+	for (size_t i = 1; i <= _SysConfig._listTestScript.size(); i++)
+	{
+		if (strScriptName == _SysConfig._listTestScript[i - 1]._strScriptName)
+		{
+			oTestScriptInfo = _SysConfig._listTestScript[i - 1];
+			IsExists = true;
+			break;
+		}
+	}
+		
+	return IsExists;
+}
+
+uint32_t Syn_Site::GetTestResult(uint16_t stepNo, Syn_DutTestResult &oTestResult)
+{
+	if (NULL != _pSyn_Dut)
+	{
+		if (NULL != _pSyn_Dut->_pSyn_DutTestResult)
+		{
+			oTestResult = *(_pSyn_Dut->_pSyn_DutTestResult);
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 bool Syn_Site::ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn_SysConfigInfo, Syn_Site * &opSyn_SiteInstance)
 {
@@ -328,22 +656,26 @@ void Syn_Site::ReadOTP()
 	//Fill
 	for (int i = 0; i < BS0_SIZE; i++)
 	{
-		(_DutTestInfo._otpInfo._BootSector0Array)[i] = arMS0[i];
+		//(_DutTestInfo._otpInfo._BootSector0Array)[i] = arMS0[i];
+		(_pSyn_Dut->_pSyn_DutTestInfo->_otpInfo._BootSector0Array)[i] = arMS0[i];
 	}
 
 	for (int i = 0; i < BS1_SIZE; i++)
 	{
-		(_DutTestInfo._otpInfo._BootSector1Array)[i] = arMS0[i + BS0_SIZE];
+		//(_DutTestInfo._otpInfo._BootSector1Array)[i] = arMS0[i + BS0_SIZE];
+		(_pSyn_Dut->_pSyn_DutTestInfo->_otpInfo._BootSector1Array)[i] = arMS0[i + BS0_SIZE];
 	}
 
 	for (int i = 0; i < MS0_SIZE; i++)
 	{
-		(_DutTestInfo._otpInfo._MainSector0Array)[i] = arMS0[i + BS0_SIZE + BS1_SIZE];
+		//(_DutTestInfo._otpInfo._MainSector0Array)[i] = arMS0[i + BS0_SIZE + BS1_SIZE];
+		(_pSyn_Dut->_pSyn_DutTestInfo->_otpInfo._MainSector0Array)[i] = arMS0[i + BS0_SIZE + BS1_SIZE];
 	}
 	
 	for (int i = 0; i < MS1_SIZE; i++)
 	{
-		(_DutTestInfo._otpInfo._MainSector1Array)[i] = arMS0[i + BS0_SIZE + BS1_SIZE + MS0_SIZE];
+		//(_DutTestInfo._otpInfo._MainSector1Array)[i] = arMS0[i + BS0_SIZE + BS1_SIZE + MS0_SIZE];
+		(_pSyn_Dut->_pSyn_DutTestInfo->_otpInfo._MainSector1Array)[i] = arMS0[i + BS0_SIZE + BS1_SIZE + MS0_SIZE];
 	}
 
 	_siteInfo._TestState = TestOK;

@@ -11,6 +11,7 @@
 #include <vector>
 #include <string>
 #include <time.h>
+#include <thread>
 
 //TestStep
 #include "Syn_TestStep.h"
@@ -22,6 +23,15 @@ extern "C" {
 };
 
 enum Syn_TestState{TestReady = 0xAEF0,TestRunning,TestOK,TestError,TestFailed};
+
+enum SiteState
+{
+	Idle = 0x8001,
+	TestDataReady,
+	Running,
+	Error,
+	Closed
+};
 
 struct Syn_SiteInfo
 {
@@ -36,7 +46,31 @@ class Syn_Site
 public:
 
 	Syn_Site();
+	Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath);
+
 	~Syn_Site();
+
+	uint32_t Init();
+
+	/*fixed scriptID and scriptName in GUI.
+	*/
+	uint32_t ExecuteScript(uint8_t scriptID);                              
+	bool GetTestScriptInfo(uint8_t scriptID, Syn_TestScript &oTestScriptInfo);
+
+	/*get number of test steps finished.
+	*/
+	//uint32_t GetNumSteps(uint16_t numSteps);                               
+	
+	/*get the test result of specified step number.
+	*/
+	uint32_t GetTestResult(uint16_t stepNo, Syn_DutTestResult &oTestResult);
+
+	//uint32_t Close();
+
+
+	static void RunScript(Syn_Site * pSiteInstance, uint8_t scriptID);
+
+
 
 	static bool ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn_SysConfigInfo, Syn_Site * &opSyn_SiteInstance);
 
@@ -71,7 +105,11 @@ public:
 
 	inline void SetSysConfig(Syn_SysConfig iSysConfig){ _SysConfig = iSysConfig; };
 
+	inline void Stop(){ _stopFlag = true; };
+
 private:
+
+	std::string _strConfigFilePath;
 
 	Syn_SysConfig _SysConfig;
 
@@ -84,10 +122,14 @@ private:
 	uint32_t _uiSerialNumber;
 
 	Syn_SiteInfo		_siteInfo;
-	Syn_DutTestInfo		_DutTestInfo;
-	Syn_DutTestResult   *_pDutTestResult;
+	//Syn_DutTestInfo		_DutTestInfo;
+	//Syn_DutTestResult   *_pDutTestResult;
 
 	//Syn_TestStep *_pTempTestStep;
+
+	SiteState _sitState;
+
+	bool _stopFlag;
 };
 
 #endif // SYN_SITE_H
