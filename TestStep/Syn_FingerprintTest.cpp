@@ -4,7 +4,7 @@
 #include "Syn_ViperModule.h"
 
 //windows
-#include "windows.h" 
+//#include "windows.h" 
 
 Syn_FingerprintTest::Syn_FingerprintTest(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_TestStep(strName, pDutCtrl, pDut)

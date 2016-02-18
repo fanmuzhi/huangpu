@@ -136,7 +136,7 @@ bool Syn_Site::ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn
 	opSyn_SiteInstance->_SysConfig = iSyn_SysConfigInfo;
 	opSyn_SiteInstance->_uiSerialNumber = iSerialNumber;
 
-	pSyn_Dut->SetPatchInfo(opSyn_SiteInstance->_SysConfig._listPatchInfo);
+	//pSyn_Dut->SetPatchInfo(opSyn_SiteInstance->_SysConfig._listPatchInfo);
 
 	//fill info
 	opSyn_SiteInstance->_pSyn_Dut->InitData(opSyn_SiteInstance->_SysConfig);

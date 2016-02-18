@@ -1,5 +1,5 @@
 //windows api
-#include "windows.h"
+//#include "windows.h"
 
 //Local
 #include "Syn_Dut.h"
@@ -10,7 +10,7 @@
 #include <iostream>
 
 //third-party
-#include "easylogging++.h"
+//#include "easylogging++.h"
 
 Syn_Dut::Syn_Dut()
 :_pSyn_DutTestInfo(NULL)
@@ -202,16 +202,13 @@ void Syn_Dut::InitData(Syn_SysConfig &sysConfig)
 		if (_pSyn_DutTestInfo->_acquireFpsInfo.m_nNumImagesWithoutStimulus > MAXFRAMES)
 		{
 			Syn_Exception ex(0);
-			//str.Format("The maximum of %d images without the stimulus has been exceeded.", MAXFRAMES);
-			ex.SetDescription("Timeout waiting for stimulus.");
+			ex.SetDescription("The maximum frames of images without the stimulus has been exceeded.");
 			throw(ex);
 		}
 		if (_pSyn_DutTestInfo->_acquireFpsInfo.m_nNumImagesWithStimulus > MAXFRAMES)
 		{
 			Syn_Exception ex(0);
-			//CString str;
-			//str.Format("The maximum of %d images with the stimulus has been exceeded.", MAXFRAMES);
-			ex.SetDescription("Timeout waiting for stimulus.");
+			ex.SetDescription("The maxinum frames of images with the stimulus has been exceeded.");
 			throw(ex);
 		}
 	}
@@ -272,7 +269,6 @@ void Syn_Dut::InitData(Syn_SysConfig &sysConfig)
 		if (0 != listOfArgValue[5].length())
 			_pSyn_DutTestInfo->_currentInfo.m_nImageAcqDigMin_uA = stoi(listOfArgValue[5]) * 1000;//(int)(_tstof((LPCTSTR)listOfArgValue[5].c_str()) * 1000);
 	}
-
 
 	//OpensShortsTest
 	_pSyn_DutTestInfo->_opensShortsInfo.m_bExecuted = false;

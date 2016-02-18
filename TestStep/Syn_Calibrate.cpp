@@ -21,7 +21,7 @@ int Syn_Calibrate::Excute()
 		return 0;
 	}
 
-	this->CheckDUTexists();
+	//CheckDUTexists();
 	
 	uint16_t numRows = _pSyn_Dut->_RowNumber;
 	uint16_t numCols = _pSyn_Dut->_ColumnNumber;
