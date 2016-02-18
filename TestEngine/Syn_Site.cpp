@@ -244,9 +244,14 @@ uint32_t Syn_Site::ExecuteScript(uint8_t scriptID)
 
 	_sitState = Running;
 
-	std::thread siteThread(RunScript, this, scriptID);
-	siteThread.join();
+	/*std::thread siteThread(RunScript, this, scriptID);
+	siteThread.join();*/
 
+	std::thread siteThread([&]()
+	{
+		this->RunScript(scriptID);
+	});
+	siteThread.join();
 
 	/*_sitState = Running;
 
@@ -302,6 +307,77 @@ uint32_t Syn_Site::ExecuteScript(uint8_t scriptID)
 
 
 	return true;
+}
+
+void Syn_Site::RunScript(uint8_t scriptID)
+{
+
+	_pSyn_Dut->InitData(_SysConfig);
+
+	Syn_TestScript ExceteScriptInfo;
+	bool rc = GetTestScriptInfo(scriptID, ExceteScriptInfo);
+	if (!rc)
+	{
+		return;
+	}
+
+	unsigned int listSize = ExceteScriptInfo._listOfTestStep.size();
+	if (0 == listSize)
+	{
+		return;
+	}
+
+	bool errorFlag(false);
+	for (unsigned int i = 1; i <= listSize; i++)
+	{
+		if (!errorFlag&&_stopFlag)
+		{
+			break;
+		}
+
+		Syn_TestStepInfo CurrentTestStepInfo = ExceteScriptInfo._listOfTestStep[i - 1];
+		Syn_TestStep *pTestStep = NULL;
+		rc = Syn_TestStepFactory::CreateTestStepInstance(CurrentTestStepInfo._strTestStepName, _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
+		if (rc && NULL != pTestStep)
+		{
+			try
+			{
+				if (1 == i)
+				{
+					pTestStep->SetUp();
+				}
+
+				pTestStep->Excute();
+
+				if (listSize == i)
+				{
+					pTestStep->CleanUp();
+				}
+
+				delete pTestStep;
+				pTestStep = NULL;
+			}
+			catch (Syn_Exception ex)
+			{
+				//pTestStep->CleanUp();
+				//LOG(ERROR) << "Error:Calibration is failed!";
+				_siteInfo._strErrorMessage = ex.GetDescription();
+				errorFlag = true;
+				break;
+			}
+		}
+	}
+
+	_stopFlag = false;
+
+	if (errorFlag)
+	{
+		_sitState = Error;
+	}
+	else
+	{
+		_sitState = TestDataReady;
+	}
 }
 
 bool Syn_Site::GetTestScriptInfo(uint8_t scriptID, Syn_TestScript &oTestScriptInfo)

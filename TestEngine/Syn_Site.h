@@ -70,6 +70,8 @@ public:
 
 	static void RunScript(Syn_Site * pSiteInstance, uint8_t scriptID);
 
+	void RunScript(uint8_t scriptID);
+
 
 
 	static bool ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn_SysConfigInfo, Syn_Site * &opSyn_SiteInstance);
