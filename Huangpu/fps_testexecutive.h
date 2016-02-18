@@ -78,7 +78,8 @@ public Q_SLOTS:
 	void ReadOTPForDutDump();
 
 	//Calibration,Fingerprint
-	void ImageCalibration();
+	void PushCablicationImageButton();
+	void ImageCalibration(void * pSiteInfo);
 	void PushFigerprintImageButton();
 	void FigerprintImage(void * pSiteInfo);
 
@@ -106,6 +107,9 @@ private:
 
 	//debug
 	Syn_ThreadDebug _threadForDebug;
+
+	Syn_ThreadDebug _threadForDebugCalibrate;
+
 };
 
 #endif // FPS_TESTEXECUTIVE_H

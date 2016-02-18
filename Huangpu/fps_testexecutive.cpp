@@ -51,10 +51,15 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	QObject::connect(ui.pushButtonReadOTP, SIGNAL(clicked()), this, SLOT(ReadOTPForDutDump()));
 
 	//Calibration,Fingerprint
-	QObject::connect(ui.ImageCalibrationPushButton, SIGNAL(clicked()), this, SLOT(ImageCalibration()));
+	QObject::connect(ui.ImageCalibrationPushButton, SIGNAL(clicked()), this, SLOT(PushCablicationImageButton()));
 	QObject::connect(ui.FigerprintImagePushButton, SIGNAL(clicked()), this, SLOT(PushFigerprintImageButton())); 
 
+	_threadForDebug._dbgType = getImageType;
 	QObject::connect(&(_threadForDebug), SIGNAL(send(void*)), this, SLOT(FigerprintImage(void*)));
+	_threadForDebugCalibrate._dbgType = calibrateType;
+	QObject::connect(&(_threadForDebugCalibrate), SIGNAL(send(void*)), this, SLOT(ImageCalibration(void*)));
+
+	
 }
 
 FPS_TestExecutive::~FPS_TestExecutive()
@@ -788,50 +793,91 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 	}
 }
 
-void FPS_TestExecutive::ImageCalibration()
+void FPS_TestExecutive::PushCablicationImageButton()
 {
 	int iSiteCurrentIndex = ui.comboBox->currentIndex();
-	if (iSiteCurrentIndex<0)
-	{
-		cout << "Error:FPS_TestExecutive::ImageCalibration() - iSiteCurrentIndex is less than 0!" << endl;
+	if (iSiteCurrentIndex < 0)
 		return;
-	}
 
 	size_t iSiteCounts = _ListOfSitePtr.size();
 	if (0 == iSiteCounts)
+		return;
+
+	if (iSiteCounts < iSiteCurrentIndex)
+		return;
+
+	if (_threadForDebugCalibrate.isRunning())
 	{
-		cout << "Error:FPS_TestExecutive::ImageCalibration() - iSiteCounts is 0!" << endl;
+		//_threadForDebugCalibrate.SetRunTag(false);
+
+		_ListOfSitePtr[iSiteCurrentIndex]->PowerOff();
+
+		//ui.FigerprintImagePushButton->setText(QString("Get Figerprint Image"));
+
+	}
+	else
+	{
+		_threadForDebugCalibrate.SetSite(_ListOfSitePtr[iSiteCurrentIndex]);
+		//_threadForDebugCalibrate.SetRunTag(true);
+		_threadForDebugCalibrate.start();
+
+		//ui.FigerprintImagePushButton->setText(QString("Stop"));
+
+	}
+}
+
+void FPS_TestExecutive::ImageCalibration(void * pSiteInfo)
+{
+	if (NULL == pSiteInfo)
+		return;
+
+	Syn_SiteInfo *pSyn_SiteInfo = static_cast<Syn_SiteInfo*>(pSiteInfo);
+	if (NULL == pSyn_SiteInfo)
+	{
+		cout << "FPS_TestExecutive::ImageCalibration() - pSyn_SiteInfo is NULL!" << endl;
 		return;
 	}
 
-	if (iSiteCurrentIndex > iSiteCounts)
-	{
-		cout << "Error:FPS_TestExecutive::ImageCalibration() - iSiteCounts is less than iSiteCurrentIndex!" << endl;
-		return;
-	}
+	int iSiteNumber = pSyn_SiteInfo->_uiSiteNumber;
 
-	Syn_Site *pSelectedSite = _ListOfSitePtr[iSiteCurrentIndex];
-	if (NULL == pSelectedSite)
-	{
-		cout << "Error:FPS_TestExecutive::ImageCalibration() - pSelectedSite is NULL!" << endl;
-		return;
-	}
-
-	ui.CalibrationImageLabel->clear();
-
-	pSelectedSite->Calibration();
-
-	Syn_SiteInfo SiteInfo;
+	//retrieve current site with sitenumber from sitelist
+	bool synFind(false);
 	Syn_DutTestInfo CurrentDutTestInfo;
 	Syn_DutTestResult *pCurrentDutTestResult;
 	Syn_SysConfig CurrentSysConfig;
-	pSelectedSite->GetSiteInfo(SiteInfo);
-	pSelectedSite->GetTestInfo(CurrentDutTestInfo);
-	pSelectedSite->GetTestResult(pCurrentDutTestResult);
-	pSelectedSite->GetSysConfig(CurrentSysConfig);
+	for (size_t i = 0; i < _ListOfSitePtr.size(); i++)
+	{
+		unsigned int iTempSiteNumber(0);
+		_ListOfSitePtr[i]->GetSiteNumber(iTempSiteNumber);
+		if (iSiteNumber == iTempSiteNumber)
+		{
+			_ListOfSitePtr[i]->GetTestInfo(CurrentDutTestInfo);
+			_ListOfSitePtr[i]->GetTestResult(pCurrentDutTestResult);
+			_ListOfSitePtr[i]->GetSysConfig(CurrentSysConfig);
+			synFind = true;
+			break;
+		}
+	}
 
-	std::string strErrorMsg = SiteInfo._strErrorMessage;
-	Syn_TestState TestResult = SiteInfo._TestState;
+	if (!synFind)
+		return;
+
+	ui.CalibrationImageLabel->clear();
+
+	//pSelectedSite->Calibration();
+	//pSelectedSite->ExecuteScript(3);
+
+	//Syn_SiteInfo SiteInfo;
+	//Syn_DutTestInfo CurrentDutTestInfo;
+	//Syn_DutTestResult *pCurrentDutTestResult;
+	//Syn_SysConfig CurrentSysConfig;
+	//pSelectedSite->GetSiteInfo(SiteInfo);
+	//pSelectedSite->GetTestInfo(CurrentDutTestInfo);
+	//pSelectedSite->GetTestResult(pCurrentDutTestResult);
+	//pSelectedSite->GetSysConfig(CurrentSysConfig);
+
+	std::string strErrorMsg = pSyn_SiteInfo->_strErrorMessage;
+	Syn_TestState TestResult = pSyn_SiteInfo->_TestState;
 	if (TestError == TestResult)
 	{
 		QMessageBox::critical(this, QString("Error"), QString("Select Site Calibration is error,reason is ") + QString::fromStdString(strErrorMsg));

@@ -45,7 +45,9 @@ class Syn_Site
 {
 public:
 
-	Syn_Site();
+	//Syn_Site();
+
+	/*need call Init function*/
 	Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath);
 
 	~Syn_Site();
@@ -69,9 +71,11 @@ public:
 
 	void RunScript(uint8_t scriptID);
 
+	inline void GetState(SiteState &oSiteState){ oSiteState = _sitState; };
 
 
-	static bool ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn_SysConfigInfo, Syn_Site * &opSyn_SiteInstance);
+
+	//static bool ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn_SysConfigInfo, Syn_Site * &opSyn_SiteInstance);
 
 	static bool ConstructSiteList(std::string strConfigFilePath, std::vector<Syn_Site*> &olistOfSyn_SiteInstance);
 
