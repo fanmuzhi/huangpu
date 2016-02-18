@@ -67,9 +67,6 @@ public:
 
 	//uint32_t Close();
 
-
-	static void RunScript(Syn_Site * pSiteInstance, uint8_t scriptID);
-
 	void RunScript(uint8_t scriptID);
 
 
