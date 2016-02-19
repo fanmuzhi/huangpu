@@ -29,5 +29,8 @@
     <ClInclude Include="Syn_SysConfigOperation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Syn_Info.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

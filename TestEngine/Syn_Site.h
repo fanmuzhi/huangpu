@@ -2,6 +2,9 @@
 #define SYN_SITE_H
 
 //local
+#include "Syn_Info.h"
+
+//DutUtls
 #include "Syn_Config.h"
 #include "Syn_Dut.h"
 #include "Syn_DutCtrl.h"
@@ -10,8 +13,8 @@
 #include <fstream>
 #include <vector>
 #include <string>
-#include <time.h>
-#include <thread>
+//#include <time.h>
+//#include <thread>
 
 //TestStep
 #include "Syn_TestStep.h"
@@ -74,6 +77,11 @@ public:
 	inline void GetState(SiteState &oSiteState){ oSiteState = _sitState; };
 
 
+	uint32_t GetRunTimeError(std::string &ostrErrorMessage)
+	{ 
+		ostrErrorMessage = _strErrorMessage;
+		return _uiErrorFlag;
+	};
 
 	//static bool ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn_SysConfigInfo, Syn_Site * &opSyn_SiteInstance);
 
@@ -125,14 +133,13 @@ private:
 	uint32_t _uiSerialNumber;
 
 	Syn_SiteInfo		_siteInfo;
-	//Syn_DutTestInfo		_DutTestInfo;
-	//Syn_DutTestResult   *_pDutTestResult;
-
-	//Syn_TestStep *_pTempTestStep;
 
 	SiteState _sitState;
 
 	bool _stopFlag;
+
+	uint32_t _uiErrorFlag;
+	std::string _strErrorMessage;
 };
 
 #endif // SYN_SITE_H
