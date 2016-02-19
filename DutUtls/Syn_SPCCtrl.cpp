@@ -6,7 +6,6 @@
 //MPC_API
 #include "MpcApiDll.h"
 #include "MpcApiError.h"
-#include "MPCErrors.h"
 
 //std
 #include <iostream>
@@ -19,7 +18,6 @@ bool Syn_SPCCtrl::_bDLLInitialized = false;
 Syn_SPCCtrl::Syn_SPCCtrl(uint32_t iSerialNumber)
 :Syn_DutCtrl(iSerialNumber)
 {
-	//syn_SerialNumber = iSerialNumber;
 	bool bResult = Init();
 	if (!bResult)
 	{
@@ -31,8 +29,12 @@ Syn_SPCCtrl::~Syn_SPCCtrl()
 {
 	if (NULL!=syn_DeviceHandle)
 	{
-		MPC_Disconnect(syn_DeviceHandle);
-		MPC_CloseMpcDeviceHandle(syn_DeviceHandle);
+		try
+		{
+			MPC_Disconnect(syn_DeviceHandle);
+			MPC_CloseMpcDeviceHandle(syn_DeviceHandle);
+		}
+		catch (...){}
 	}
 }
 
@@ -46,7 +48,7 @@ bool Syn_SPCCtrl::Init()
 
 	bool rc(false);
 
-	Syn_Exception Exception(err);
+	Syn_Exception ex(err);
 
 	//SetValidFlg(false);
 
@@ -74,33 +76,6 @@ bool Syn_SPCCtrl::Init()
 			syn_DeviceHandle = NULL;
 			LOG(ERROR) << "Cannot connect to MPC04: " << syn_SerialNumber;
 		}
-		else
-		{
-			err = MPC_GetIdentity(syn_DeviceHandle, &uiDevType, &uiRevBootLoader, &uiRevApplication, TIMEOUT);
-			if (err != MpcApiError::ERR_OK)
-			{
-				MPC_Disconnect(syn_DeviceHandle);
-				MPC_CloseMpcDeviceHandle(syn_DeviceHandle);
-				syn_DeviceHandle = NULL;
-				LOG(ERROR) << "Cannot Get Identity of MPC04: " << syn_SerialNumber;
-			}
-			else
-			{
-				//If necessary, update the firmware.
-				UpdateMPC04Firmware(uiDevType, uiRevBootLoader, uiRevApplication);
-				//SetValidFlg(true);
-
-				//Set the MPC04 voltages to zero.
-				err = MPC_SetVoltages(syn_DeviceHandle, 0, 0, 0, 0, TIMEOUT);
-				if (err != MpcApiError::ERR_OK)
-				{
-					//SetValidFlg(false);
-					MPC_Disconnect(syn_DeviceHandle);
-					MPC_CloseMpcDeviceHandle(syn_DeviceHandle);
-					syn_DeviceHandle = NULL;
-				}
-			}
-		}
 	}
 
 	//If this site has been assigned a serial number and the connection was NOT successful.
@@ -109,9 +84,9 @@ bool Syn_SPCCtrl::Init()
 		LOG(ERROR) << "syn_DeviceHandle is NULL";
 		rc = false;
 
-		Exception = err;
-		Exception.SetDescription("syn_DeviceHandle is NULL:" + to_string(syn_SerialNumber));
-		throw Exception;
+		ex.SetError(err);
+		ex.SetDescription("syn_DeviceHandle is NULL:" + to_string(syn_SerialNumber));
+		throw ex;
 	}
 
 	if (MPC_IsConnected(syn_DeviceHandle))
@@ -124,19 +99,19 @@ bool Syn_SPCCtrl::Init()
 			LOG(ERROR) << "MPC_SetPortFpSensor failed with MPC04: " << syn_SerialNumber;
 			rc = false;
 
-			Exception = err;
-			Exception.SetDescription("MPC_SetPortFpSensor failed with MPC04:" + to_string(syn_SerialNumber));
-			throw Exception;
+			ex.SetError(err);
+			ex.SetDescription("MPC_SetPortFpSensor failed with MPC04:" + to_string(syn_SerialNumber));
+			throw ex;
 		}
 		rc = true;
 	}
 	else
 	{
-		Exception = err;
-		Exception.SetDescription("MPC_IsConnected is failed:" + to_string(syn_SerialNumber));
-		throw Exception;
-		LOG(ERROR) << "MPC_IsConnected is failed!";
 		rc = false;
+		LOG(ERROR) << "MPC_IsConnected is failed!";
+		ex.SetError(err);
+		ex.SetDescription("MPC_IsConnected is failed:" + to_string(syn_SerialNumber));
+		throw ex;
 	}
 
 	return rc;
@@ -147,17 +122,19 @@ bool Syn_SPCCtrl::Init()
 //--------------------
 void Syn_SPCCtrl::FpRead(uint16_t endpoint, uint16_t command, uint8_t* pDst, int numBytes)
 {
-	uint16_t err;
+	uint32_t err;
 
 	err = MPC_FpRead(syn_DeviceHandle, endpoint, command, pDst, numBytes, TIMEOUT);
 	Syn_Exception ex(err);
 	if (MpcApiError::ERR_COMMUNICATION_FAILED == err)
 	{
+		ex.SetError(err);
 		ex.SetDescription("FpRead() Controller communication failure.");
 		throw ex;
 	}
 	else if (MpcApiError::ERR_OK != err)
 	{
+		ex.SetError(err);
 		ex.SetDescription("FpRead() DUT communication failure.");
 		throw ex;
 	}
@@ -168,17 +145,19 @@ void Syn_SPCCtrl::FpRead(uint16_t endpoint, uint16_t command, uint8_t* pDst, int
 //--------------------
 void Syn_SPCCtrl::FpWrite(uint16_t endpoint, uint16_t command, uint8_t* pSrc, int numBytes)
 {
-	uint16_t err;
+	uint32_t err;
 
 	err = MPC_FpWrite(syn_DeviceHandle, endpoint, command, pSrc, numBytes, TIMEOUT);
 	Syn_Exception ex(err);
 	if (MpcApiError::ERR_COMMUNICATION_FAILED == err)
 	{
+		ex.SetError(err);
 		ex.SetDescription("FpWrite() Controller communication failure.");
 		throw ex;
 	}
 	else if (MpcApiError::ERR_OK != err)
 	{
+		ex.SetError(err);
 		ex.SetDescription("FpWrite() DUT communication failure.");
 		throw ex;
 	}
@@ -187,15 +166,17 @@ void Syn_SPCCtrl::FpWrite(uint16_t endpoint, uint16_t command, uint8_t* pSrc, in
 
 void Syn_SPCCtrl::SetVoltages(uint16_t vdd_mV, uint16_t vio_mV, uint16_t vled_mV, uint16_t vddh_mV)
 {
-	uint16_t err = MPC_SetVoltages(syn_DeviceHandle, vdd_mV, vio_mV, vled_mV, vddh_mV, TIMEOUT);
+	uint32_t err = MPC_SetVoltages(syn_DeviceHandle, vdd_mV, vio_mV, vled_mV, vddh_mV, TIMEOUT);
 	Syn_Exception ex(err);
 	if (MpcApiError::ERR_COMMUNICATION_FAILED == err)
 	{
+		ex.SetError(err);
 		ex.SetDescription("SetVoltages() Controller communication failure.");
 		throw ex;
 	}
 	else if (MpcApiError::ERR_OK != err)
 	{
+		ex.SetError(err);
 		ex.SetDescription("SetVoltages() DUT communication failure.");
 		throw ex;
 	}
@@ -224,7 +205,7 @@ void Syn_SPCCtrl::FpWaitForCMDComplete()
 	}
 	if (timeout == 0)
 	{
-		Syn_Exception ex(0);
+		Syn_Exception ex(MpcApiError::ERR_COMMUNICATION_FAILED);
 		ex.SetDescription("FpWaitForCommandCompleteAndReturnErrorCode() DUT communication failure.");
 		throw ex;
 	}
@@ -242,7 +223,7 @@ void Syn_SPCCtrl::FpReadBuff(uint8_t *pDst, int numBytes)
 	}
 	if (timeout == 0)
 	{
-		Syn_Exception ex(0);
+		Syn_Exception ex(MpcApiError::ERR_COMMUNICATION_FAILED);
 		ex.SetDescription("FpReadBuff() DUT communication failure.");
 		throw ex;
 	}
@@ -263,8 +244,8 @@ void Syn_SPCCtrl::FpReadAndCheckStatus(uint16_t statusIgnore)
 
 	if (statusIgnore != returnValue && returnValue != 0)
 	{
-		Syn_Exception ex(0);
-		ex.SetDescription("FpReadAndCheckBuff() DUT return value unmatch.");
+		Syn_Exception ex(MpcApiError::ERR_COMMUNICATION_FAILED);
+		ex.SetDescription("FpReadAndCheckStatus() DUT return status: " + returnValue);
 		throw ex;
 	}
 }
@@ -284,7 +265,7 @@ void Syn_SPCCtrl::FpWaitDeviceReady()
 	}
 	if (timeout == 0)
 	{
-		Syn_Exception ex(0);
+		Syn_Exception ex(MpcApiError::ERR_COMMUNICATION_FAILED);
 		ex.SetDescription("FpWaitDeviceReady() Timeout waiting for sensor to wake.");
 		throw(ex);
 	}
@@ -334,17 +315,19 @@ void Syn_SPCCtrl::FpOtpRomRead(int section, int sector, uint8_t* pDst, int numBy
 {
 	LOG(INFO) << "OTPRom Read";
 
-	uint16_t err;
+	uint32_t err;
 
 	err = MPC_FpOtpRomRead(syn_DeviceHandle, section, sector, pDst, numBytes, TIMEOUT);
 	Syn_Exception ex(err);
 	if (err == MpcApiError::ERR_COMMUNICATION_FAILED)
 	{
+		ex.SetError(err);
 		ex.SetDescription("FpOtpRomRead() Controller communication failure.");
 		throw ex;
 	}
 	else if (err != MpcApiError::ERR_OK)
 	{
+		ex.SetError(err);
 		ex.SetDescription("FpOtpRomRead() DUT communication failure.");
 		throw ex;
 	}
@@ -354,16 +337,18 @@ void Syn_SPCCtrl::FpOtpRomWrite(int section, int sector, uint8_t* pDst, int numB
 {
 	LOG(INFO) << "OTPRom Write";
 
-	uint16_t err;
+	uint32_t err;
 	err = MPC_FpOtpRomWrite(syn_DeviceHandle, section, sector, pDst, numBytes, TIMEOUT);
 	Syn_Exception ex(err);
 	if (err == MpcApiError::ERR_COMMUNICATION_FAILED)
 	{
+		ex.SetError(err);
 		ex.SetDescription("FpOtpRomWrite() Controller communication failure.");
 		throw ex;
 	}
 	else if (err != MpcApiError::ERR_OK)
 	{
+		ex.SetError(err);
 		ex.SetDescription("FpOtpRomWrite() DUT communication failure.");
 		throw ex;
 	}
@@ -393,16 +378,18 @@ void Syn_SPCCtrl::FpGetVersion(uint8_t *pDst, int numBytes)
 {
 	LOG(INFO) << "Get Version";
 
-	uint16_t err;
+	uint32_t err;
 	err = MPC_FpGetVersion(syn_DeviceHandle, pDst, numBytes, TIMEOUT);
 	Syn_Exception ex(err);
 	if (err == MpcApiError::ERR_COMMUNICATION_FAILED)
 	{
+		ex.SetError(err);
 		ex.SetDescription("FpGetVersion() Controller communication failure.");
 		throw ex;
 	}
 	else if (err != MpcApiError::ERR_OK)
 	{
+		ex.SetError(err);
 		ex.SetDescription("FpGetVersion() DUT communication failure.");
 		throw ex;
 	}
@@ -437,7 +424,7 @@ void Syn_SPCCtrl::FpGetImage2(uint16_t nRows, uint16_t nCols, uint8_t *pDst, uin
 {
 	LOG(INFO) << "Get Image 2";
 	
-	uint16_t err;
+	uint32_t err;
 	this->FpNoop();
 
 	//err = MPC_FpGetImage2(syn_DeviceHandle, nRows, nCols, pDst, nBlobSize, pBlob, NULL, NULL, NULL, TIMEOUT);
@@ -445,11 +432,13 @@ void Syn_SPCCtrl::FpGetImage2(uint16_t nRows, uint16_t nCols, uint8_t *pDst, uin
 	Syn_Exception ex(err);
 	if (err == MpcApiError::ERR_COMMUNICATION_FAILED)
 	{
+		ex.SetError(err);
 		ex.SetDescription("FpGetImage2() Controller communication failure.");
 		throw ex;
 	}
 	else if (err != MpcApiError::ERR_OK)
 	{
+		ex.SetError(err);
 		ex.SetDescription("FpGetImage2() DUT communication failure.");
 		throw ex;
 	}
@@ -463,16 +452,18 @@ void Syn_SPCCtrl::GpioSetPinType(uint16_t portId, uint32_t mskPins, uint16_t pin
 {
 	LOG(INFO) << "GPIO Set Pin Type";
 
-	uint16_t err;
+	uint32_t err;
 	err = MPC_GpioSetPinType(syn_DeviceHandle, portId, mskPins, pinType, TIMEOUT);
 	Syn_Exception ex(err);
 	if (err == MpcApiError::ERR_COMMUNICATION_FAILED)
 	{
+		ex.SetError(err);
 		ex.SetDescription("GpioSetPinType() Controller communication failure.");
 		throw ex;
 	}
 	else if (err != MpcApiError::ERR_OK)
 	{
+		ex.SetError(err);
 		ex.SetDescription("GpioSetPinType() DUT communication failure.");
 		throw ex;
 	}
@@ -486,16 +477,18 @@ void Syn_SPCCtrl::GpioPinRead(uint16_t portID, uint32_t mskPins, uint32_t* pMskP
 {
 	LOG(INFO) << "Read from GPIO";
 
-	uint16_t err;
+	uint32_t err;
 	err = MPC_GpioPinRead(syn_DeviceHandle, portID, mskPins, pMskPinState, TIMEOUT);
 	Syn_Exception ex(err);
 	if (err == MpcApiError::ERR_COMMUNICATION_FAILED)
 	{
+		ex.SetError(err);
 		ex.SetDescription("GpioPinRead() Controller communication failure.");
 		throw ex;
 	}
 	else if (err != MpcApiError::ERR_OK)
 	{
+		ex.SetError(err);
 		ex.SetDescription("GpioPinRead() DUT communication failure.");
 		throw ex;
 	}
@@ -509,25 +502,29 @@ void Syn_SPCCtrl::GpioPinWrite(uint16_t portID, uint32_t mskPins, uint32_t mskPi
 {
 	LOG(INFO) << "Write GPIO";
 
-	uint16_t err;
+	uint32_t err;
 	err = MPC_GpioPinWrite(syn_DeviceHandle, portID, mskPins, mskPinState, TIMEOUT);
 	Syn_Exception ex(err);
 	if (err == MpcApiError::ERR_COMMUNICATION_FAILED)
 	{
+		ex.SetError(err);
 		ex.SetDescription("GpioPinWrite() Controller communication failure.");
 		throw ex;
 	}
 	else if (err != MpcApiError::ERR_OK)
 	{
+		ex.SetError(err);
 		ex.SetDescription("GpioPinWrite() DUT communication failure.");
 		throw ex;
 	}
 }
 
 
-void Syn_SPCCtrl::UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader, uint32_t nRevApplication)
+void Syn_SPCCtrl::UpdateMPC04Firmware()
 {
-	uint16_t error = 0;
+	uint32_t error = 0;
+	Syn_Exception ex(error);
+
 	std::string str("");
 	int fileAppRev = 0, fileBootloaderRev = 0, bSuccess = 0;
 	bool AppUpdate, BootloaderUpdate, sequenceFound;
@@ -535,6 +532,22 @@ void Syn_SPCCtrl::UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader
 	char filename_bootloader[200];
 	FILE *pFileApplication, *pFileBootloader;
 	char line[44] = { 0 };
+
+	uint16_t nDevType;
+	uint32_t nRevBootLoader;
+	uint32_t nRevApplication;
+	error = MPC_GetIdentity(syn_DeviceHandle, &nDevType, &nRevBootLoader, &nRevApplication, TIMEOUT);
+	if (error != MpcApiError::ERR_OK)
+	{
+		MPC_Disconnect(syn_DeviceHandle);
+		MPC_CloseMpcDeviceHandle(syn_DeviceHandle);
+		syn_DeviceHandle = NULL;
+		LOG(ERROR) << "Cannot Get Identity of MPC04: " << syn_SerialNumber;
+		ex.SetError(error);
+		ex.SetDescription("Cannot Get Identity of MPC04: " + syn_SerialNumber);
+		throw ex;
+	}
+	LOG(INFO) << "MPC04 BootLoader Rev: " << nRevBootLoader << " Application Rev: " << nRevApplication;
 
 	sprintf_s(filename_application, "Mpc04Application.hex");
 	sprintf_s(filename_bootloader, "Mpc04BootloaderLoader.hex");
@@ -564,9 +577,9 @@ void Syn_SPCCtrl::UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader
 					//str.Format("%c%c%c%c%c%c%c%c", line[15], line[16], line[13], line[14], line[11], line[12], line[9], line[10]);
 					str = line[15]+line[16]+line[13]+line[14]+line[11]+line[12]+line[9]+line[10];
 					sscanf(str.c_str(), "%x", &fileBootloaderRev);
+					LOG(INFO) << "File BootLoader Rev: " << fileBootloaderRev;
 					if (((int)nRevBootLoader != fileBootloaderRev))
 						BootloaderUpdate = true;
-
 					break;
 				}
 			}
@@ -586,10 +599,9 @@ void Syn_SPCCtrl::UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader
 					//str.Format("%c%c%c%c%c%c%c%c", line[15], line[16], line[13], line[14], line[11], line[12], line[9], line[10]);
 					str = line[15]+line[16]+line[13]+line[14]+line[11]+line[12]+line[9]+line[10];
 					sscanf(str.c_str(), "%x", &fileAppRev);
-
+					LOG(INFO) << "File Application Rev: " << fileAppRev;
 					if (((int)nRevApplication != fileAppRev))
 						AppUpdate = true;
-
 					break;
 				}
 			}
@@ -597,7 +609,11 @@ void Syn_SPCCtrl::UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader
 	}
 
 	uint32_t serNum;
-	MPC_GetDeviceSerialNumber(syn_DeviceHandle, &serNum);
+	error = MPC_GetDeviceSerialNumber(syn_DeviceHandle, &serNum);
+	if (error != MpcApiError::ERR_OK)
+	{
+		LOG(ERROR) << "Cannot get device serial number";
+	}
 	if ((BootloaderUpdate))
 	{
 		LOG(INFO) << "MPC04 Bootloader will be update,Please wait...: " << syn_SerialNumber;
@@ -607,21 +623,28 @@ void Syn_SPCCtrl::UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader
 
 		//Update the modless progress dialog.
 		uint32_t nPercent = 0;
-		while ((nPercent < 100) && (error == Errors::NO_MPC_ERROR))
+		while ((nPercent < 100) && (error == MpcApiError::ERR_OK))
 		{
 			error = MPC_GetUpdateFirmwareProgress(syn_DeviceHandle, &nPercent);
+			if (error != MpcApiError::ERR_OK)
+			{
+				LOG(ERROR) << "MPC04 Bootloader update failure!: " << syn_SerialNumber;
+				ex.SetError(error);
+				ex.SetDescription("MPC04 Bootloader update failure!: " + syn_SerialNumber);
+				throw ex;
+			}
 			LOG(INFO) << "MPC04 Bootloader update process: " << nPercent;
 		}
 
 		//Wait for the Update command to complete.
 		::Sleep(6000);
 
-		if (error == Errors::NO_MPC_ERROR)
+		if (error == MpcApiError::ERR_OK)
 			error = MPC_GetMpcDeviceHandle(serNum, &syn_DeviceHandle);
-		if (error == Errors::NO_MPC_ERROR)
+		if (error == MpcApiError::ERR_OK)
 			error = MPC_Connect(syn_DeviceHandle);
 
-		if (error == Errors::NO_MPC_ERROR)
+		if (error == MpcApiError::ERR_OK)
 			LOG(INFO) << "Bootloader update completed sucessfully!: " << syn_SerialNumber;
 		else
 			LOG(ERROR) << "Bootloader update failure!: " << syn_SerialNumber;
@@ -638,27 +661,37 @@ void Syn_SPCCtrl::UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader
 		//We want to wait until the download is started.
 		uint32_t nPercent;
 		error = MPC_GetUpdateFirmwareProgress(syn_DeviceHandle, &nPercent);
-		while ((nPercent == 100) && (error == Errors::NO_MPC_ERROR))
+		while ((nPercent == 100) && (error == MpcApiError::ERR_OK))
 			error = MPC_GetUpdateFirmwareProgress(syn_DeviceHandle, &nPercent);
 
 		//Update the modeless progress dialog.
-		while ((nPercent < 100) && (error == Errors::NO_MPC_ERROR))
+		while ((nPercent < 100) && (error == MpcApiError::ERR_OK))
 		{
 			error = MPC_GetUpdateFirmwareProgress(syn_DeviceHandle, &nPercent);
+			if (error != MpcApiError::ERR_OK)
+			{
+				LOG(ERROR) << "MPC04 Application update failure!: " << syn_SerialNumber;
+				ex.SetError(error);
+				ex.SetDescription("MPC04 Application update failure!: " + syn_SerialNumber);
+				throw ex;
+			}
 			LOG(INFO) << "MPC04 Firmware update process: " << nPercent;
 		}
 
 		//Wait for the Update command to complete.
 		::Sleep(8000);
 
-		if (error == Errors::NO_MPC_ERROR)
+		if (error == MpcApiError::ERR_OK)
 			error = MPC_GetMpcDeviceHandle(serNum, &syn_DeviceHandle);
-		if (error == Errors::NO_MPC_ERROR)
+		if (error == MpcApiError::ERR_OK)
 			error = MPC_Connect(syn_DeviceHandle);
 
-		if (error == Errors::NO_MPC_ERROR)
+		if (error == MpcApiError::ERR_OK)
 			LOG(INFO) << "Firmware update completed sucessfully!: " << syn_SerialNumber;
 		else
 			LOG(ERROR) << "Firmware update failure!: " << syn_SerialNumber;
+			ex.SetError(error);
+			ex.SetDescription("Firmware update failure!: " + syn_SerialNumber);
+			throw ex;
 	}
 }

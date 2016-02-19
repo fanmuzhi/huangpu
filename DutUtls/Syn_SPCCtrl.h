@@ -60,7 +60,7 @@ public:
 	virtual void GpioPinWrite(uint16_t portId, uint32_t mskPins, uint32_t pMskPinState);
 
 	//test
-	virtual void UpdateMPC04Firmware(uint16_t nDevType, uint32_t nRevBootLoader, uint32_t nRevApplication);
+	virtual void UpdateMPC04Firmware();
 
 protected:
 

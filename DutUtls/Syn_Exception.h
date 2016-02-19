@@ -11,11 +11,21 @@ class Syn_Exception : public exception
 {
 public:
 
-	Syn_Exception(uint16_t iErrorNum) :_uiErrorNumber(iErrorNum), _strDescription("")
+	Syn_Exception(uint32_t iErrorNum) :_uiErrorNumber(iErrorNum), _strDescription("")
 	{
 	}
-	Syn_Exception(uint16_t iErrorNum, std::string strDescription) :_uiErrorNumber(iErrorNum), _strDescription(strDescription)
+	Syn_Exception(uint32_t iErrorNum, std::string strDescription) :_uiErrorNumber(iErrorNum), _strDescription(strDescription)
 	{
+	}
+	
+	inline void SetError(const uint32_t error)
+	{
+		_uiErrorNumber = error;
+	}
+
+	inline uint32_t GetError()
+	{
+		return _uiErrorNumber;
 	}
 
 	inline void	SetDescription(const std::string &strDescription)
@@ -37,5 +47,5 @@ public:
 private:
 
 	string		_strDescription;
-	uint16_t	_uiErrorNumber;
+	uint32_t	_uiErrorNumber;
 };

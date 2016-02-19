@@ -12,7 +12,11 @@ fingerprint debug,delete at end
 //std
 #include <string>
 
+#include "windows.h"
+
 //Q_DECLARE_METATYPE(Syn_SiteInfo)
+
+enum debugType{ calibrateType,getImageType};
 
 class Syn_ThreadDebug : public QThread
 {
@@ -37,6 +41,9 @@ public:
 		_run = runTag;
 	};
 
+	//debug
+	debugType _dbgType;
+
 signals:
 
 	void send(void * TestResultValue);
@@ -50,13 +57,35 @@ protected:
 			return;
 		}
 
-		while (_run)
+		if (calibrateType == _dbgType)
 		{
-			_pSyn_Site->GetFingerprintImage();
+			_pSyn_Site->ExecuteScript(3);
 
-			_pSyn_Site->GetSiteInfo(_SiteInfo);
-			emit send((void*)&_SiteInfo);
+			while (true)
+			{
+				//sleep(200);
+				SiteState oState;
+				_pSyn_Site->GetState(oState);
+				if (TestDataReady == oState)
+				{
+					_pSyn_Site->GetSiteInfo(_SiteInfo);
+					emit send((void*)&_SiteInfo);
+					break;
+				}
+			}
 		}
+		else
+		{
+			while (_run)
+			{
+				_pSyn_Site->GetFingerprintImage();
+
+				_pSyn_Site->GetSiteInfo(_SiteInfo);
+				emit send((void*)&_SiteInfo);
+			}
+		}
+
+		
 	};
 
 private:

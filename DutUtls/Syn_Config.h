@@ -24,6 +24,13 @@ struct Syn_TestStepInfo
 	string _strTestStepArgs;
 };
 
+struct Syn_TestScript
+{
+	string _strScriptName;
+
+	vector<Syn_TestStepInfo> _listOfTestStep;
+};
+
 struct Syn_PatchInfo
 {
 	string    _strXepatchName;
@@ -76,7 +83,7 @@ struct Syn_SysConfig
 			_arrUserSpecifiedBS1[i] = original._arrUserSpecifiedBS1[i];
 		}
 
-		_listTestSteps.clear();
+		/*_listTestSteps.clear();
 		for (size_t i = 1; i <= original._listTestSteps.size(); i++)
 		{
 			Syn_TestStepInfo CurrentSyn_TestStepInfo;
@@ -85,7 +92,25 @@ struct Syn_SysConfig
 			CurrentSyn_TestStepInfo._strTestStepArgs = (original._listTestSteps)[i - 1]._strTestStepArgs;
 
 			_listTestSteps.push_back(CurrentSyn_TestStepInfo);
+		}*/
+		_listTestScript.clear();
+		for (size_t i = 1; i <= original._listTestScript.size(); i++)
+		{
+			Syn_TestScript CurrentTestScriptInfo;
+			CurrentTestScriptInfo._strScriptName = (original._listTestScript)[i - 1]._strScriptName;
+			for (size_t j = 1; j <= (original._listTestScript)[i - 1]._listOfTestStep.size(); j++)
+			{
+				Syn_TestStepInfo CurrentSyn_TestStepInfo;
+				CurrentSyn_TestStepInfo._strNodeName = ((original._listTestScript)[i - 1])._listOfTestStep[j - 1]._strNodeName;
+				CurrentSyn_TestStepInfo._strTestStepName = ((original._listTestScript)[i - 1])._listOfTestStep[j - 1]._strTestStepName;
+				CurrentSyn_TestStepInfo._strTestStepArgs = ((original._listTestScript)[i - 1])._listOfTestStep[j - 1]._strTestStepArgs;
+
+				CurrentTestScriptInfo._listOfTestStep.push_back(CurrentSyn_TestStepInfo);
+			}
+
+			_listTestScript.push_back(CurrentTestScriptInfo);
 		}
+
 		_listPatchInfo.clear();
 		for (size_t i = 1; i <= original._listPatchInfo.size(); i++)
 		{
@@ -126,13 +151,26 @@ struct Syn_SysConfig
 	bool GetSyn_TestStepInfo(const std::string &strTestStepName, std::string &ostrArgsValue)
 	{
 		bool IsExists(false);
-		for (size_t i = 1; i <= _listTestSteps.size(); i++)
+		/*for (size_t i = 1; i <= _listTestSteps.size(); i++)
 		{
 			if (strTestStepName == _listTestSteps[i - 1]._strTestStepName)
 			{
 				ostrArgsValue = _listTestSteps[i - 1]._strTestStepArgs;
 				IsExists = true;
 				break;
+			}
+		}*/
+
+		for (size_t i = 1; i <= _listTestScript.size(); i++)
+		{
+			for (size_t j = 1; j <= (_listTestScript[i - 1]._listOfTestStep).size(); j++)
+			{
+				if (strTestStepName == (_listTestScript[i - 1])._listOfTestStep[j - 1]._strTestStepName)
+				{
+					ostrArgsValue = (_listTestScript[i - 1])._listOfTestStep[j - 1]._strTestStepArgs;
+					IsExists = true;
+					return IsExists;
+				}
 			}
 		}
 
@@ -157,9 +195,11 @@ struct Syn_SysConfig
 	uint8_t			_arrUserSpecifiedBS0[BS0_SIZE];//BootSector0
 	uint8_t			_arrUserSpecifiedBS1[BS1_SIZE];//BootSector1
 
-	vector<Syn_TestStepInfo> _listTestSteps;//TestSeq
+	vector<Syn_TestScript>		_listTestScript;//TestSeq
+	//vector<Syn_TestStepInfo>	_listTestSteps;
+
 	
-	vector<Syn_PatchInfo>	 _listPatchInfo;//All patch
+	vector<Syn_PatchInfo>		_listPatchInfo;//All patch
 	
 };
 

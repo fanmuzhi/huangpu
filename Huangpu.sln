@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestStep", "TestStep\TestSt
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestEngine", "TestEngine\TestEngine.vcxproj", "{9E3AC4D9-AE3D-44D5-A514-2DFAA67C641E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ManagedTestEngine", "ManagedTestEngine\ManagedTestEngine.vcxproj", "{5C2059CE-3623-4A94-9CFA-84A8372F8CCD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -45,6 +47,12 @@ Global
 		{9E3AC4D9-AE3D-44D5-A514-2DFAA67C641E}.Release|Win32.ActiveCfg = Release|Win32
 		{9E3AC4D9-AE3D-44D5-A514-2DFAA67C641E}.Release|Win32.Build.0 = Release|Win32
 		{9E3AC4D9-AE3D-44D5-A514-2DFAA67C641E}.Release|x64.ActiveCfg = Release|Win32
+		{5C2059CE-3623-4A94-9CFA-84A8372F8CCD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5C2059CE-3623-4A94-9CFA-84A8372F8CCD}.Debug|Win32.Build.0 = Debug|Win32
+		{5C2059CE-3623-4A94-9CFA-84A8372F8CCD}.Debug|x64.ActiveCfg = Debug|Win32
+		{5C2059CE-3623-4A94-9CFA-84A8372F8CCD}.Release|Win32.ActiveCfg = Release|Win32
+		{5C2059CE-3623-4A94-9CFA-84A8372F8CCD}.Release|Win32.Build.0 = Release|Win32
+		{5C2059CE-3623-4A94-9CFA-84A8372F8CCD}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
