@@ -5,7 +5,6 @@
 
 extern "C" {
 #include "SYN_TestUtils.h"
-#include <string.h>
 }
 
 class Syn_Module

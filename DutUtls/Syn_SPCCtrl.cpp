@@ -42,9 +42,9 @@ bool Syn_SPCCtrl::Init()
 {
 	uint32_t	err(0);
 
-	uint16_t	uiDevType;
-	uint32_t	uiRevBootLoader;
-	uint32_t	uiRevApplication;
+	//uint16_t	uiDevType;
+	//uint32_t	uiRevBootLoader;
+	//uint32_t	uiRevApplication;
 
 	bool rc(false);
 

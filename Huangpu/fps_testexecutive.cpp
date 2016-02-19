@@ -806,6 +806,8 @@ void FPS_TestExecutive::PushCablicationImageButton()
 	if (iSiteCounts < iSiteCurrentIndex)
 		return;
 
+	ui.CalibrationImageLabel->hide();
+
 	if (_threadForDebugCalibrate.isRunning())
 	{
 		//_threadForDebugCalibrate.SetRunTag(false);
@@ -864,6 +866,9 @@ void FPS_TestExecutive::ImageCalibration(void * pSiteInfo)
 
 	ui.CalibrationImageLabel->clear();
 
+	ui.CalibrationImageLabel->show();
+
+
 	//pSelectedSite->Calibration();
 	//pSelectedSite->ExecuteScript(3);
 
@@ -920,33 +925,6 @@ void FPS_TestExecutive::ImageCalibration(void * pSiteInfo)
 
 void FPS_TestExecutive::PushFigerprintImageButton()
 {
-	//int iSiteCurrentIndex = ui.comboBox->currentIndex();
-	//if (iSiteCurrentIndex >= 0)
-	//{
-	//	size_t iSiteCounts = _ListOfSitePtr.size();
-	//	if (0 != iSiteCounts)
-	//	{
-	//		if (iSiteCurrentIndex <= iSiteCounts)
-	//		{
-	//			if (_SynThreadArray[iSiteCurrentIndex].isRunning())
-	//			{
-	//				_SynThreadArray[iSiteCurrentIndex].SetStopTag(true);
-
-	//				_ListOfSitePtr[iSiteCurrentIndex]->PowerOff();
-	//			}
-	//			else
-	//			{
-	//				_SynThreadArray[iSiteCurrentIndex].start();
-	//				_SynThreadArray[iSiteCurrentIndex].SetStopTag(false);
-
-	//				//ui.pushButtonRun->setText(QString("Stop"));
-
-	//			}
-	//		}
-	//	}
-	//}
-
-
 	int iSiteCurrentIndex = ui.comboBox->currentIndex();
 	if (iSiteCurrentIndex < 0)
 		return;

@@ -2,10 +2,12 @@
 #define SYN_SITE_H
 
 //local
+#include "Syn_Info.h"
+
+//DutUtls
 #include "Syn_Config.h"
 #include "Syn_Dut.h"
 #include "Syn_DutCtrl.h"
-
 
 //TestStep
 #include "Syn_TestStep.h"
@@ -67,6 +69,12 @@ public:
 	/*close this site*/
 	uint32_t Close();
 
+	uint32_t GetRunTimeError(std::string &ostrErrorMessage)
+	{ 
+		ostrErrorMessage = _strErrorMessage;
+		return _uiErrorFlag;
+	};
+
 	void RunScript(uint8_t scriptID);
 
 
@@ -115,16 +123,14 @@ private:
 	uint32_t _uiSerialNumber;
 
 	Syn_SiteInfo		_siteInfo;
-	//Syn_DutTestInfo		_DutTestInfo;
-	//Syn_DutTestResult   *_pDutTestResult;
-
-	//Syn_TestStep *_pTempTestStep;
 
 	SiteState _sitState;
 
 	bool _stopFlag;
 
 	bool GetTestScriptInfo(uint8_t scriptID, Syn_TestScript &oTestScriptInfo);
+	uint32_t _uiErrorFlag;
+	std::string _strErrorMessage;
 };
 
 #endif // SYN_SITE_H

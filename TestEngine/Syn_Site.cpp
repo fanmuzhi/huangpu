@@ -3,6 +3,9 @@
 #include "Syn_Exception.h"
 #include "Syn_SysConfigOperation.h"
 
+//std
+#include <thread>
+
 //MPC_API
 #include "MpcApiDll.h"
 //#include "MpcApiError.h"
@@ -24,26 +27,16 @@
 #include "easylogging++.h"
 INITIALIZE_EASYLOGGINGPP
 
-//Syn_Site::Syn_Site()
-//:_pSyn_Dut(NULL)
-//,_pSyn_DutCtrl(NULL)
-//,_iSiteNumber(0)
-////,_pDutTestResult(NULL)
-//{
-//	_siteInfo._TestState = TestReady;
-//
-//	//_pDutTestResult = new Syn_DutTestResult();
-//}
-
 Syn_Site::Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath)
 :_pSyn_Dut(NULL)
 , _pSyn_DutCtrl(NULL)
 , _iSiteNumber(siteNumber)
 ,_uiSerialNumber(deviceSerNumber)
 , _strConfigFilePath(strConfigFilePath)
-//, _pDutTestResult(NULL)
 ,_sitState(Closed)
 ,_stopFlag(false)
+,_uiErrorFlag(Syn_Info::Syn_OK)
+,_strErrorMessage("")
 {
 	//this->Init();
 }
@@ -61,19 +54,11 @@ Syn_Site::~Syn_Site()
 		delete _pSyn_DutCtrl;
 		_pSyn_DutCtrl = NULL;
 	}
-
-	/*if (NULL != _pDutTestResult)
-	{
-		delete _pDutTestResult;
-		_pDutTestResult = NULL;
-	}*/
 }
 
 uint32_t Syn_Site::Init()
 {
 	bool rc(false);
-
-	//_pDutTestResult = new Syn_DutTestResult();
 
 	//xml config file parse
 	Syn_SysConfigOperation *pConfigOperationInstance = NULL;
@@ -81,14 +66,14 @@ uint32_t Syn_Site::Init()
 	if (!rc || NULL == pConfigOperationInstance)
 	{
 		LOG(ERROR) << "Error:Syn_Site::Init() - pConfigOperationInstance is NULL!" << endl;
-		return false;
+		return Syn_Info::Syn_ConfigError;
 	}
 	
 	rc = pConfigOperationInstance->GetSysConfig(_SysConfig);
 	if (!rc)
 	{
 		LOG(ERROR) << "Error:Syn_Site::Init() - ::GetSysConfig is failed!" << endl;
-		return false;
+		return Syn_Info::Syn_ConfigError;
 	}
 
 	//ProejctType:Viper1,Viper2,Metallica
@@ -181,12 +166,10 @@ uint32_t Syn_Site::ExecuteScript(uint8_t scriptID)
 		this->RunScript(scriptID);
 	});
 
-
 	siteThread.detach();
-
 	//siteThread.join();
 
-	return true;
+	return Syn_Info::Syn_OK;
 }
 
 void Syn_Site::RunScript(uint8_t scriptID)
@@ -198,12 +181,14 @@ void Syn_Site::RunScript(uint8_t scriptID)
 	bool rc = GetTestScriptInfo(scriptID, ExceteScriptInfo);
 	if (!rc)
 	{
+		_uiErrorFlag = Syn_Info::Syn_ScriptConfigError;
 		return;
 	}
 
 	unsigned int listSize = ExceteScriptInfo._listOfTestStep.size();
 	if (0 == listSize)
 	{
+		_uiErrorFlag = Syn_Info::Syn_ScriptConfigError;
 		return;
 	}
 
@@ -243,6 +228,16 @@ void Syn_Site::RunScript(uint8_t scriptID)
 				//LOG(ERROR) << "Error:Calibration is failed!";
 				_siteInfo._strErrorMessage = ex.GetDescription();
 				errorFlag = true;
+
+				//_uiErrorFlag = Syn_Info::
+				_strErrorMessage = ex.GetDescription();
+				
+				break;
+			}
+			catch (...)
+			{
+				errorFlag = true;
+				_uiErrorFlag = Syn_Info::Syn_UnknownError;
 				break;
 			}
 		}
@@ -312,11 +307,11 @@ uint32_t Syn_Site::GetTestResult(uint16_t stepNo, Syn_DutTestResult &oTestResult
 		{
 			oTestResult = *(_pSyn_Dut->_pSyn_DutTestResult);
 
-			return true;
+			return Syn_Info::Syn_OK;
 		}
 	}
 
-	return false;
+	return Syn_Info::Syn_DutResultNull;
 }
 
 
@@ -335,99 +330,6 @@ uint32_t Syn_Site::GetTestResult(uint16_t stepNo, Syn_DutTestResult &oTestResult
 
 
 
-
-
-
-
-
-//
-//
-//
-//
-//bool Syn_Site::ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn_SysConfigInfo, Syn_Site * &opSyn_SiteInstance)
-//{
-//	bool rc(false);
-//
-//	opSyn_SiteInstance = NULL;
-//	if (0 == iSerialNumber)
-//	{
-//		LOG(ERROR) << "Error:Syn_Site::ConstructSiteInstance() - iSerialNumber is 0!" ;
-//		return false;
-//	}
-//
-//	//ProejctType:Viper1,Viper2,Metallica
-//	std::string strProjectType(iSyn_SysConfigInfo._strDutType);
-//	ProjectType iProjectType;
-//	if (std::string("Viper") == strProjectType || std::string("Viper1") == strProjectType)
-//	{
-//		iProjectType = Viper1;
-//	}
-//	else if (std::string("Viper2") == strProjectType)
-//	{
-//		iProjectType = Viper2;
-//	}
-//	else if (std::string("Metallica") == strProjectType)
-//	{
-//		iProjectType = Metallica;
-//	}
-//	else
-//	{
-//		iProjectType = Viper1;
-//		LOG(ERROR) << "Error:Syn_Site::ConstructSiteInstance() - an unknown ProjectType,construct it to Viper1!" ;
-//	}
-//
-//	//DutController:SPC,MPC04
-//	std::string strDutController(iSyn_SysConfigInfo._strDutController);
-//	DutController iDutControllerType;
-//	if (std::string("SPC") == strDutController)
-//	{
-//		iDutControllerType = Syn_SPC;
-//	}
-//	else if (std::string("MPC04") == strDutController)
-//	{
-//		iDutControllerType = Syn_MPC04;
-//	}
-//	else
-//	{
-//		iDutControllerType = Syn_SPC;
-//		LOG(ERROR) << "Error:Syn_Site::ConstructSiteInstance() - an unknown DutController,construct it to SPC!" ;
-//	}
-//
-//	//Create Dut
-//	Syn_Dut *pSyn_Dut = NULL;
-//	rc = Syn_Dut::CreateDutInstance(iProjectType, pSyn_Dut);
-//	if (!rc || NULL == pSyn_Dut)
-//	{
-//		LOG(ERROR) << "Error:Syn_Site::ConstructSiteInstance() - CreateDutInstance is failed!" ;
-//		return false;
-//	}
-//
-//	//Create DutCtrl
-//	Syn_DutCtrl *pSyn_DutCtrl = NULL;
-//	rc = Syn_DutCtrl::CreateDutCtrlInstance(iDutControllerType, iSerialNumber, pSyn_DutCtrl);
-//	if (!rc || NULL == pSyn_DutCtrl)
-//	{
-//		delete pSyn_Dut;
-//		pSyn_Dut = NULL;
-//		LOG(ERROR) << "Error:Syn_Site::ConstructSiteInstance() - CreateDutInstance is failed!" ;
-//		return false;
-//	}
-//
-//	opSyn_SiteInstance = new Syn_Site();
-//	opSyn_SiteInstance->Init();
-//	
-//	opSyn_SiteInstance->_pSyn_Dut = pSyn_Dut;
-//	opSyn_SiteInstance->_pSyn_DutCtrl = pSyn_DutCtrl;
-//	opSyn_SiteInstance->_SysConfig = iSyn_SysConfigInfo;
-//	opSyn_SiteInstance->_uiSerialNumber = iSerialNumber;
-//
-//	pSyn_Dut->SetPatchInfo(opSyn_SiteInstance->_SysConfig._listPatchInfo);
-//
-//	//fill info
-//	opSyn_SiteInstance->_pSyn_Dut->InitData(opSyn_SiteInstance->_SysConfig);
-//
-//	return true;
-//}
 
 bool Syn_Site::ConstructSiteList(std::string strConfigFilePath, std::vector<Syn_Site*> &olistOfSyn_SiteInstance)
 {
