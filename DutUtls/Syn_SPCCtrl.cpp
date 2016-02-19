@@ -10,6 +10,8 @@
 //std
 #include <iostream>
 
+//#include "afx.h"
+
 //third-party
 #include "easylogging++.h"
 
@@ -23,6 +25,8 @@ Syn_SPCCtrl::Syn_SPCCtrl(uint32_t iSerialNumber)
 	{
 		return;
 	}
+
+	//UpdateMPC04Firmware();
 }
 
 Syn_SPCCtrl::~Syn_SPCCtrl()
@@ -574,8 +578,18 @@ void Syn_SPCCtrl::UpdateMPC04Firmware()
 					fgets(line, sizeof line, pFileBootloader);
 					fgets(line, sizeof line, pFileBootloader);
 					sequenceFound = true;
-					//str.Format("%c%c%c%c%c%c%c%c", line[15], line[16], line[13], line[14], line[11], line[12], line[9], line[10]);
-					str = line[15]+line[16]+line[13]+line[14]+line[11]+line[12]+line[9]+line[10];
+					/*CString Tempstr;
+					Tempstr.Format("%c%c%c%c%c%c%c%c", line[15], line[16], line[13], line[14], line[11], line[12], line[9], line[10]);*/
+					//str = line[15] + line[16] + line[13] + line[14] + line[11] + line[12] + line[9] + line[10];
+					str = "";
+					str.push_back(line[15]); 
+					str.push_back(line[16]);
+					str.push_back(line[13]);
+					str.push_back(line[14]);
+					str.push_back(line[11]);
+					str.push_back(line[12]);
+					str.push_back(line[9]);
+					str.push_back(line[10]);
 					sscanf(str.c_str(), "%x", &fileBootloaderRev);
 					LOG(INFO) << "File BootLoader Rev: " << fileBootloaderRev;
 					if (((int)nRevBootLoader != fileBootloaderRev))
@@ -597,8 +611,17 @@ void Syn_SPCCtrl::UpdateMPC04Firmware()
 					fgets(line, sizeof line, pFileApplication);
 					sequenceFound = true;
 					//str.Format("%c%c%c%c%c%c%c%c", line[15], line[16], line[13], line[14], line[11], line[12], line[9], line[10]);
-					str = line[15]+line[16]+line[13]+line[14]+line[11]+line[12]+line[9]+line[10];
+					//str = line[15]+line[16]+line[13]+line[14]+line[11]+line[12]+line[9]+line[10];
 					sscanf(str.c_str(), "%x", &fileAppRev);
+					str = "";
+					str.push_back(line[15]);
+					str.push_back(line[16]);
+					str.push_back(line[13]);
+					str.push_back(line[14]);
+					str.push_back(line[11]);
+					str.push_back(line[12]);
+					str.push_back(line[9]);
+					str.push_back(line[10]);
 					LOG(INFO) << "File Application Rev: " << fileAppRev;
 					if (((int)nRevApplication != fileAppRev))
 						AppUpdate = true;

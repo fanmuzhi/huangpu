@@ -53,9 +53,11 @@ public:
 
 	/*get number of test steps finished.*/
 	uint32_t GetNumSteps(uint16_t numSteps);                               
+
+	uint32_t GetTestInfo(Syn_DutTestInfo &oTestInfo);
 	
 	/*get the test result of specified step number.*/
-	uint32_t GetTestResult(uint16_t stepNo, Syn_DutTestResult &oTestResult);
+	uint32_t GetTestResult(Syn_DutTestResult &oTestResult);
 
 	/*get site infomation of siteNo, state, etc.*/
 	void GetSiteInfo(Syn_SiteInfo &oSyn_SiteInfo);

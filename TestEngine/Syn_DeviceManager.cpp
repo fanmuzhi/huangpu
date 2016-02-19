@@ -11,6 +11,7 @@
 #include "easylogging++.h"
 
 Syn_DeviceManager::Syn_DeviceManager()
+:_pDeviceSerNumArray(NULL)
 {
 	_deviceCount = 0;
 }
@@ -18,6 +19,11 @@ Syn_DeviceManager::Syn_DeviceManager()
 
 Syn_DeviceManager::~Syn_DeviceManager()
 {
+	if (NULL != _pDeviceSerNumArray)
+	{
+		delete[] _pDeviceSerNumArray;
+		_pDeviceSerNumArray = NULL;
+	}
 }
 
 uint32_t Syn_DeviceManager::Open()
@@ -55,6 +61,9 @@ uint32_t Syn_DeviceManager::Open()
 
 void Syn_DeviceManager::GetSerialNumberList(std::vector<uint32_t> &serialNumberList)
 {
+	if (NULL == _pDeviceSerNumArray)
+		return;
+
 	for (auto i = 0; i < _deviceCount; i++)
 	{
 		serialNumberList.push_back(_pDeviceSerNumArray[i]);

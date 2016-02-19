@@ -535,7 +535,7 @@ void FPS_TestExecutive::ReceiveSiteInfoSlot(void * pSiteInfo)
 	//retrieve current site with sitenumber from sitelist
 	bool synFind(false);
 	Syn_DutTestInfo CurrentDutTestInfo;
-	Syn_DutTestResult *pCurrentDutTestResult;
+	Syn_DutTestResult pCurrentDutTestResult;
 	Syn_SysConfig CurrentSysConfig;
 	for (size_t i = 0; i < _ListOfSitePtr.size(); i++)
 	{
@@ -558,23 +558,23 @@ void FPS_TestExecutive::ReceiveSiteInfoSlot(void * pSiteInfo)
 	}
 
 	std::string strErrorMsg = pSyn_SiteInfo->_strErrorMessage;
-	Syn_TestState TestResult = pSyn_SiteInfo->_TestState;
-	if (TestError == TestResult)
-	{
-		//QMessageBox::critical(this, QString("Error"), strSerialNumber+QString(" Test is error,reason is ") + QString::fromStdString(strErrorMsg));
-		//ui.TestTableWidget->setItem->append(QString("Test is Error,reason is ") + QString::fromStdString(strErrorMsg));
-		strTestInfo += QString(" Serial Number:") + QString::number(pSyn_SiteInfo->_uiSiteNumber) + QString("\n");
-		ui.TestTableWidget->setItem(6, iColumnIndex, new QTableWidgetItem(strTestInfo));
-		return;
-	}
-	else if (TestFailed == TestResult)
-	{
-		//QMessageBox::critical(this, QString("Failed"), strSerialNumber + QString(" Test is failed,reason is ") + QString::fromStdString(strErrorMsg));
-		//ui.textBrowser->append(QString("Test is Failed,reason is ") + QString::fromStdString(strErrorMsg));
-		strTestInfo += QString("Test is Failed,reason is ") + QString::fromStdString(strErrorMsg) + QString("\n");
-		ui.TestTableWidget->setItem(6, iColumnIndex, new QTableWidgetItem(strTestInfo));
-		return;
-	}
+	//Syn_TestState TestResult = pSyn_SiteInfo->_TestState;
+	//if (TestError == TestResult)
+	//{
+	//	//QMessageBox::critical(this, QString("Error"), strSerialNumber+QString(" Test is error,reason is ") + QString::fromStdString(strErrorMsg));
+	//	//ui.TestTableWidget->setItem->append(QString("Test is Error,reason is ") + QString::fromStdString(strErrorMsg));
+	//	strTestInfo += QString(" Serial Number:") + QString::number(pSyn_SiteInfo->_uiSiteNumber) + QString("\n");
+	//	ui.TestTableWidget->setItem(6, iColumnIndex, new QTableWidgetItem(strTestInfo));
+	//	return;
+	//}
+	//else if (TestFailed == TestResult)
+	//{
+	//	//QMessageBox::critical(this, QString("Failed"), strSerialNumber + QString(" Test is failed,reason is ") + QString::fromStdString(strErrorMsg));
+	//	//ui.textBrowser->append(QString("Test is Failed,reason is ") + QString::fromStdString(strErrorMsg));
+	//	strTestInfo += QString("Test is Failed,reason is ") + QString::fromStdString(strErrorMsg) + QString("\n");
+	//	ui.TestTableWidget->setItem(6, iColumnIndex, new QTableWidgetItem(strTestInfo));
+	//	return;
+	//}
 
 	/*strTestInfo += QString("Boot Sector0:") + QString("\n");
 	for (int i = 1; i <= BS0_SIZE / 8; i++)
@@ -654,7 +654,7 @@ void FPS_TestExecutive::ReceiveSiteInfoSlot(void * pSiteInfo)
 	{
 		for (int n = 0; n < columnNumber; n++)
 		{
-			data[m*(columnNumber)+n] = (pCurrentDutTestResult->_calibrationResults).arr_ImageFPSFrame.arr[m][n];
+			data[m*(columnNumber)+n] = (pCurrentDutTestResult._calibrationResults).arr_ImageFPSFrame.arr[m][n];
 		}
 	}
 	QImage image((uchar*)data.constData(), columnNumber, rowNumber,QImage::Format_Indexed8);
@@ -845,7 +845,7 @@ void FPS_TestExecutive::ImageCalibration(void * pSiteInfo)
 	//retrieve current site with sitenumber from sitelist
 	bool synFind(false);
 	Syn_DutTestInfo CurrentDutTestInfo;
-	Syn_DutTestResult *pCurrentDutTestResult;
+	Syn_DutTestResult pCurrentDutTestResult;
 	Syn_SysConfig CurrentSysConfig;
 	for (size_t i = 0; i < _ListOfSitePtr.size(); i++)
 	{
@@ -882,7 +882,7 @@ void FPS_TestExecutive::ImageCalibration(void * pSiteInfo)
 	//pSelectedSite->GetSysConfig(CurrentSysConfig);
 
 	std::string strErrorMsg = pSyn_SiteInfo->_strErrorMessage;
-	Syn_TestState TestResult = pSyn_SiteInfo->_TestState;
+	/*Syn_TestState TestResult = pSyn_SiteInfo->_TestState;
 	if (TestError == TestResult)
 	{
 		QMessageBox::critical(this, QString("Error"), QString("Select Site Calibration is error,reason is ") + QString::fromStdString(strErrorMsg));
@@ -892,7 +892,7 @@ void FPS_TestExecutive::ImageCalibration(void * pSiteInfo)
 	{
 		QMessageBox::critical(this, QString("Failed"), QString(" Select Site Calibration is failed,reason is ") + QString::fromStdString(strErrorMsg));
 		return;
-	}
+	}*/
 
 	int rowNumber = CurrentSysConfig._uiNumRows;
 	int columnNumber = CurrentSysConfig._uiNumCols;
@@ -908,7 +908,7 @@ void FPS_TestExecutive::ImageCalibration(void * pSiteInfo)
 	{
 		for (int n = 0; n < columnNumber; n++)
 		{
-			data[m*(columnNumber)+n] = (pCurrentDutTestResult->_acquireFpsResults).arr_ImageFPSFrame.arr[m][n];
+			data[m*(columnNumber)+n] = (pCurrentDutTestResult._acquireFpsResults).arr_ImageFPSFrame.arr[m][n];
 		}
 	}
 	QImage image((uchar*)data.constData(), columnNumber, rowNumber,QImage::Format_Indexed8);
@@ -976,7 +976,7 @@ void FPS_TestExecutive::FigerprintImage(void * pSiteInfo)
 	//retrieve current site with sitenumber from sitelist
 	bool synFind(false);
 	Syn_DutTestInfo CurrentDutTestInfo;
-	Syn_DutTestResult *pCurrentDutTestResult;
+	Syn_DutTestResult pCurrentDutTestResult;
 	Syn_SysConfig CurrentSysConfig;
 	for (size_t i = 0; i < _ListOfSitePtr.size(); i++)
 	{
@@ -996,9 +996,9 @@ void FPS_TestExecutive::FigerprintImage(void * pSiteInfo)
 		return;
 
 	std::string strErrorMsg = pSyn_SiteInfo->_strErrorMessage;
-	Syn_TestState TestResult = pSyn_SiteInfo->_TestState;
-	if (TestError != TestResult&&TestFailed != TestResult)
-	{
+	//Syn_TestState TestResult = pSyn_SiteInfo->_TestState;
+	/*if (TestError != TestResult&&TestFailed != TestResult)
+	{*/
 
 		int rowNumber = CurrentSysConfig._uiNumRows;
 		int columnNumber = CurrentSysConfig._uiNumCols;
@@ -1014,7 +1014,7 @@ void FPS_TestExecutive::FigerprintImage(void * pSiteInfo)
 		{
 			for (int n = 0; n < columnNumber; n++)
 			{
-				data[m*(columnNumber)+n] = (pCurrentDutTestResult->_acquireFpsResults).arr_ImageFPSFrame.arr[m][n];
+				data[m*(columnNumber)+n] = (pCurrentDutTestResult._acquireFpsResults).arr_ImageFPSFrame.arr[m][n];
 			}
 		}
 		QImage image((uchar*)data.constData(), columnNumber, rowNumber, QImage::Format_Indexed8);
@@ -1029,7 +1029,7 @@ void FPS_TestExecutive::FigerprintImage(void * pSiteInfo)
 		ui.FingerprintImageLabel->setPixmap(QPixmap::fromImage(image));
 		ui.FingerprintImageLabel->adjustSize();
 		ui.FingerprintImageGroupBox->adjustSize();
-	}
+	//}
 }
 
 void FPS_TestExecutive::Display(uint8_t* pDst, int DstSize)

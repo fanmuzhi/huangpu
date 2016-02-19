@@ -299,7 +299,22 @@ bool Syn_Site::GetTestScriptInfo(uint8_t scriptID, Syn_TestScript &oTestScriptIn
 	return IsExists;
 }
 
-uint32_t Syn_Site::GetTestResult(uint16_t stepNo, Syn_DutTestResult &oTestResult)
+uint32_t Syn_Site::GetTestInfo(Syn_DutTestInfo &oTestInfo)
+{
+	if (NULL != _pSyn_Dut)
+	{
+		if (NULL != _pSyn_Dut->_pSyn_DutTestInfo)
+		{
+			oTestInfo = *(_pSyn_Dut->_pSyn_DutTestInfo);
+
+			return Syn_Info::Syn_OK;
+		}
+	}
+
+	return Syn_Info::Syn_DutInfoNull;
+}
+
+uint32_t Syn_Site::GetTestResult(Syn_DutTestResult &oTestResult)
 {
 	if (NULL != _pSyn_Dut)
 	{
@@ -314,7 +329,10 @@ uint32_t Syn_Site::GetTestResult(uint16_t stepNo, Syn_DutTestResult &oTestResult
 	return Syn_Info::Syn_DutResultNull;
 }
 
-
+void Syn_Site::GetSiteInfo(Syn_SiteInfo &oSyn_SiteInfo)
+{
+	oSyn_SiteInfo = _siteInfo;
+}
 
 
 
@@ -436,7 +454,7 @@ bool Syn_Site::RegisterLoggingConfig()
 //	if (NULL == _pSyn_Dut)
 //	{
 //		LOG(ERROR) << "Error:Syn_Site::Run() - _pSyn_Dut is NULL!" << endl;
-//		_siteInfo._TestState = TestError;
+//		
 //		return;
 //	}
 //
@@ -455,7 +473,6 @@ bool Syn_Site::RegisterLoggingConfig()
 //		//_pSyn_Dut->PowerOff();
 //		LOG(ERROR) << "Error:ReadOTP is failed!" << std::endl;
 //		_siteInfo._strErrorMessage = ex.GetDescription();
-//		_siteInfo._TestState = TestFailed;
 //
 //		return;
 //	}
@@ -468,7 +485,6 @@ bool Syn_Site::RegisterLoggingConfig()
 //{
 //	try
 //	{
-//		_siteInfo._TestState = TestRunning;
 //		/*_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
 //		_pSyn_Dut->GetDutCtrl()->FpGetVersion(_DutTestInfo._getVerInfo._GerVerArray, VERSION_SIZE);
 //		_pSyn_Dut->PowerOff();*/
@@ -479,11 +495,8 @@ bool Syn_Site::RegisterLoggingConfig()
 //		//_pSyn_Dut->PowerOff();
 //		LOG(ERROR) << "Error:GetVersion is failed!" ;
 //		_siteInfo._strErrorMessage = ex.GetDescription();
-//		_siteInfo._TestState = TestFailed;
 //		return;
 //	}
-//
-//	_siteInfo._TestState = TestOK;
 //}
 //
 //
@@ -492,14 +505,12 @@ bool Syn_Site::RegisterLoggingConfig()
 //	if (NULL == _pSyn_Dut)
 //	{
 //		LOG(ERROR) << "Error:Syn_Site::Run() - _pSyn_Dut is NULL!" << endl;
-//		_siteInfo._TestState = TestError;
 //		return;
 //	}
 //	uint8_t arMS0[BS0_SIZE + BS1_SIZE + MS0_SIZE + MS1_SIZE] = { 0 };
 //	int iSize(BS0_SIZE + BS1_SIZE + MS0_SIZE + MS1_SIZE);
 //	try
 //	{
-//		_siteInfo._TestState = TestRunning;
 //		/*_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
 //		_pSyn_Dut->ReadOTP(arMS0, iSize);
 //		_pSyn_Dut->PowerOff();*/
@@ -510,7 +521,6 @@ bool Syn_Site::RegisterLoggingConfig()
 //		//_pSyn_Dut->PowerOff();
 //		LOG(ERROR) << "Error:ReadOTP is failed!" << std::endl;
 //		_siteInfo._strErrorMessage = ex.GetDescription();
-//		_siteInfo._TestState = TestFailed;
 //
 //		return;
 //	}
@@ -540,7 +550,6 @@ bool Syn_Site::RegisterLoggingConfig()
 //		(_pSyn_Dut->_pSyn_DutTestInfo->_otpInfo._MainSector1Array)[i] = arMS0[i + BS0_SIZE + BS1_SIZE + MS0_SIZE];
 //	}
 //
-//	_siteInfo._TestState = TestOK;
 //}
 //
 //
@@ -563,7 +572,6 @@ bool Syn_Site::RegisterLoggingConfig()
 //
 //	try
 //	{
-//		_siteInfo._TestState = TestRunning;
 //		/*_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
 //		_pSyn_Dut->CheckDUTexists();
 //		_pSyn_Dut->Calibration(_SysConfig._uiNumCols, _SysConfig._uiNumRows, _DutTestInfo._calibrationInfo, _pDutTestResult->_calibrationResults);
@@ -582,11 +590,8 @@ bool Syn_Site::RegisterLoggingConfig()
 //		//_pSyn_Dut->PowerOff();
 //		LOG(ERROR) << "Error:Calibration is failed!";
 //		_siteInfo._strErrorMessage = ex.GetDescription();
-//		_siteInfo._TestState = TestFailed;
 //		return;
 //	}
-//
-//	_siteInfo._TestState = TestOK;
 //}
 //
 //void Syn_Site::GetFingerprintImage()
@@ -607,7 +612,6 @@ bool Syn_Site::RegisterLoggingConfig()
 //
 //	try
 //	{
-//		_siteInfo._TestState = TestRunning;
 //		/*_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
 //		_pSyn_Dut->GetFingerprintImage(_pDutTestResult->_calibrationResults, &(_pDutTestResult->_acquireFpsResults.arr_ImageFPSFrame), _SysConfig._uiNumRows, _SysConfig._uiNumCols);*/
 //		//_pSyn_Dut->PowerOff();
@@ -623,11 +627,8 @@ bool Syn_Site::RegisterLoggingConfig()
 //		//_pSyn_Dut->PowerOff();
 //		LOG(ERROR) << "Error:GetFingerprintImage is failed!";
 //		_siteInfo._strErrorMessage = ex.GetDescription();
-//		_siteInfo._TestState = TestFailed;
 //		return;
 //	}
-//
-//	_siteInfo._TestState = TestOK;
 //}
 //
 //void Syn_Site::PowerOff()
@@ -658,14 +659,14 @@ void Syn_Site::GetSiteInfo(Syn_SiteInfo &oSyn_SiteInfo)
 
 void Syn_Site::GetTestInfo(Syn_DutTestInfo &oSyn_DutTestInfo)
 {
-	//oSyn_DutTestInfo = _DutTestInfo;
+	oSyn_DutTestInfo = _DutTestInfo;
 
 	oSyn_DutTestInfo = *(_pSyn_Dut->_pSyn_DutTestInfo);
 }
 
 void Syn_Site::GetTestResult(Syn_DutTestResult * &opSyn_DutTestResult)
 {
-	//opSyn_DutTestResult = _pDutTestResult;
+	opSyn_DutTestResult = _pDutTestResult;
 
 	opSyn_DutTestResult = _pSyn_Dut->_pSyn_DutTestResult;
 
