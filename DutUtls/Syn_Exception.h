@@ -16,6 +16,8 @@ struct Syn_ExceptionCode
 	static const uint32_t Syn_DutInfoNull = 0x1001;
 	static const uint32_t Syn_DutResultNull = 0x1002;
 	static const uint32_t Syn_DutNull = 0x1003;
+	static const uint32_t Syn_DutCtrlNull = 0x1004;
+	static const uint32_t Syn_DutPatchError = 0x1005;
 
 	static const uint32_t Syn_ConfigError = 0x2000;
 	static const uint32_t Syn_ScriptConfigError = 0x2001;
@@ -64,7 +66,6 @@ struct Syn_ExceptionCode
 
 	static const uint32_t Syn_SiteStateError = 0x4003;
 	static const uint32_t Syn_SiteThread = 0x4004;
-
 };
 
 class Syn_Exception : public exception

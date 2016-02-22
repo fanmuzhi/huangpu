@@ -3,6 +3,9 @@
 //Local
 #include "Syn_TestStep.h"
 
+//
+#include "Syn_Exception.h"
+
 class Syn_FingerprintTest :public Syn_TestStep
 {
 

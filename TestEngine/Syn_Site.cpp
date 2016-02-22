@@ -251,6 +251,7 @@ void Syn_Site::RunScript(uint8_t scriptID)
 
 				//_uiErrorFlag = Syn_Info::
 				_strErrorMessage = ex.GetDescription();
+				_uiErrorFlag = ex.GetError();
 
 				delete pTestStep;
 				pTestStep = NULL;

@@ -12,12 +12,19 @@ Syn_Calibrate::~Syn_Calibrate()
 
 void Syn_Calibrate::Excute()
 {
+	Syn_Exception ex(0);
 	if (NULL == _pSyn_DutCtrl)
 	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutCtrlNull);
+		ex.SetDescription("_pSyn_DutCtrl is NULL!");
+		throw ex;
 		return;
 	}
 	if (NULL == _pSyn_Dut)
 	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutNull);
+		ex.SetDescription("_pSyn_Dut is NULL!");
+		throw ex;
 		return;
 	}
 
@@ -30,6 +37,9 @@ void Syn_Calibrate::Excute()
 	Syn_PatchInfo PrintFileInfo;
 	if (!_pSyn_Dut->FindPatch("PrintFile", PrintFileInfo))
 	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+		ex.SetDescription("PrintFile Patch is NULL!");
+		throw ex;
 		return;
 	}
 
@@ -56,6 +66,9 @@ void Syn_Calibrate::Excute()
 	Syn_PatchInfo ImgAcqPatchInfo;
 	if (!_pSyn_Dut->FindPatch("ImageAcqPatch", ImgAcqPatchInfo))
 	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+		ex.SetDescription("ImageAcqPatch Patch is NULL!");
+		throw ex;
 		return;
 	}
 	_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);

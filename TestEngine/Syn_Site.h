@@ -76,11 +76,6 @@ public:
 		return _uiErrorFlag;
 	};
 
-	void RunScript(uint8_t scriptID);
-
-
-
-
 	//static bool ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn_SysConfigInfo, Syn_Site * &opSyn_SiteInstance);
 
 	static bool ConstructSiteList(std::string strConfigFilePath, std::vector<Syn_Site*> &olistOfSyn_SiteInstance);
@@ -125,9 +120,14 @@ private:
 
 	bool _stopFlag;
 
-	bool GetTestScriptInfo(uint8_t scriptID, Syn_TestScript &oTestScriptInfo);
 	uint32_t _uiErrorFlag;
 	std::string _strErrorMessage;
+
+private:
+
+	void RunScript(uint8_t scriptID);
+	
+	bool GetTestScriptInfo(uint8_t scriptID, Syn_TestScript &oTestScriptInfo);
 };
 
 

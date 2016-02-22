@@ -30,7 +30,7 @@ uint32_t Syn_SysConfigOperation::GetSysConfigInstance(std::string strConfigFileP
 	if (-1 == _access(strConfigFilePath.c_str(), 4))
 	{
 		LOG(ERROR) << "Error:Syn_SysConfigOperation::GetSysConfigInstance() - strConfigFilePath is not exists!" << endl;
-		return NULL;
+		return Syn_ExceptionCode::Syn_ConfigError;
 	}
 
 	opSyn_SysConfigOperationInstance = new Syn_SysConfigOperation(strConfigFilePath);
@@ -42,10 +42,10 @@ uint32_t Syn_SysConfigOperation::GetSysConfigInstance(std::string strConfigFileP
 		delete opSyn_SysConfigOperationInstance;
 		opSyn_SysConfigOperationInstance = NULL;
 		LOG(ERROR) << "Error:Syn_SysConfigOperation::GetSysConfigInstance() - ::Parse is failed!" << endl;
-		return false;
+		return Syn_ExceptionCode::Syn_ConfigError;
 	}
 
-	return true;
+	return Syn_ExceptionCode::Syn_OK;
 }
 
 bool Syn_SysConfigOperation::Parse()
@@ -70,7 +70,7 @@ uint32_t Syn_SysConfigOperation::GetSysConfig(Syn_SysConfig &oSyn_SysConfig)
 
 	if (NULL == _rapidxmlrootNode)
 	{
-		return false;
+		return Syn_ExceptionCode::Syn_ConfigError;
 	}
 
 	unsigned int SysConfigJudgeTag(0);
