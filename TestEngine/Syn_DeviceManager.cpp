@@ -73,21 +73,26 @@ void Syn_DeviceManager::GetSerialNumberList(std::vector<uint32_t> &serialNumberL
 uint32_t Syn_DeviceManager::UpdateFirmware()
 {
 	uint32_t err = 0;
-	try
+
+	if (NULL != _pDeviceSerNumArray)
 	{
-		for (auto i = 0; i < _deviceCount; i++)
+		try
 		{
-			Syn_DutCtrl * _pSyn_DutCtrl; 
-			Syn_DutCtrl::CreateDutCtrlInstance(DutController::Syn_MPC04, _pDeviceSerNumArray[0], _pSyn_DutCtrl);
-			_pSyn_DutCtrl->UpdateMPC04Firmware();
-			delete _pSyn_DutCtrl;
-			_pSyn_DutCtrl = NULL;
+			for (auto i = 0; i < _deviceCount; i++)
+			{
+				Syn_DutCtrl * _pSyn_DutCtrl = NULL;
+				Syn_DutCtrl::CreateDutCtrlInstance(DutController::Syn_MPC04, _pDeviceSerNumArray[i], _pSyn_DutCtrl);
+				_pSyn_DutCtrl->UpdateMPC04Firmware();
+				delete _pSyn_DutCtrl;
+				_pSyn_DutCtrl = NULL;
+			}
+		}
+		catch (Syn_Exception ex)
+		{
+			err = ex.GetError();
 		}
 	}
-	catch (Syn_Exception ex)
-	{
-		err = ex.GetError();
-	}
+	
 	return err;
 }
 

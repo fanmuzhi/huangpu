@@ -128,12 +128,12 @@ void Syn_Calibrate::Excute()
 		}
 	}
 
-	FPSFrame *pFrame = new FPSFrame();
+	/*FPSFrame *pFrame = new FPSFrame();
 	GetFingerprintImage(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults, pFrame, numRows, numCols);
-	_pSyn_Dut->_pSyn_DutTestResult->_acquireFpsResults.arr_ImageFPSFrame = *pFrame;
-	/*delete pFrame;
+	delete pFrame;
 	pFrame = NULL;*/
 
+	GetFingerprintImage(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults, &(_pSyn_Dut->_pSyn_DutTestResult->_acquireFpsResults.arr_ImageFPSFrame), numRows, numCols);
 }
 
 void Syn_Calibrate::SetUp()
