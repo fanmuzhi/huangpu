@@ -19,6 +19,29 @@
 
 using namespace std;
 
+struct SiteSettings
+{
+	uint32_t		_uiDutSerNum;
+	AdcBaseLineInfo	_adcBaseLineInfo;//SYN_TestUtils
+};
+
+struct Syn_LocalSettings 
+{
+	string					_strSysConfigFilePath;
+
+	vector<SiteSettings>	_listOfSiteSettings;
+
+	//?
+	bool					m_bRunRepeatedly;
+	int						m_nNumRepetitions;
+	bool					m_bLGAMode;
+	bool					m_bQAMode;
+	bool					m_bVerboseMode;
+	bool					m_bManualControl;
+
+	string					_strAutoController;
+};
+
 class Syn_LocalSettingConfig
 {
 public:

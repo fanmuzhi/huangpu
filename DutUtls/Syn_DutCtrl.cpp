@@ -15,12 +15,11 @@ Syn_DutCtrl::Syn_DutCtrl(uint32_t iSerialNumber)
 {
 }
 
-
 Syn_DutCtrl::~Syn_DutCtrl()
 {
 }
 
-bool Syn_DutCtrl::CreateDutCtrlInstance(DutController iType, uint32_t iSerialNumber, Syn_DutCtrl * &opSyn_DutCtrlInstance)
+uint32_t Syn_DutCtrl::CreateDutCtrlInstance(DutController iType, uint32_t iSerialNumber, Syn_DutCtrl * &opSyn_DutCtrlInstance)
 {
 	opSyn_DutCtrlInstance = NULL;
 	if (Syn_SPC == iType)
@@ -36,7 +35,7 @@ bool Syn_DutCtrl::CreateDutCtrlInstance(DutController iType, uint32_t iSerialNum
 				delete opSyn_DutCtrlInstance;
 				opSyn_DutCtrlInstance = NULL;
 			}
-			return false;
+			return ex.GetError();
 		}
 	}
 	else if (Syn_MPC04 == iType)
@@ -52,7 +51,7 @@ bool Syn_DutCtrl::CreateDutCtrlInstance(DutController iType, uint32_t iSerialNum
 				delete opSyn_DutCtrlInstance;
 				opSyn_DutCtrlInstance = NULL;
 			}
-			return false;
+			return ex.GetError();
 		}
 	}
 	else
@@ -61,5 +60,5 @@ bool Syn_DutCtrl::CreateDutCtrlInstance(DutController iType, uint32_t iSerialNum
 		return false;
 	}
 
-	return true;
+	return 0;
 }

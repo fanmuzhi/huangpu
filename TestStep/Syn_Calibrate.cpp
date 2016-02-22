@@ -10,15 +10,15 @@ Syn_Calibrate::~Syn_Calibrate()
 {
 }
 
-int Syn_Calibrate::Excute()
+void Syn_Calibrate::Excute()
 {
 	if (NULL == _pSyn_DutCtrl)
 	{
-		return 0;
+		return;
 	}
 	if (NULL == _pSyn_Dut)
 	{
-		return 0;
+		return;
 	}
 
 	//CheckDUTexists();
@@ -30,7 +30,7 @@ int Syn_Calibrate::Excute()
 	Syn_PatchInfo PrintFileInfo;
 	if (!_pSyn_Dut->FindPatch("PrintFile", PrintFileInfo))
 	{
-		return 0;
+		return;
 	}
 
 	if (NULL == _pSyn_Dut->_pSyn_DutTestResult)
@@ -56,7 +56,7 @@ int Syn_Calibrate::Excute()
 	Syn_PatchInfo ImgAcqPatchInfo;
 	if (!_pSyn_Dut->FindPatch("ImageAcqPatch", ImgAcqPatchInfo))
 	{
-		return false;
+		return;
 	}
 	_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);
 
@@ -121,29 +121,22 @@ int Syn_Calibrate::Excute()
 	/*delete pFrame;
 	pFrame = NULL;*/
 
-	return 0;
 }
 
-int	Syn_Calibrate::SetUp()
+void Syn_Calibrate::SetUp()
 {
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-
-	return 0;
 }
 
-int	Syn_Calibrate::ProcessData()
+void Syn_Calibrate::ProcessData()
 {
 	uint16_t numRows = _pSyn_Dut->_RowNumber;
 	uint16_t numCols = _pSyn_Dut->_ColumnNumber;
 
 	GetFingerprintImage(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults, &(_pSyn_Dut->_pSyn_DutTestResult->_acquireFpsResults.arr_ImageFPSFrame), numRows, numCols);
-
-	return 0;
 }
 
-int	Syn_Calibrate::CleanUp()
+void Syn_Calibrate::CleanUp()
 {
 	PowerOff();
-
-	return 0;
 }

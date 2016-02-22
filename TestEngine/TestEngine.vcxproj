@@ -89,7 +89,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Syn_DeviceManager.h" />
-    <ClInclude Include="Syn_Info.h" />
     <ClInclude Include="Syn_Site.h" />
     <ClInclude Include="Syn_SysConfigOperation.h" />
   </ItemGroup>

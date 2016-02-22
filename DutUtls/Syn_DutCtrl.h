@@ -23,14 +23,14 @@ class Syn_DutCtrl
 public:
 
 	//Gobal Function:Create DutCtrl Instance
-	static bool CreateDutCtrlInstance(DutController iType, uint32_t iSerialNumber, Syn_DutCtrl * &opSyn_DutCtrlInstance);
+	static uint32_t CreateDutCtrlInstance(DutController iType, uint32_t iSerialNumber, Syn_DutCtrl * &opSyn_DutCtrlInstance);
 
 	//
 	Syn_DutCtrl(uint32_t iSerialNumber);
 
 	virtual ~Syn_DutCtrl();
 
-	virtual bool Init() = 0;
+	virtual void Init() = 0;
 
 	virtual void SetVoltages(uint16_t vdd_mV, uint16_t vio_mV, uint16_t vled_mV, uint16_t vddh_mV) = 0;
 

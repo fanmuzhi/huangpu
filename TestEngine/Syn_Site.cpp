@@ -35,10 +35,65 @@ Syn_Site::Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string str
 , _strConfigFilePath(strConfigFilePath)
 ,_sitState(Closed)
 ,_stopFlag(false)
-,_uiErrorFlag(Syn_Info::Syn_OK)
+, _uiErrorFlag(Syn_ExceptionCode::Syn_OK)
 ,_strErrorMessage("")
 {
-	//this->Init();
+	//xml config file parse
+	Syn_SysConfigOperation *pConfigOperationInstance = NULL;
+	uint32_t rc = Syn_SysConfigOperation::GetSysConfigInstance(_strConfigFilePath, pConfigOperationInstance);
+	if (NULL == pConfigOperationInstance)
+	{
+		_sitState = Error;
+		_uiErrorFlag = rc;
+		LOG(ERROR) << "Error:Syn_Site::Init() - pConfigOperationInstance is NULL!" << endl;
+		return;
+	}
+
+	rc = pConfigOperationInstance->GetSysConfig(_SysConfig);
+	if (Syn_ExceptionCode::Syn_OK!=rc)
+	{
+		_sitState = Error;
+		_uiErrorFlag = rc;
+		LOG(ERROR) << "Error:Syn_Site::Init() - ::GetSysConfig is failed!" << endl;
+		return;
+	}
+
+	//DutController:SPC,MPC04
+	std::string strDutController(_SysConfig._strDutController);
+	DutController iDutControllerType;
+	if (std::string("SPC") == strDutController)
+	{
+		iDutControllerType = Syn_SPC;
+	}
+	else if (std::string("MPC04") == strDutController)
+	{
+		iDutControllerType = Syn_MPC04;
+	}
+	else
+	{
+		iDutControllerType = Syn_SPC;
+		LOG(ERROR) << "Error:Syn_Site::Init() - an unknown DutController,construct it to SPC!";
+	}
+
+	//Create DutCtrl
+	rc = Syn_DutCtrl::CreateDutCtrlInstance(iDutControllerType, _uiSerialNumber, _pSyn_DutCtrl);
+	if (NULL == _pSyn_DutCtrl)
+	{
+		_sitState = Error;
+		_uiErrorFlag = rc;
+		LOG(ERROR) << "Error:Syn_Site::Init() - CreateDutInstance is failed!";
+		return;
+	}
+
+	_siteInfo._uiSerialNumber = _uiSerialNumber;
+
+	if (pConfigOperationInstance)
+	{
+		delete pConfigOperationInstance;
+		pConfigOperationInstance = NULL;
+	}
+
+	_sitState = Closed;
 }
 
 Syn_Site::~Syn_Site()
@@ -58,23 +113,12 @@ Syn_Site::~Syn_Site()
 
 uint32_t Syn_Site::Init()
 {
-	bool rc(false);
+	if (_sitState == SiteState::Error)
+	{
+		return _uiErrorFlag;
+	}
 
-	//xml config file parse
-	Syn_SysConfigOperation *pConfigOperationInstance = NULL;
-	rc = Syn_SysConfigOperation::GetSysConfigInstance(_strConfigFilePath, pConfigOperationInstance);
-	if (!rc || NULL == pConfigOperationInstance)
-	{
-		LOG(ERROR) << "Error:Syn_Site::Init() - pConfigOperationInstance is NULL!" << endl;
-		return Syn_Info::Syn_ConfigError;
-	}
-	
-	rc = pConfigOperationInstance->GetSysConfig(_SysConfig);
-	if (!rc)
-	{
-		LOG(ERROR) << "Error:Syn_Site::Init() - ::GetSysConfig is failed!" << endl;
-		return Syn_Info::Syn_ConfigError;
-	}
+	bool rc(false);
 
 	//ProejctType:Viper1,Viper2,Metallica
 	std::string strProjectType(_SysConfig._strDutType);
@@ -97,37 +141,20 @@ uint32_t Syn_Site::Init()
 		LOG(ERROR) << "Error:Syn_Site::Init() - an unknown ProjectType,construct it to Viper1!";
 	}
 
-	//DutController:SPC,MPC04
-	std::string strDutController(_SysConfig._strDutController);
-	DutController iDutControllerType;
-	if (std::string("SPC") == strDutController)
+	if (NULL != _pSyn_Dut)
 	{
-		iDutControllerType = Syn_SPC;
-	}
-	else if (std::string("MPC04") == strDutController)
-	{
-		iDutControllerType = Syn_MPC04;
-	}
-	else
-	{
-		iDutControllerType = Syn_SPC;
-		LOG(ERROR) << "Error:Syn_Site::Init() - an unknown DutController,construct it to SPC!";
+		delete _pSyn_Dut;
+		_pSyn_Dut = NULL;
 	}
 
 	//Create Dut
 	rc = Syn_Dut::CreateDutInstance(iProjectType, _pSyn_Dut);
-	if (!rc || NULL == _pSyn_Dut)
+	if (NULL == _pSyn_Dut)
 	{
+		_sitState = Error;
+		_uiErrorFlag = Syn_ExceptionCode::Syn_DutNull;
 		LOG(ERROR) << "Error:Syn_Site::Init() - CreateDutInstance is failed!";
-		return false;
-	}
-
-	//Create DutCtrl
-	rc = Syn_DutCtrl::CreateDutCtrlInstance(iDutControllerType, _uiSerialNumber, _pSyn_DutCtrl);
-	if (!rc || NULL == _pSyn_DutCtrl)
-	{
-		LOG(ERROR) << "Error:Syn_Site::Init() - CreateDutInstance is failed!";
-		return false;
+		return _uiErrorFlag;
 	}
 
 	_pSyn_Dut->SetPatchInfo(_SysConfig._listPatchInfo);
@@ -135,17 +162,9 @@ uint32_t Syn_Site::Init()
 	//fill info
 	//_pSyn_Dut->InitData(_SysConfig);
 
-	_siteInfo._uiSerialNumber = _uiSerialNumber;
-
-	if (pConfigOperationInstance)
-	{
-		delete pConfigOperationInstance;
-		pConfigOperationInstance = NULL;
-	}
-
 	_sitState = Idle;
 
-	return 1;
+	return Syn_ExceptionCode::Syn_OK;
 }
 
 uint32_t Syn_Site::ExecuteScript(uint8_t scriptID)
@@ -154,7 +173,7 @@ uint32_t Syn_Site::ExecuteScript(uint8_t scriptID)
 
 	if (Idle != _sitState)
 	{
-		return false;
+		return Syn_ExceptionCode::Syn_SiteStateError;
 	}
 
 	_sitState = Running;
@@ -168,8 +187,9 @@ uint32_t Syn_Site::ExecuteScript(uint8_t scriptID)
 
 	siteThread.detach();
 	//siteThread.join();
-
-	return Syn_Info::Syn_OK;
+	
+	//return Syn_ExceptionCode::Syn_SiteThread;
+	return Syn_ExceptionCode::Syn_OK;
 }
 
 void Syn_Site::RunScript(uint8_t scriptID)
@@ -181,14 +201,14 @@ void Syn_Site::RunScript(uint8_t scriptID)
 	bool rc = GetTestScriptInfo(scriptID, ExceteScriptInfo);
 	if (!rc)
 	{
-		_uiErrorFlag = Syn_Info::Syn_ScriptConfigError;
+		_uiErrorFlag = Syn_ExceptionCode::Syn_ScriptConfigError;
 		return;
 	}
 
 	unsigned int listSize = ExceteScriptInfo._listOfTestStep.size();
 	if (0 == listSize)
 	{
-		_uiErrorFlag = Syn_Info::Syn_ScriptConfigError;
+		_uiErrorFlag = Syn_ExceptionCode::Syn_ScriptConfigError;
 		return;
 	}
 
@@ -231,13 +251,18 @@ void Syn_Site::RunScript(uint8_t scriptID)
 
 				//_uiErrorFlag = Syn_Info::
 				_strErrorMessage = ex.GetDescription();
+
+				delete pTestStep;
+				pTestStep = NULL;
 				
 				break;
 			}
 			catch (...)
 			{
 				errorFlag = true;
-				_uiErrorFlag = Syn_Info::Syn_UnknownError;
+				_uiErrorFlag = Syn_ExceptionCode::Syn_UnknownError;
+				delete pTestStep;
+				pTestStep = NULL;
 				break;
 			}
 		}
@@ -299,34 +324,36 @@ bool Syn_Site::GetTestScriptInfo(uint8_t scriptID, Syn_TestScript &oTestScriptIn
 	return IsExists;
 }
 
-uint32_t Syn_Site::GetTestInfo(Syn_DutTestInfo &oTestInfo)
+uint32_t Syn_Site::GetTestInfo(Syn_DutTestInfo * &opTestInfo)
 {
+	opTestInfo = NULL;
 	if (NULL != _pSyn_Dut)
 	{
 		if (NULL != _pSyn_Dut->_pSyn_DutTestInfo)
 		{
-			oTestInfo = *(_pSyn_Dut->_pSyn_DutTestInfo);
+			opTestInfo = _pSyn_Dut->_pSyn_DutTestInfo;
 
-			return Syn_Info::Syn_OK;
+			return Syn_ExceptionCode::Syn_OK;
 		}
 	}
 
-	return Syn_Info::Syn_DutInfoNull;
+	return Syn_ExceptionCode::Syn_DutInfoNull;
 }
 
-uint32_t Syn_Site::GetTestResult(Syn_DutTestResult &oTestResult)
+uint32_t Syn_Site::GetTestResult(Syn_DutTestResult * &opTestResult)
 {
+	opTestResult = NULL;
 	if (NULL != _pSyn_Dut)
 	{
 		if (NULL != _pSyn_Dut->_pSyn_DutTestResult)
 		{
-			oTestResult = *(_pSyn_Dut->_pSyn_DutTestResult);
+			opTestResult = _pSyn_Dut->_pSyn_DutTestResult;
 
-			return Syn_Info::Syn_OK;
+			return Syn_ExceptionCode::Syn_OK;
 		}
 	}
 
-	return Syn_Info::Syn_DutResultNull;
+	return Syn_ExceptionCode::Syn_DutResultNull;
 }
 
 void Syn_Site::GetSiteInfo(Syn_SiteInfo &oSyn_SiteInfo)
@@ -351,7 +378,7 @@ void Syn_Site::GetSiteInfo(Syn_SiteInfo &oSyn_SiteInfo)
 
 bool Syn_Site::ConstructSiteList(std::string strConfigFilePath, std::vector<Syn_Site*> &olistOfSyn_SiteInstance)
 {
-	bool rc(false);
+	uint32_t rc(0);
 
 	olistOfSyn_SiteInstance.clear();
 
@@ -360,14 +387,14 @@ bool Syn_Site::ConstructSiteList(std::string strConfigFilePath, std::vector<Syn_
 	//xml config file parse
 	Syn_SysConfigOperation *pSyn_SysConfigOperationInstance = NULL;
 	rc = Syn_SysConfigOperation::GetSysConfigInstance(strConfigFilePath, pSyn_SysConfigOperationInstance);
-	if (!rc||NULL == pSyn_SysConfigOperationInstance)
+	if (NULL == pSyn_SysConfigOperationInstance)
 	{
 		LOG(ERROR) << "Error:Syn_Site::ConstructSiteList() - pSyn_SysConfigOperationInstance is NULL!" << endl;
 		return false;
 	}
 	Syn_SysConfig TempSyn_SysConfig;
 	rc = pSyn_SysConfigOperationInstance->GetSysConfig(TempSyn_SysConfig);
-	if (!rc)
+	if (Syn_ExceptionCode::Syn_OK != rc)
 	{
 		LOG(ERROR) << "Error:Syn_Site::ConstructSiteList() - ::GetSysConfig is failed!" << endl;
 		return false;
@@ -449,227 +476,204 @@ bool Syn_Site::RegisterLoggingConfig()
 }
 
 
-//void Syn_Site::Run()
-//{
-//	if (NULL == _pSyn_Dut)
-//	{
-//		LOG(ERROR) << "Error:Syn_Site::Run() - _pSyn_Dut is NULL!" << endl;
-//		
-//		return;
-//	}
-//
-//	//test get image
-//	try
-//	{
-//		/*_siteInfo._TestState = TestRunning;
-//		_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
-//		_pSyn_Dut->CheckDUTexists();
-//		_pSyn_Dut->Calibration(_SysConfig._uiNumCols, _SysConfig._uiNumRows, _DutTestInfo._calibrationInfo, _pDutTestResult->_calibrationResults);
-//		_pSyn_Dut->PowerOff();*/
-//
-//	}
-//	catch (Syn_Exception ex)
-//	{
-//		//_pSyn_Dut->PowerOff();
-//		LOG(ERROR) << "Error:ReadOTP is failed!" << std::endl;
-//		_siteInfo._strErrorMessage = ex.GetDescription();
-//
-//		return;
-//	}
-//
-//	return;
-//}
-//
-//
-//void Syn_Site::GetVersion()
-//{
-//	try
-//	{
-//		/*_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
-//		_pSyn_Dut->GetDutCtrl()->FpGetVersion(_DutTestInfo._getVerInfo._GerVerArray, VERSION_SIZE);
-//		_pSyn_Dut->PowerOff();*/
-//
-//	}
-//	catch (Syn_Exception ex)
-//	{
-//		//_pSyn_Dut->PowerOff();
-//		LOG(ERROR) << "Error:GetVersion is failed!" ;
-//		_siteInfo._strErrorMessage = ex.GetDescription();
-//		return;
-//	}
-//}
-//
-//
-//void Syn_Site::ReadOTP()
-//{
-//	if (NULL == _pSyn_Dut)
-//	{
-//		LOG(ERROR) << "Error:Syn_Site::Run() - _pSyn_Dut is NULL!" << endl;
-//		return;
-//	}
-//	uint8_t arMS0[BS0_SIZE + BS1_SIZE + MS0_SIZE + MS1_SIZE] = { 0 };
-//	int iSize(BS0_SIZE + BS1_SIZE + MS0_SIZE + MS1_SIZE);
-//	try
-//	{
-//		/*_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
-//		_pSyn_Dut->ReadOTP(arMS0, iSize);
-//		_pSyn_Dut->PowerOff();*/
-//
-//	}
-//	catch (Syn_Exception ex)
-//	{
-//		//_pSyn_Dut->PowerOff();
-//		LOG(ERROR) << "Error:ReadOTP is failed!" << std::endl;
-//		_siteInfo._strErrorMessage = ex.GetDescription();
-//
-//		return;
-//	}
-//
-//	//Fill
-//	for (int i = 0; i < BS0_SIZE; i++)
-//	{
-//		//(_DutTestInfo._otpInfo._BootSector0Array)[i] = arMS0[i];
-//		(_pSyn_Dut->_pSyn_DutTestInfo->_otpInfo._BootSector0Array)[i] = arMS0[i];
-//	}
-//
-//	for (int i = 0; i < BS1_SIZE; i++)
-//	{
-//		//(_DutTestInfo._otpInfo._BootSector1Array)[i] = arMS0[i + BS0_SIZE];
-//		(_pSyn_Dut->_pSyn_DutTestInfo->_otpInfo._BootSector1Array)[i] = arMS0[i + BS0_SIZE];
-//	}
-//
-//	for (int i = 0; i < MS0_SIZE; i++)
-//	{
-//		//(_DutTestInfo._otpInfo._MainSector0Array)[i] = arMS0[i + BS0_SIZE + BS1_SIZE];
-//		(_pSyn_Dut->_pSyn_DutTestInfo->_otpInfo._MainSector0Array)[i] = arMS0[i + BS0_SIZE + BS1_SIZE];
-//	}
-//	
-//	for (int i = 0; i < MS1_SIZE; i++)
-//	{
-//		//(_DutTestInfo._otpInfo._MainSector1Array)[i] = arMS0[i + BS0_SIZE + BS1_SIZE + MS0_SIZE];
-//		(_pSyn_Dut->_pSyn_DutTestInfo->_otpInfo._MainSector1Array)[i] = arMS0[i + BS0_SIZE + BS1_SIZE + MS0_SIZE];
-//	}
-//
-//}
-//
-//
-//
-//void Syn_Site::Calibration()
-//{
-//	/*if (NULL != _pTempTestStep)
-//	{
-//		delete _pTempTestStep;
-//		_pTempTestStep = NULL;
-//	}*/
-//
-//	Syn_TestStep *pTestStep = NULL;
-//
-//	bool rc = Syn_TestStepFactory::CreateTestStepInstance("Calibrate", _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
-//	if (!rc || NULL == pTestStep)
-//	{
-//		return;
-//	}
-//
-//	try
-//	{
-//		/*_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
-//		_pSyn_Dut->CheckDUTexists();
-//		_pSyn_Dut->Calibration(_SysConfig._uiNumCols, _SysConfig._uiNumRows, _DutTestInfo._calibrationInfo, _pDutTestResult->_calibrationResults);
-//		_pSyn_Dut->GetFingerprintImage(_pDutTestResult->_calibrationResults, &(_pDutTestResult->_acquireFpsResults.arr_ImageFPSFrame), _SysConfig._uiNumRows, _SysConfig._uiNumCols);*/
-//		//_pSyn_Dut->PowerOff();
-//
-//		pTestStep->SetUp();
-//		pTestStep->Excute();
-//
-//		delete pTestStep;
-//		pTestStep = NULL;
-//
-//	}
-//	catch (Syn_Exception ex)
-//	{
-//		//_pSyn_Dut->PowerOff();
-//		LOG(ERROR) << "Error:Calibration is failed!";
-//		_siteInfo._strErrorMessage = ex.GetDescription();
-//		return;
-//	}
-//}
-//
-//void Syn_Site::GetFingerprintImage()
-//{
-//	/*if (NULL == _pTempTestStep)
-//	{
-//		return;
-//	}*/
-//
-//	Syn_TestStep *pTestStep = NULL;
-//
-//	bool rc = Syn_TestStepFactory::CreateTestStepInstance("Calibrate", _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
-//	if (!rc || NULL == pTestStep)
-//	{
-//		return;
-//	}
-//
-//
-//	try
-//	{
-//		/*_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
-//		_pSyn_Dut->GetFingerprintImage(_pDutTestResult->_calibrationResults, &(_pDutTestResult->_acquireFpsResults.arr_ImageFPSFrame), _SysConfig._uiNumRows, _SysConfig._uiNumCols);*/
-//		//_pSyn_Dut->PowerOff();
-//
-//		pTestStep->ProcessData();
-//
-//		delete pTestStep;
-//		pTestStep = NULL;
-//
-//	}
-//	catch (Syn_Exception ex)
-//	{
-//		//_pSyn_Dut->PowerOff();
-//		LOG(ERROR) << "Error:GetFingerprintImage is failed!";
-//		_siteInfo._strErrorMessage = ex.GetDescription();
-//		return;
-//	}
-//}
-//
-//void Syn_Site::PowerOff()
-//{
-//	//_pSyn_Dut->PowerOff();
-//
-//	/*if (NULL != _pTempTestStep)
-//	{
-//		_pTempTestStep->CleanUp();
-//	}*/
-//
-//	Syn_TestStep *pTestStep = NULL;
-//	bool rc = Syn_TestStepFactory::CreateTestStepInstance("Calibrate", _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
-//	if (NULL != pTestStep)
-//	{
-//		pTestStep->CleanUp();
-//
-//		delete pTestStep;
-//		pTestStep = NULL;
-//	}
-//}
-
-/*
-void Syn_Site::GetSiteInfo(Syn_SiteInfo &oSyn_SiteInfo)
+void Syn_Site::Run()
 {
-	oSyn_SiteInfo = _siteInfo;
+	if (NULL == _pSyn_Dut)
+	{
+		LOG(ERROR) << "Error:Syn_Site::Run() - _pSyn_Dut is NULL!" << endl;
+		
+		return;
+	}
+
+	//test get image
+	try
+	{
+		/*_siteInfo._TestState = TestRunning;
+		_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
+		_pSyn_Dut->CheckDUTexists();
+		_pSyn_Dut->Calibration(_SysConfig._uiNumCols, _SysConfig._uiNumRows, _DutTestInfo._calibrationInfo, _pDutTestResult->_calibrationResults);
+		_pSyn_Dut->PowerOff();*/
+
+	}
+	catch (Syn_Exception ex)
+	{
+		//_pSyn_Dut->PowerOff();
+		LOG(ERROR) << "Error:ReadOTP is failed!" << std::endl;
+		_siteInfo._strErrorMessage = ex.GetDescription();
+
+		return;
+	}
+
+	return;
 }
 
-void Syn_Site::GetTestInfo(Syn_DutTestInfo &oSyn_DutTestInfo)
-{
-	oSyn_DutTestInfo = _DutTestInfo;
 
-	oSyn_DutTestInfo = *(_pSyn_Dut->_pSyn_DutTestInfo);
+void Syn_Site::GetVersion()
+{
+	try
+	{
+		/*_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
+		_pSyn_Dut->GetDutCtrl()->FpGetVersion(_DutTestInfo._getVerInfo._GerVerArray, VERSION_SIZE);
+		_pSyn_Dut->PowerOff();*/
+
+	}
+	catch (Syn_Exception ex)
+	{
+		//_pSyn_Dut->PowerOff();
+		LOG(ERROR) << "Error:GetVersion is failed!" ;
+		_siteInfo._strErrorMessage = ex.GetDescription();
+		return;
+	}
 }
 
-void Syn_Site::GetTestResult(Syn_DutTestResult * &opSyn_DutTestResult)
+
+void Syn_Site::ReadOTP()
 {
-	opSyn_DutTestResult = _pDutTestResult;
+	if (NULL == _pSyn_Dut)
+	{
+		LOG(ERROR) << "Error:Syn_Site::Run() - _pSyn_Dut is NULL!" << endl;
+		return;
+	}
+	uint8_t arMS0[BS0_SIZE + BS1_SIZE + MS0_SIZE + MS1_SIZE] = { 0 };
+	int iSize(BS0_SIZE + BS1_SIZE + MS0_SIZE + MS1_SIZE);
+	try
+	{
+		/*_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
+		_pSyn_Dut->ReadOTP(arMS0, iSize);
+		_pSyn_Dut->PowerOff();*/
 
-	opSyn_DutTestResult = _pSyn_Dut->_pSyn_DutTestResult;
+	}
+	catch (Syn_Exception ex)
+	{
+		//_pSyn_Dut->PowerOff();
+		LOG(ERROR) << "Error:ReadOTP is failed!" << std::endl;
+		_siteInfo._strErrorMessage = ex.GetDescription();
 
-	_sitState = Idle;
+		return;
+	}
+
+	//Fill
+	for (int i = 0; i < BS0_SIZE; i++)
+	{
+		//(_DutTestInfo._otpInfo._BootSector0Array)[i] = arMS0[i];
+		(_pSyn_Dut->_pSyn_DutTestInfo->_otpInfo._BootSector0Array)[i] = arMS0[i];
+	}
+
+	for (int i = 0; i < BS1_SIZE; i++)
+	{
+		//(_DutTestInfo._otpInfo._BootSector1Array)[i] = arMS0[i + BS0_SIZE];
+		(_pSyn_Dut->_pSyn_DutTestInfo->_otpInfo._BootSector1Array)[i] = arMS0[i + BS0_SIZE];
+	}
+
+	for (int i = 0; i < MS0_SIZE; i++)
+	{
+		//(_DutTestInfo._otpInfo._MainSector0Array)[i] = arMS0[i + BS0_SIZE + BS1_SIZE];
+		(_pSyn_Dut->_pSyn_DutTestInfo->_otpInfo._MainSector0Array)[i] = arMS0[i + BS0_SIZE + BS1_SIZE];
+	}
+	
+	for (int i = 0; i < MS1_SIZE; i++)
+	{
+		//(_DutTestInfo._otpInfo._MainSector1Array)[i] = arMS0[i + BS0_SIZE + BS1_SIZE + MS0_SIZE];
+		(_pSyn_Dut->_pSyn_DutTestInfo->_otpInfo._MainSector1Array)[i] = arMS0[i + BS0_SIZE + BS1_SIZE + MS0_SIZE];
+	}
+
 }
-*/
+
+
+
+void Syn_Site::Calibration()
+{
+	/*if (NULL != _pTempTestStep)
+	{
+		delete _pTempTestStep;
+		_pTempTestStep = NULL;
+	}*/
+
+	Syn_TestStep *pTestStep = NULL;
+
+	bool rc = Syn_TestStepFactory::CreateTestStepInstance("Calibrate", _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
+	if (!rc || NULL == pTestStep)
+	{
+		return;
+	}
+
+	try
+	{
+		/*_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
+		_pSyn_Dut->CheckDUTexists();
+		_pSyn_Dut->Calibration(_SysConfig._uiNumCols, _SysConfig._uiNumRows, _DutTestInfo._calibrationInfo, _pDutTestResult->_calibrationResults);
+		_pSyn_Dut->GetFingerprintImage(_pDutTestResult->_calibrationResults, &(_pDutTestResult->_acquireFpsResults.arr_ImageFPSFrame), _SysConfig._uiNumRows, _SysConfig._uiNumCols);*/
+		//_pSyn_Dut->PowerOff();
+
+		pTestStep->SetUp();
+		pTestStep->Excute();
+
+		delete pTestStep;
+		pTestStep = NULL;
+
+	}
+	catch (Syn_Exception ex)
+	{
+		//_pSyn_Dut->PowerOff();
+		LOG(ERROR) << "Error:Calibration is failed!";
+		_siteInfo._strErrorMessage = ex.GetDescription();
+		return;
+	}
+}
+
+void Syn_Site::GetFingerprintImage()
+{
+	/*if (NULL == _pTempTestStep)
+	{
+		return;
+	}*/
+
+	Syn_TestStep *pTestStep = NULL;
+
+	bool rc = Syn_TestStepFactory::CreateTestStepInstance("Calibrate", _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
+	if (!rc || NULL == pTestStep)
+	{
+		return;
+	}
+
+
+	try
+	{
+		/*_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
+		_pSyn_Dut->GetFingerprintImage(_pDutTestResult->_calibrationResults, &(_pDutTestResult->_acquireFpsResults.arr_ImageFPSFrame), _SysConfig._uiNumRows, _SysConfig._uiNumCols);*/
+		//_pSyn_Dut->PowerOff();
+
+		pTestStep->ProcessData();
+
+		delete pTestStep;
+		pTestStep = NULL;
+
+	}
+	catch (Syn_Exception ex)
+	{
+		//_pSyn_Dut->PowerOff();
+		LOG(ERROR) << "Error:GetFingerprintImage is failed!";
+		_siteInfo._strErrorMessage = ex.GetDescription();
+		return;
+	}
+}
+
+void Syn_Site::PowerOff()
+{
+	//_pSyn_Dut->PowerOff();
+
+	/*if (NULL != _pTempTestStep)
+	{
+		_pTempTestStep->CleanUp();
+	}*/
+
+	Syn_TestStep *pTestStep = NULL;
+	bool rc = Syn_TestStepFactory::CreateTestStepInstance("Calibrate", _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
+	if (NULL != pTestStep)
+	{
+		pTestStep->CleanUp();
+
+		delete pTestStep;
+		pTestStep = NULL;
+	}
+}

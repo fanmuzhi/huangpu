@@ -13,7 +13,7 @@ public:
 	Syn_SPCCtrl(uint32_t iSerialNumber);
 	virtual ~Syn_SPCCtrl();
 
-	virtual bool Init();
+	virtual void Init();
 
 	virtual void SetVoltages(uint16_t vdd_mV, uint16_t vio_mV, uint16_t vled_mV, uint16_t vddh_mV);
 

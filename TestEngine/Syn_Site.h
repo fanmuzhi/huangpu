@@ -1,13 +1,11 @@
 #ifndef SYN_SITE_H
 #define SYN_SITE_H
 
-//local
-#include "Syn_Info.h"
-
 //DutUtls
 #include "Syn_Config.h"
 #include "Syn_Dut.h"
 #include "Syn_DutCtrl.h"
+#include "Syn_Exception.h"
 
 //TestStep
 #include "Syn_TestStep.h"
@@ -18,6 +16,7 @@ extern "C" {
 #include "SYN_TestUtils.h"
 };
 
+//#include <windows.h> 
 
 enum SiteState
 {
@@ -54,10 +53,10 @@ public:
 	/*get number of test steps finished.*/
 	uint32_t GetNumSteps(uint16_t numSteps);                               
 
-	uint32_t GetTestInfo(Syn_DutTestInfo &oTestInfo);
+	uint32_t GetTestInfo(Syn_DutTestInfo * &opTestInfo);
 	
 	/*get the test result of specified step number.*/
-	uint32_t GetTestResult(Syn_DutTestResult &oTestResult);
+	uint32_t GetTestResult(Syn_DutTestResult * &opTestResult);
 
 	/*get site infomation of siteNo, state, etc.*/
 	void GetSiteInfo(Syn_SiteInfo &oSyn_SiteInfo);
@@ -88,16 +87,12 @@ public:
 
 	static bool RegisterLoggingConfig();
 
-	//void Run();						//main test entrance.
-	//void GetVersion();				//for debug.
-	//void ReadOTP();					//for debug.
-	//void Calibration();				//for debug
-	//void GetFingerprintImage();		//for debug
-	//void PowerOff();//debug
-
-
-	//void GetTestInfo(Syn_DutTestInfo &oSyn_DutTestInfo);
-	//void GetTestResult(Syn_DutTestResult * &opSyn_DutTestResult);
+	void Run();						//main test entrance.
+	void GetVersion();				//for debug.
+	void ReadOTP();					//for debug.
+	void Calibration();				//for debug
+	void GetFingerprintImage();		//for debug
+	void PowerOff();//debug
 
 	inline void SetSiteNumber(unsigned int iSiteNumber){ _iSiteNumber = iSiteNumber; };
 
@@ -134,5 +129,6 @@ private:
 	uint32_t _uiErrorFlag;
 	std::string _strErrorMessage;
 };
+
 
 #endif // SYN_SITE_H

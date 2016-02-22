@@ -29,7 +29,6 @@
 #include <vector>
 #include <iostream>
 #include <string>
-#include <thread>
 
 //Construct Device Counts(large enough)
 #define DeviceCounts 20
@@ -37,6 +36,8 @@
 extern "C" {
 #include "SYN_TestUtils.h"
 };
+
+#include "Syn_LocalSettingConfig.h"
 
 using namespace std;
 

@@ -1,12 +1,8 @@
 //local
 #include "fps_testexecutive.h"
-#include "Syn_LocalSettingConfig.h"
 #include "ui_Syn_LocalSettingsDlg.h"
 //Qt
 #include <QtWidgets>
-
-
-#include <assert.h> 
 
 FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 : QMainWindow(parent)
@@ -534,8 +530,8 @@ void FPS_TestExecutive::ReceiveSiteInfoSlot(void * pSiteInfo)
 
 	//retrieve current site with sitenumber from sitelist
 	bool synFind(false);
-	Syn_DutTestInfo CurrentDutTestInfo;
-	Syn_DutTestResult pCurrentDutTestResult;
+	Syn_DutTestInfo *pCurrentDutTestInfo = NULL;
+	Syn_DutTestResult *pCurrentDutTestResult = NULL;
 	Syn_SysConfig CurrentSysConfig;
 	for (size_t i = 0; i < _ListOfSitePtr.size(); i++)
 	{
@@ -543,7 +539,7 @@ void FPS_TestExecutive::ReceiveSiteInfoSlot(void * pSiteInfo)
 		_ListOfSitePtr[i]->GetSiteNumber(iTempSiteNumber);
 		if (iSiteNumber == iTempSiteNumber)
 		{
-			_ListOfSitePtr[i]->GetTestInfo(CurrentDutTestInfo);
+			_ListOfSitePtr[i]->GetTestInfo(pCurrentDutTestInfo);
 			_ListOfSitePtr[i]->GetTestResult(pCurrentDutTestResult);
 			_ListOfSitePtr[i]->GetSysConfig(CurrentSysConfig);
 			synFind = true;
@@ -654,7 +650,7 @@ void FPS_TestExecutive::ReceiveSiteInfoSlot(void * pSiteInfo)
 	{
 		for (int n = 0; n < columnNumber; n++)
 		{
-			data[m*(columnNumber)+n] = (pCurrentDutTestResult._calibrationResults).arr_ImageFPSFrame.arr[m][n];
+			data[m*(columnNumber)+n] = (pCurrentDutTestResult->_calibrationResults).arr_ImageFPSFrame.arr[m][n];
 		}
 	}
 	QImage image((uchar*)data.constData(), columnNumber, rowNumber,QImage::Format_Indexed8);
@@ -701,8 +697,8 @@ void FPS_TestExecutive::GetVersionForDutDump()
 
 	Syn_SiteInfo oSiteInfo;
 	pSelectedSite->GetSiteInfo(oSiteInfo);
-	Syn_DutTestInfo oDutTestInfo;
-	pSelectedSite->GetTestInfo(oDutTestInfo);
+	Syn_DutTestInfo *pDutTestInfo = NULL;
+	pSelectedSite->GetTestInfo(pDutTestInfo);
 
 	ui.textBrowser->clear();
 	ui.textBrowser->append(QString("SiteNumber:") + QString::number(oSiteInfo._uiSiteNumber));
@@ -713,7 +709,7 @@ void FPS_TestExecutive::GetVersionForDutDump()
 		int StartPos = (i - 1) * 4;
 		int EndPos = i * 4 - 1;
 
-		Display(oDutTestInfo._getVerInfo._GerVerArray, StartPos, EndPos);
+		Display(pDutTestInfo->_getVerInfo._GerVerArray, StartPos, EndPos);
 	}
 
 }
@@ -751,7 +747,7 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 
 	Syn_SiteInfo oSiteInfo;
 	pSelectedSite->GetSiteInfo(oSiteInfo);
-	Syn_DutTestInfo oDutTestInfo;
+	Syn_DutTestInfo *oDutTestInfo = NULL;
 	pSelectedSite->GetTestInfo(oDutTestInfo);
 
 	ui.textBrowser->clear();
@@ -764,7 +760,7 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 		int StartPos = (i - 1) * 8;
 		int EndPos = i * 8 - 1;
 
-		Display(oDutTestInfo._otpInfo._BootSector0Array, StartPos, EndPos);
+		Display(oDutTestInfo->_otpInfo._BootSector0Array, StartPos, EndPos);
 	}
 
 	ui.textBrowser->append(QString("Boot Sector 1:"));
@@ -773,7 +769,7 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 		int StartPos = (i - 1) * 8;
 		int EndPos = i * 8 - 1;
 
-		Display(oDutTestInfo._otpInfo._BootSector1Array, StartPos, EndPos);
+		Display(oDutTestInfo->_otpInfo._BootSector1Array, StartPos, EndPos);
 	}
 
 	ui.textBrowser->append(QString("Main Sector 0:"));
@@ -781,7 +777,7 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 	{
 		int StartPos = (i - 1) * 8;
 		int EndPos = i * 8 - 1;
-		Display(oDutTestInfo._otpInfo._MainSector0Array, StartPos, EndPos);
+		Display(oDutTestInfo->_otpInfo._MainSector0Array, StartPos, EndPos);
 	}
 
 	ui.textBrowser->append(QString("Main Sector 1:"));
@@ -789,7 +785,7 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 	{
 		int StartPos = (i - 1) * 8;
 		int EndPos = i * 8 - 1;
-		Display(oDutTestInfo._otpInfo._MainSector1Array, StartPos, EndPos);
+		Display(oDutTestInfo->_otpInfo._MainSector1Array, StartPos, EndPos);
 	}
 }
 
@@ -819,6 +815,7 @@ void FPS_TestExecutive::PushCablicationImageButton()
 	}
 	else
 	{
+		_ListOfSitePtr[iSiteCurrentIndex]->Init();
 		_threadForDebugCalibrate.SetSite(_ListOfSitePtr[iSiteCurrentIndex]);
 		//_threadForDebugCalibrate.SetRunTag(true);
 		_threadForDebugCalibrate.start();
@@ -844,8 +841,8 @@ void FPS_TestExecutive::ImageCalibration(void * pSiteInfo)
 
 	//retrieve current site with sitenumber from sitelist
 	bool synFind(false);
-	Syn_DutTestInfo CurrentDutTestInfo;
-	Syn_DutTestResult pCurrentDutTestResult;
+	//Syn_DutTestInfo *CurrentDutTestInfo = NULL;
+	Syn_DutTestResult *pCurrentDutTestResult = NULL;
 	Syn_SysConfig CurrentSysConfig;
 	for (size_t i = 0; i < _ListOfSitePtr.size(); i++)
 	{
@@ -853,7 +850,7 @@ void FPS_TestExecutive::ImageCalibration(void * pSiteInfo)
 		_ListOfSitePtr[i]->GetSiteNumber(iTempSiteNumber);
 		if (iSiteNumber == iTempSiteNumber)
 		{
-			_ListOfSitePtr[i]->GetTestInfo(CurrentDutTestInfo);
+			//_ListOfSitePtr[i]->GetTestInfo(*CurrentDutTestInfo);
 			_ListOfSitePtr[i]->GetTestResult(pCurrentDutTestResult);
 			_ListOfSitePtr[i]->GetSysConfig(CurrentSysConfig);
 			synFind = true;
@@ -908,7 +905,7 @@ void FPS_TestExecutive::ImageCalibration(void * pSiteInfo)
 	{
 		for (int n = 0; n < columnNumber; n++)
 		{
-			data[m*(columnNumber)+n] = (pCurrentDutTestResult._acquireFpsResults).arr_ImageFPSFrame.arr[m][n];
+			data[m*(columnNumber)+n] = (pCurrentDutTestResult->_acquireFpsResults).arr_ImageFPSFrame.arr[m][n];
 		}
 	}
 	QImage image((uchar*)data.constData(), columnNumber, rowNumber,QImage::Format_Indexed8);
@@ -975,8 +972,8 @@ void FPS_TestExecutive::FigerprintImage(void * pSiteInfo)
 
 	//retrieve current site with sitenumber from sitelist
 	bool synFind(false);
-	Syn_DutTestInfo CurrentDutTestInfo;
-	Syn_DutTestResult pCurrentDutTestResult;
+	//Syn_DutTestInfo CurrentDutTestInfo;
+	Syn_DutTestResult *pCurrentDutTestResult = NULL;
 	Syn_SysConfig CurrentSysConfig;
 	for (size_t i = 0; i < _ListOfSitePtr.size(); i++)
 	{
@@ -984,7 +981,7 @@ void FPS_TestExecutive::FigerprintImage(void * pSiteInfo)
 		_ListOfSitePtr[i]->GetSiteNumber(iTempSiteNumber);
 		if (iSiteNumber == iTempSiteNumber)
 		{
-			_ListOfSitePtr[i]->GetTestInfo(CurrentDutTestInfo);
+			//_ListOfSitePtr[i]->GetTestInfo(CurrentDutTestInfo);
 			_ListOfSitePtr[i]->GetTestResult(pCurrentDutTestResult);
 			_ListOfSitePtr[i]->GetSysConfig(CurrentSysConfig);
 			synFind = true;
@@ -1014,7 +1011,7 @@ void FPS_TestExecutive::FigerprintImage(void * pSiteInfo)
 		{
 			for (int n = 0; n < columnNumber; n++)
 			{
-				data[m*(columnNumber)+n] = (pCurrentDutTestResult._acquireFpsResults).arr_ImageFPSFrame.arr[m][n];
+				data[m*(columnNumber)+n] = (pCurrentDutTestResult->_acquireFpsResults).arr_ImageFPSFrame.arr[m][n];
 			}
 		}
 		QImage image((uchar*)data.constData(), columnNumber, rowNumber, QImage::Format_Indexed8);

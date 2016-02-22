@@ -1,6 +1,9 @@
 //local
 #include "Syn_SysConfigOperation.h"
 
+//
+#include "Syn_Exception.h"
+
 //third-party
 #include "easylogging++.h"
 
@@ -16,12 +19,11 @@ Syn_SysConfigOperation::Syn_SysConfigOperation(std::string strConfigFilePath)
 {
 }
 
-
 Syn_SysConfigOperation::~Syn_SysConfigOperation()
 {
 }
 
-bool Syn_SysConfigOperation::GetSysConfigInstance(std::string strConfigFilePath, Syn_SysConfigOperation * &opSyn_SysConfigOperationInstance)
+uint32_t Syn_SysConfigOperation::GetSysConfigInstance(std::string strConfigFilePath, Syn_SysConfigOperation * &opSyn_SysConfigOperationInstance)
 {
 	opSyn_SysConfigOperationInstance = NULL;
 
@@ -62,7 +64,7 @@ bool Syn_SysConfigOperation::Parse()
 	return true;
 }
 
-bool Syn_SysConfigOperation::GetSysConfig(Syn_SysConfig &oSyn_SysConfig)
+uint32_t Syn_SysConfigOperation::GetSysConfig(Syn_SysConfig &oSyn_SysConfig)
 {
 	bool rc(true);
 
@@ -256,10 +258,10 @@ bool Syn_SysConfigOperation::GetSysConfig(Syn_SysConfig &oSyn_SysConfig)
 	if (SysConfigJudgeTag < 20)
 	{
 		LOG(ERROR) <<"SysConfigJudgeTag IS LESS THAN 20" ;
-		rc = false;
+		return Syn_ExceptionCode::Syn_ConfigError;
 	}
 
-	return rc;
+	return Syn_ExceptionCode::Syn_OK;
 }
 
 void Syn_SysConfigOperation::ConvertAsciiToBinary(const std::string& strAsciiValue, uint8_t *pDst, int nDstSize)

@@ -13,12 +13,12 @@ public:
 	virtual ~Syn_Calibrate();
 
 
-	virtual int	SetUp();
+	virtual void	SetUp();
 
-	virtual int	Excute();
+	virtual void	Excute();
 
-	virtual int ProcessData();
+	virtual void	ProcessData();
 
-	virtual int	CleanUp();
+	virtual void	CleanUp();
 };
 

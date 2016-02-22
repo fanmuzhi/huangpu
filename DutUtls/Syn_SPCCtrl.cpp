@@ -20,11 +20,7 @@ bool Syn_SPCCtrl::_bDLLInitialized = false;
 Syn_SPCCtrl::Syn_SPCCtrl(uint32_t iSerialNumber)
 :Syn_DutCtrl(iSerialNumber)
 {
-	bool bResult = Init();
-	if (!bResult)
-	{
-		return;
-	}
+	this->Init();
 
 	//UpdateMPC04Firmware();
 }
@@ -42,15 +38,13 @@ Syn_SPCCtrl::~Syn_SPCCtrl()
 	}
 }
 
-bool Syn_SPCCtrl::Init()
+void Syn_SPCCtrl::Init()
 {
 	uint32_t	err(0);
 
 	//uint16_t	uiDevType;
 	//uint32_t	uiRevBootLoader;
 	//uint32_t	uiRevApplication;
-
-	bool rc(false);
 
 	Syn_Exception ex(err);
 
@@ -86,8 +80,6 @@ bool Syn_SPCCtrl::Init()
 	if (0!=syn_SerialNumber && NULL==syn_DeviceHandle)
 	{
 		LOG(ERROR) << "syn_DeviceHandle is NULL";
-		rc = false;
-
 		ex.SetError(err);
 		ex.SetDescription("syn_DeviceHandle is NULL:" + to_string(syn_SerialNumber));
 		throw ex;
@@ -101,24 +93,21 @@ bool Syn_SPCCtrl::Init()
 		{
 			syn_DeviceHandle = NULL;
 			LOG(ERROR) << "MPC_SetPortFpSensor failed with MPC04: " << syn_SerialNumber;
-			rc = false;
 
 			ex.SetError(err);
 			ex.SetDescription("MPC_SetPortFpSensor failed with MPC04:" + to_string(syn_SerialNumber));
 			throw ex;
 		}
-		rc = true;
 	}
 	else
 	{
-		rc = false;
 		LOG(ERROR) << "MPC_IsConnected is failed!";
 		ex.SetError(err);
 		ex.SetDescription("MPC_IsConnected is failed:" + to_string(syn_SerialNumber));
 		throw ex;
 	}
 
-	return rc;
+	return;
 }
 
 //--------------------

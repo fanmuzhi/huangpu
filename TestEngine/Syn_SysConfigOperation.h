@@ -21,11 +21,11 @@ class Syn_SysConfigOperation
 
 public:
 
-	static bool GetSysConfigInstance(std::string strConfigFilePath, Syn_SysConfigOperation * &opSyn_SysConfigOperationInstance);
+	static uint32_t GetSysConfigInstance(std::string strConfigFilePath, Syn_SysConfigOperation * &opSyn_SysConfigOperationInstance);
 	
 	~Syn_SysConfigOperation();
 
-	bool GetSysConfig(Syn_SysConfig &oSyn_SysConfig);
+	uint32_t GetSysConfig(Syn_SysConfig &oSyn_SysConfig);
 
 private:
 

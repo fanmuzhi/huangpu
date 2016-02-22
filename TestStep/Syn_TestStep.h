@@ -36,13 +36,13 @@ public:
 	}
 
 	//pure virtual function
-	virtual int	SetUp() = 0;
+	virtual	void	SetUp() = 0;
 
-	virtual int	Excute() = 0;
+	virtual void	Excute() = 0;
 
-	virtual int ProcessData() = 0;
+	virtual void	ProcessData() = 0;
 
-	virtual int	CleanUp() = 0;
+	virtual void	CleanUp() = 0;
 
 protected:
 
