@@ -86,6 +86,7 @@ Syn_Site::Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string str
 	}
 
 	_siteInfo._uiSerialNumber = _uiSerialNumber;
+	_siteInfo._uiSiteNumber = _iSiteNumber;
 
 	if (pConfigOperationInstance)
 	{

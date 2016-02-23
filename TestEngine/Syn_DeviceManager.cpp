@@ -49,6 +49,12 @@ uint32_t Syn_DeviceManager::Open()
 		return error;
 	}
 
+	if (NULL != _pDeviceSerNumArray)
+	{
+		delete[] _pDeviceSerNumArray;
+		_pDeviceSerNumArray = NULL;
+	}
+
 	_pDeviceSerNumArray = new uint32_t[_deviceCount];
 	error = MPC_GetDeviceSerialNumList(_pDeviceSerNumArray);
 	if (error != MpcApiError::ERR_OK)

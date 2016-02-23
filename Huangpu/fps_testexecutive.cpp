@@ -10,6 +10,7 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 , _iRealDeviceCounts(0)
 //, _logfile("sys.log")
 , _pSyn_LocalSettingsDlg(NULL)
+, _pSyn_DeviceManager(NULL)
 {
 	ui.setupUi(this);
 	ui.TestTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -60,7 +61,15 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 
 FPS_TestExecutive::~FPS_TestExecutive()
 {
-	_ListOfSitePtr.clear();
+	if (0 != _ListOfSitePtr.size())
+	{
+		for (size_t i = _ListOfSitePtr.size(); i >= 1; i--)
+		{
+			delete _ListOfSitePtr[i - 1];
+			_ListOfSitePtr[i - 1] = NULL;
+		}
+		_ListOfSitePtr.clear();
+	}
 
 	//_logfile.close();
 
@@ -68,6 +77,12 @@ FPS_TestExecutive::~FPS_TestExecutive()
 	{
 		delete _pSyn_LocalSettingsDlg;
 		_pSyn_LocalSettingsDlg = NULL;
+	}
+
+	if (NULL != _pSyn_DeviceManager)
+	{
+		delete _pSyn_DeviceManager;
+		_pSyn_DeviceManager = NULL;
 	}
 }
 
@@ -77,7 +92,6 @@ void FPS_TestExecutive::Initialize()
 
 	_ListOfSitePtr.clear();
 	//std::cout.rdbuf(_logfile.rdbuf());
-
 
 	_pSyn_LocalSettingsDlg = new Syn_LocalSettingsDlg();
 	_pSyn_LocalSettingsDlg->setHidden(true);
@@ -137,7 +151,7 @@ void FPS_TestExecutive::Initialize()
 	delete pSyn_LocalSettingConfig;
 	pSyn_LocalSettingConfig = NULL;
 
-	//Config file
+	//Config file & SiteList
 	QString strConfigFile = QString::fromStdString(_LocalSettingsInfo._strSysConfigFilePath);
 	rc = ConstructSiteList(strConfigFilePath,true);
 	if (!rc)
@@ -232,7 +246,32 @@ bool FPS_TestExecutive::ConstructSiteList(QString strConfigFilePath,bool SendMsg
 		_ListOfSitePtr.clear();
 	}
 
-	rc = Syn_Site::ConstructSiteList(strConfigFilePath.toStdString(), _ListOfSitePtr);
+	if (NULL == _pSyn_DeviceManager)
+	{
+		_pSyn_DeviceManager = new Syn_DeviceManager();
+	}
+
+	uint32_t uiResult = _pSyn_DeviceManager->Open();
+	if (Syn_ExceptionCode::Syn_OK != uiResult)
+	{
+		return false;
+	}
+
+	std::vector<uint32_t> serialNbList;
+	_pSyn_DeviceManager->GetSerialNumberList(serialNbList);
+	if (0 == serialNbList.size())
+	{
+		return false;
+	}
+
+	for (size_t i = 0; i < serialNbList.size(); i++)
+	{
+		Syn_Site *pSyn_SiteInstance = new Syn_Site(i + 1, serialNbList[i], strConfigFilePath.toStdString());
+		pSyn_SiteInstance->Init();
+		_ListOfSitePtr.push_back(pSyn_SiteInstance);
+	}
+
+	//rc = Syn_Site::ConstructSiteList(strConfigFilePath.toStdString(), _ListOfSitePtr);
 	size_t ilistCounts = _ListOfSitePtr.size();
 	if (0 == ilistCounts)
 	{

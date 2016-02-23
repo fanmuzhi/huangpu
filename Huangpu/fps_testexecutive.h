@@ -12,16 +12,24 @@
 //#include "MpcApiDll.h"
 
 //Local
+#include "Syn_LocalSettingConfig.h"
 #include "Syn_Thread.h"
 #include "Syn_LocalSettingsDlg.h"
 #include "Ui_Syn_LocalSettingsDlg.h"
 #include "Syn_ThreadDebug.h"//for debug
 
 //DutUtls
-#include "Syn_Site.h"
 #include "Syn_Dut.h"
 #include "Syn_DutCtrl.h"
-#include "Syn_Config.h"
+#include "Syn_Exception.h"
+
+//TestEngine
+#include "Syn_Site.h"
+#include "Syn_DeviceManager.h"
+
+extern "C" {
+#include "SYN_TestUtils.h"
+};
 
 //std
 #include <sstream>
@@ -29,17 +37,10 @@
 #include <vector>
 #include <iostream>
 #include <string>
+using namespace std;
 
 //Construct Device Counts(large enough)
 #define DeviceCounts 20
-
-extern "C" {
-#include "SYN_TestUtils.h"
-};
-
-#include "Syn_LocalSettingConfig.h"
-
-using namespace std;
 
 class FPS_TestExecutive : public QMainWindow
 {
@@ -111,6 +112,8 @@ private:
 
 	Syn_ThreadDebug _threadForDebugCalibrate;
 
+
+	Syn_DeviceManager *_pSyn_DeviceManager;
 };
 
 #endif // FPS_TESTEXECUTIVE_H
