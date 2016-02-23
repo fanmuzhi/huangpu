@@ -67,6 +67,9 @@ public Q_SLOTS:
 
 	void LocalSettingsOKAction();
 
+	void ModifySiteCounts();
+
+
 	void RunningTest();
 
 	//void ReceiveDutTestResultSlot(void * pDutTestResult);

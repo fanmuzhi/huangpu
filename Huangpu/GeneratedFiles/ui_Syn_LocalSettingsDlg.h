@@ -18,7 +18,9 @@
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
@@ -52,6 +54,10 @@ public:
     QGridLayout *gridLayout_6;
     QTableWidget *SiteTableWidget;
     QPushButton *UpdateSitePushButton;
+    QFrame *frame_2;
+    QHBoxLayout *horizontalLayout;
+    QLabel *SiteCountsSettingLabel;
+    QLineEdit *SiteCountsLineEdit;
     QFrame *frame;
     QGridLayout *gridLayout_7;
     QPushButton *CancelPushButton;
@@ -63,7 +69,7 @@ public:
         if (Syn_LocalSettingsDlg->objectName().isEmpty())
             Syn_LocalSettingsDlg->setObjectName(QStringLiteral("Syn_LocalSettingsDlg"));
         Syn_LocalSettingsDlg->setWindowModality(Qt::ApplicationModal);
-        Syn_LocalSettingsDlg->resize(418, 517);
+        Syn_LocalSettingsDlg->resize(489, 632);
         gridLayout_8 = new QGridLayout(Syn_LocalSettingsDlg);
         gridLayout_8->setSpacing(6);
         gridLayout_8->setContentsMargins(11, 11, 11, 11);
@@ -166,12 +172,33 @@ public:
         SiteTableWidget->setHorizontalHeaderItem(2, __qtablewidgetitem2);
         SiteTableWidget->setObjectName(QStringLiteral("SiteTableWidget"));
 
-        gridLayout_6->addWidget(SiteTableWidget, 0, 0, 1, 1);
+        gridLayout_6->addWidget(SiteTableWidget, 1, 0, 1, 1);
 
         UpdateSitePushButton = new QPushButton(SiteGroupBox);
         UpdateSitePushButton->setObjectName(QStringLiteral("UpdateSitePushButton"));
 
-        gridLayout_6->addWidget(UpdateSitePushButton, 1, 0, 1, 1);
+        gridLayout_6->addWidget(UpdateSitePushButton, 2, 0, 1, 1);
+
+        frame_2 = new QFrame(SiteGroupBox);
+        frame_2->setObjectName(QStringLiteral("frame_2"));
+        frame_2->setFrameShape(QFrame::StyledPanel);
+        frame_2->setFrameShadow(QFrame::Raised);
+        horizontalLayout = new QHBoxLayout(frame_2);
+        horizontalLayout->setSpacing(6);
+        horizontalLayout->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        SiteCountsSettingLabel = new QLabel(frame_2);
+        SiteCountsSettingLabel->setObjectName(QStringLiteral("SiteCountsSettingLabel"));
+
+        horizontalLayout->addWidget(SiteCountsSettingLabel);
+
+        SiteCountsLineEdit = new QLineEdit(frame_2);
+        SiteCountsLineEdit->setObjectName(QStringLiteral("SiteCountsLineEdit"));
+
+        horizontalLayout->addWidget(SiteCountsLineEdit);
+
+
+        gridLayout_6->addWidget(frame_2, 0, 0, 1, 1);
 
 
         gridLayout_8->addWidget(SiteGroupBox, 2, 0, 1, 1);
@@ -228,6 +255,7 @@ public:
         QTableWidgetItem *___qtablewidgetitem2 = SiteTableWidget->horizontalHeaderItem(2);
         ___qtablewidgetitem2->setText(QApplication::translate("Syn_LocalSettingsDlg", "ADC Offsets", 0));
         UpdateSitePushButton->setText(QApplication::translate("Syn_LocalSettingsDlg", "Update", 0));
+        SiteCountsSettingLabel->setText(QApplication::translate("Syn_LocalSettingsDlg", "Number of Sites:", 0));
         CancelPushButton->setText(QApplication::translate("Syn_LocalSettingsDlg", "Cancel", 0));
         OKPushButton->setText(QApplication::translate("Syn_LocalSettingsDlg", "OK", 0));
     } // retranslateUi

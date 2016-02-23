@@ -10,6 +10,8 @@ Syn_LocalSettingsDlg::Syn_LocalSettingsDlg(QWidget *parent)
 
 	setWindowFlags(Qt::WindowCloseButtonHint);
 
+	ui->SiteCountsLineEdit->setValidator(new QIntValidator(0, 20, this));
+
 	ui->SiteTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	ui->SiteTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows); 
 	ui->SiteTableWidget->setSelectionMode(QAbstractItemView::SingleSelection); 

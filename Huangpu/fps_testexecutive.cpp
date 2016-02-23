@@ -16,7 +16,7 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	ui.TestTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	ui.TestTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
 	ui.TestTableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
-	ui.TestTableWidget->setRowHeight(5, 200);
+	//ui.TestTableWidget->setRowHeight(5, 200);
 	ui.TestTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	//ui.TestTableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 	ui.TestTableWidget->verticalHeader()->setStretchLastSection(true);
@@ -31,6 +31,9 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->UpdateSitePushButton, SIGNAL(clicked()), this, SLOT(UpdateSiteLocalSettings()));
 	
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->OKPushButton, SIGNAL(clicked()), this, SLOT(LocalSettingsOKAction()));
+
+	QObject::connect(_pSyn_LocalSettingsDlg->ui->SiteCountsLineEdit, SIGNAL(editingFinished()), this, SLOT(ModifySiteCounts()));
+
 
 
 	//Testing Operation
@@ -480,6 +483,39 @@ void FPS_TestExecutive::LocalSettingsOKAction()
 
 	_pSyn_LocalSettingsDlg->hide();
 }
+
+void FPS_TestExecutive::ModifySiteCounts()
+{
+	if (NULL == _pSyn_DeviceManager)
+		return;
+
+	QString strUserSiteCounts = _pSyn_LocalSettingsDlg->ui->SiteCountsLineEdit->text();
+	int iUserSiteCounts = strUserSiteCounts.toInt();
+
+	std::vector<uint32_t> listOfSerialNumber;
+	_pSyn_DeviceManager->GetSerialNumberList(listOfSerialNumber);
+	/*if (iUserSiteCounts > listOfSerialNumber.size())
+	{
+		QMessageBox::critical(_pSyn_LocalSettingsDlg, QString("Error"), QString("The Site Numbers is More than real Device conunts") + QString::number(listOfSerialNumber.size()) + QString("!"));
+		return;
+	}*/
+
+	int iCurrentRowCounts = _pSyn_LocalSettingsDlg->ui->SiteTableWidget->rowCount();
+	if (iCurrentRowCounts < iUserSiteCounts)
+	{
+		for (unsigned int i = iCurrentRowCounts; i <= iUserSiteCounts - iCurrentRowCounts+1; i++)
+		{
+			_pSyn_LocalSettingsDlg->ui->SiteTableWidget->insertRow(i);
+			_pSyn_LocalSettingsDlg->ui->SiteTableWidget->setItem(i , 0, new QTableWidgetItem(QString::number(i+1)));
+		}
+	}
+
+}
+
+
+
+
+
 
 void FPS_TestExecutive::RunningTest()
 {
