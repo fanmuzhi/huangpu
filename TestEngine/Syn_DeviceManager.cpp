@@ -82,19 +82,30 @@ uint32_t Syn_DeviceManager::UpdateFirmware()
 
 	if (NULL != _pDeviceSerNumArray)
 	{
+		Syn_DutCtrl * _pSyn_DutCtrl = NULL;
 		try
 		{
 			for (auto i = 0; i < _deviceCount; i++)
 			{
-				Syn_DutCtrl * _pSyn_DutCtrl = NULL;
-				Syn_DutCtrl::CreateDutCtrlInstance(DutController::Syn_MPC04, _pDeviceSerNumArray[i], _pSyn_DutCtrl);
+				uint32_t rc = Syn_DutCtrl::CreateDutCtrlInstance(DutController::Syn_MPC04, _pDeviceSerNumArray[i], _pSyn_DutCtrl);
+				if (_pSyn_DutCtrl == NULL)
+				{
+					return rc;
+				}
+
 				_pSyn_DutCtrl->UpdateMPC04Firmware();
+
 				delete _pSyn_DutCtrl;
 				_pSyn_DutCtrl = NULL;
 			}
 		}
 		catch (Syn_Exception ex)
 		{
+			if (_pSyn_DutCtrl != NULL)
+			{
+				delete _pSyn_DutCtrl;
+				_pSyn_DutCtrl = NULL;
+			}
 			err = ex.GetError();
 		}
 	}
