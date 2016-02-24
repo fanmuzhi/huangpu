@@ -84,7 +84,7 @@ public:
 
 	void Run();						//main test entrance.
 	void GetVersion();				//for debug.
-	void ReadOTP();					//for debug.
+	uint32_t ReadOTP();					//for debug.
 	void Calibration();				//for debug
 	void GetFingerprintImage();		//for debug
 	void PowerOff();//debug

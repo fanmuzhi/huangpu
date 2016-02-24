@@ -108,6 +108,15 @@ uint32_t Syn_DeviceManager::UpdateFirmware()
 			}
 			err = ex.GetError();
 		}
+		catch (...)
+		{
+			if (_pSyn_DutCtrl != NULL)
+			{
+				delete _pSyn_DutCtrl;
+				_pSyn_DutCtrl = NULL;
+			}
+			err = Syn_ExceptionCode::Syn_UnknownError;
+		}
 	}
 	
 	return err;

@@ -270,7 +270,7 @@ bool FPS_TestExecutive::ConstructSiteList(QString strConfigFilePath,bool SendMsg
 	for (size_t i = 0; i < serialNbList.size(); i++)
 	{
 		Syn_Site *pSyn_SiteInstance = new Syn_Site(i + 1, serialNbList[i], strConfigFilePath.toStdString());
-		pSyn_SiteInstance->Init();
+		//pSyn_SiteInstance->Init();
 		_ListOfSitePtr.push_back(pSyn_SiteInstance);
 	}
 
@@ -739,53 +739,54 @@ void FPS_TestExecutive::ReceiveSiteInfoSlot(void * pSiteInfo)
 
 }
 
+
 void FPS_TestExecutive::GetVersionForDutDump()
 {
-	int iSiteCurrentIndex = ui.comboBox->currentIndex();
-	if (iSiteCurrentIndex<0)
-	{
-		cout << "Error:FPS_TestExecutive::GetVersionForDutDump() - iSiteCurrentIndex is less than 0!" << endl;
-		return;
-	}
+//	int iSiteCurrentIndex = ui.comboBox->currentIndex();
+//	if (iSiteCurrentIndex<0)
+//	{
+//		cout << "Error:FPS_TestExecutive::GetVersionForDutDump() - iSiteCurrentIndex is less than 0!" << endl;
+//		return;
+//	}
 
-	size_t iSiteCounts = _ListOfSitePtr.size();
-	if (0 == iSiteCounts)
-	{
-		cout << "Error:FPS_TestExecutive::GetVersionForDutDump() - iSiteCounts is 0!" << endl;
-		return;
-	}
+//	size_t iSiteCounts = _ListOfSitePtr.size();
+//	if (0 == iSiteCounts)
+//	{
+//		cout << "Error:FPS_TestExecutive::GetVersionForDutDump() - iSiteCounts is 0!" << endl;
+//		return;
+//	}
 
-	if (iSiteCurrentIndex > iSiteCounts)
-	{
-		cout << "Error:FPS_TestExecutive::GetVersionForDutDump() - iSiteCounts is less than iSiteCurrentIndex!" << endl;
-		return;
-	}
+//	if (iSiteCurrentIndex > iSiteCounts)
+//	{
+//		cout << "Error:FPS_TestExecutive::GetVersionForDutDump() - iSiteCounts is less than iSiteCurrentIndex!" << endl;
+//		return;
+//	}
 
-	Syn_Site *pSelectedSite = _ListOfSitePtr[iSiteCurrentIndex];
-	if (NULL == pSelectedSite)
-	{
-		cout << "Error:FPS_TestExecutive::GetVersionForDutDump() - pSelectedSite is NULL!" << endl;
-		return;
-	}
+//	Syn_Site *pSelectedSite = _ListOfSitePtr[iSiteCurrentIndex];
+//	if (NULL == pSelectedSite)
+//	{
+//		cout << "Error:FPS_TestExecutive::GetVersionForDutDump() - pSelectedSite is NULL!" << endl;
+//		return;
+//	}
 
-	pSelectedSite->GetVersion();
+//	pSelectedSite->GetVersion();
 
-	Syn_SiteInfo oSiteInfo;
-	pSelectedSite->GetSiteInfo(oSiteInfo);
-	Syn_DutTestInfo *pDutTestInfo = NULL;
-	pSelectedSite->GetTestInfo(pDutTestInfo);
+//	Syn_SiteInfo oSiteInfo;
+//	pSelectedSite->GetSiteInfo(oSiteInfo);
+//	Syn_DutTestInfo *pDutTestInfo = NULL;
+//	pSelectedSite->GetTestInfo(pDutTestInfo);
 
-	ui.textBrowser->clear();
-	ui.textBrowser->append(QString("SiteNumber:") + QString::number(oSiteInfo._uiSiteNumber));
-	ui.textBrowser->append(QString("SerialNumber:") + QString::number(oSiteInfo._uiSerialNumber));
-	ui.textBrowser->append(QString("Version:"));
-	for (int i = 1; i <= VERSION_SIZE / 4; i++)
-	{
-		int StartPos = (i - 1) * 4;
-		int EndPos = i * 4 - 1;
+//	ui.textBrowser->clear();
+//	ui.textBrowser->append(QString("SiteNumber:") + QString::number(oSiteInfo._uiSiteNumber));
+//	ui.textBrowser->append(QString("SerialNumber:") + QString::number(oSiteInfo._uiSerialNumber));
+//	ui.textBrowser->append(QString("Version:"));
+//	for (int i = 1; i <= VERSION_SIZE / 4; i++)
+//	{
+//		int StartPos = (i - 1) * 4;
+//		int EndPos = i * 4 - 1;
 
-		Display(pDutTestInfo->_getVerInfo._GerVerArray, StartPos, EndPos);
-	}
+//		Display(pDutTestInfo->_getVerInfo._GerVerArray, StartPos, EndPos);
+//	}
 
 }
 
@@ -818,12 +819,29 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 		return;
 	}
 
-	pSelectedSite->ReadOTP();
+	uint32_t rc = pSelectedSite->Init();
+	if (rc != 0)
+	{
+		QMessageBox::information(this, QString("Error"), QString("OTPDump Error:") + QString::number(rc));
+		return;
+	}
+
+	rc = pSelectedSite->ReadOTP();
+	if (rc != 0)
+	{
+		QMessageBox::information(this, QString("Error"), QString("OTPDump Error:") + QString::number(rc));
+		return;
+	}
+	Syn_DutTestInfo *oDutTestInfo = NULL;
+	rc = pSelectedSite->GetTestInfo(oDutTestInfo);
+	if (rc != 0)
+	{
+		QMessageBox::information(this, QString("Error"), QString("OTPDump Error:") + QString::number(rc));
+		return;
+	}
 
 	Syn_SiteInfo oSiteInfo;
 	pSelectedSite->GetSiteInfo(oSiteInfo);
-	Syn_DutTestInfo *oDutTestInfo = NULL;
-	pSelectedSite->GetTestInfo(oDutTestInfo);
 
 	ui.textBrowser->clear();
 	ui.textBrowser->append(QString("SiteNumber:") + QString::number(oSiteInfo._uiSiteNumber));
@@ -862,6 +880,8 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 		int EndPos = i * 8 - 1;
 		Display(oDutTestInfo->_otpInfo._MainSector1Array, StartPos, EndPos);
 	}
+
+	pSelectedSite->Close();
 }
 
 void FPS_TestExecutive::PushCablicationImageButton()

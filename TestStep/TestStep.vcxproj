@@ -89,6 +89,7 @@
     <ClInclude Include="Syn_TestStep.h" />
     <ClInclude Include="Syn_TestStepFactory.h" />
     <ClInclude Include="Syn_ViperModule.h" />
+    <ClInclude Include="Ts_OTPCheck.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Syn_Calibrate.cpp" />
@@ -97,6 +98,7 @@
     <ClCompile Include="Syn_Module.cpp" />
     <ClCompile Include="Syn_TestStepFactory.cpp" />
     <ClCompile Include="Syn_ViperModule.cpp" />
+    <ClCompile Include="Ts_OTPCheck.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -161,11 +161,22 @@ uint32_t Syn_Site::Init()
 	_pSyn_Dut->SetPatchInfo(_SysConfig._listPatchInfo);
 
 	//fill info
-	//_pSyn_Dut->InitData(_SysConfig);
+	_pSyn_Dut->InitData(_SysConfig);
 
 	_sitState = Idle;
 
 	return Syn_ExceptionCode::Syn_OK;
+}
+
+uint32_t Syn_Site::Close()
+{
+	delete _pSyn_Dut;
+	_pSyn_Dut = NULL;
+
+	_sitState = Closed;
+
+	return Syn_ExceptionCode::Syn_OK;
+	
 }
 
 uint32_t Syn_Site::ExecuteScript(uint8_t scriptID)
@@ -196,7 +207,7 @@ uint32_t Syn_Site::ExecuteScript(uint8_t scriptID)
 void Syn_Site::RunScript(uint8_t scriptID)
 {
 
-	_pSyn_Dut->InitData(_SysConfig);
+	//_pSyn_Dut->InitData(_SysConfig);
 
 	Syn_TestScript ExceteScriptInfo;
 	bool rc = GetTestScriptInfo(scriptID, ExceteScriptInfo);
@@ -528,62 +539,49 @@ void Syn_Site::GetVersion()
 }
 
 
-void Syn_Site::ReadOTP()
+uint32_t Syn_Site::ReadOTP()
 {
-	if (NULL == _pSyn_Dut)
+	Syn_TestStep *pTestStep = NULL;
+
+	bool rc = Syn_TestStepFactory::CreateTestStepInstance("OTPCheck", _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
+	if (!rc || NULL == pTestStep)
 	{
-		LOG(ERROR) << "Error:Syn_Site::Run() - _pSyn_Dut is NULL!" << endl;
-		return;
+		return Syn_ExceptionCode::Syn_TestStepConfigError;
 	}
-	uint8_t arMS0[BS0_SIZE + BS1_SIZE + MS0_SIZE + MS1_SIZE] = { 0 };
-	int iSize(BS0_SIZE + BS1_SIZE + MS0_SIZE + MS1_SIZE);
+
 	try
 	{
-		/*_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
-		_pSyn_Dut->ReadOTP(arMS0, iSize);
-		_pSyn_Dut->PowerOff();*/
+		pTestStep->SetUp();
+		pTestStep->Excute();
+		pTestStep->CleanUp();
+
+		delete pTestStep;
+		pTestStep = NULL;
 
 	}
 	catch (Syn_Exception ex)
 	{
-		//_pSyn_Dut->PowerOff();
-		LOG(ERROR) << "Error:ReadOTP is failed!" << std::endl;
+		try
+		{
+			pTestStep->CleanUp();
+		}
+		catch (...){}
+		delete pTestStep;
+		pTestStep = NULL;
+		LOG(ERROR) << "Error:Calibration is failed!";
 		_siteInfo._strErrorMessage = ex.GetDescription();
-
-		return;
+		return ex.GetError();
 	}
-
-	//Fill
-	for (int i = 0; i < BS0_SIZE; i++)
-	{
-		//(_DutTestInfo._otpInfo._BootSector0Array)[i] = arMS0[i];
-		(_pSyn_Dut->_pSyn_DutTestInfo->_otpInfo._BootSector0Array)[i] = arMS0[i];
-	}
-
-	for (int i = 0; i < BS1_SIZE; i++)
-	{
-		//(_DutTestInfo._otpInfo._BootSector1Array)[i] = arMS0[i + BS0_SIZE];
-		(_pSyn_Dut->_pSyn_DutTestInfo->_otpInfo._BootSector1Array)[i] = arMS0[i + BS0_SIZE];
-	}
-
-	for (int i = 0; i < MS0_SIZE; i++)
-	{
-		//(_DutTestInfo._otpInfo._MainSector0Array)[i] = arMS0[i + BS0_SIZE + BS1_SIZE];
-		(_pSyn_Dut->_pSyn_DutTestInfo->_otpInfo._MainSector0Array)[i] = arMS0[i + BS0_SIZE + BS1_SIZE];
-	}
-	
-	for (int i = 0; i < MS1_SIZE; i++)
-	{
-		//(_DutTestInfo._otpInfo._MainSector1Array)[i] = arMS0[i + BS0_SIZE + BS1_SIZE + MS0_SIZE];
-		(_pSyn_Dut->_pSyn_DutTestInfo->_otpInfo._MainSector1Array)[i] = arMS0[i + BS0_SIZE + BS1_SIZE + MS0_SIZE];
-	}
-
+	return Syn_ExceptionCode::Syn_OK;
 }
+
+
 
 
 
 void Syn_Site::Calibration()
 {
+	this->Init();
 	/*if (NULL != _pTempTestStep)
 	{
 		delete _pTempTestStep;
@@ -615,11 +613,13 @@ void Syn_Site::Calibration()
 	}
 	catch (Syn_Exception ex)
 	{
-		//_pSyn_Dut->PowerOff();
+		delete pTestStep;
+		pTestStep = NULL;
 		LOG(ERROR) << "Error:Calibration is failed!";
 		_siteInfo._strErrorMessage = ex.GetDescription();
 		return;
 	}
+	this->Close();
 }
 
 void Syn_Site::GetFingerprintImage()
@@ -652,6 +652,8 @@ void Syn_Site::GetFingerprintImage()
 	}
 	catch (Syn_Exception ex)
 	{
+		delete pTestStep;
+		pTestStep = NULL;
 		//_pSyn_Dut->PowerOff();
 		LOG(ERROR) << "Error:GetFingerprintImage is failed!";
 		_siteInfo._strErrorMessage = ex.GetDescription();

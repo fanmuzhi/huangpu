@@ -2,6 +2,7 @@
 #include "Syn_TestStepFactory.h"
 #include "Syn_FingerprintTest.h"
 #include "Syn_Calibrate.h"
+#include "Ts_OTPCheck.h"
 
 Syn_TestStepFactory::Syn_TestStepFactory()
 {
@@ -28,6 +29,10 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, Sy
 	if (std::string("Calibrate") == strTestStepName)
 	{
 		opTestStepInstance = new Syn_Calibrate(strTestStepName, pDutCtrl, pDut);
+	}
+	if (std::string("OTPCheck") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_OTPCheck(strTestStepName, pDutCtrl, pDut);
 	}
 	else
 	{

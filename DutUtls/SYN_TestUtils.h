@@ -93,7 +93,7 @@ typedef struct
 	uint8_t _BootSector0Array[BS0_SIZE];
 	uint8_t _BootSector1Array[BS1_SIZE];
 	
-	uint8_t _MainSector0Array[MS1_SIZE];//MS0_SIZE
+	uint8_t _MainSector0Array[MS0_SIZE];//MS0_SIZE
 	uint8_t _MainSector1Array[MS1_SIZE];
 }OTPInfo;
 
