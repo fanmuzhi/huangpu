@@ -10,8 +10,10 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 , _iRealDeviceCounts(0)
 //, _logfile("sys.log")
 , _pSyn_LocalSettingsDlg(NULL)
+, _pSyn_SerialNumberManageDlg(NULL)
 , _pSyn_DeviceManager(NULL)
 {
+	//ui setting
 	ui.setupUi(this);
 	ui.TestTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	ui.TestTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -20,9 +22,10 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	ui.TestTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	//ui.TestTableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 	ui.TestTableWidget->verticalHeader()->setStretchLastSection(true);
+
 	Initialize();
 
-	//LocalSettings
+	//LocalSettings Dialog
 	QObject::connect(ui.LocalSettingsPushButton, SIGNAL(clicked()), this, SLOT(CreateLocalSettings()));
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->CancelPushButton, SIGNAL(clicked()), this, SLOT(CloseLocalSettingsDialog()));
 
@@ -32,9 +35,12 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->OKPushButton, SIGNAL(clicked()), this, SLOT(LocalSettingsOKAction()));
 
-	QObject::connect(_pSyn_LocalSettingsDlg->ui->SiteCountsLineEdit, SIGNAL(editingFinished()), this, SLOT(ModifySiteCounts()));
+	QObject::connect(_pSyn_LocalSettingsDlg->ui->SiteCountsLineEdit, SIGNAL(editingFinished()), this, SLOT(ModifySiteCounts()));//editingFinished
+
+	QObject::connect(_pSyn_LocalSettingsDlg->ui->ModifySerialNumberPushButton, SIGNAL(clicked()), this, SLOT(ModifySerialNumber()));
 
 
+	//SerialNumber Manage Dialog
 
 	//Testing Operation
 	QObject::connect(ui.pushButtonRun, SIGNAL(clicked()), this, SLOT(RunningTest()));
@@ -80,6 +86,12 @@ FPS_TestExecutive::~FPS_TestExecutive()
 	{
 		delete _pSyn_LocalSettingsDlg;
 		_pSyn_LocalSettingsDlg = NULL;
+	}
+
+	if (NULL != _pSyn_SerialNumberManageDlg)
+	{
+		delete _pSyn_SerialNumberManageDlg;
+		_pSyn_SerialNumberManageDlg = NULL;
 	}
 
 	if (NULL != _pSyn_DeviceManager)
@@ -503,14 +515,89 @@ void FPS_TestExecutive::ModifySiteCounts()
 	int iCurrentRowCounts = _pSyn_LocalSettingsDlg->ui->SiteTableWidget->rowCount();
 	if (iCurrentRowCounts < iUserSiteCounts)
 	{
-		for (unsigned int i = iCurrentRowCounts; i <= iUserSiteCounts - iCurrentRowCounts+1; i++)
+		for (unsigned int i = iCurrentRowCounts+1; i <= iUserSiteCounts; i++)
 		{
-			_pSyn_LocalSettingsDlg->ui->SiteTableWidget->insertRow(i);
-			_pSyn_LocalSettingsDlg->ui->SiteTableWidget->setItem(i , 0, new QTableWidgetItem(QString::number(i+1)));
+			_pSyn_LocalSettingsDlg->ui->SiteTableWidget->insertRow(i-1);
+			_pSyn_LocalSettingsDlg->ui->SiteTableWidget->setItem(i - 1, 0, new QTableWidgetItem(QString::number(i)));
+			_pSyn_LocalSettingsDlg->ui->SiteTableWidget->setItem(i - 1, 1, new QTableWidgetItem());
+			_pSyn_LocalSettingsDlg->ui->SiteTableWidget->setItem(i - 1, 2, new QTableWidgetItem());
+		}
+	}
+	else if (iCurrentRowCounts > iUserSiteCounts)
+	{
+		for (unsigned int i = iCurrentRowCounts; i > iUserSiteCounts; i--)
+		{
+			_pSyn_LocalSettingsDlg->ui->SiteTableWidget->removeRow(i - 1);
 		}
 	}
 
 }
+
+void FPS_TestExecutive::ModifySerialNumber()
+{
+	bool focus = _pSyn_LocalSettingsDlg->ui->SiteTableWidget->isItemSelected(_pSyn_LocalSettingsDlg->ui->SiteTableWidget->currentItem());
+	if (!focus)
+		return;
+
+	int iSelectRowIndex = _pSyn_LocalSettingsDlg->ui->SiteTableWidget->currentRow();
+
+	if (NULL != _pSyn_SerialNumberManageDlg)
+		return;
+
+	if (NULL == _pSyn_DeviceManager)
+		return;
+
+	_pSyn_SerialNumberManageDlg = new Syn_SerialNumberManageDlg();
+	_pSyn_SerialNumberManageDlg->setHidden(false);
+
+	_pSyn_DeviceManager->Open();
+	std::vector<uint32_t> listOfSerialNumber;
+	_pSyn_DeviceManager->GetSerialNumberList(listOfSerialNumber);
+
+	_pSyn_SerialNumberManageDlg->ui.SerialNumberTableWidget->setRowCount(listOfSerialNumber.size());
+	for (size_t i = 1; i <= listOfSerialNumber.size(); i++)
+	{
+		_pSyn_SerialNumberManageDlg->ui.SerialNumberTableWidget->setItem(i - 1, 0, new QTableWidgetItem(QString::number(listOfSerialNumber[i-1])));
+	}
+
+	QObject::connect(_pSyn_SerialNumberManageDlg->ui.OKPushButton, SIGNAL(clicked()), this, SLOT(ConfirmSerialNumberForSite()));
+
+}
+
+void FPS_TestExecutive::ConfirmSerialNumberForSite()
+{
+	bool focus = _pSyn_SerialNumberManageDlg->ui.SerialNumberTableWidget->isItemSelected(_pSyn_SerialNumberManageDlg->ui.SerialNumberTableWidget->currentItem());
+	if (!focus)
+	{
+		QMessageBox::critical(_pSyn_SerialNumberManageDlg, QString("Error"), QString("Select a SerialNumber for Site,please!"));
+		return;
+	}
+
+	int iSerialNumberRowIndex = _pSyn_SerialNumberManageDlg->ui.SerialNumberTableWidget->currentRow();
+	QString strSerialNumber = _pSyn_SerialNumberManageDlg->ui.SerialNumberTableWidget->item(iSerialNumberRowIndex, 0)->text();
+
+	int iSiteRowIndex = _pSyn_LocalSettingsDlg->ui->SiteTableWidget->currentRow();
+	_pSyn_LocalSettingsDlg->ui->SiteTableWidget->setItem(iSiteRowIndex, 1, new QTableWidgetItem(strSerialNumber));
+	_pSyn_LocalSettingsDlg->ui->SiteTableWidget->setItem(iSiteRowIndex, 2, new QTableWidgetItem(QString("0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ")));
+
+	_pSyn_SerialNumberManageDlg->hide();
+	delete _pSyn_SerialNumberManageDlg;
+	_pSyn_SerialNumberManageDlg = NULL;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -886,7 +973,7 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 
 void FPS_TestExecutive::PushCablicationImageButton()
 {
-	int iSiteCurrentIndex = ui.comboBox->currentIndex();
+	int iSiteCurrentIndex = ui.ImageSiteComboBox->currentIndex();
 	if (iSiteCurrentIndex < 0)
 		return;
 
@@ -953,7 +1040,7 @@ void FPS_TestExecutive::ImageCalibration(void * pSiteInfo)
 		}
 	}
 
-	if (!synFind)
+	if (!synFind || NULL == pCurrentDutTestResult)
 		return;
 
 	ui.CalibrationImageLabel->clear();
@@ -1017,7 +1104,7 @@ void FPS_TestExecutive::ImageCalibration(void * pSiteInfo)
 
 void FPS_TestExecutive::PushFigerprintImageButton()
 {
-	int iSiteCurrentIndex = ui.comboBox->currentIndex();
+	int iSiteCurrentIndex = ui.ImageSiteComboBox->currentIndex();
 	if (iSiteCurrentIndex < 0)
 		return;
 
@@ -1084,7 +1171,7 @@ void FPS_TestExecutive::FigerprintImage(void * pSiteInfo)
 		}
 	}
 
-	if (!synFind)
+	if (!synFind || NULL == pCurrentDutTestResult)
 		return;
 
 	std::string strErrorMsg = pSyn_SiteInfo->_strErrorMessage;

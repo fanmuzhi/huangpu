@@ -8,7 +8,7 @@ Syn_LocalSettingsDlg::Syn_LocalSettingsDlg(QWidget *parent)
 	ui = new Ui::Syn_LocalSettingsDlg();
 	ui->setupUi(this);
 
-	setWindowFlags(Qt::WindowCloseButtonHint);
+	//setWindowFlags(Qt::WindowCloseButtonHint);
 
 	ui->SiteCountsLineEdit->setValidator(new QIntValidator(0, 20, this));
 

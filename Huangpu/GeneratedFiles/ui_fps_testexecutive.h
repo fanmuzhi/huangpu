@@ -274,7 +274,7 @@ public:
         QTableWidgetItem *___qtablewidgetitem1 = TestTableWidget->verticalHeaderItem(1);
         ___qtablewidgetitem1->setText(QApplication::translate("FPS_TestExecutiveClass", "Status", 0));
         QTableWidgetItem *___qtablewidgetitem2 = TestTableWidget->verticalHeaderItem(2);
-        ___qtablewidgetitem2->setText(QApplication::translate("FPS_TestExecutiveClass", "Test Steps", 0));
+        ___qtablewidgetitem2->setText(QApplication::translate("FPS_TestExecutiveClass", "Test Step", 0));
         QTableWidgetItem *___qtablewidgetitem3 = TestTableWidget->verticalHeaderItem(3);
         ___qtablewidgetitem3->setText(QApplication::translate("FPS_TestExecutiveClass", "Result(Pass/Fail)", 0));
         QTableWidgetItem *___qtablewidgetitem4 = TestTableWidget->verticalHeaderItem(4);

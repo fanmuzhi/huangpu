@@ -72,6 +72,12 @@ protected:
 					emit send((void*)&_SiteInfo);
 					break;
 				}
+				else if (Error == oState)
+				{
+					_pSyn_Site->GetSiteInfo(_SiteInfo);
+					emit send((void*)&_SiteInfo);
+					break;
+				}
 			}
 		}
 		else
