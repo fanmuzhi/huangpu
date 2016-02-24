@@ -77,6 +77,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_Syn_ThreadDebug.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="Syn_SerialNumberManageDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Syn_SerialNumberManageDlg.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Syn_SerialNumberManageDlg.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="fps_testexecutive.h">
@@ -100,6 +109,12 @@
     <CustomBuild Include="Syn_ThreadDebug.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="Syn_SerialNumberManageDlg.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Syn_SerialNumberManageDlg.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_fps_testexecutive.h">
@@ -109,6 +124,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_Syn_LocalSettingsDlg.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_Syn_SerialNumberManageDlg.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>

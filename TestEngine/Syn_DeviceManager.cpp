@@ -8,14 +8,15 @@
 #include "MpcApiError.h"
 //#include "MPCErrors.h"
 
+//third-part
 #include "easylogging++.h"
 
 Syn_DeviceManager::Syn_DeviceManager()
 :_pDeviceSerNumArray(NULL)
+,_OpenFlag(false)
+,_deviceCount(0)
 {
-	_deviceCount = 0;
 }
-
 
 Syn_DeviceManager::~Syn_DeviceManager()
 {
@@ -29,11 +30,17 @@ Syn_DeviceManager::~Syn_DeviceManager()
 uint32_t Syn_DeviceManager::Open()
 {
 	uint32_t error = 0;
-	error = MPC_Initialize();
-	if (error != MpcApiError::ERR_OK)
+
+	if (!_OpenFlag)
 	{
-		LOG(ERROR) << "MPC_Initialize is failed!";
-		return error;
+		error = MPC_Initialize();
+		if (error != MpcApiError::ERR_OK)
+		{
+			LOG(ERROR) << "MPC_Initialize is failed!";
+			return error;
+		}
+
+		_OpenFlag = true;
 	}
 
 	error = MPC_GetNumberOfDevices(&_deviceCount);

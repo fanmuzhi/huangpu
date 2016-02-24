@@ -113,32 +113,6 @@
       <string>Site</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_6">
-      <item row="1" column="0">
-       <widget class="QTableWidget" name="SiteTableWidget">
-        <column>
-         <property name="text">
-          <string>Site Index</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string extracomment="100">Serial Numebr</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>ADC Offsets</string>
-         </property>
-        </column>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QPushButton" name="UpdateSitePushButton">
-        <property name="text">
-         <string>Update</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="0">
        <widget class="QFrame" name="frame_2">
         <property name="frameShape">
@@ -160,6 +134,43 @@
          </item>
         </layout>
        </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QTableWidget" name="SiteTableWidget">
+        <column>
+         <property name="text">
+          <string>Site Index</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string extracomment="100">Serial Numebr</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>ADC Offsets</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QPushButton" name="ModifySerialNumberPushButton">
+          <property name="text">
+           <string>Modify SerialNumber</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="UpdateSitePushButton">
+          <property name="text">
+           <string>Update</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>

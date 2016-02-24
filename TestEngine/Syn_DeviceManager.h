@@ -18,4 +18,6 @@ public:
 private:
 	uint32_t *_pDeviceSerNumArray;
 	int32_t _deviceCount;
+
+	bool _OpenFlag;
 };

@@ -16,6 +16,8 @@
 #include "Syn_Thread.h"
 #include "Syn_LocalSettingsDlg.h"
 #include "Ui_Syn_LocalSettingsDlg.h"
+#include "Syn_SerialNumberManageDlg.h"
+#include "Ui_Syn_SerialNumberManageDlg.h"
 #include "Syn_ThreadDebug.h"//for debug
 
 //DutUtls
@@ -69,6 +71,14 @@ public Q_SLOTS:
 
 	void ModifySiteCounts();
 
+	void ModifySerialNumber();
+
+	void ConfirmSerialNumberForSite();
+
+
+
+
+
 
 	void RunningTest();
 
@@ -98,17 +108,24 @@ private:
 	//variable
 	Ui::FPS_TestExecutiveClass ui;
 
+	//Sites&thread
 	vector<Syn_Site*> _ListOfSitePtr;
 	Syn_Thread _SynThreadArray[DeviceCounts];
 	unsigned int _iRealDeviceCounts;
 
-	bool _bStopTag;
+	//Device Manage(for Construct Sites)
+	Syn_DeviceManager *_pSyn_DeviceManager;
 
-	//std::ofstream _logfile;
 
+	//Son Dialog
 	Syn_LocalSettingsDlg *_pSyn_LocalSettingsDlg;
 
+	Syn_SerialNumberManageDlg *_pSyn_SerialNumberManageDlg;
+
+	//LocalSetting config Operation
 	Syn_LocalSettings _LocalSettingsInfo;
+
+	bool _bStopTag;
 
 	//debug
 	Syn_ThreadDebug _threadForDebug;
@@ -116,7 +133,6 @@ private:
 	Syn_ThreadDebug _threadForDebugCalibrate;
 
 
-	Syn_DeviceManager *_pSyn_DeviceManager;
 };
 
 #endif // FPS_TESTEXECUTIVE_H
