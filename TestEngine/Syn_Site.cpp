@@ -85,8 +85,8 @@ Syn_Site::Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string str
 		return;
 	}
 
-	_siteInfo._uiSerialNumber = _uiSerialNumber;
-	_siteInfo._uiSiteNumber = _iSiteNumber;
+	//_siteInfo._uiSerialNumber = _uiSerialNumber;
+	//_siteInfo._uiSiteNumber = _iSiteNumber;
 
 	if (pConfigOperationInstance)
 	{
@@ -258,7 +258,7 @@ void Syn_Site::RunScript(uint8_t scriptID)
 			{
 				//pTestStep->CleanUp();
 				//LOG(ERROR) << "Error:Calibration is failed!";
-				_siteInfo._strErrorMessage = ex.GetDescription();
+				//_siteInfo._strErrorMessage = ex.GetDescription();
 				errorFlag = true;
 
 				//_uiErrorFlag = Syn_Info::
@@ -369,104 +369,47 @@ uint32_t Syn_Site::GetTestResult(Syn_DutTestResult * &opTestResult)
 	return Syn_ExceptionCode::Syn_DutResultNull;
 }
 
-void Syn_Site::GetSiteInfo(Syn_SiteInfo &oSyn_SiteInfo)
+//void Syn_Site::GetSiteInfo(Syn_SiteInfo &oSyn_SiteInfo)
+//{
+//	oSyn_SiteInfo = _siteInfo;
+//}
+
+uint32_t Syn_Site::SingleTestStep(std::string sTestName)
 {
-	oSyn_SiteInfo = _siteInfo;
+	Syn_TestStep *pTestStep = NULL;
+
+	bool rc = Syn_TestStepFactory::CreateTestStepInstance("OTPCheck", _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
+	if (!rc || NULL == pTestStep)
+	{
+		return Syn_ExceptionCode::Syn_TestStepConfigError;
+	}
+
+	try
+	{
+		pTestStep->SetUp();
+		pTestStep->Excute();
+		pTestStep->ProcessData();
+		pTestStep->CleanUp();
+
+		delete pTestStep;
+		pTestStep = NULL;
+
+	}
+	catch (Syn_Exception ex)
+	{
+		try
+		{
+			pTestStep->CleanUp();
+		}
+		catch (...){}
+		delete pTestStep;
+		pTestStep = NULL;
+		_strErrorMessage = ex.GetDescription();
+		return ex.GetError();
+	}
+	return Syn_ExceptionCode::Syn_OK;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//bool Syn_Site::ConstructSiteList(std::string strConfigFilePath, std::vector<Syn_Site*> &olistOfSyn_SiteInstance)
-//{
-//	uint32_t rc(0);
-
-//	olistOfSyn_SiteInstance.clear();
-
-//	rc = Syn_Site::RegisterLoggingConfig();
-
-//	//xml config file parse
-//	Syn_SysConfigOperation *pSyn_SysConfigOperationInstance = NULL;
-//	rc = Syn_SysConfigOperation::GetSysConfigInstance(strConfigFilePath, pSyn_SysConfigOperationInstance);
-//	if (NULL == pSyn_SysConfigOperationInstance)
-//	{
-//		LOG(ERROR) << "Error:Syn_Site::ConstructSiteList() - pSyn_SysConfigOperationInstance is NULL!" << endl;
-//		return false;
-//	}
-//	Syn_SysConfig TempSyn_SysConfig;
-//	rc = pSyn_SysConfigOperationInstance->GetSysConfig(TempSyn_SysConfig);
-//	if (Syn_ExceptionCode::Syn_OK != rc)
-//	{
-//		LOG(ERROR) << "Error:Syn_Site::ConstructSiteList() - ::GetSysConfig is failed!" << endl;
-//		return false;
-//	}
-
-//	uint32_t uResult(1);
-
-//	//Init Operation
-//	uResult = MPC_Initialize();
-//	if (0 != uResult)
-//	{
-//		LOG(ERROR) << "Error:Syn_Site::ConstructSiteList() - ::MPC_Initialize is failed!" << endl;
-//		return false;
-//	}
-
-//	int iDeviceCounts(0);
-//	MPC_GetNumberOfDevices(&iDeviceCounts);
-//	if (0 == iDeviceCounts)
-//	{
-//		LOG(ERROR) << "Error:Syn_Site::ConstructSiteList() - iDeviceCounts is 0!" << endl;
-//		return false;
-//	}
-
-//	uint32_t *pDeviceSerNumArray = new uint32_t[iDeviceCounts];
-//	MPC_GetDeviceSerialNumList(pDeviceSerNumArray);
-//	for (int i = 0; i<iDeviceCounts; i++)
-//	{
-//		uint32_t uiSerialNumber = pDeviceSerNumArray[i];
-//		if (NULL != uiSerialNumber)
-//		{
-//			Syn_Site *pSyn_SiteInstance = NULL;
-//			/*bool rc = Syn_Site::ConstructSiteInstance(uiSerialNumber, TempSyn_SysConfig, pSyn_SiteInstance);
-//			if (!rc&&NULL==pSyn_SiteInstance)
-//			{
-//				LOG(ERROR) << "Error:Syn_Site::ConstructSiteList() - ConstructSiteInstance is failed,i is " << i << "!" << endl;
-//				continue;
-//			}*/
-
-//			pSyn_SiteInstance = new Syn_Site(i + 1, uiSerialNumber, strConfigFilePath);
-//			pSyn_SiteInstance->Init();
-//			
-//			pSyn_SiteInstance->_siteInfo._uiSerialNumber = uiSerialNumber;
-//			pSyn_SiteInstance->_iSiteNumber = i + 1;
-//			pSyn_SiteInstance->_siteInfo._uiSiteNumber = pSyn_SiteInstance->_iSiteNumber;
-
-//			olistOfSyn_SiteInstance.push_back(pSyn_SiteInstance);
-//		}
-//	}
-
-//	delete[] pDeviceSerNumArray;
-//	pDeviceSerNumArray = NULL;
-
-//	if (pSyn_SysConfigOperationInstance)
-//	{
-//		delete pSyn_SysConfigOperationInstance;
-//		pSyn_SysConfigOperationInstance = NULL;
-//	}
-
-//	return true;
-//}
 
 bool Syn_Site::RegisterLoggingConfig()
 {
@@ -488,195 +431,134 @@ bool Syn_Site::RegisterLoggingConfig()
 }
 
 
-void Syn_Site::Run()
-{
-	if (NULL == _pSyn_Dut)
-	{
-		LOG(ERROR) << "Error:Syn_Site::Run() - _pSyn_Dut is NULL!" << endl;
-		
-		return;
-	}
+//void Syn_Site::Run()
+//{
+//	if (NULL == _pSyn_Dut)
+//	{
+//		LOG(ERROR) << "Error:Syn_Site::Run() - _pSyn_Dut is NULL!" << endl;
+//		
+//		return;
+//	}
 
-	//test get image
-	try
-	{
-		/*_siteInfo._TestState = TestRunning;
-		_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
-		_pSyn_Dut->CheckDUTexists();
-		_pSyn_Dut->Calibration(_SysConfig._uiNumCols, _SysConfig._uiNumRows, _DutTestInfo._calibrationInfo, _pDutTestResult->_calibrationResults);
-		_pSyn_Dut->PowerOff();*/
+//	//test get image
+//	try
+//	{
+//		/*_siteInfo._TestState = TestRunning;
+//		_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
+//		_pSyn_Dut->CheckDUTexists();
+//		_pSyn_Dut->Calibration(_SysConfig._uiNumCols, _SysConfig._uiNumRows, _DutTestInfo._calibrationInfo, _pDutTestResult->_calibrationResults);
+//		_pSyn_Dut->PowerOff();*/
 
-	}
-	catch (Syn_Exception ex)
-	{
-		//_pSyn_Dut->PowerOff();
-		LOG(ERROR) << "Error:ReadOTP is failed!" << std::endl;
-		_siteInfo._strErrorMessage = ex.GetDescription();
+//	}
+//	catch (Syn_Exception ex)
+//	{
+//		//_pSyn_Dut->PowerOff();
+//		LOG(ERROR) << "Error:ReadOTP is failed!" << std::endl;
+//		_siteInfo._strErrorMessage = ex.GetDescription();
 
-		return;
-	}
+//		return;
+//	}
 
-	return;
-}
-
-
-void Syn_Site::GetVersion()
-{
-	try
-	{
-		/*_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
-		_pSyn_Dut->GetDutCtrl()->FpGetVersion(_DutTestInfo._getVerInfo._GerVerArray, VERSION_SIZE);
-		_pSyn_Dut->PowerOff();*/
-
-	}
-	catch (Syn_Exception ex)
-	{
-		//_pSyn_Dut->PowerOff();
-		LOG(ERROR) << "Error:GetVersion is failed!" ;
-		_siteInfo._strErrorMessage = ex.GetDescription();
-		return;
-	}
-}
+//	return;
+//}
 
 
-uint32_t Syn_Site::ReadOTP()
-{
-	Syn_TestStep *pTestStep = NULL;
+//void Syn_Site::Calibration()
+//{
+//	/*if (NULL != _pTempTestStep)
+//	{
+//		delete _pTempTestStep;
+//		_pTempTestStep = NULL;
+//	}*/
 
-	bool rc = Syn_TestStepFactory::CreateTestStepInstance("OTPCheck", _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
-	if (!rc || NULL == pTestStep)
-	{
-		return Syn_ExceptionCode::Syn_TestStepConfigError;
-	}
+//	Syn_TestStep *pTestStep = NULL;
 
-	try
-	{
-		pTestStep->SetUp();
-		pTestStep->Excute();
-		pTestStep->CleanUp();
+//	bool rc = Syn_TestStepFactory::CreateTestStepInstance("Calibrate", _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
+//	if (!rc || NULL == pTestStep)
+//	{
+//		return;
+//	}
 
-		delete pTestStep;
-		pTestStep = NULL;
+//	try
+//	{
+//		/*_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
+//		_pSyn_Dut->CheckDUTexists();
+//		_pSyn_Dut->Calibration(_SysConfig._uiNumCols, _SysConfig._uiNumRows, _DutTestInfo._calibrationInfo, _pDutTestResult->_calibrationResults);
+//		_pSyn_Dut->GetFingerprintImage(_pDutTestResult->_calibrationResults, &(_pDutTestResult->_acquireFpsResults.arr_ImageFPSFrame), _SysConfig._uiNumRows, _SysConfig._uiNumCols);*/
+//		//_pSyn_Dut->PowerOff();
 
-	}
-	catch (Syn_Exception ex)
-	{
-		try
-		{
-			pTestStep->CleanUp();
-		}
-		catch (...){}
-		delete pTestStep;
-		pTestStep = NULL;
-		LOG(ERROR) << "Error:Calibration is failed!";
-		_siteInfo._strErrorMessage = ex.GetDescription();
-		return ex.GetError();
-	}
-	return Syn_ExceptionCode::Syn_OK;
-}
+//		pTestStep->SetUp();
+//		pTestStep->Excute();
 
+//		delete pTestStep;
+//		pTestStep = NULL;
 
+//	}
+//	catch (Syn_Exception ex)
+//	{
+//		delete pTestStep;
+//		pTestStep = NULL;
+//		LOG(ERROR) << "Error:Calibration is failed!";
+//		_siteInfo._strErrorMessage = ex.GetDescription();
+//		return;
+//	}
+//}
 
+//void Syn_Site::GetFingerprintImage()
+//{
+//	/*if (NULL == _pTempTestStep)
+//	{
+//		return;
+//	}*/
 
+//	Syn_TestStep *pTestStep = NULL;
 
-void Syn_Site::Calibration()
-{
-	this->Init();
-	/*if (NULL != _pTempTestStep)
-	{
-		delete _pTempTestStep;
-		_pTempTestStep = NULL;
-	}*/
-
-	Syn_TestStep *pTestStep = NULL;
-
-	bool rc = Syn_TestStepFactory::CreateTestStepInstance("Calibrate", _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
-	if (!rc || NULL == pTestStep)
-	{
-		return;
-	}
-
-	try
-	{
-		/*_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
-		_pSyn_Dut->CheckDUTexists();
-		_pSyn_Dut->Calibration(_SysConfig._uiNumCols, _SysConfig._uiNumRows, _DutTestInfo._calibrationInfo, _pDutTestResult->_calibrationResults);
-		_pSyn_Dut->GetFingerprintImage(_pDutTestResult->_calibrationResults, &(_pDutTestResult->_acquireFpsResults.arr_ImageFPSFrame), _SysConfig._uiNumRows, _SysConfig._uiNumCols);*/
-		//_pSyn_Dut->PowerOff();
-
-		pTestStep->SetUp();
-		pTestStep->Excute();
-
-		delete pTestStep;
-		pTestStep = NULL;
-
-	}
-	catch (Syn_Exception ex)
-	{
-		delete pTestStep;
-		pTestStep = NULL;
-		LOG(ERROR) << "Error:Calibration is failed!";
-		_siteInfo._strErrorMessage = ex.GetDescription();
-		return;
-	}
-	this->Close();
-}
-
-void Syn_Site::GetFingerprintImage()
-{
-	/*if (NULL == _pTempTestStep)
-	{
-		return;
-	}*/
-
-	Syn_TestStep *pTestStep = NULL;
-
-	bool rc = Syn_TestStepFactory::CreateTestStepInstance("Calibrate", _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
-	if (!rc || NULL == pTestStep)
-	{
-		return;
-	}
+//	bool rc = Syn_TestStepFactory::CreateTestStepInstance("Calibrate", _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
+//	if (!rc || NULL == pTestStep)
+//	{
+//		return;
+//	}
 
 
-	try
-	{
-		/*_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
-		_pSyn_Dut->GetFingerprintImage(_pDutTestResult->_calibrationResults, &(_pDutTestResult->_acquireFpsResults.arr_ImageFPSFrame), _SysConfig._uiNumRows, _SysConfig._uiNumCols);*/
-		//_pSyn_Dut->PowerOff();
+//	try
+//	{
+//		/*_pSyn_Dut->PowerOn(_SysConfig._uiDutpwrVdd_mV, _SysConfig._uiDutpwrVio_mV, _SysConfig._uiDutpwrVled_mV, _SysConfig._uiDutpwrVddh_mV, true);
+//		_pSyn_Dut->GetFingerprintImage(_pDutTestResult->_calibrationResults, &(_pDutTestResult->_acquireFpsResults.arr_ImageFPSFrame), _SysConfig._uiNumRows, _SysConfig._uiNumCols);*/
+//		//_pSyn_Dut->PowerOff();
 
-		pTestStep->ProcessData();
+//		pTestStep->ProcessData();
 
-		delete pTestStep;
-		pTestStep = NULL;
+//		delete pTestStep;
+//		pTestStep = NULL;
 
-	}
-	catch (Syn_Exception ex)
-	{
-		delete pTestStep;
-		pTestStep = NULL;
-		//_pSyn_Dut->PowerOff();
-		LOG(ERROR) << "Error:GetFingerprintImage is failed!";
-		_siteInfo._strErrorMessage = ex.GetDescription();
-		return;
-	}
-}
+//	}
+//	catch (Syn_Exception ex)
+//	{
+//		delete pTestStep;
+//		pTestStep = NULL;
+//		//_pSyn_Dut->PowerOff();
+//		LOG(ERROR) << "Error:GetFingerprintImage is failed!";
+//		_siteInfo._strErrorMessage = ex.GetDescription();
+//		return;
+//	}
+//}
 
-void Syn_Site::PowerOff()
-{
-	//_pSyn_Dut->PowerOff();
+//void Syn_Site::PowerOff()
+//{
+//	//_pSyn_Dut->PowerOff();
 
-	/*if (NULL != _pTempTestStep)
-	{
-		_pTempTestStep->CleanUp();
-	}*/
+//	/*if (NULL != _pTempTestStep)
+//	{
+//		_pTempTestStep->CleanUp();
+//	}*/
 
-	Syn_TestStep *pTestStep = NULL;
-	bool rc = Syn_TestStepFactory::CreateTestStepInstance("Calibrate", _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
-	if (NULL != pTestStep)
-	{
-		pTestStep->CleanUp();
+//	Syn_TestStep *pTestStep = NULL;
+//	bool rc = Syn_TestStepFactory::CreateTestStepInstance("Calibrate", _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
+//	if (NULL != pTestStep)
+//	{
+//		pTestStep->CleanUp();
 
-		delete pTestStep;
-		pTestStep = NULL;
-	}
-}
+//		delete pTestStep;
+//		pTestStep = NULL;
+//	}
+//}

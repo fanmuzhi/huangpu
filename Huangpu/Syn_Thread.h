@@ -37,7 +37,7 @@ private:
 
 	Syn_Site *_pSyn_Site;
 
-	Syn_SiteInfo		_SiteInfo;
+	//Syn_SiteInfo		_SiteInfo;
 	//Syn_DutTestInfo		_TestInfo;
 };
 

@@ -68,14 +68,14 @@ protected:
 				_pSyn_Site->GetState(oState);
 				if (TestDataReady == oState)
 				{
-					_pSyn_Site->GetSiteInfo(_SiteInfo);
-					emit send((void*)&_SiteInfo);
+					//_pSyn_Site->GetSiteInfo(_SiteInfo);
+					//emit send((void*)&_SiteInfo);
 					break;
 				}
 				else if (Error == oState)
 				{
-					_pSyn_Site->GetSiteInfo(_SiteInfo);
-					emit send((void*)&_SiteInfo);
+					//_pSyn_Site->GetSiteInfo(_SiteInfo);
+					//emit send((void*)&_SiteInfo);
 					break;
 				}
 			}
@@ -84,10 +84,10 @@ protected:
 		{
 			while (_run)
 			{
-				_pSyn_Site->GetFingerprintImage();
+				//_pSyn_Site->GetFingerprintImage();
 
-				_pSyn_Site->GetSiteInfo(_SiteInfo);
-				emit send((void*)&_SiteInfo);
+				//_pSyn_Site->GetSiteInfo(_SiteInfo);
+				//emit send((void*)&_SiteInfo);
 			}
 		}
 
@@ -100,7 +100,7 @@ private:
 
 	Syn_Site *_pSyn_Site;
 
-	Syn_SiteInfo _SiteInfo;
+	//Syn_SiteInfo _SiteInfo;
 };
 
 #endif // SYN_THREADDEBUG_H

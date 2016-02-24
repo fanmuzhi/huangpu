@@ -1,7 +1,7 @@
 //Local
 #include "Syn_TestStepFactory.h"
 #include "Syn_FingerprintTest.h"
-#include "Syn_Calibrate.h"
+#include "Ts_Calibrate.h"
 #include "Ts_OTPCheck.h"
 
 Syn_TestStepFactory::Syn_TestStepFactory()
@@ -28,7 +28,7 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, Sy
 	bool rc = true;
 	if (std::string("Calibrate") == strTestStepName)
 	{
-		opTestStepInstance = new Syn_Calibrate(strTestStepName, pDutCtrl, pDut);
+		opTestStepInstance = new Ts_Calibrate(strTestStepName, pDutCtrl, pDut);
 	}
 	if (std::string("OTPCheck") == strTestStepName)
 	{

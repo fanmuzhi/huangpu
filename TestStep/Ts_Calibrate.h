@@ -3,14 +3,14 @@
 //Local
 #include "Syn_FingerprintTest.h"
 
-class Syn_Calibrate :public Syn_FingerprintTest
+class Ts_Calibrate :public Syn_FingerprintTest
 {
 public:
 
 	enum { kPgaCalTypeOneOffsetPerRow, kPgaCalTypeOneOffsetPerPixel };
 
-	Syn_Calibrate(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
-	virtual ~Syn_Calibrate();
+	Ts_Calibrate(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
+	virtual ~Ts_Calibrate();
 
 
 	virtual void	SetUp();

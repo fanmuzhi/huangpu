@@ -21,10 +21,10 @@ void Syn_Thread::run()
 	unsigned int iSiteNumber(0);
 	_pSyn_Site->GetSiteNumber(iSiteNumber);
 
-	_pSyn_Site->Run();
+	//_pSyn_Site->Run();
 
-	_pSyn_Site->GetSiteInfo(_SiteInfo);
-	emit send((void*)&_SiteInfo);
+	//_pSyn_Site->GetSiteInfo(_SiteInfo);
+	//emit send((void*)&_SiteInfo);
 
 	_stopped = true;
 }

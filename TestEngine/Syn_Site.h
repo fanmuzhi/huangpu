@@ -27,13 +27,13 @@ enum SiteState
 	Closed
 };
 
-struct Syn_SiteInfo
-{
-	SiteState		_siteState;			//states for site state machine
-	std::string		_strErrorMessage;	//error message of current site.
-	uint32_t		_uiSerialNumber;	//MPC04 serial number of current site.
-	unsigned int	_uiSiteNumber;		//site number of current site.
-};
+//struct Syn_SiteInfo
+//{
+//	SiteState		_siteState;			//states for site state machine
+//	std::string		_strErrorMessage;	//error message of current site.
+//	uint32_t		_uiSerialNumber;	//MPC04 serial number of current site.
+//	unsigned int	_uiSiteNumber;		//site number of current site.
+//};
 
 class Syn_Site
 {
@@ -58,8 +58,8 @@ public:
 	/*get the test result of specified step number.*/
 	uint32_t GetTestResult(Syn_DutTestResult * &opTestResult);
 
-	/*get site infomation of siteNo, state, etc.*/
-	void GetSiteInfo(Syn_SiteInfo &oSyn_SiteInfo);
+	/*Debug interface for each test step*/
+	uint32_t SingleTestStep(std::string sTestStepName);
 
 	/*get the current state of site*/
 	inline void GetState(SiteState &oSiteState){ oSiteState = _sitState; };
@@ -76,28 +76,24 @@ public:
 		return _uiErrorFlag;
 	};
 
-	//static bool ConstructSiteInstance(uint32_t iSerialNumber, Syn_SysConfig &iSyn_SysConfigInfo, Syn_Site * &opSyn_SiteInstance);
-
-	//static bool ConstructSiteList(std::string strConfigFilePath, std::vector<Syn_Site*> &olistOfSyn_SiteInstance);
 
 	static bool RegisterLoggingConfig();
 
-	void Run();						//main test entrance.
-	void GetVersion();				//for debug.
-	uint32_t ReadOTP();					//for debug.
-	void Calibration();				//for debug
-	void GetFingerprintImage();		//for debug
-	void PowerOff();//debug
+	//void Run();						//main test entrance.
+	//uint32_t ReadOTP();					//for debug.
+	//void GetVersion();				//for debug.
+	//void Calibration();				//for debug
+	//void GetFingerprintImage();		//for debug
+	//void PowerOff();//debug
 
 	inline void SetSiteNumber(unsigned int iSiteNumber){ _iSiteNumber = iSiteNumber; };
-
 	inline void GetSiteNumber(unsigned int &oSiteNumber){ oSiteNumber = _iSiteNumber; };
-
 	inline void GetSerialNumber(uint32_t &oSerialNumber){ oSerialNumber = _uiSerialNumber; };
+	//inline void GetSysConfig(Syn_SysConfig &oSysConfig){ oSysConfig = _SysConfig; };
+	//inline void SetSysConfig(Syn_SysConfig iSysConfig){ _SysConfig = iSysConfig; };
+	/*get site infomation of siteNo, state, etc.*/
+	//void GetSiteInfo(Syn_SiteInfo &oSyn_SiteInfo);
 
-	inline void GetSysConfig(Syn_SysConfig &oSysConfig){ oSysConfig = _SysConfig; };
-
-	inline void SetSysConfig(Syn_SysConfig iSysConfig){ _SysConfig = iSysConfig; };
 
 
 private:
@@ -114,7 +110,7 @@ private:
 
 	uint32_t _uiSerialNumber;
 
-	Syn_SiteInfo		_siteInfo;
+	//Syn_SiteInfo		_siteInfo;
 
 	SiteState _sitState;
 

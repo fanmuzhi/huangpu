@@ -1,16 +1,16 @@
-#include "Syn_Calibrate.h"
+#include "Ts_Calibrate.h"
 
 
-Syn_Calibrate::Syn_Calibrate(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
+Ts_Calibrate::Ts_Calibrate(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, pDutCtrl, pDut)
 {
 }
 
-Syn_Calibrate::~Syn_Calibrate()
+Ts_Calibrate::~Ts_Calibrate()
 {
 }
 
-void Syn_Calibrate::Excute()
+void Ts_Calibrate::Excute()
 {
 	Syn_Exception ex(0);
 	if (NULL == _pSyn_DutCtrl)
@@ -136,12 +136,12 @@ void Syn_Calibrate::Excute()
 	GetFingerprintImage(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults, &(_pSyn_Dut->_pSyn_DutTestResult->_acquireFpsResults.arr_ImageFPSFrame), numRows, numCols);
 }
 
-void Syn_Calibrate::SetUp()
+void Ts_Calibrate::SetUp()
 {
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 }
 
-void Syn_Calibrate::ProcessData()
+void Ts_Calibrate::ProcessData()
 {
 	uint16_t numRows = _pSyn_Dut->_RowNumber;
 	uint16_t numCols = _pSyn_Dut->_ColumnNumber;
@@ -149,7 +149,7 @@ void Syn_Calibrate::ProcessData()
 	GetFingerprintImage(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults, &(_pSyn_Dut->_pSyn_DutTestResult->_acquireFpsResults.arr_ImageFPSFrame), numRows, numCols);
 }
 
-void Syn_Calibrate::CleanUp()
+void Ts_Calibrate::CleanUp()
 {
 	PowerOff();
 }

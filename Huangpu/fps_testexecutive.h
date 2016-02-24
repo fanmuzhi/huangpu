@@ -80,11 +80,11 @@ public Q_SLOTS:
 
 
 
-	void RunningTest();
+	//void RunningTest();
 
 	//void ReceiveDutTestResultSlot(void * pDutTestResult);
 
-	void ReceiveSiteInfoSlot(void * pSiteInfo);
+	//void ReceiveSiteInfoSlot(void * pSiteInfo);
 
 	//Debug
 	//Dut dump
@@ -93,10 +93,10 @@ public Q_SLOTS:
 	void ReadOTPForDutDump();
 
 	//Calibration,Fingerprint
-	void PushCablicationImageButton();
-	void ImageCalibration(void * pSiteInfo);
-	void PushFigerprintImageButton();
-	void FigerprintImage(void * pSiteInfo);
+	//void PushCablicationImageButton();
+	//void ImageCalibration(void * pSiteInfo);
+	//void PushFigerprintImageButton();
+	//void FigerprintImage(void * pSiteInfo);
 
 private:
 
