@@ -953,7 +953,7 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 
 void FPS_TestExecutive::PushCablicationImageButton()
 {
-	int iSiteCurrentIndex = ui.comboBox->currentIndex();
+	int iSiteCurrentIndex = ui.ImageSiteComboBox->currentIndex();
 	if (iSiteCurrentIndex < 0)
 		return;
 
@@ -1084,7 +1084,7 @@ void FPS_TestExecutive::ImageCalibration(void * pSiteInfo)
 
 void FPS_TestExecutive::PushFigerprintImageButton()
 {
-	int iSiteCurrentIndex = ui.comboBox->currentIndex();
+	int iSiteCurrentIndex = ui.ImageSiteComboBox->currentIndex();
 	if (iSiteCurrentIndex < 0)
 		return;
 
