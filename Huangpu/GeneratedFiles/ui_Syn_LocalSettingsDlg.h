@@ -194,6 +194,8 @@ public:
         QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
         SiteTableWidget->setHorizontalHeaderItem(2, __qtablewidgetitem2);
         SiteTableWidget->setObjectName(QStringLiteral("SiteTableWidget"));
+        SiteTableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+        SiteTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
 
         gridLayout_6->addWidget(SiteTableWidget, 1, 0, 1, 1);
 

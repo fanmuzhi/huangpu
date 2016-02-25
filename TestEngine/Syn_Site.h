@@ -24,7 +24,8 @@ enum SiteState
 	TestDataReady,
 	Running,
 	Error,
-	Closed
+	Closed,
+	NotConnected//add by Jerry:2016_02_24(for display Site State) maybe delete at end
 };
 
 struct Syn_SiteInfo
@@ -99,6 +100,9 @@ public:
 
 	inline void SetSysConfig(Syn_SysConfig iSysConfig){ _SysConfig = iSysConfig; };
 
+
+	//add by Jerry:2016_02_24(set NotConnected Site Status) maybe delete at end
+	inline void SetSiteNotConnected(){ _sitState = NotConnected; };
 
 private:
 

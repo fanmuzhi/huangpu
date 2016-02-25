@@ -146,6 +146,9 @@ public:
         TestTableWidget->setVerticalHeaderItem(9, __qtablewidgetitem9);
         TestTableWidget->setObjectName(QStringLiteral("TestTableWidget"));
         TestTableWidget->setAutoScroll(false);
+        TestTableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+        TestTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+        TestTableWidget->setTextElideMode(Qt::ElideMiddle);
 
         horizontalLayout->addWidget(TestTableWidget);
 

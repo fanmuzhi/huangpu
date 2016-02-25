@@ -54,6 +54,15 @@
                <property name="autoScroll">
                 <bool>false</bool>
                </property>
+               <property name="selectionMode">
+                <enum>QAbstractItemView::SingleSelection</enum>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectRows</enum>
+               </property>
+               <property name="textElideMode">
+                <enum>Qt::ElideMiddle</enum>
+               </property>
                <row>
                 <property name="text">
                  <string>Test Site</string>

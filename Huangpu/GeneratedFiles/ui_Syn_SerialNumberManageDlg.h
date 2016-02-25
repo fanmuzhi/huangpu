@@ -16,6 +16,7 @@
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QTableWidget>
@@ -32,6 +33,7 @@ public:
     QSpacerItem *horizontalSpacer;
     QPushButton *OKPushButton;
     QPushButton *CancelPushButton;
+    QLabel *SiteManagePromptLabel;
 
     void setupUi(QWidget *Syn_SerialNumberManageDlg)
     {
@@ -51,7 +53,7 @@ public:
         SerialNumberTableWidget->setObjectName(QStringLiteral("SerialNumberTableWidget"));
         SerialNumberTableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 
-        gridLayout->addWidget(SerialNumberTableWidget, 0, 0, 1, 1);
+        gridLayout->addWidget(SerialNumberTableWidget, 1, 0, 1, 1);
 
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(6);
@@ -71,7 +73,12 @@ public:
         horizontalLayout->addWidget(CancelPushButton);
 
 
-        gridLayout->addLayout(horizontalLayout, 1, 0, 1, 1);
+        gridLayout->addLayout(horizontalLayout, 2, 0, 1, 1);
+
+        SiteManagePromptLabel = new QLabel(Syn_SerialNumberManageDlg);
+        SiteManagePromptLabel->setObjectName(QStringLiteral("SiteManagePromptLabel"));
+
+        gridLayout->addWidget(SiteManagePromptLabel, 0, 0, 1, 1);
 
 
         retranslateUi(Syn_SerialNumberManageDlg);
@@ -86,6 +93,7 @@ public:
         ___qtablewidgetitem->setText(QApplication::translate("Syn_SerialNumberManageDlg", "SerialNumber", 0));
         OKPushButton->setText(QApplication::translate("Syn_SerialNumberManageDlg", "OK", 0));
         CancelPushButton->setText(QApplication::translate("Syn_SerialNumberManageDlg", "Cancel", 0));
+        SiteManagePromptLabel->setText(QApplication::translate("Syn_SerialNumberManageDlg", "SiteManage Prompt", 0));
     } // retranslateUi
 
 };
