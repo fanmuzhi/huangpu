@@ -62,5 +62,7 @@ public:
 	static std::string	m_sMpcVoltageFail;				//149
 	static std::string	m_sPackageTypeFail;				//150
 	static std::string	m_sAFETestFail;					//151
+	static std::string  m_sBootSectorFail;				//152
+	static std::string  m_sMainSectorFail;				//153
 };
 

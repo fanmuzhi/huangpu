@@ -22,6 +22,7 @@ struct Syn_ExceptionCode
 	static const uint32_t Syn_ConfigError = 0x2000;
 	static const uint32_t Syn_ScriptConfigError = 0x2001;
 	static const uint32_t Syn_TestStepConfigError = 0x2002;
+	static const uint32_t Syn_TestStepNotExecuted = 0x2003;
 
 	static const uint32_t Syn_MPCError = 0x3000;
 	static const uint32_t Syn_ERR_INITIALIZATION_FAILED = 0x3001;

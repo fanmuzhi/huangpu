@@ -927,6 +927,13 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 		QMessageBox::information(this, QString("Error"), QString("OTPDump Error:") + QString::number(rc));
 		return;
 	}
+	Syn_DutTestResult *oDutTestResult = NULL;
+	rc = pSelectedSite->GetTestResult(oDutTestResult);
+	if (rc != 0)
+	{
+		QMessageBox::information(this, QString("Error"), QString("OTPDump Error:") + QString::number(rc));
+		return;
+	}
 
 	//Syn_SiteInfo oSiteInfo;
 	//pSelectedSite->GetSiteInfo(oSiteInfo);
@@ -940,14 +947,47 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 	ui.textBrowser->append(QString("SiteNumber:") + QString::number(oSiteNumber));
 	ui.textBrowser->append(QString("SerialNumber:") + QString::number(oSerialNumber));
 
+	if (oDutTestResult->_binCodes.size() == 0)
+	{
+		ui.textBrowser->append(QString("Result: PASS"));
+	}
+	else
+	{
+		QString sBinCodes = "";
+		for (auto i = 0; i < oDutTestResult->_binCodes.size(); i++)
+		{
+			sBinCodes += (oDutTestResult->_binCodes[i] + ", ").c_str();
+		}
+
+		ui.textBrowser->append(QString("Result: FAIL ") + sBinCodes);
+	}
+
+	//ui.textBrowser->append(QString("Sysconfig Boot Sector 0:"));
+	//for (int i = 1; i <= BS0_SIZE / 8; i++)
+	//{
+	//	int StartPos = (i - 1) * 8;
+	//	int EndPos = i * 8 - 1;
+
+	//	Display(oDutTestInfo->_otpCheckInfo._UserSpecifiedBS0, StartPos, EndPos);
+	//}
+
 	ui.textBrowser->append(QString("Boot Sector 0:"));
 	for (int i = 1; i <= BS0_SIZE / 8; i++)
 	{
 		int StartPos = (i - 1) * 8;
 		int EndPos = i * 8 - 1;
 
-		Display(oDutTestInfo->_otpInfo._BootSector0Array, StartPos, EndPos);
+		Display(oDutTestInfo->_otpCheckInfo._BootSector0Array, StartPos, EndPos);
 	}
+
+	//ui.textBrowser->append(QString("Sysconfig Boot Sector 1:"));
+	//for (int i = 1; i <= BS1_SIZE / 8; i++)
+	//{
+	//	int StartPos = (i - 1) * 8;
+	//	int EndPos = i * 8 - 1;
+
+	//	Display(oDutTestInfo->_otpCheckInfo._UserSpecifiedBS1, StartPos, EndPos);
+	//}
 
 	ui.textBrowser->append(QString("Boot Sector 1:"));
 	for (int i = 1; i <= BS1_SIZE / 8; i++)
@@ -955,7 +995,7 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 		int StartPos = (i - 1) * 8;
 		int EndPos = i * 8 - 1;
 
-		Display(oDutTestInfo->_otpInfo._BootSector1Array, StartPos, EndPos);
+		Display(oDutTestInfo->_otpCheckInfo._BootSector1Array, StartPos, EndPos);
 	}
 
 	ui.textBrowser->append(QString("Main Sector 0:"));
@@ -963,7 +1003,7 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 	{
 		int StartPos = (i - 1) * 8;
 		int EndPos = i * 8 - 1;
-		Display(oDutTestInfo->_otpInfo._MainSector0Array, StartPos, EndPos);
+		Display(oDutTestInfo->_otpCheckInfo._MainSector0Array, StartPos, EndPos);
 	}
 
 	ui.textBrowser->append(QString("Main Sector 1:"));
@@ -971,7 +1011,7 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 	{
 		int StartPos = (i - 1) * 8;
 		int EndPos = i * 8 - 1;
-		Display(oDutTestInfo->_otpInfo._MainSector1Array, StartPos, EndPos);
+		Display(oDutTestInfo->_otpCheckInfo._MainSector1Array, StartPos, EndPos);
 	}
 
 	pSelectedSite->Close();

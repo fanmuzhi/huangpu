@@ -59,12 +59,15 @@ struct Syn_DutTestInfo
 	LEDTestInfo					_LEDTestInfo;
 	SdkBaselineTestInfo		    _SdkBaselineInfo;
 	SpiOwnershipInfo		    _SpiOwnershipInfo;
-	OTPInfo						_otpInfo;
+	OTPCheckInfo				_otpCheckInfo;
 	GetVerInfo					_getVerInfo;
 };
 
 struct Syn_DutTestResult
 {
+	vector<string>				_binCodes;
+	uint8_t						_arSerialNum[DUT_SER_NUM_SIZE];
+
 	InitializationResults		_initResults;
 	CalibrationResults			_calibrationResults;
 	AcquireFPSResults			_acquireFpsResults;
@@ -100,6 +103,7 @@ struct Syn_DutTestResult
 	LEDTestResults				_LEDTestResults;
 	SdkBaselineTestResults	    _SdkBaselineResults;
 	SpiOwnershipResults			_SpiOwnershipResults;
+	OTPCheckResults				_otpCheckResult;
 };
 
 class Syn_Dut
@@ -137,4 +141,5 @@ public:
 	uint16_t		_ColumnNumber;//NumCols
 
 	ProjectType		_eProjectType;
+	
 };

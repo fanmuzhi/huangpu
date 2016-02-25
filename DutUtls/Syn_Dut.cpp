@@ -62,8 +62,25 @@ void Syn_Dut::InitData(Syn_SysConfig &sysConfig)
 		_pSyn_DutTestInfo = new Syn_DutTestInfo();
 	}
 
+	if (NULL == _pSyn_DutTestResult)
+	{
+		_pSyn_DutTestResult = new Syn_DutTestResult();
+	}
+	_pSyn_DutTestResult->_arSerialNum[DUT_SER_NUM_SIZE] = {0};
+	_pSyn_DutTestResult->_binCodes.clear();
+
 	std::string strArgsValue("");
 	std::vector<std::string> listOfArgValue;
+
+	//OTPCheckInfo
+	int arrIncrement[4] = {3, 1, -1, -3};	//swap the value
+	for (auto i = 0; i < BS0_SIZE; i++)
+	{
+		_pSyn_DutTestInfo->_otpCheckInfo._UserSpecifiedBS0[i] = sysConfig._arrUserSpecifiedBS0[i + arrIncrement[i % 4]];
+		_pSyn_DutTestInfo->_otpCheckInfo._UserSpecifiedBS1[i] = sysConfig._arrUserSpecifiedBS1[i + arrIncrement[i % 4]];
+	}
+	_pSyn_DutTestInfo->_otpCheckInfo._bExecuted = false;
+
 
 	//InitializationStep
 	_pSyn_DutTestInfo->_initInfo.m_bExecuted = false;

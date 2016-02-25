@@ -7,6 +7,7 @@
 #include "Syn_Dut.h"
 #include "Syn_DutCtrl.h"
 #include "Syn_Config.h"
+#include "Syn_BinCodes.h"
 
 //C++
 #include <string>

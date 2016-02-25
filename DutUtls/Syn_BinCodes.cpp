@@ -60,3 +60,5 @@ std::string	Syn_BinCodes::m_sSpiOwnershipFail = "148.1";
 std::string	Syn_BinCodes::m_sMpcVoltageFail = "149";
 std::string	Syn_BinCodes::m_sPackageTypeFail = "150";		//Not used.
 std::string	Syn_BinCodes::m_sAFETestFail = "151";
+std::string Syn_BinCodes::m_sBootSectorFail = "152";
+std::string Syn_BinCodes::m_sMainSectorFail = "153";

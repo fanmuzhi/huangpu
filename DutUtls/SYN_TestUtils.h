@@ -90,12 +90,29 @@ typedef unsigned char UINT8; // UINT8 is created to handle MPC04 data
 
 typedef struct
 {
+	int		_bExecuted;
+
 	uint8_t _BootSector0Array[BS0_SIZE];
 	uint8_t _BootSector1Array[BS1_SIZE];
 	
 	uint8_t _MainSector0Array[MS0_SIZE];//MS0_SIZE
 	uint8_t _MainSector1Array[MS1_SIZE];
-}OTPInfo;
+
+	uint8_t _UserSpecifiedBS0[BS0_SIZE];
+	uint8_t _UserSpecifiedBS1[BS1_SIZE];
+}OTPCheckInfo;
+
+typedef struct
+{
+	uint8_t		_PRD_JTAG;
+	uint8_t		_ENG_JTAG;
+	uint16_t	_Reserved;
+	uint8_t		_FWSecure;	//bit
+	uint8_t		_AES_Export;
+
+	int			_bPass;
+}OTPCheckResults;
+
 
 typedef struct
 {
@@ -216,7 +233,7 @@ typedef struct
 }LEDTestInfo;
 typedef struct
 {
-	int m_bPass;
+	int	m_bPass;
 }LEDTestResults;
 
 //SdkBaselineTest Structures
