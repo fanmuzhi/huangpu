@@ -1054,7 +1054,6 @@ void FPS_TestExecutive::PushCablicationImageButton()
 		//_threadForDebugCalibrate.SetRunTag(true);
 		_threadForDebugCalibrate.start();
 		//ui.FigerprintImagePushButton->setText(QString("Stop"));
-
 	}
 }
 

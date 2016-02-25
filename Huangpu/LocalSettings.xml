@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
     <SysConfigFile>D:/57K0_Test_Cpp.xml</SysConfigFile>
-    <NumSites>2</NumSites>
+    <NumSites>1</NumSites>
     <Site1 AdcBaseLines="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 " Voltages="3300 3300 3300 3300">1684806</Site1>
-    <Site2 AdcBaseLines="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 " Voltages="3300 3300 3300 3300">1456665</Site2>
     <AutoController></AutoController>
 </LocalSettings>
