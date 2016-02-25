@@ -111,6 +111,11 @@ void FPS_TestExecutive::Initialize()
 	_pSyn_LocalSettingsDlg = new Syn_LocalSettingsDlg();
 	_pSyn_LocalSettingsDlg->setHidden(true);
 
+	_TempVoltagesValue.nVdd = 0x1234;
+	_TempVoltagesValue.nVio = 0x1234;
+	_TempVoltagesValue.nVled = 0x1234;
+	_TempVoltagesValue.nVddh = 0x1234;
+
 	//LocalSettings
 	Syn_LocalSettingConfig *pSyn_LocalSettingConfig = NULL;
 	rc = Syn_LocalSettingConfig::CreateLSConfigInstance(pSyn_LocalSettingConfig);
@@ -254,6 +259,28 @@ bool FPS_TestExecutive::ConstructSiteList(bool SendMsg)
 			pSyn_SiteInstance->SetSiteNotConnected();
 		}
 		_ListOfSitePtr.push_back(pSyn_SiteInstance);
+
+		if (0x1234 == _TempVoltagesValue.nVdd)
+		{
+			Syn_SysConfig oTempConfig;
+			pSyn_SiteInstance->GetSysConfig(oTempConfig);
+
+			_LocalSettingsInfo._listOfSiteSettings[i]._adcBaseLineInfo.m_nVdd = oTempConfig._uiDutpwrVdd_mV;
+			_LocalSettingsInfo._listOfSiteSettings[i]._adcBaseLineInfo.m_nVio = oTempConfig._uiDutpwrVio_mV;
+			_LocalSettingsInfo._listOfSiteSettings[i]._adcBaseLineInfo.m_nVled = oTempConfig._uiDutpwrVled_mV;
+			_LocalSettingsInfo._listOfSiteSettings[i]._adcBaseLineInfo.m_nVddh = oTempConfig._uiDutpwrVddh_mV;
+			_TempVoltagesValue.nVdd = oTempConfig._uiDutpwrVdd_mV;
+			_TempVoltagesValue.nVio = oTempConfig._uiDutpwrVio_mV;
+			_TempVoltagesValue.nVled = oTempConfig._uiDutpwrVled_mV;
+			_TempVoltagesValue.nVddh = oTempConfig._uiDutpwrVddh_mV;
+		}
+		else
+		{
+			_LocalSettingsInfo._listOfSiteSettings[i]._adcBaseLineInfo.m_nVdd = _TempVoltagesValue.nVdd;
+			_LocalSettingsInfo._listOfSiteSettings[i]._adcBaseLineInfo.m_nVio = _TempVoltagesValue.nVio;
+			_LocalSettingsInfo._listOfSiteSettings[i]._adcBaseLineInfo.m_nVled = _TempVoltagesValue.nVled;
+			_LocalSettingsInfo._listOfSiteSettings[i]._adcBaseLineInfo.m_nVddh = _TempVoltagesValue.nVddh;
+		}
 	}
 
 	size_t ilistCounts = _ListOfSitePtr.size();
@@ -338,16 +365,6 @@ bool FPS_TestExecutive::ConstructSiteList(bool SendMsg)
 			QMessageBox::information(this, QString("Error"), QString("Can't retrieve the Serial Number:") + QString::number(uiSerialNumber) + QString(" device,check it,please!"));
 			//continue;
 		}
-
-		/*if (bRecordTempAdcValue && t==_iRealDeviceCounts)
-		{
-			Syn_SysConfig oTempConfig;
-			_ListOfSitePtr[t - 1]->GetSysConfig(oTempConfig);
-			_TempVoltagesValue.nVdd = oTempConfig._uiDutpwrVdd_mV;
-			_TempVoltagesValue.nVio = oTempConfig._uiDutpwrVio_mV;
-			_TempVoltagesValue.nVled = oTempConfig._uiDutpwrVled_mV;
-			_TempVoltagesValue.nVddh = oTempConfig._uiDutpwrVddh_mV;
-		}*/
 	}
 	ui.TestTableWidget->setHorizontalHeaderLabels(strListOfHeader);
 
@@ -545,10 +562,10 @@ void FPS_TestExecutive::ConfirmSite()
 		}
 
 		//need modify...................................................................................
-		CurrentAdcBaseLineInfo.m_nVdd = _TempVoltagesValue.nVdd;
+		/*CurrentAdcBaseLineInfo.m_nVdd = _TempVoltagesValue.nVdd;
 		CurrentAdcBaseLineInfo.m_nVio = _TempVoltagesValue.nVio;
 		CurrentAdcBaseLineInfo.m_nVled = _TempVoltagesValue.nVled;
-		CurrentAdcBaseLineInfo.m_nVddh = _TempVoltagesValue.nVddh;
+		CurrentAdcBaseLineInfo.m_nVddh = _TempVoltagesValue.nVddh;*/
 
 		CurrentSiteSettings._adcBaseLineInfo = CurrentAdcBaseLineInfo;
 		_LocalSettingsInfo._listOfSiteSettings.push_back(CurrentSiteSettings);
@@ -1011,24 +1028,31 @@ void FPS_TestExecutive::PushCablicationImageButton()
 	if (iSiteCounts < iSiteCurrentIndex)
 		return;
 
+	Syn_Site *pSelectSite = _ListOfSitePtr[iSiteCurrentIndex];
+	SiteState oState;
+	pSelectSite->GetState(oState);
+	if (NotConnected == oState)
+	{
+		unsigned int iSiteNumber(0);
+		pSelectSite->GetSiteNumber(iSiteNumber);
+		QMessageBox::critical(_pSyn_SerialNumberManageDlg, QString("Error"), QString("Site ") + QString::number(iSiteNumber) + QString(" is not connected!"));
+		return;
+	}
+
 	ui.CalibrationImageLabel->hide();
 
 	if (_threadForDebugCalibrate.isRunning())
 	{
 		//_threadForDebugCalibrate.SetRunTag(false);
-
-		_ListOfSitePtr[iSiteCurrentIndex]->PowerOff();
-
+		pSelectSite->PowerOff();
 		//ui.FigerprintImagePushButton->setText(QString("Get Figerprint Image"));
-
 	}
 	else
 	{
-		_ListOfSitePtr[iSiteCurrentIndex]->Init();
-		_threadForDebugCalibrate.SetSite(_ListOfSitePtr[iSiteCurrentIndex]);
+		pSelectSite->Init();
+		_threadForDebugCalibrate.SetSite(pSelectSite);
 		//_threadForDebugCalibrate.SetRunTag(true);
 		_threadForDebugCalibrate.start();
-
 		//ui.FigerprintImagePushButton->setText(QString("Stop"));
 
 	}
@@ -1073,19 +1097,6 @@ void FPS_TestExecutive::ImageCalibration(void * pSiteInfo)
 	ui.CalibrationImageLabel->clear();
 
 	ui.CalibrationImageLabel->show();
-
-
-	//pSelectedSite->Calibration();
-	//pSelectedSite->ExecuteScript(3);
-
-	//Syn_SiteInfo SiteInfo;
-	//Syn_DutTestInfo CurrentDutTestInfo;
-	//Syn_DutTestResult *pCurrentDutTestResult;
-	//Syn_SysConfig CurrentSysConfig;
-	//pSelectedSite->GetSiteInfo(SiteInfo);
-	//pSelectedSite->GetTestInfo(CurrentDutTestInfo);
-	//pSelectedSite->GetTestResult(pCurrentDutTestResult);
-	//pSelectedSite->GetSysConfig(CurrentSysConfig);
 
 	std::string strErrorMsg = pSyn_SiteInfo->_strErrorMessage;
 	/*Syn_TestState TestResult = pSyn_SiteInfo->_TestState;
@@ -1142,18 +1153,27 @@ void FPS_TestExecutive::PushFigerprintImageButton()
 	if (iSiteCounts < iSiteCurrentIndex)
 		return;
 
+	Syn_Site *pSelectSite = _ListOfSitePtr[iSiteCurrentIndex];
+	SiteState oState;
+	pSelectSite->GetState(oState);
+	if (NotConnected == oState)
+	{
+		unsigned int iSiteNumber(0);
+		pSelectSite->GetSiteNumber(iSiteNumber);
+		QMessageBox::critical(_pSyn_SerialNumberManageDlg, QString("Error"), QString("Site ") + QString::number(iSiteNumber) + QString(" is not connected!"));
+		return;
+	}
+
 	if (_threadForDebug.isRunning())
 	{
 		_threadForDebug.SetRunTag(false);
-
-		_ListOfSitePtr[iSiteCurrentIndex]->PowerOff();
-
+		pSelectSite->PowerOff();
 		ui.FigerprintImagePushButton->setText(QString("Get Figerprint Image"));
 
 	}
 	else
 	{
-		_threadForDebug.SetSite(_ListOfSitePtr[iSiteCurrentIndex]);
+		_threadForDebug.SetSite(pSelectSite);
 		_threadForDebug.SetRunTag(true);
 		_threadForDebug.start();
 
