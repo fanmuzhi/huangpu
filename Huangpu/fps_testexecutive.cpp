@@ -26,9 +26,6 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	//Init
 	Initialize();
 
-	this->setMouseTracking(true);
-	_pSyn_LocalSettingsDlg->ui->SiteTableWidget->setMouseTracking(true);
-
 	//slots
 	//LocalSettings Dialog
 	QObject::connect(ui.LocalSettingsPushButton, SIGNAL(clicked()), this, SLOT(CreateLocalSettings()));
