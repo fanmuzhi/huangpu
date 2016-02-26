@@ -365,6 +365,15 @@ bool FPS_TestExecutive::ConstructSiteList(bool SendMsg)
 			QMessageBox::information(this, QString("Error"), QString("Can't retrieve the Serial Number:") + QString::number(uiSerialNumber) + QString(" device,check it,please!"));
 			//continue;
 		}
+
+		//adc test
+		/*uint32_t AdcBaseLines[NUM_CURRENT_VALUES][KNUMGAINS] = {0};
+		_pSyn_DeviceManager->UpdateADCOffsets(_ListOfSitePtr[t - 1], 3300, 3300, 3300, 3300, AdcBaseLines);
+		for (int gainIdx = 0; gainIdx < KNUMGAINS; gainIdx++)
+		{
+			for (int adcIdx = 0; adcIdx < NUM_CURRENT_VALUES; adcIdx++)
+				cout << AdcBaseLines[adcIdx][gainIdx] << endl;
+		}*/
 	}
 	ui.TestTableWidget->setHorizontalHeaderLabels(strListOfHeader);
 
@@ -387,6 +396,8 @@ bool FPS_TestExecutive::ConstructSiteList(bool SendMsg)
 		_ListOfSitePtr[i - 1]->GetSiteNumber(iSiteNumber);
 		ui.ImageSiteComboBox->addItem(QString("#") + QString::number(iSiteNumber));
 	}
+
+	//_pSyn_DeviceManager->UpdateFirmware(_ListOfSitePtr);
 
 	return true;
 }
@@ -432,6 +443,7 @@ void FPS_TestExecutive::ModifySiteCounts()
 	QString strUserSiteCounts = _pSyn_LocalSettingsDlg->ui->SiteCountsLineEdit->text();
 	int iUserSiteCounts = strUserSiteCounts.toInt();
 
+	_pSyn_DeviceManager->Open();
 	std::vector<uint32_t> listOfSerialNumber;
 	_pSyn_DeviceManager->GetSerialNumberList(listOfSerialNumber);
 	if (iUserSiteCounts > listOfSerialNumber.size())
