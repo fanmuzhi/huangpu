@@ -74,6 +74,8 @@ public Q_SLOTS:
 	void SelectConfigFile();
 	void ModifySiteCounts();
 	void ModifySerialNumber();
+	void SetLeds(int rowNumber, int columnNumber);
+
 
 	void ConfirmSite();
 

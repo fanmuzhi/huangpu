@@ -172,6 +172,38 @@ uint32_t Syn_DeviceManager::UpdateADCOffsets(Syn_Site* &pSiteInstance, uint32_t 
 	return err;
 }
 
+uint32_t Syn_DeviceManager::SetLeds(Syn_Site* &pSiteInstance)
+{
+	uint32_t err = 0;
+
+	if (NULL == pSiteInstance)
+	{
+		return 0x1000;
+	}
+
+	try
+	{
+		Syn_DutCtrl *pCtrl = NULL;
+		pSiteInstance->GeDutCtrl(pCtrl);
+		if (NULL != pCtrl)
+		{
+			for (int i = 0; i<10; i++)
+			{
+				pCtrl->SetLeds(true, false, false);
+				::Sleep(50);
+				pCtrl->SetLeds(false, false, false);
+				::Sleep(50);
+			}
+		}
+	}
+	catch (Syn_Exception ex)
+	{
+		err = ex.GetError();
+	}
+
+	return err;
+}
+
 uint32_t Syn_DeviceManager::Close()
 {
 	return 0;

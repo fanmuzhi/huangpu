@@ -26,6 +26,9 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	//Init
 	Initialize();
 
+	this->setMouseTracking(true);
+	_pSyn_LocalSettingsDlg->ui->SiteTableWidget->setMouseTracking(true);
+
 	//slots
 	//LocalSettings Dialog
 	QObject::connect(ui.LocalSettingsPushButton, SIGNAL(clicked()), this, SLOT(CreateLocalSettings()));
@@ -33,6 +36,7 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->SelectSysConfigFilePushButton, SIGNAL(clicked()), this, SLOT(SelectConfigFile()));
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->SiteCountsLineEdit, SIGNAL(editingFinished()), this, SLOT(ModifySiteCounts()));//returnPressed
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->ModifySerialNumberPushButton, SIGNAL(clicked()), this, SLOT(ModifySerialNumber()));
+	QObject::connect(_pSyn_LocalSettingsDlg->ui->SiteTableWidget, SIGNAL(cellClicked(int, int)), this, SLOT(SetLeds(int, int)));
 
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->OKPushButton, SIGNAL(clicked()), this, SLOT(ConfirmSite()));
 
@@ -634,6 +638,40 @@ void FPS_TestExecutive::ModifySerialNumber()
 
 	QObject::connect(_pSyn_SerialNumberManageDlg->ui.OKPushButton, SIGNAL(clicked()), this, SLOT(ConfirmSerialNumberForSite()));
 	QObject::connect(_pSyn_SerialNumberManageDlg->ui.CancelPushButton, SIGNAL(clicked()), this, SLOT(CloseSiteManageDialog()));
+}
+
+void FPS_TestExecutive::SetLeds(int rowNumber,int columnNumber)
+{
+	//get SerialNumber
+	int iSerialNumberColumn(1);
+	QTableWidgetItem *item = NULL;
+	item = _pSyn_LocalSettingsDlg->ui->SiteTableWidget->item(rowNumber, iSerialNumberColumn);
+	if (NULL == item)
+		return;
+
+	QString strSerialNumber("");
+	strSerialNumber = item->text();
+	uint32_t iSerialNumber = strSerialNumber.toInt();
+	if (0 == iSerialNumber)
+		return;
+
+	for (size_t i = 1; i <= _ListOfSitePtr.size(); i++)
+	{
+		if (NULL != _ListOfSitePtr[i - 1])
+		{
+			uint32_t uiNumber(0);
+			_ListOfSitePtr[i - 1]->GetSerialNumber(uiNumber);
+			if (iSerialNumber == uiNumber)
+			{
+				if (NULL != _pSyn_DeviceManager)
+				{
+					_pSyn_DeviceManager->SetLeds(_ListOfSitePtr[i - 1]);
+				}
+				break;
+			}
+		}
+	}
+
 }
 
 void FPS_TestExecutive::ConfirmSerialNumberForSite()

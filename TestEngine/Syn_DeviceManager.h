@@ -19,6 +19,8 @@ public:
 	
 	uint32_t UpdateADCOffsets(Syn_Site* &pSiteInstance, uint32_t nVdd, uint32_t nVio, uint32_t nVled, uint32_t nVddh, uint32_t arAdcBaseLines[NUM_CURRENT_VALUES][KNUMGAINS]);
 	
+	uint32_t SetLeds(Syn_Site* &pSiteInstance);
+
 	uint32_t Close();
 
 private:
