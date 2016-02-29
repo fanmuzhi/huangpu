@@ -30,7 +30,7 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, Sy
 	{
 		opTestStepInstance = new Ts_Calibrate(strTestStepName, pDutCtrl, pDut);
 	}
-	if (std::string("OTPCheck") == strTestStepName)
+	else if (std::string("OTPCheck") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_OTPCheck(strTestStepName, pDutCtrl, pDut);
 	}
