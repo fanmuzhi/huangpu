@@ -378,7 +378,7 @@ uint32_t Syn_Site::SingleTestStep(std::string sTestName)
 {
 	Syn_TestStep *pTestStep = NULL;
 
-	bool rc = Syn_TestStepFactory::CreateTestStepInstance("OTPCheck", _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
+	bool rc = Syn_TestStepFactory::CreateTestStepInstance(sTestName, _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
 	if (!rc || NULL == pTestStep)
 	{
 		return Syn_ExceptionCode::Syn_TestStepConfigError;

@@ -100,6 +100,19 @@ typedef struct
 
 	uint8_t _UserSpecifiedBS0[BS0_SIZE];
 	uint8_t _UserSpecifiedBS1[BS1_SIZE];
+
+	int		_bCheckTAG_LNA;
+	int		_bCheckTAG_PGA_OOPR;
+	int		_bCheckTAG_SNR;
+	int		_bCheckTAG_FlexId;
+	int		_bCheckTAG_WOF_BOT;
+	int		_bCheckTAG_DutTempAdc;
+	int		_bCheckTAG_WOF_TOP;
+	int		_bCheckTAG_SCM_WOF_BOT;
+	int		_bCheckTAG_PGA_OOPP;
+	int		_bCheckTAG_PRODUCT_ID;
+	int		_bCheckTAG_PART_NUMBERS;
+
 }OTPCheckInfo;
 
 typedef struct
