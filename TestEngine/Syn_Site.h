@@ -28,14 +28,6 @@ enum SiteState
 	NotConnected//add by Jerry:2016_02_24(for display Site State) maybe delete at end
 };
 
-//struct Syn_SiteInfo
-//{
-//	SiteState		_siteState;			//states for site state machine
-//	std::string		_strErrorMessage;	//error message of current site.
-//	uint32_t		_uiSerialNumber;	//MPC04 serial number of current site.
-//	unsigned int	_uiSiteNumber;		//site number of current site.
-//};
-
 class Syn_Site
 {
 	friend class Syn_DeviceManager;//add by Jerry:2016_02_26(for Syn_DeviceManager::UpdateFirmware & Syn_DeviceManager::UpdateADCOffsets,DurCtrl can only created once)
@@ -91,11 +83,8 @@ public:
 	inline void SetSiteNumber(unsigned int iSiteNumber){ _iSiteNumber = iSiteNumber; };
 	inline void GetSiteNumber(unsigned int &oSiteNumber){ oSiteNumber = _iSiteNumber; };
 	inline void GetSerialNumber(uint32_t &oSerialNumber){ oSerialNumber = _uiSerialNumber; };
-	//inline void GetSysConfig(Syn_SysConfig &oSysConfig){ oSysConfig = _SysConfig; };
-	//inline void SetSysConfig(Syn_SysConfig iSysConfig){ _SysConfig = iSysConfig; };
-	/*get site infomation of siteNo, state, etc.*/
-	//void GetSiteInfo(Syn_SiteInfo &oSyn_SiteInfo);
 
+	inline void GetSysConfig(Syn_SysConfig &oConfig){ oConfig = _SysConfig; };
 
 
 	//add by Jerry:2016_02_24(set NotConnected Site Status) maybe delete at end
@@ -115,11 +104,9 @@ private:
 
 	Syn_DutCtrl *_pSyn_DutCtrl;
 
+	//id
 	unsigned int _iSiteNumber;
-
 	uint32_t _uiSerialNumber;
-
-	//Syn_SiteInfo		_siteInfo;
 
 	SiteState _sitState;
 

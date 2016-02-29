@@ -97,8 +97,8 @@ public Q_SLOTS:
 	void ReadOTPForDutDump();
 
 	//Calibration,Fingerprint
-	//void PushCablicationImageButton();
-	//void ImageCalibration(void * pSiteInfo);
+	void PushCablicationImageButton();
+	void ImageCalibration(unsigned int iSiteNumber);
 	//void PushFigerprintImageButton();
 	//void FigerprintImage(void * pSiteInfo);
 

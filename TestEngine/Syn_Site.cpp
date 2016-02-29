@@ -85,9 +85,6 @@ Syn_Site::Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string str
 		return;
 	}
 
-	//_siteInfo._uiSerialNumber = _uiSerialNumber;
-	//_siteInfo._uiSiteNumber = _iSiteNumber;
-
 	if (pConfigOperationInstance)
 	{
 		delete pConfigOperationInstance;
@@ -369,11 +366,6 @@ uint32_t Syn_Site::GetTestResult(Syn_DutTestResult * &opTestResult)
 	return Syn_ExceptionCode::Syn_DutResultNull;
 }
 
-//void Syn_Site::GetSiteInfo(Syn_SiteInfo &oSyn_SiteInfo)
-//{
-//	oSyn_SiteInfo = _siteInfo;
-//}
-
 uint32_t Syn_Site::SingleTestStep(std::string sTestName)
 {
 	Syn_TestStep *pTestStep = NULL;
@@ -394,6 +386,7 @@ uint32_t Syn_Site::SingleTestStep(std::string sTestName)
 		delete pTestStep;
 		pTestStep = NULL;
 
+		_sitState = TestDataReady;
 	}
 	catch (Syn_Exception ex)
 	{
@@ -404,6 +397,9 @@ uint32_t Syn_Site::SingleTestStep(std::string sTestName)
 		catch (...){}
 		delete pTestStep;
 		pTestStep = NULL;
+
+		_sitState = Error;
+		
 		_strErrorMessage = ex.GetDescription();
 		return ex.GetError();
 	}
