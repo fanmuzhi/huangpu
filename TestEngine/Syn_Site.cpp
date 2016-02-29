@@ -410,7 +410,6 @@ uint32_t Syn_Site::SingleTestStep(std::string sTestName)
 	return Syn_ExceptionCode::Syn_OK;
 }
 
-
 bool Syn_Site::RegisterLoggingConfig()
 {
 	el::Configurations defaultConf;

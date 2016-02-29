@@ -76,6 +76,8 @@ public:
 
 	virtual void UpdateMPC04Firmware() = 0;
 
+	virtual void SetLeds(bool bGreen, bool bRed, bool bAmber) {}
+
 	virtual void GetCurrentSenseValues(uint16_t gainIdx, uint16_t oversample, uint32_t arCurrentSenseValues[4]) {}
 
 protected:

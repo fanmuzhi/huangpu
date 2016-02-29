@@ -24,7 +24,8 @@ enum SiteState
 	TestDataReady,
 	Running,
 	Error,
-	Closed
+	Closed,
+	NotConnected//add by Jerry:2016_02_24(for display Site State) maybe delete at end
 };
 
 //struct Syn_SiteInfo
@@ -37,6 +38,8 @@ enum SiteState
 
 class Syn_Site
 {
+	friend class Syn_DeviceManager;//add by Jerry:2016_02_26(for Syn_DeviceManager::UpdateFirmware & Syn_DeviceManager::UpdateADCOffsets,DurCtrl can only created once)
+
 public:
 
 	/*need call Init function*/
@@ -76,7 +79,6 @@ public:
 		return _uiErrorFlag;
 	};
 
-
 	static bool RegisterLoggingConfig();
 
 	//void Run();						//main test entrance.
@@ -96,8 +98,15 @@ public:
 
 
 
+	//add by Jerry:2016_02_24(set NotConnected Site Status) maybe delete at end
+	inline void SetSiteNotConnected(){ _sitState = NotConnected; };
+
 private:
 
+	//function
+	void GeDutCtrl(Syn_DutCtrl * &opDutCtrl){ opDutCtrl = _pSyn_DutCtrl; };
+
+	//variable
 	std::string _strConfigFilePath;
 
 	Syn_SysConfig _SysConfig;

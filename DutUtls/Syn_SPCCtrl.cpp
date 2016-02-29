@@ -694,16 +694,25 @@ void Syn_SPCCtrl::UpdateMPC04Firmware()
 		::Sleep(8000);
 
 		if (error == MpcApiError::ERR_OK)
+		{
 			error = MPC_GetMpcDeviceHandle(serNum, &syn_DeviceHandle);
-		if (error == MpcApiError::ERR_OK)
-			error = MPC_Connect(syn_DeviceHandle);
+		}
 
 		if (error == MpcApiError::ERR_OK)
+		{
+			error = MPC_Connect(syn_DeviceHandle);
+		}
+
+		if (error == MpcApiError::ERR_OK)
+		{
 			LOG(INFO) << "Firmware update completed sucessfully!: " << syn_SerialNumber;
+		}
 		else
+		{
 			LOG(ERROR) << "Firmware update failure!: " << syn_SerialNumber;
 			ex.SetError(error);
 			ex.SetDescription("Firmware update failure!: " + syn_SerialNumber);
 			throw ex;
+		}
 	}
 }
