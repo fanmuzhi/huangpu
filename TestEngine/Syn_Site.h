@@ -34,13 +34,17 @@ class Syn_Site
 
 public:
 
-	/*need call Init function*/
-	Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath);
+	//static function
+	static uint32_t CreateSiteInstance(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath, Syn_Site * &opSiteInstance);
+
+	/*need call Open function*/
+	//Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath);
 
 	~Syn_Site();
 
-	/*site initiazlization*/
-	uint32_t Init();
+	/*site open*/
+	//uint32_t Init();
+	uint32_t Open();
 
 	/*fixed scriptID and scriptName in GUI. */
 	uint32_t ExecuteScript(uint8_t scriptID);                              
@@ -91,6 +95,12 @@ public:
 	inline void SetSiteNotConnected(){ _siteState = NotConnected; };
 
 private:
+
+	/*need call Open function*/
+	Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath);
+
+	/*site initiazlization*/
+	uint32_t Init();
 
 	//function
 	void GeDutCtrl(Syn_DutCtrl * &opDutCtrl){ opDutCtrl = _pSyn_DutCtrl; };
