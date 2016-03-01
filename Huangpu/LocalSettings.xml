@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
-    <SysConfigFile>C:/Users/bqiling/Google Drive/Metallica 77A0/580-005895-01r1(FM-000133-003)_OFilm_ZTE.xml</SysConfigFile>
+    <SysConfigFile>C:/Users/bqiling/Google Drive/Metallica 109A0/MT_FM146_config_R2_updated_3.3_ASE.xml</SysConfigFile>
     <NumSites>1</NumSites>
-    <Site1 Voltages="3981284 1714932988 1 3981308" AdcBaseLines="3981220 75 6707720 75 1718404756 6707720 3981244 1715066028 1723692956 3981260 1715066645 1723692956 4294967295 3981276 1715095712 1 ">1405853</Site1>
+    <Site1 Voltages="4243468 1711590652 1 4243492" AdcBaseLines="4243404 75 4243436 75 1988629251 6424950 4243428 1711723692 1720350620 4243444 1711724309 1720350620 4294967295 4243460 1711753376 1 ">1405853</Site1>
     <AutoController></AutoController>
 </LocalSettings>

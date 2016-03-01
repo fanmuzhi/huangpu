@@ -155,6 +155,10 @@ void Ts_Calibrate::Excute()
 	delete pFrame;
 	pFrame = NULL;*/
 
+	//Calibration is done. If the High Pass Filter (HPF) was disabled during calibration, re-enable it.
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nHpfOffset)
+		(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch)[_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nHpfOffset] |= 0x01;
+
 	GetFingerprintImage(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults, &(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.arr_ImageFPSFrame), numRows, numCols);
 }
 

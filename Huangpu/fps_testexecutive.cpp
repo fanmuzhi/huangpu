@@ -251,7 +251,7 @@ bool FPS_TestExecutive::ConstructSiteList(bool SendMsg)
 		Syn_Site *pSyn_SiteInstance = new Syn_Site(uiSiteNumber, uiSerialNumber, strConfigFilePath);
 		if (IsExists)
 		{
-			pSyn_SiteInstance->Init();
+			//pSyn_SiteInstance->Init();
 		}
 		else
 		{
