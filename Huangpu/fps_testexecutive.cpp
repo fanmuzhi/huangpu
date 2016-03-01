@@ -25,19 +25,20 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	Initialize();
 
 	//slots
-	//LocalSettings Dialog
+	//Create LocalSettings Dialog
 	QObject::connect(ui.LocalSettingsPushButton, SIGNAL(clicked()), this, SLOT(CreateLocalSettings()));
-	QObject::connect(_pSyn_LocalSettingsDlg->ui->CancelPushButton, SIGNAL(clicked()), this, SLOT(CloseLocalSettingsDialog()));
+	
+	/*QObject::connect(_pSyn_LocalSettingsDlg->ui->CancelPushButton, SIGNAL(clicked()), this, SLOT(CloseLocalSettingsDialog()));
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->SelectSysConfigFilePushButton, SIGNAL(clicked()), this, SLOT(SelectConfigFile()));
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->SiteCountsLineEdit, SIGNAL(editingFinished()), this, SLOT(ModifySiteCounts()));//returnPressed
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->ModifySerialNumberPushButton, SIGNAL(clicked()), this, SLOT(ModifySerialNumber()));
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->SiteTableWidget, SIGNAL(cellClicked(int, int)), this, SLOT(SetLeds(int, int)));
 
-	QObject::connect(_pSyn_LocalSettingsDlg->ui->OKPushButton, SIGNAL(clicked()), this, SLOT(ConfirmSite()));
+	QObject::connect(_pSyn_LocalSettingsDlg->ui->OKPushButton, SIGNAL(clicked()), this, SLOT(ConfirmSite()));*/
 
 
 	//Testing Operation
-	QObject::connect(ui.pushButtonRun, SIGNAL(clicked()), this, SLOT(RunningTest()));
+	//QObject::connect(ui.pushButtonRun, SIGNAL(clicked()), this, SLOT(RunningTest()));
 
 	//Thread
 	for (int i = 1; i <= DeviceCounts; i++)
@@ -58,7 +59,6 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	//QObject::connect(&(_threadForDebug), SIGNAL(send(unsigned int)), this, SLOT(FigerprintImage(unsigned int)));
 	_threadForDebugCalibrate._dbgType = calibrateType;
 	QObject::connect(&(_threadForDebugCalibrate), SIGNAL(send(unsigned int)), this, SLOT(ImageCalibration(unsigned int)));
-
 	
 }
 
@@ -97,24 +97,6 @@ void FPS_TestExecutive::Initialize()
 {
 	bool rc(false);
 
-	_ListOfSitePtr.clear();
-
-	//DeviceManage
-	if (NULL == _pSyn_DeviceManager)
-	{
-		_pSyn_DeviceManager = new Syn_DeviceManager();
-	}
-	uint32_t uiResult = _pSyn_DeviceManager->Open();
-
-	//LocalSettings Dialog
-	_pSyn_LocalSettingsDlg = new Syn_LocalSettingsDlg();
-	_pSyn_LocalSettingsDlg->setHidden(true);
-
-	_TempVoltagesValue.nVdd = 0x1234;
-	_TempVoltagesValue.nVio = 0x1234;
-	_TempVoltagesValue.nVled = 0x1234;
-	_TempVoltagesValue.nVddh = 0x1234;
-
 	//LocalSettings
 	Syn_LocalSettingConfig *pSyn_LocalSettingConfig = NULL;
 	rc = Syn_LocalSettingConfig::CreateLSConfigInstance(pSyn_LocalSettingConfig);
@@ -126,60 +108,19 @@ void FPS_TestExecutive::Initialize()
 
 	rc = pSyn_LocalSettingConfig->GetLocalSettings(_LocalSettingsInfo);
 
-	QString strConfigFilePath = QString::fromStdString(_LocalSettingsInfo._strSysConfigFilePath);
-	if (!strConfigFilePath.isNull())
+	unsigned int iLocalSettingSiteCounts = _LocalSettingsInfo._listOfSiteSettings.size();
+	if (0 == iLocalSettingSiteCounts)
 	{
-		_pSyn_LocalSettingsDlg->ui->SysConfigFileLlineEdit->clear();
-		_pSyn_LocalSettingsDlg->ui->SysConfigFileLlineEdit->setText(strConfigFilePath);
+		QMessageBox::critical(this, QString("Error"), QString("Local Settings' Site info is NULL,check it please!"));
+		return;
 	}
-
-	int iSiteCounts = _LocalSettingsInfo._listOfSiteSettings.size();
-	if (0 != iSiteCounts)
-	{
-		//clear
-		for (int t = _pSyn_LocalSettingsDlg->ui->SiteTableWidget->rowCount(); t >= 1; t--)
-		{
-			_pSyn_LocalSettingsDlg->ui->SiteTableWidget->removeRow(t-1);
-		}
-
-		_pSyn_LocalSettingsDlg->ui->SiteTableWidget->setRowCount(iSiteCounts);
-		
-		for (size_t t = 1; t <= iSiteCounts; t++)
-		{
-			AdcBaseLineInfo CurrentAdcBaseLineInfo = (_LocalSettingsInfo._listOfSiteSettings)[t - 1]._adcBaseLineInfo;
-			QString strVoltagesAll = QString::number(CurrentAdcBaseLineInfo.m_nVdd) + QString(" ") + QString::number(CurrentAdcBaseLineInfo.m_nVio) + QString(" ") + QString::number(CurrentAdcBaseLineInfo.m_nVled) + QString(" ") + QString::number(CurrentAdcBaseLineInfo.m_nVddh);
-
-			QString strAdcBaseLinesValue("");
-			for (int a = 0; a < NUM_CURRENT_VALUES; a++)
-			{
-				for (int b = 0; b < KNUMGAINS; b++)
-				{
-					strAdcBaseLinesValue += QString::number((CurrentAdcBaseLineInfo.m_arAdcBaseLines)[a][b]) + QString(" ");
-				}
-			}
-
-			QString strSiteNumber(QString::number(t));
-			QString strSerialNumber(QString::number((_LocalSettingsInfo._listOfSiteSettings)[t - 1]._uiDutSerNum));
-
-			_pSyn_LocalSettingsDlg->ui->SiteTableWidget->setItem(t - 1, 0, new QTableWidgetItem(strSiteNumber));
-			_pSyn_LocalSettingsDlg->ui->SiteTableWidget->setItem(t - 1, 1, new QTableWidgetItem(strSerialNumber));
-			_pSyn_LocalSettingsDlg->ui->SiteTableWidget->setItem(t - 1, 2, new QTableWidgetItem(strAdcBaseLinesValue));
-
-			_TempVoltagesValue.nVdd = CurrentAdcBaseLineInfo.m_nVdd;
-			_TempVoltagesValue.nVio = CurrentAdcBaseLineInfo.m_nVio;
-			_TempVoltagesValue.nVled = CurrentAdcBaseLineInfo.m_nVled;
-			_TempVoltagesValue.nVddh = CurrentAdcBaseLineInfo.m_nVddh;
-		}
-	}
-	_pSyn_LocalSettingsDlg->ui->SiteCountsLineEdit->clear();
-	_pSyn_LocalSettingsDlg->ui->SiteCountsLineEdit->setText(QString::number(iSiteCounts));
 	
 	delete pSyn_LocalSettingConfig;
 	pSyn_LocalSettingConfig = NULL;
 
 	//Config file & SiteList
 	QString strConfigFile = QString::fromStdString(_LocalSettingsInfo._strSysConfigFilePath);
-	rc = ConstructSiteList(true);
+	rc = ConstructSiteList(_LocalSettingsInfo);
 	if (!rc)
 	{
 		cout << "Error:FPS_TestExecutive::Initialize() - ::ConstructSiteList() is failed!" << endl;
@@ -187,15 +128,23 @@ void FPS_TestExecutive::Initialize()
 	}
 }
 
-bool FPS_TestExecutive::ConstructSiteList(bool SendMsg)
+bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettingsInfo)
 {
-	bool rc(false);
+	uint32_t rc = 0;
 
 	//Config file
-	std::string strConfigFilePath = _LocalSettingsInfo._strSysConfigFilePath;
+	std::string strConfigFilePath = LocalSettingsInfo._strSysConfigFilePath;
 	QFile ConfigFile(QString::fromStdString(strConfigFilePath));
 	if (!ConfigFile.exists())
 	{
+		QMessageBox::critical(this, QString("Error"), QString("Can't find config file,check it please!"));
+		return false;
+	}
+
+	unsigned int iLocalSettingsSiteCounts = LocalSettingsInfo._listOfSiteSettings.size();
+	if (0 == iLocalSettingsSiteCounts)
+	{
+		QMessageBox::critical(this, QString("Error"), QString("Can't retrieve Site info in LocalSettings,check it please!"));
 		return false;
 	}
 
@@ -213,88 +162,51 @@ bool FPS_TestExecutive::ConstructSiteList(bool SendMsg)
 		_ListOfSitePtr.clear();
 	}
 
-	if (NULL == _pSyn_DeviceManager)
-	{
-		_pSyn_DeviceManager = new Syn_DeviceManager();
-	}
-
-	uint32_t uiResult = _pSyn_DeviceManager->Open();
-	/*if (Syn_ExceptionCode::Syn_OK != uiResult)
-	{
-		return false;
-	}*/
-
-	unsigned int iLocalSettingsSiteCounts = _LocalSettingsInfo._listOfSiteSettings.size();
-	if (0 == iLocalSettingsSiteCounts)
-	{
-		return false;
-	}
-
-	std::vector<uint32_t> serialNbList;
-	_pSyn_DeviceManager->GetSerialNumberList(serialNbList);
-
+	bool IsSucess(true);
 	for (size_t i = 0; i < iLocalSettingsSiteCounts; i++)
 	{
-		uint32_t uiSerialNumber = _LocalSettingsInfo._listOfSiteSettings[i]._uiDutSerNum;
-
-		bool IsExists(false);
-		for (size_t j = 1; j <= serialNbList.size(); j++)
-		{
-			if (uiSerialNumber == serialNbList[j - 1])
-			{
-				IsExists = true;
-				break;
-			}
-		}
-
+		uint32_t uiSerialNumber = LocalSettingsInfo._listOfSiteSettings[i]._uiDutSerNum;
 		uint8_t uiSiteNumber = i + 1;
-		Syn_Site *pSyn_SiteInstance = new Syn_Site(uiSiteNumber, uiSerialNumber, strConfigFilePath);
-		if (IsExists)
+		Syn_Site *pSyn_SiteInstance = NULL; 
+		rc = Syn_Site::CreateSiteInstance(uiSiteNumber, uiSerialNumber, _LocalSettingsInfo._strSysConfigFilePath,pSyn_SiteInstance);
+		if (NULL == pSyn_SiteInstance || Syn_ExceptionCode::Syn_OK != rc)
 		{
-			//pSyn_SiteInstance->Init();
+			QMessageBox::critical(this, QString("Error"), QString("Can't cosntruct Serial Number:") + QString::number(uiSerialNumber) + QString(" device,check it please!"));
+			IsSucess = false;
+			break;
 		}
-		else
-		{
-			pSyn_SiteInstance->SetSiteNotConnected();
-		}
+		
 		_ListOfSitePtr.push_back(pSyn_SiteInstance);
+	}
 
-		/*if (0x1234 == _TempVoltagesValue.nVdd)
+	if (!IsSucess)
+	{
+		if (0 != _ListOfSitePtr.size())
 		{
-			Syn_SysConfig oTempConfig;
-			pSyn_SiteInstance->GetSysConfig(oTempConfig);
-
-			_LocalSettingsInfo._listOfSiteSettings[i]._adcBaseLineInfo.m_nVdd = oTempConfig._uiDutpwrVdd_mV;
-			_LocalSettingsInfo._listOfSiteSettings[i]._adcBaseLineInfo.m_nVio = oTempConfig._uiDutpwrVio_mV;
-			_LocalSettingsInfo._listOfSiteSettings[i]._adcBaseLineInfo.m_nVled = oTempConfig._uiDutpwrVled_mV;
-			_LocalSettingsInfo._listOfSiteSettings[i]._adcBaseLineInfo.m_nVddh = oTempConfig._uiDutpwrVddh_mV;
-			_TempVoltagesValue.nVdd = oTempConfig._uiDutpwrVdd_mV;
-			_TempVoltagesValue.nVio = oTempConfig._uiDutpwrVio_mV;
-			_TempVoltagesValue.nVled = oTempConfig._uiDutpwrVled_mV;
-			_TempVoltagesValue.nVddh = oTempConfig._uiDutpwrVddh_mV;
+			for (size_t i = _ListOfSitePtr.size(); i >= 1; i--)
+			{
+				if (NULL != _ListOfSitePtr[i - 1])
+				{
+					delete _ListOfSitePtr[i - 1];
+					_ListOfSitePtr[i - 1] = NULL;
+				}
+			}
+			_ListOfSitePtr.clear();
 		}
-		else
-		{
-			_LocalSettingsInfo._listOfSiteSettings[i]._adcBaseLineInfo.m_nVdd = _TempVoltagesValue.nVdd;
-			_LocalSettingsInfo._listOfSiteSettings[i]._adcBaseLineInfo.m_nVio = _TempVoltagesValue.nVio;
-			_LocalSettingsInfo._listOfSiteSettings[i]._adcBaseLineInfo.m_nVled = _TempVoltagesValue.nVled;
-			_LocalSettingsInfo._listOfSiteSettings[i]._adcBaseLineInfo.m_nVddh = _TempVoltagesValue.nVddh;
-		}*/
+
+		return false;
 	}
 
 	size_t ilistCounts = _ListOfSitePtr.size();
 	if (0 == ilistCounts)
 	{
-		if (SendMsg)
-			QMessageBox::critical(this, QString("Error"), QString("Can't construct the Site list,check it please!"));
+		QMessageBox::critical(this, QString("Error"), QString("Can't construct the Site list,check it please!"));
 		return false;
 	}
 
 	if (DeviceCounts < ilistCounts)
 	{
-		if (SendMsg)
-			QMessageBox::critical(this, QString("Error"), QString("Current Devices' counts is more than limit,the limit is ") + QString::number(DeviceCounts) + ("!"));
-
+		QMessageBox::critical(this, QString("Error"), QString("Current Devices' counts is more than limit,the limit is ") + QString::number(DeviceCounts) + ("!"));
 		ilistCounts = DeviceCounts;
 	}
 
@@ -405,9 +317,72 @@ void FPS_TestExecutive::CreateLocalSettings()
 {
 	if (NULL != _pSyn_LocalSettingsDlg)
 	{
-		_pSyn_LocalSettingsDlg->show();
+		delete _pSyn_LocalSettingsDlg;
+		_pSyn_LocalSettingsDlg = NULL;
+	}
+	_pSyn_LocalSettingsDlg = new Syn_LocalSettingsDlg();
+	_pSyn_LocalSettingsDlg->show();
+
+	//localSettings slots
+	QObject::connect(_pSyn_LocalSettingsDlg->ui->CancelPushButton, SIGNAL(clicked()), this, SLOT(CloseLocalSettingsDialog()));
+	QObject::connect(_pSyn_LocalSettingsDlg->ui->SelectSysConfigFilePushButton, SIGNAL(clicked()), this, SLOT(SelectConfigFile()));
+	QObject::connect(_pSyn_LocalSettingsDlg->ui->SiteCountsLineEdit, SIGNAL(editingFinished()), this, SLOT(ModifySiteCounts()));//returnPressed
+	QObject::connect(_pSyn_LocalSettingsDlg->ui->ModifySerialNumberPushButton, SIGNAL(clicked()), this, SLOT(ModifySerialNumber()));
+	//QObject::connect(_pSyn_LocalSettingsDlg->ui->SiteTableWidget, SIGNAL(cellClicked(int, int)), this, SLOT(SetLeds(int, int)));
+
+	QObject::connect(_pSyn_LocalSettingsDlg->ui->OKPushButton, SIGNAL(clicked()), this, SLOT(ConfirmSite()));
+
+	//operation
+	_pSyn_LocalSettingsDlg->ui->SysConfigFileLlineEdit->clear();
+	_pSyn_LocalSettingsDlg->ui->SysConfigFileLlineEdit->setText(QString::fromStdString(_LocalSettingsInfo._strSysConfigFilePath));
+
+	unsigned int iLocalSettingSiteCounts = _LocalSettingsInfo._listOfSiteSettings.size();
+	_pSyn_LocalSettingsDlg->ui->SiteCountsLineEdit->clear();
+	_pSyn_LocalSettingsDlg->ui->SiteCountsLineEdit->setText(QString::number(iLocalSettingSiteCounts));
+	if (0 == iLocalSettingSiteCounts)
+	{
 		return;
 	}
+
+	_pSyn_LocalSettingsDlg->ui->SiteTableWidget->setRowCount(iLocalSettingSiteCounts);
+	for (size_t i = 0; i < iLocalSettingSiteCounts; i++)
+	{
+		AdcBaseLineInfo CurrentAdcBaseLineInfo = (_LocalSettingsInfo._listOfSiteSettings)[i]._adcBaseLineInfo;
+		QString strVoltagesAll = QString::number(CurrentAdcBaseLineInfo.m_nVdd) + QString(" ") + QString::number(CurrentAdcBaseLineInfo.m_nVio) + QString(" ") + QString::number(CurrentAdcBaseLineInfo.m_nVled) + QString(" ") + QString::number(CurrentAdcBaseLineInfo.m_nVddh);
+
+		QString strAdcBaseLinesValue("");
+		for (int a = 0; a < NUM_CURRENT_VALUES; a++)
+		{
+			for (int b = 0; b < KNUMGAINS; b++)
+			{
+				strAdcBaseLinesValue += QString::number((CurrentAdcBaseLineInfo.m_arAdcBaseLines)[a][b]) + QString(" ");
+			}
+		}
+
+		QString strSiteNumber(QString::number(i+1));
+		QString strSerialNumber(QString::number((_LocalSettingsInfo._listOfSiteSettings)[i]._uiDutSerNum));
+
+		_pSyn_LocalSettingsDlg->ui->SiteTableWidget->setItem(i, 0, new QTableWidgetItem(strSiteNumber));
+		_pSyn_LocalSettingsDlg->ui->SiteTableWidget->setItem(i, 1, new QTableWidgetItem(strSerialNumber));
+		_pSyn_LocalSettingsDlg->ui->SiteTableWidget->setItem(i, 2, new QTableWidgetItem(strAdcBaseLinesValue));
+
+		/*_TempVoltagesValue.nVdd = CurrentAdcBaseLineInfo.m_nVdd;
+		_TempVoltagesValue.nVio = CurrentAdcBaseLineInfo.m_nVio;
+		_TempVoltagesValue.nVled = CurrentAdcBaseLineInfo.m_nVled;
+		_TempVoltagesValue.nVddh = CurrentAdcBaseLineInfo.m_nVddh;*/
+	}
+
+
+	if (NULL == _pSyn_DeviceManager)
+	{
+		_pSyn_DeviceManager = new Syn_DeviceManager();
+		return;
+	}
+	uint32_t uiResult = _pSyn_DeviceManager->Open();
+
+	
+
+
 }
 
 void FPS_TestExecutive::CloseLocalSettingsDialog()
@@ -415,6 +390,21 @@ void FPS_TestExecutive::CloseLocalSettingsDialog()
 	if (NULL != _pSyn_LocalSettingsDlg)
 	{
 		_pSyn_LocalSettingsDlg->hide();
+		delete _pSyn_LocalSettingsDlg;
+		_pSyn_LocalSettingsDlg = NULL;
+	}
+
+	if (NULL != _pSyn_SerialNumberManageDlg)
+	{
+		_pSyn_SerialNumberManageDlg->hide();
+		delete _pSyn_SerialNumberManageDlg;
+		_pSyn_SerialNumberManageDlg = NULL;
+	}
+
+	if (NULL != _pSyn_DeviceManager)
+	{
+		delete _pSyn_DeviceManager;
+		_pSyn_DeviceManager = NULL;
 	}
 }
 
@@ -437,12 +427,20 @@ void FPS_TestExecutive::SelectConfigFile()
 void FPS_TestExecutive::ModifySiteCounts()
 {
 	if (NULL == _pSyn_DeviceManager)
+	{
+		_pSyn_DeviceManager = new Syn_DeviceManager();
+	}
+
+	uint32_t rc = _pSyn_DeviceManager->Open();
+	if (Syn_ExceptionCode::Syn_OK != rc)
+	{
+		QMessageBox::critical(_pSyn_LocalSettingsDlg, QString("Error"), QString("Can't Open Device Manage,check it please!"));
 		return;
+	}
 
 	QString strUserSiteCounts = _pSyn_LocalSettingsDlg->ui->SiteCountsLineEdit->text();
 	int iUserSiteCounts = strUserSiteCounts.toInt();
 
-	_pSyn_DeviceManager->Open();
 	std::vector<uint32_t> listOfSerialNumber;
 	_pSyn_DeviceManager->GetSerialNumberList(listOfSerialNumber);
 	if (iUserSiteCounts > listOfSerialNumber.size())
@@ -474,6 +472,11 @@ void FPS_TestExecutive::ModifySiteCounts()
 void FPS_TestExecutive::ConfirmSite()
 {
 	bool rc(false);
+
+	if (NULL == _pSyn_LocalSettingsDlg)
+	{
+		return;
+	}
 
 	//check Site Info first
 	int iUserDefineSiteCounts = _pSyn_LocalSettingsDlg->ui->SiteTableWidget->rowCount();
@@ -582,9 +585,6 @@ void FPS_TestExecutive::ConfirmSite()
 		_LocalSettingsInfo._listOfSiteSettings.push_back(CurrentSiteSettings);
 	}
 
-	//ReConstruct SiteList
-	ConstructSiteList();
-
 	//save
 	Syn_LocalSettingConfig *pLocalSettingsInstance = NULL;
 	rc = Syn_LocalSettingConfig::CreateLSConfigInstance(pLocalSettingsInstance);
@@ -595,47 +595,29 @@ void FPS_TestExecutive::ConfirmSite()
 		pLocalSettingsInstance = NULL;
 	}
 
-	_pSyn_LocalSettingsDlg->hide();
-}
-
-void FPS_TestExecutive::ModifySerialNumber()
-{
-	/*bool focus = _pSyn_LocalSettingsDlg->ui->SiteTableWidget->isItemSelected(_pSyn_LocalSettingsDlg->ui->SiteTableWidget->currentItem());
-	if (!focus)
-		return;*/
-
-	int iSelectRowIndex = _pSyn_LocalSettingsDlg->ui->SiteTableWidget->currentRow();
-	if (iSelectRowIndex < 0)
-		iSelectRowIndex = 0;
-
-	if (NULL != _pSyn_SerialNumberManageDlg)
+	//ReConstruct SiteList
+	if (ConstructSiteList(_LocalSettingsInfo))
 	{
-		delete _pSyn_SerialNumberManageDlg;
-		_pSyn_SerialNumberManageDlg = NULL;
+		_pSyn_LocalSettingsDlg->hide();
+		delete _pSyn_LocalSettingsDlg;
+		_pSyn_LocalSettingsDlg = NULL;
+
+		if (NULL != _pSyn_SerialNumberManageDlg)
+		{
+			delete _pSyn_SerialNumberManageDlg;
+			_pSyn_SerialNumberManageDlg = NULL;
+		}
+
+		if (NULL != _pSyn_DeviceManager)
+		{
+			delete _pSyn_DeviceManager;
+			_pSyn_DeviceManager = NULL;
+		}
 	}
 
-	if (NULL == _pSyn_DeviceManager)
-		return;
-
-	_pSyn_SerialNumberManageDlg = new Syn_SerialNumberManageDlg();
-	_pSyn_SerialNumberManageDlg->setHidden(false);
-
-	_pSyn_DeviceManager->Open();
-	std::vector<uint32_t> listOfSerialNumber;
-	_pSyn_DeviceManager->GetSerialNumberList(listOfSerialNumber);
-
-	_pSyn_SerialNumberManageDlg->ui.SiteManagePromptLabel->setText(QString("Select Serial Number for Site ") + QString::number(iSelectRowIndex+1)+QString(":"));
-	_pSyn_SerialNumberManageDlg->ui.SerialNumberTableWidget->setRowCount(listOfSerialNumber.size());
-	for (size_t i = 1; i <= listOfSerialNumber.size(); i++)
-	{
-		_pSyn_SerialNumberManageDlg->ui.SerialNumberTableWidget->setItem(i - 1, 0, new QTableWidgetItem(QString::number(listOfSerialNumber[i-1])));
-	}
-
-	QObject::connect(_pSyn_SerialNumberManageDlg->ui.OKPushButton, SIGNAL(clicked()), this, SLOT(ConfirmSerialNumberForSite()));
-	QObject::connect(_pSyn_SerialNumberManageDlg->ui.CancelPushButton, SIGNAL(clicked()), this, SLOT(CloseSiteManageDialog()));
 }
 
-void FPS_TestExecutive::SetLeds(int rowNumber,int columnNumber)
+void FPS_TestExecutive::SetLeds(int rowNumber, int columnNumber)
 {
 	//get SerialNumber
 	int iSerialNumberColumn(1);
@@ -668,6 +650,56 @@ void FPS_TestExecutive::SetLeds(int rowNumber,int columnNumber)
 	}
 
 }
+
+void FPS_TestExecutive::ModifySerialNumber()
+{
+	if (NULL == _pSyn_LocalSettingsDlg)
+	{
+		return;
+	}
+
+	int iSelectRowIndex = _pSyn_LocalSettingsDlg->ui->SiteTableWidget->currentRow();
+	if (iSelectRowIndex < 0)
+		iSelectRowIndex = 0;
+
+	if (NULL != _pSyn_SerialNumberManageDlg)
+	{
+		delete _pSyn_SerialNumberManageDlg;
+		_pSyn_SerialNumberManageDlg = NULL;
+	}
+
+	if (NULL == _pSyn_DeviceManager)
+	{
+		_pSyn_DeviceManager = new Syn_DeviceManager();
+	}
+
+	uint32_t rc = _pSyn_DeviceManager->Open();
+	std::vector<uint32_t> listOfSerialNumber;
+	_pSyn_DeviceManager->GetSerialNumberList(listOfSerialNumber);
+	if (0 == listOfSerialNumber.size())
+	{
+		QMessageBox::critical(_pSyn_LocalSettingsDlg, QString("Error"), QString("Can't find device,check it please!"));
+		return;
+	}
+
+	_pSyn_SerialNumberManageDlg = new Syn_SerialNumberManageDlg();
+	_pSyn_SerialNumberManageDlg->show();
+
+	//slots
+	QObject::connect(_pSyn_SerialNumberManageDlg->ui.OKPushButton, SIGNAL(clicked()), this, SLOT(ConfirmSerialNumberForSite()));
+	QObject::connect(_pSyn_SerialNumberManageDlg->ui.CancelPushButton, SIGNAL(clicked()), this, SLOT(CloseSiteManageDialog()));
+
+	_pSyn_SerialNumberManageDlg->ui.SiteManagePromptLabel->setText(QString("Select Serial Number for Site ") + QString::number(iSelectRowIndex+1)+QString(":"));
+	_pSyn_SerialNumberManageDlg->ui.SerialNumberTableWidget->setRowCount(listOfSerialNumber.size());
+	for (size_t i = 1; i <= listOfSerialNumber.size(); i++)
+	{
+		_pSyn_SerialNumberManageDlg->ui.SerialNumberTableWidget->setItem(i - 1, 0, new QTableWidgetItem(QString::number(listOfSerialNumber[i-1])));
+	}
+
+	
+}
+
+
 
 void FPS_TestExecutive::ConfirmSerialNumberForSite()
 {
@@ -1015,7 +1047,7 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 		return;
 	}
 
-	uint32_t rc = pSelectedSite->Init();
+	uint32_t rc = pSelectedSite->Open();
 	if (rc != 0)
 	{
 		QMessageBox::information(this, QString("Error"), QString("OTPDump Error:") + QString::number(rc));
@@ -1162,7 +1194,7 @@ void FPS_TestExecutive::PushCablicationImageButton()
 	}
 	else
 	{
-		_ListOfSitePtr[iSiteCurrentIndex]->Init();
+		_ListOfSitePtr[iSiteCurrentIndex]->Open();
 		_threadForDebugCalibrate.SetSite(_ListOfSitePtr[iSiteCurrentIndex]);
 		//_threadForDebugCalibrate.SetRunTag(true);
 		_threadForDebugCalibrate.start();

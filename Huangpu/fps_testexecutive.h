@@ -63,7 +63,7 @@ public:
 	void Initialize();
 
 	//bool ConstructSiteList(QString strConfigFilePath, bool SendMsg = false);
-	bool ConstructSiteList(bool SendMsg = false);
+	bool ConstructSiteList(const Syn_LocalSettings &LocalSettingsInfo);
 
 
 public Q_SLOTS:
@@ -75,7 +75,6 @@ public Q_SLOTS:
 	void ModifySiteCounts();
 	void ModifySerialNumber();
 	void SetLeds(int rowNumber, int columnNumber);
-
 
 	void ConfirmSite();
 
@@ -128,7 +127,7 @@ private:
 	Syn_LocalSettings _LocalSettingsInfo;
 
 	//Temp Voltages,save VoltagesValue from user define or configfile
-	Syn_VoltagesValue _TempVoltagesValue;
+	//Syn_VoltagesValue _TempVoltagesValue;
 
 	bool _bStopTag;
 

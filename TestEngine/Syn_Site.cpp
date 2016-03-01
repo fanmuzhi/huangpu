@@ -37,6 +37,40 @@ Syn_Site::Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string str
 ,_stopFlag(false)
 , _uiErrorFlag(Syn_ExceptionCode::Syn_OK)
 ,_strErrorMessage("")
+{	
+}
+
+Syn_Site::~Syn_Site()
+{
+	if (NULL != _pSyn_Dut)
+	{
+		delete _pSyn_Dut;
+		_pSyn_Dut = NULL;
+	}
+
+	if (NULL != _pSyn_DutCtrl)
+	{
+		delete _pSyn_DutCtrl;
+		_pSyn_DutCtrl = NULL;
+	}
+}
+
+uint32_t Syn_Site::CreateSiteInstance(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath, Syn_Site * &opSiteInstance)
+{
+	opSiteInstance = NULL;
+
+	opSiteInstance = new Syn_Site(siteNumber, deviceSerNumber, strConfigFilePath);
+	uint32_t rc = opSiteInstance->Init();
+	if (Syn_ExceptionCode::Syn_OK != rc)
+	{
+		delete opSiteInstance;
+		opSiteInstance = NULL;
+	}
+
+	return rc;
+}
+
+uint32_t Syn_Site::Init()
 {
 	//xml config file parse
 	Syn_SysConfigOperation *pConfigOperationInstance = NULL;
@@ -46,16 +80,16 @@ Syn_Site::Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string str
 		_siteState = Error;
 		_uiErrorFlag = rc;
 		LOG(ERROR) << "Error:Syn_Site::Init() - pConfigOperationInstance is NULL!" << endl;
-		return;
+		return rc;
 	}
 
 	rc = pConfigOperationInstance->GetSysConfig(_SysConfig);
-	if (Syn_ExceptionCode::Syn_OK!=rc)
+	if (Syn_ExceptionCode::Syn_OK != rc)
 	{
 		_siteState = Error;
 		_uiErrorFlag = rc;
 		LOG(ERROR) << "Error:Syn_Site::Init() - ::GetSysConfig is failed!" << endl;
-		return;
+		return rc;
 	}
 
 	//DutController:SPC,MPC04
@@ -82,7 +116,7 @@ Syn_Site::Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string str
 		_siteState = Error;
 		_uiErrorFlag = rc;
 		LOG(ERROR) << "Error:Syn_Site::Init() - CreateDutInstance is failed!";
-		return;
+		return rc;
 	}
 
 	if (pConfigOperationInstance)
@@ -92,24 +126,11 @@ Syn_Site::Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string str
 	}
 
 	_siteState = Closed;
+
+	return Syn_ExceptionCode::Syn_OK;
 }
 
-Syn_Site::~Syn_Site()
-{
-	if (NULL != _pSyn_Dut)
-	{
-		delete _pSyn_Dut;
-		_pSyn_Dut = NULL;
-	}
-
-	if (NULL != _pSyn_DutCtrl)
-	{
-		delete _pSyn_DutCtrl;
-		_pSyn_DutCtrl = NULL;
-	}
-}
-
-uint32_t Syn_Site::Init()
+uint32_t Syn_Site::Open()
 {
 	if (_siteState == SiteState::Error)
 	{
