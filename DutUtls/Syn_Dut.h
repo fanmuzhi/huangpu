@@ -119,8 +119,6 @@ public:
 	//function
 	void InitData(Syn_SysConfig &sysConfig);
 
-	bool ParseTestStepArgs(const std::string &strArgsValue, std::vector<std::string> &olistOfArgValue, std::string strSymbol = std::string(" "));
-
 	bool FindPatch(std::string patchName, Syn_PatchInfo &patchInfo);
 
 	inline void SetPatchInfo(vector<Syn_PatchInfo> ilistOfPatchInfo){ _listOfPatchInfo = ilistOfPatchInfo; };

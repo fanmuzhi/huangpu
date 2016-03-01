@@ -28,7 +28,6 @@ public:
 
 	bool CheckDUTexists();
 
-
 	//virtual function
 	virtual	void CopyToPrintPatch(uint8_t* pSrc, uint8_t* pPrintPatch, int nNumBytes, int nPatchIdx) = 0;
 

@@ -54,10 +54,10 @@ public:
 	uint32_t GetTestResult(Syn_DutTestResult * &opTestResult);
 
 	/*Debug interface for each test step*/
-	uint32_t SingleTestStep(std::string sTestStepName);
+	uint32_t ExecuteTestStep(std::string sTestStepName);
 
 	/*get the current state of site*/
-	inline void GetState(SiteState &oSiteState){ oSiteState = _sitState; };
+	inline void GetState(SiteState &oSiteState){ oSiteState = _siteState; };
 
 	/*Stop the test*/
 	uint32_t Stop();
@@ -88,7 +88,7 @@ public:
 
 
 	//add by Jerry:2016_02_24(set NotConnected Site Status) maybe delete at end
-	inline void SetSiteNotConnected(){ _sitState = NotConnected; };
+	inline void SetSiteNotConnected(){ _siteState = NotConnected; };
 
 private:
 
@@ -108,7 +108,7 @@ private:
 	unsigned int _iSiteNumber;
 	uint32_t _uiSerialNumber;
 
-	SiteState _sitState;
+	SiteState _siteState;
 
 	bool _stopFlag;
 

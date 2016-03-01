@@ -6,8 +6,8 @@
 //windows
 //#include "windows.h" 
 
-Syn_FingerprintTest::Syn_FingerprintTest(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
-:Syn_TestStep(strName, pDutCtrl, pDut)
+Syn_FingerprintTest::Syn_FingerprintTest(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
+:Syn_TestStep(strName, strArgs, pDutCtrl, pDut)
 , _pSyn_Module(NULL)
 {
 	switch (_pSyn_Dut->_eProjectType)
@@ -121,4 +121,36 @@ bool Syn_FingerprintTest::CheckDUTexists()
 	}
 
 	return _pSyn_Module->CheckDUTexists();
+}
+
+bool Syn_FingerprintTest::ParseTestStepArgs(const std::string &strArgsValue, std::vector<std::string> &olistOfArgValue, std::string strSymbol)
+{
+	olistOfArgValue.clear();
+
+	unsigned int iLength = strArgsValue.length();
+	if (0 == iLength)
+	{
+		return false;
+	}
+
+	std::string strTempValue = strArgsValue;
+	while (true)
+	{
+		size_t SymbolPosition = strTempValue.find(strSymbol);
+		if (SymbolPosition == std::string::npos)
+		{
+			if (0 != strTempValue.length())
+			{
+				olistOfArgValue.push_back(strTempValue);
+			}
+			break;
+		}
+
+		std::string strArgValue = strTempValue.substr(0, SymbolPosition);
+		olistOfArgValue.push_back(strArgValue);
+		strTempValue = strTempValue.substr(SymbolPosition + 1, strTempValue.length() - SymbolPosition);
+		//strTempValue = strTempValue.substr(SymbolPosition + strSymbol.length(), strTempValue.length() - SymbolPosition-strSymbol.length());
+	}
+
+	return true;
 }

@@ -57,7 +57,7 @@ protected:
 		{
 			//_pSyn_Site->ExecuteScript(3);
 
-			_pSyn_Site->SingleTestStep("Calibrate");
+			_pSyn_Site->ExecuteTestStep("Calibrate");
 
 			while (true)
 			{

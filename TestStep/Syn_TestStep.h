@@ -22,8 +22,8 @@ class Syn_TestStep
 {
 public:
 	
-	Syn_TestStep(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
-		:_strName(strName), _pSyn_DutCtrl(pDutCtrl), _pSyn_Dut(pDut)
+	Syn_TestStep(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
+		:_strName(strName),  _strArgs(strArgs), _pSyn_DutCtrl(pDutCtrl), _pSyn_Dut(pDut)
 	{
 	}
 
@@ -39,7 +39,7 @@ public:
 	//pure virtual function
 	virtual	void	SetUp() = 0;
 
-	virtual void	Excute() = 0;
+	virtual void	Execute() = 0;
 
 	virtual void	ProcessData() = 0;
 
@@ -49,8 +49,9 @@ protected:
 
 	string _strName;
 
+	string _strArgs;
+
 	Syn_DutCtrl *_pSyn_DutCtrl;
 	
 	Syn_Dut *_pSyn_Dut;
 };
-

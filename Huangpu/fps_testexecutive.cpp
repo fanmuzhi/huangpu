@@ -307,7 +307,7 @@ bool FPS_TestExecutive::ConstructSiteList(bool SendMsg)
 		pSyn_SiteInstance->Init();
 		/*if (IsExists)
 		{
-			pSyn_SiteInstance->Init();
+			//pSyn_SiteInstance->Init();
 		}
 		else
 		{
@@ -1145,7 +1145,7 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 		return;
 	}
 
-	rc = pSelectedSite->SingleTestStep("OTPCheck");
+	rc = pSelectedSite->ExecuteTestStep("OTPCheck");
 	if (rc != 0)
 	{
 		QMessageBox::information(this, QString("Error"), QString("OTPDump Error:") + QString::number(rc));
@@ -1305,6 +1305,15 @@ void FPS_TestExecutive::ImageCalibration(unsigned int iSiteNumber)
 		if (iSiteNumber == iTempSiteNumber)
 		{
 			//_ListOfSitePtr[i]->GetTestInfo(*CurrentDutTestInfo);
+			SiteState oTempState;
+			_ListOfSitePtr[i]->GetState(oTempState);
+			if (oTempState == SiteState::Error)
+			{
+				string errMsg = "";
+				_ListOfSitePtr[i]->GetRunTimeError(errMsg);
+				QMessageBox::information(this, QString("Error"), QString("Calibrate Error:") + QString::fromStdString(errMsg));
+				return;
+			}
 			_ListOfSitePtr[i]->GetTestResult(pCurrentDutTestResult);
 			_ListOfSitePtr[i]->GetSysConfig(CurrentSysConfig);
 			synFind = true;
@@ -1333,7 +1342,7 @@ void FPS_TestExecutive::ImageCalibration(unsigned int iSiteNumber)
 	{
 		for (int n = 0; n < columnNumber; n++)
 		{
-			data[m*(columnNumber)+n] = (pCurrentDutTestResult->_acquireFpsResults).arr_ImageFPSFrame.arr[m][n];
+			data[m*(columnNumber)+n] = (pCurrentDutTestResult->_calibrationResults).arr_ImageFPSFrame.arr[m][n];
 		}
 	}
 	QImage image((uchar*)data.constData(), columnNumber, rowNumber,QImage::Format_Indexed8);
@@ -1346,6 +1355,16 @@ void FPS_TestExecutive::ImageCalibration(unsigned int iSiteNumber)
 	ui.CalibrationImageLabel->setPixmap(QPixmap::fromImage(image));
 	ui.CalibrationImageLabel->adjustSize();
 	ui.CalibtrationGroupBox->adjustSize();
+
+	for (size_t i = 0; i < _ListOfSitePtr.size(); i++)
+	{
+		unsigned int iTempSiteNumber(0);
+		_ListOfSitePtr[i]->GetSiteNumber(iTempSiteNumber);
+		if (iSiteNumber == iTempSiteNumber)
+		{
+			_ListOfSitePtr[i]->Close();
+		}
+	}
 }
 
 //void FPS_TestExecutive::PushFigerprintImageButton()

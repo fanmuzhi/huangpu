@@ -12,7 +12,7 @@ Syn_TestStepFactory::~Syn_TestStepFactory()
 {
 }
 
-bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut, Syn_TestStep * &opTestStepInstance)
+bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, std::string strTestArgs,Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut, Syn_TestStep * &opTestStepInstance)
 {
 	opTestStepInstance = NULL;
 
@@ -28,11 +28,11 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, Sy
 	bool rc = true;
 	if (std::string("Calibrate") == strTestStepName)
 	{
-		opTestStepInstance = new Ts_Calibrate(strTestStepName, pDutCtrl, pDut);
+		opTestStepInstance = new Ts_Calibrate(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else if (std::string("OTPCheck") == strTestStepName)
 	{
-		opTestStepInstance = new Ts_OTPCheck(strTestStepName, pDutCtrl, pDut);
+		opTestStepInstance = new Ts_OTPCheck(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else
 	{

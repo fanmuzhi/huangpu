@@ -82,6 +82,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Ts_AcqImgNoFinger.h" />
     <ClInclude Include="Ts_Calibrate.h" />
     <ClInclude Include="Syn_FingerprintTest.h" />
     <ClInclude Include="Syn_MetallicaModule.h" />
@@ -92,6 +93,7 @@
     <ClInclude Include="Ts_OTPCheck.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Ts_AcqImgNoFinger.cpp" />
     <ClCompile Include="Ts_Calibrate.cpp" />
     <ClCompile Include="Syn_FingerprintTest.cpp" />
     <ClCompile Include="Syn_MetallicaModule.cpp" />

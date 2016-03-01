@@ -33,7 +33,7 @@ Syn_Site::Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string str
 , _iSiteNumber(siteNumber)
 ,_uiSerialNumber(deviceSerNumber)
 , _strConfigFilePath(strConfigFilePath)
-,_sitState(Closed)
+,_siteState(Closed)
 ,_stopFlag(false)
 , _uiErrorFlag(Syn_ExceptionCode::Syn_OK)
 ,_strErrorMessage("")
@@ -43,7 +43,7 @@ Syn_Site::Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string str
 	uint32_t rc = Syn_SysConfigOperation::GetSysConfigInstance(_strConfigFilePath, pConfigOperationInstance);
 	if (NULL == pConfigOperationInstance)
 	{
-		_sitState = Error;
+		_siteState = Error;
 		_uiErrorFlag = rc;
 		LOG(ERROR) << "Error:Syn_Site::Init() - pConfigOperationInstance is NULL!" << endl;
 		return;
@@ -52,7 +52,7 @@ Syn_Site::Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string str
 	rc = pConfigOperationInstance->GetSysConfig(_SysConfig);
 	if (Syn_ExceptionCode::Syn_OK!=rc)
 	{
-		_sitState = Error;
+		_siteState = Error;
 		_uiErrorFlag = rc;
 		LOG(ERROR) << "Error:Syn_Site::Init() - ::GetSysConfig is failed!" << endl;
 		return;
@@ -79,7 +79,7 @@ Syn_Site::Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string str
 	rc = Syn_DutCtrl::CreateDutCtrlInstance(iDutControllerType, _uiSerialNumber, _pSyn_DutCtrl);
 	if (NULL == _pSyn_DutCtrl)
 	{
-		_sitState = Error;
+		_siteState = Error;
 		_uiErrorFlag = rc;
 		LOG(ERROR) << "Error:Syn_Site::Init() - CreateDutInstance is failed!";
 		return;
@@ -91,7 +91,7 @@ Syn_Site::Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string str
 		pConfigOperationInstance = NULL;
 	}
 
-	_sitState = Closed;
+	_siteState = Closed;
 }
 
 Syn_Site::~Syn_Site()
@@ -111,9 +111,13 @@ Syn_Site::~Syn_Site()
 
 uint32_t Syn_Site::Init()
 {
-	if (_sitState == SiteState::Error)
+	if (_siteState == SiteState::Error)
 	{
 		return _uiErrorFlag;
+	}
+	if (_siteState != SiteState::Closed)
+	{
+		return Syn_ExceptionCode::Syn_SiteStateError;
 	}
 
 	bool rc(false);
@@ -149,7 +153,7 @@ uint32_t Syn_Site::Init()
 	rc = Syn_Dut::CreateDutInstance(iProjectType, _pSyn_Dut);
 	if (NULL == _pSyn_Dut)
 	{
-		_sitState = Error;
+		_siteState = Error;
 		_uiErrorFlag = Syn_ExceptionCode::Syn_DutNull;
 		LOG(ERROR) << "Error:Syn_Site::Init() - CreateDutInstance is failed!";
 		return _uiErrorFlag;
@@ -160,32 +164,42 @@ uint32_t Syn_Site::Init()
 	//fill info
 	_pSyn_Dut->InitData(_SysConfig);
 
-	_sitState = Idle;
+	_siteState = Idle;
 
 	return Syn_ExceptionCode::Syn_OK;
 }
 
 uint32_t Syn_Site::Close()
 {
+	if (_siteState == SiteState::Error)
+	{
+		return _uiErrorFlag;
+	}
+	if (_siteState != TestDataReady)
+	{
+		return  Syn_ExceptionCode::Syn_SiteStateError;
+	}
 	delete _pSyn_Dut;
 	_pSyn_Dut = NULL;
 
-	_sitState = Closed;
+	_siteState = Closed;
 
 	return Syn_ExceptionCode::Syn_OK;
-	
 }
 
 uint32_t Syn_Site::ExecuteScript(uint8_t scriptID)
 {
-	bool rc(false);
-
-	if (Idle != _sitState)
+	if (_siteState == SiteState::Error)
+	{
+		return _uiErrorFlag;
+	}
+	if (_siteState != Idle)
 	{
 		return Syn_ExceptionCode::Syn_SiteStateError;
 	}
 
-	_sitState = Running;
+	bool rc(false);
+	_siteState = Running;
 
 	//std::thread siteThread(RunScript, this, scriptID);
 
@@ -231,7 +245,11 @@ void Syn_Site::RunScript(uint8_t scriptID)
 
 		Syn_TestStepInfo CurrentTestStepInfo = ExceteScriptInfo._listOfTestStep[i - 1];
 		Syn_TestStep *pTestStep = NULL;
-		rc = Syn_TestStepFactory::CreateTestStepInstance(CurrentTestStepInfo._strTestStepName, _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
+
+		std::string strArgsValue("");
+		_SysConfig.GetSyn_TestStepInfo(CurrentTestStepInfo._strTestStepName, strArgsValue);
+
+		rc = Syn_TestStepFactory::CreateTestStepInstance(CurrentTestStepInfo._strTestStepName, strArgsValue, _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
 		if (rc && NULL != pTestStep)
 		{
 			try
@@ -241,7 +259,7 @@ void Syn_Site::RunScript(uint8_t scriptID)
 					pTestStep->SetUp();
 				}
 
-				pTestStep->Excute();
+				pTestStep->Execute();
 
 				if (listSize == i)
 				{
@@ -282,11 +300,11 @@ void Syn_Site::RunScript(uint8_t scriptID)
 
 	if (errorFlag)
 	{
-		_sitState = Error;
+		_siteState = Error;
 	}
 	else
 	{
-		_sitState = TestDataReady;
+		_siteState = TestDataReady;
 	}
 }
 
@@ -366,11 +384,24 @@ uint32_t Syn_Site::GetTestResult(Syn_DutTestResult * &opTestResult)
 	return Syn_ExceptionCode::Syn_DutResultNull;
 }
 
-uint32_t Syn_Site::SingleTestStep(std::string sTestName)
+uint32_t Syn_Site::ExecuteTestStep(std::string sTestName)
 {
-	Syn_TestStep *pTestStep = NULL;
+	if (_siteState == SiteState::Error)
+	{
+		return _uiErrorFlag;
+	}
+	if (_siteState != Idle)
+	{
+		return Syn_ExceptionCode::Syn_SiteStateError;
+	}
+	_siteState = Running;
 
-	bool rc = Syn_TestStepFactory::CreateTestStepInstance(sTestName, _pSyn_DutCtrl, _pSyn_Dut, pTestStep); //"OTPCheck"
+	Syn_TestStep *pTestStep = NULL;
+	
+	std::string strArgsValue("");
+	_SysConfig.GetSyn_TestStepInfo(sTestName, strArgsValue);
+
+	bool rc = Syn_TestStepFactory::CreateTestStepInstance(sTestName, strArgsValue, _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
 	if (!rc || NULL == pTestStep)
 	{
 		return Syn_ExceptionCode::Syn_TestStepConfigError;
@@ -379,14 +410,14 @@ uint32_t Syn_Site::SingleTestStep(std::string sTestName)
 	try
 	{
 		pTestStep->SetUp();
-		pTestStep->Excute();
+		pTestStep->Execute();
 		pTestStep->ProcessData();
 		pTestStep->CleanUp();
 
 		delete pTestStep;
 		pTestStep = NULL;
 
-		_sitState = TestDataReady;
+		_siteState = TestDataReady;
 	}
 	catch (Syn_Exception ex)
 	{
@@ -398,10 +429,10 @@ uint32_t Syn_Site::SingleTestStep(std::string sTestName)
 		delete pTestStep;
 		pTestStep = NULL;
 
-		_sitState = Error;
-		
+		_siteState = Error;
 		_strErrorMessage = ex.GetDescription();
-		return ex.GetError();
+		_uiErrorFlag = ex.GetError();
+		return _uiErrorFlag;
 	}
 	return Syn_ExceptionCode::Syn_OK;
 }

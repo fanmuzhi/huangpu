@@ -26,8 +26,7 @@
 #elif  MPCHostApp
   #define ERROR_BASE 0x0001
 #else
-  //#error The firmware type must be defined
-  #define ERROR_BASE 0x0001
+  #error The firmware type must be defined
 #endif
 
 class Errors
@@ -99,7 +98,8 @@ public:
           TIMEOUT_WAITING_ATTN,
           APP_IMG_LOC_WOULD_OVERWRITE_BOOTLOADER,       //0x2040
           BOOTLOADER_NOT_FOUND,
-          FREQ_MEASUREMENT_TIMEOUT
+          FREQ_MEASUREMENT_TIMEOUT,
+          USB_ERROR
         };
 };
 

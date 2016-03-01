@@ -9,13 +9,13 @@ public:
 
 	enum { kPgaCalTypeOneOffsetPerRow, kPgaCalTypeOneOffsetPerPixel };
 
-	Ts_Calibrate(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
+	Ts_Calibrate(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
 	virtual ~Ts_Calibrate();
 
 
 	virtual void	SetUp();
 
-	virtual void	Excute();
+	virtual void	Execute();
 
 	virtual void	ProcessData();
 

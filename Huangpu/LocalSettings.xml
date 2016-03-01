@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
-    <SysConfigFile>D:/57K0_Test_Cpp.xml</SysConfigFile>
-    <NumSites>2</NumSites>
-    <Site1 AdcBaseLines="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 " Voltages="3300 3300 3300 3300">1684806</Site1>
-    <Site2 AdcBaseLines="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 " Voltages="3300 3300 3300 3300">1456665</Site2>
+    <SysConfigFile>C:/Users/bqiling/Google Drive/Metallica 109A0/MT_FM146_config_R2_updated_3.3.xml</SysConfigFile>
+    <NumSites>1</NumSites>
+    <Site1 AdcBaseLines="3719420 75 6708560 75 1727645332 6708560 3719444 1724306604 1732933532 3719460 1724307221 1732933532 4294967295 3719476 1724336288 1 " Voltages="3719484 1724173564 1 3719508">1405853</Site1>
     <AutoController></AutoController>
 </LocalSettings>
