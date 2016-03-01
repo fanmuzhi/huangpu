@@ -3,7 +3,10 @@
 #include <stdint.h>
 #include <vector>
 
-#include "Syn_Site.h"
+//Reference inc
+extern "C" {
+#include "SYN_TestUtils.h"
+};
 
 class Syn_DeviceManager
 {
@@ -15,11 +18,11 @@ public:
 	
 	void GetSerialNumberList(std::vector<uint32_t> &serialNumberList);
 
-	uint32_t UpdateFirmware(std::vector<Syn_Site*> &listOfSite);
+	uint32_t UpdateFirmware();
 	
-	uint32_t UpdateADCOffsets(Syn_Site* &pSiteInstance, uint32_t nVdd, uint32_t nVio, uint32_t nVled, uint32_t nVddh, uint32_t arAdcBaseLines[NUM_CURRENT_VALUES][KNUMGAINS]);
+	uint32_t UpdateADCOffsets(uint32_t uiSerialNumber, uint32_t nVdd, uint32_t nVio, uint32_t nVled, uint32_t nVddh, uint32_t arAdcBaseLines[NUM_CURRENT_VALUES][KNUMGAINS]);
 	
-	uint32_t SetLeds(Syn_Site* &pSiteInstance);
+	uint32_t SetLeds(uint32_t uiSerialNumber);
 
 	uint32_t Close();
 

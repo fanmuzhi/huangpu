@@ -27,15 +27,6 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	//slots
 	//Create LocalSettings Dialog
 	QObject::connect(ui.LocalSettingsPushButton, SIGNAL(clicked()), this, SLOT(CreateLocalSettings()));
-	
-	/*QObject::connect(_pSyn_LocalSettingsDlg->ui->CancelPushButton, SIGNAL(clicked()), this, SLOT(CloseLocalSettingsDialog()));
-	QObject::connect(_pSyn_LocalSettingsDlg->ui->SelectSysConfigFilePushButton, SIGNAL(clicked()), this, SLOT(SelectConfigFile()));
-	QObject::connect(_pSyn_LocalSettingsDlg->ui->SiteCountsLineEdit, SIGNAL(editingFinished()), this, SLOT(ModifySiteCounts()));//returnPressed
-	QObject::connect(_pSyn_LocalSettingsDlg->ui->ModifySerialNumberPushButton, SIGNAL(clicked()), this, SLOT(ModifySerialNumber()));
-	QObject::connect(_pSyn_LocalSettingsDlg->ui->SiteTableWidget, SIGNAL(cellClicked(int, int)), this, SLOT(SetLeds(int, int)));
-
-	QObject::connect(_pSyn_LocalSettingsDlg->ui->OKPushButton, SIGNAL(clicked()), this, SLOT(ConfirmSite()));*/
-
 
 	//Testing Operation
 	//QObject::connect(ui.pushButtonRun, SIGNAL(clicked()), this, SLOT(RunningTest()));
@@ -328,9 +319,19 @@ void FPS_TestExecutive::CreateLocalSettings()
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->SelectSysConfigFilePushButton, SIGNAL(clicked()), this, SLOT(SelectConfigFile()));
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->SiteCountsLineEdit, SIGNAL(editingFinished()), this, SLOT(ModifySiteCounts()));//returnPressed
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->ModifySerialNumberPushButton, SIGNAL(clicked()), this, SLOT(ModifySerialNumber()));
-	//QObject::connect(_pSyn_LocalSettingsDlg->ui->SiteTableWidget, SIGNAL(cellClicked(int, int)), this, SLOT(SetLeds(int, int)));
+	QObject::connect(_pSyn_LocalSettingsDlg->ui->SiteTableWidget, SIGNAL(cellClicked(int, int)), this, SLOT(SetLeds(int, int)));
 
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->OKPushButton, SIGNAL(clicked()), this, SLOT(ConfirmSite()));
+
+	if (0 != _ListOfSitePtr.size())
+	{
+		for (size_t i = _ListOfSitePtr.size(); i >= 1; i--)
+		{
+			delete _ListOfSitePtr[i - 1];
+			_ListOfSitePtr[i - 1] = NULL;
+		}
+		_ListOfSitePtr.clear();
+	}
 
 	//operation
 	_pSyn_LocalSettingsDlg->ui->SysConfigFileLlineEdit->clear();
@@ -379,10 +380,6 @@ void FPS_TestExecutive::CreateLocalSettings()
 		return;
 	}
 	uint32_t uiResult = _pSyn_DeviceManager->Open();
-
-	
-
-
 }
 
 void FPS_TestExecutive::CloseLocalSettingsDialog()
@@ -406,6 +403,8 @@ void FPS_TestExecutive::CloseLocalSettingsDialog()
 		delete _pSyn_DeviceManager;
 		_pSyn_DeviceManager = NULL;
 	}
+
+	ConstructSiteList(_LocalSettingsInfo);
 }
 
 void FPS_TestExecutive::SelectConfigFile()
@@ -632,21 +631,9 @@ void FPS_TestExecutive::SetLeds(int rowNumber, int columnNumber)
 	if (0 == iSerialNumber)
 		return;
 
-	for (size_t i = 1; i <= _ListOfSitePtr.size(); i++)
+	if (NULL != _pSyn_DeviceManager)
 	{
-		if (NULL != _ListOfSitePtr[i - 1])
-		{
-			uint32_t uiNumber(0);
-			_ListOfSitePtr[i - 1]->GetSerialNumber(uiNumber);
-			if (iSerialNumber == uiNumber)
-			{
-				if (NULL != _pSyn_DeviceManager)
-				{
-					_pSyn_DeviceManager->SetLeds(_ListOfSitePtr[i - 1]);
-				}
-				break;
-			}
-		}
+		_pSyn_DeviceManager->SetLeds(iSerialNumber);
 	}
 
 }
