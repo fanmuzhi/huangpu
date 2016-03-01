@@ -30,7 +30,7 @@ void SYN_AFETestExecute(AFETestInfo* pInfo, AFETestResults* pResults)
 		pResults->m_bPass = 0;
 }
 
-void SYN_SDKBaselineTest(SdkBaselineTestInfo* pInfo, SdkBaselineTestResults* pResults, AcquireFPSResults* nofingerdata, int numRows, int numCols, int numFrames)
+void SYN_SDKBaselineTest(SdkBaselineTestInfo* pInfo, SdkBaselineTestResults* pResults, AcqImgNoFingerResult* nofingerdata, int numRows, int numCols, int numFrames)
 {
 	int i,j,k;
 	int nTempSum;
@@ -373,7 +373,7 @@ float get_noise_value(FPSFrame* fingerdata, FPSFrame* nofingerdata, SNRInfo* inf
 
 }
 
-void SYN_SNRExecute(AcquireFPSResults* fingerdata, AcquireFPSResults* nofingerdata, SNRInfo* info,SNRResults* results,int numRows, int numCols, int bIsBga)
+void SYN_SNRExecute(AcqImgFingerResult* fingerdata, AcqImgNoFingerResult* nofingerdata, SNRInfo* info,SNRResults* results,int numRows, int numCols, int bIsBga)
 {
 	float NOISE=0.0, SNR=0.0;
 	
@@ -956,7 +956,7 @@ void SYN_SpiFlashTestExecute(SpiFlashInfo* pInfo, SpiFlashResults *pResults)
 
 }
 
-void SYN_PixelTestExecute(AcquireFPSResults* nofingerdata,PixelInfo* info, PixelResults* results,
+void SYN_PixelTestExecute(AcqImgNoFingerResult* nofingerdata,PixelInfo* info, PixelResults* results,
 							int nTrimLeft, int nTrimRight, int nTrimTop, int nTrimBottom, int numRows, int numCols)
 {
 	//:
@@ -1031,7 +1031,7 @@ void SYN_PixelTestExecute(AcquireFPSResults* nofingerdata,PixelInfo* info, Pixel
 		results->bPass=0;	
 }
 
-void SYN_ConsecutivePixelsExecute(AcquireFPSResults* nofingerdata, ConsecutivePixelsInfo* info, ConsecutivePixelsResults* results,
+void SYN_ConsecutivePixelsExecute(AcqImgNoFingerResult* nofingerdata, ConsecutivePixelsInfo* info, ConsecutivePixelsResults* results,
 									int nTrimLeft, int nTrimRight, int nTrimTop, int nTrimBottom, int numRows, int numCols)
 {
 	int numFrames,i,j,k,temp=0;
@@ -1259,7 +1259,7 @@ void get_span(int span[MAXFRAMES], int *min, int *max, int numFrames)
 	}
 }
 
-void SYN_PeggedPixelsExecute(AcquireFPSResults* nofingerdata, PeggedPixelsInfo* info,PeggedPixelsResults* results,
+void SYN_PeggedPixelsExecute(AcqImgNoFingerResult* nofingerdata, PeggedPixelsInfo* info,PeggedPixelsResults* results,
 							int nTrimLeft, int nTrimRight, int nTrimTop, int nTrimBottom,int numRows, int numCols)
 {
 	int i,j,k,temp=0;
@@ -1344,7 +1344,7 @@ void SYN_PeggedPixelsExecute(AcquireFPSResults* nofingerdata, PeggedPixelsInfo* 
 	results->pegged_COL=max_array(temp_pegged,numCols);
 }
 
-void SYN_FlooredPixelsExecute(AcquireFPSResults* nofingerdata, FlooredPixelsInfo* info,FlooredPixelsResults* results,
+void SYN_FlooredPixelsExecute(AcqImgNoFingerResult* nofingerdata, FlooredPixelsInfo* info,FlooredPixelsResults* results,
 							  int nTrimLeft, int nTrimRight, int nTrimTop, int nTrimBottom,int numRows, int numCols)
 {
 	int i,j,k,temp=0;
@@ -1565,7 +1565,7 @@ void  SYN_ProcessBtnTestData(BtnTestInfo* pInfo, BtnTestResults* pResults)
     pResults->m_btnCurrState = (pResults->m_bPass) ? pResults->m_arCurrStates[0] : failState;
 }
 
-void get_sensor_matrices(AcquireFPSResults* pFrames, SNRInfo *pInfo, SNRResults* pResult, float nofinger[MAXROW][MAXCOL], float finger[MAXROW][MAXCOL],int numRows, int numCols)
+void get_sensor_matrices(AcqImgNoFingerResult* pFrames, SNRInfo *pInfo, SNRResults* pResult, float nofinger[MAXROW][MAXCOL], float finger[MAXROW][MAXCOL],int numRows, int numCols)
 {
 	int i,j,k;
 	int temp, numFrames;
@@ -2733,7 +2733,7 @@ void SYN_RAMTestExecute(RAMTestInfo* pInfo, RAMTestResults* pResults)
 		pResults->bPass = 0;
 }
 
-void SYN_RXStandardDevExecute(AcquireFPSResults* fingerStack, RxStandardDevInfo* pInfo, RxStandardDevResults* pResults, int nTrimLeft, int nTrimRight, int nTrimTop, int nTrimBottom,int numRows, int numCols)
+void SYN_RXStandardDevExecute(AcqImgFingerResult* fingerStack, RxStandardDevInfo* pInfo, RxStandardDevResults* pResults, int nTrimLeft, int nTrimRight, int nTrimTop, int nTrimBottom,int numRows, int numCols)
 {
 	int row, temp_sum, i, j, k;	
 	float mean, temp_val;

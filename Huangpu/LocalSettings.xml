@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
-    <SysConfigFile>D:/57K0_Test_Cpp.xml</SysConfigFile>
+    <SysConfigFile>C:/Users/bqiling/Google Drive/Metallica 109A0/109A0_For_Huangpu.xml</SysConfigFile>
     <NumSites>1</NumSites>
-    <Site1 AdcBaseLines="3456740 75 7231320 75 1721681556 7231320 3456764 1718342828 1726969756 3456780 1718343445 1726969756 4294967295 3456796 1718372512 1 " Voltages="3456804 1718209788 1 3456828">1684806</Site1>
+    <Site1 AdcBaseLines="3981156 75 8412384 75 1722140308 8412384 3981180 1718801580 1727428508 3981196 1718802197 1727428508 4294967295 3981212 1718831264 1 " Voltages="3981220 1718668540 1 3981244">1405853</Site1>
     <AutoController></AutoController>
 </LocalSettings>

@@ -248,6 +248,7 @@ void Ts_OTPCheck::ProcessData()
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sBootSectorFail);
 		_pSyn_Dut->_pSyn_DutTestResult->_otpCheckResult._bPass = false;
+		return;
 	}
 
 	//Check 0 (Verify OTP Boot Field)

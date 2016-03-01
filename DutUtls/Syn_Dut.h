@@ -25,7 +25,8 @@ struct Syn_DutTestInfo
 	//Syn_SiteInfo				_siteInfo;
 	InitializationInfo			_initInfo;
 	CalibrationInfo				_calibrationInfo;
-	AcquireFPSInfo				_acquireFpsInfo;
+	AcqImgNoFingerInfo			_acqImgNoFingerInfo;
+	AcqImgFingerInfo			_acqImgFingerInfo;
 	PeggedPixelsInfo			_peggedPixelsInfo;
 	CurrentInfo					_currentInfo;
 	OpensShortsInfo				_opensShortsInfo;
@@ -70,7 +71,8 @@ struct Syn_DutTestResult
 
 	InitializationResults		_initResults;
 	CalibrationResults			_calibrationResults;
-	AcquireFPSResults			_acquireFpsResults;
+	AcqImgNoFingerResult		_acqImgNoFingerResult;
+	AcqImgFingerResult		    _acqImgFingerResult;
 	PeggedPixelsResults			_peggedPixelsResults;
 	CurrentResults				_currentResults;
 	OpensShortsResults			_opensShortsResults;
