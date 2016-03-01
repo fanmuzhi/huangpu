@@ -39,7 +39,7 @@ public:
 	//pure virtual function
 	virtual	void	SetUp() = 0;
 
-	virtual void	Excute() = 0;
+	virtual void	Execute() = 0;
 
 	virtual void	ProcessData() = 0;
 

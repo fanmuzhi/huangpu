@@ -44,7 +44,7 @@ void Ts_Calibrate::SetUp()
 }
 
 
-void Ts_Calibrate::Excute()
+void Ts_Calibrate::Execute()
 {
 	Syn_Exception ex(0);
 	if (NULL == _pSyn_DutCtrl)

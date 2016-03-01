@@ -255,7 +255,7 @@ void Syn_Site::RunScript(uint8_t scriptID)
 					pTestStep->SetUp();
 				}
 
-				pTestStep->Excute();
+				pTestStep->Execute();
 
 				if (listSize == i)
 				{
@@ -380,7 +380,7 @@ uint32_t Syn_Site::GetTestResult(Syn_DutTestResult * &opTestResult)
 	return Syn_ExceptionCode::Syn_DutResultNull;
 }
 
-uint32_t Syn_Site::SingleTestStep(std::string sTestName)
+uint32_t Syn_Site::ExecuteTestStep(std::string sTestName)
 {
 	if (_siteState == SiteState::Error)
 	{
@@ -403,7 +403,7 @@ uint32_t Syn_Site::SingleTestStep(std::string sTestName)
 	try
 	{
 		pTestStep->SetUp();
-		pTestStep->Excute();
+		pTestStep->Execute();
 		pTestStep->ProcessData();
 		pTestStep->CleanUp();
 
@@ -423,9 +423,9 @@ uint32_t Syn_Site::SingleTestStep(std::string sTestName)
 		pTestStep = NULL;
 
 		_siteState = Error;
-		
 		_strErrorMessage = ex.GetDescription();
-		return ex.GetError();
+		_uiErrorFlag = ex.GetError();
+		return _uiErrorFlag;
 	}
 	return Syn_ExceptionCode::Syn_OK;
 }

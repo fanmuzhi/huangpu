@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
-    <SysConfigFile>C:/Users/bqiling/Google Drive/Metallica 109A0/MT_FM146_config_R2_updated_3.3_ASE.xml</SysConfigFile>
+    <SysConfigFile>C:/Users/bqiling/Google Drive/Metallica 109A0/MT_FM146_config_R2_updated_3.3.xml</SysConfigFile>
     <NumSites>1</NumSites>
-    <Site1 Voltages="4243468 1711590652 1 4243492" AdcBaseLines="4243404 75 4243436 75 1988629251 6424950 4243428 1711723692 1720350620 4243444 1711724309 1720350620 4294967295 4243460 1711753376 1 ">1405853</Site1>
+    <Site1 AdcBaseLines="3719420 75 6708560 75 1727645332 6708560 3719444 1724306604 1732933532 3719460 1724307221 1732933532 4294967295 3719476 1724336288 1 " Voltages="3719484 1724173564 1 3719508">1405853</Site1>
     <AutoController></AutoController>
 </LocalSettings>

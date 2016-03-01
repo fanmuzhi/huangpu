@@ -15,7 +15,7 @@ public:
 
 	virtual void	SetUp();
 
-	virtual void	Excute();
+	virtual void	Execute();
 
 	virtual void	ProcessData();
 

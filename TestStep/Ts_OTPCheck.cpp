@@ -44,7 +44,7 @@ void Ts_OTPCheck::SetUp()
 	_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
 }
 
-void Ts_OTPCheck::Excute()
+void Ts_OTPCheck::Execute()
 {
 	Syn_Exception ex(0);
 	if (NULL == _pSyn_DutCtrl)

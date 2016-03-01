@@ -1,9 +1,6 @@
 #pragma once
 
 #include "importexport.h"
-#include "stdint.h"
-#include "windows.h"
-#include "tchar.h"
 
 #define	TYPE_VIPER			50
 #define	TYPE_METALLICA		48
@@ -67,7 +64,7 @@ MPC_API uint32_t MPC_FpWrite(uint32_t deviceHandle, uint16_t endpoint, uint16_t 
 MPC_API uint32_t MPC_FpRead2(uint32_t deviceHandle, uint16_t endpoint, uint16_t command, uint8_t* pDst, uint32_t dstSize, uint32_t timeout);
 MPC_API uint32_t MPC_FpWrite2(uint32_t deviceHandle, uint16_t endpoint, uint16_t command, uint8_t* pSrc, uint32_t srcSize, uint32_t timeout);
 MPC_API uint32_t MPC_FpGetImage(uint32_t deviceHandle, uint8_t* pDst, uint32_t dstSize, uint32_t timeout);
-MPC_API uint32_t MPC_FpGetImage2(uint32_t deviceHandle, uint16_t numRows, uint16_t numCols, uint8_t* pDst, uint16_t blobSize, uint8_t* pBlob, uint32_t arCurrentReadings[4], uint16_t gain, uint16_t overSamples, uint32_t timeout);
+MPC_API uint32_t MPC_FpGetImage2(uint32_t deviceHandle, uint16_t numRows, uint16_t numCols, uint8_t* pDst, uint16_t blobSize, uint8_t* pBlob, uint32_t nUnused1, uint16_t nUnused2, uint16_t nUnused3, uint32_t timeout);
 MPC_API uint32_t MPC_FpGetStatus(uint32_t deviceHandle, uint8_t* pDst, uint32_t dstSize, uint32_t timeout);
 MPC_API uint32_t MPC_FpGetStatus2(uint32_t deviceHandle, uint16_t endpoint, uint8_t* pDst, uint32_t dstSize, uint32_t timeout);
 MPC_API uint32_t MPC_FpGetVersion(uint32_t deviceHandle, uint8_t* pDst, uint32_t dstSize, uint32_t timeout);
