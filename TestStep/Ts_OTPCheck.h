@@ -4,7 +4,7 @@ class Ts_OTPCheck :
 	public Syn_FingerprintTest
 {
 public:
-	Ts_OTPCheck(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
+	Ts_OTPCheck(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
 	virtual ~Ts_OTPCheck();
 
 	virtual void SetUp();

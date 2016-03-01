@@ -1,8 +1,8 @@
 #include "Ts_OTPCheck.h"
 
 
-Ts_OTPCheck::Ts_OTPCheck(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
-:Syn_FingerprintTest(strName, pDutCtrl, pDut)
+Ts_OTPCheck::Ts_OTPCheck(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
+:Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
 {
 }
 
@@ -29,6 +29,25 @@ void Ts_OTPCheck::SetUp()
 		return;
 	}
 
+
+	//Parse Args
+	std::vector<std::string> listOfArgValue;
+	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bExecuted = false;
+	ParseTestStepArgs(_strArgs, listOfArgValue);
+	size_t ilistSize = listOfArgValue.size();
+	if (ilistSize < 14)
+	{
+		for (size_t t = 1; t <= 14 - ilistSize; t++)
+			listOfArgValue.push_back(std::string(""));
+	}
+	if (0 != listOfArgValue[0].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_LNA = atoi(listOfArgValue[0].c_str());
+	if (0 != listOfArgValue[0].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PGA_OOPR = atoi(listOfArgValue[1].c_str());
+	if (0 != listOfArgValue[0].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SNR= atoi(listOfArgValue[2].c_str());
+
+	//Power On
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 	_pSyn_DutCtrl->FpUnloadPatch();
 

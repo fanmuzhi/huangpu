@@ -11,7 +11,7 @@ class Syn_FingerprintTest :public Syn_TestStep
 
 public:
 
-	Syn_FingerprintTest(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
+	Syn_FingerprintTest(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
 
 	virtual ~Syn_FingerprintTest();
 	
@@ -31,6 +31,7 @@ public:
 
 	bool CheckDUTexists();
 
+	bool ParseTestStepArgs(const std::string &strArgsValue, std::vector<std::string> &olistOfArgValue, std::string strSymbol = std::string(" "));
 
 protected:
 

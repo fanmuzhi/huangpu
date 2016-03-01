@@ -245,7 +245,11 @@ void Syn_Site::RunScript(uint8_t scriptID)
 
 		Syn_TestStepInfo CurrentTestStepInfo = ExceteScriptInfo._listOfTestStep[i - 1];
 		Syn_TestStep *pTestStep = NULL;
-		rc = Syn_TestStepFactory::CreateTestStepInstance(CurrentTestStepInfo._strTestStepName, _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
+
+		std::string strArgsValue("");
+		_SysConfig.GetSyn_TestStepInfo(CurrentTestStepInfo._strTestStepName, strArgsValue);
+
+		rc = Syn_TestStepFactory::CreateTestStepInstance(CurrentTestStepInfo._strTestStepName, strArgsValue, _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
 		if (rc && NULL != pTestStep)
 		{
 			try
@@ -393,8 +397,11 @@ uint32_t Syn_Site::ExecuteTestStep(std::string sTestName)
 	_siteState = Running;
 
 	Syn_TestStep *pTestStep = NULL;
+	
+	std::string strArgsValue("");
+	_SysConfig.GetSyn_TestStepInfo(sTestName, strArgsValue);
 
-	bool rc = Syn_TestStepFactory::CreateTestStepInstance(sTestName, _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
+	bool rc = Syn_TestStepFactory::CreateTestStepInstance(sTestName, strArgsValue, _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
 	if (!rc || NULL == pTestStep)
 	{
 		return Syn_ExceptionCode::Syn_TestStepConfigError;

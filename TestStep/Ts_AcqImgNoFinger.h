@@ -4,7 +4,7 @@
 class Ts_AcqImgNoFinger : public Syn_FingerprintTest
 {
 public:
-	Ts_AcqImgNoFinger(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
+	Ts_AcqImgNoFinger(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
 	virtual ~Ts_AcqImgNoFinger();
 
 	virtual void	SetUp();

@@ -69,34 +69,16 @@ void Syn_Dut::InitData(Syn_SysConfig &sysConfig)
 	_pSyn_DutTestResult->_arSerialNum[DUT_SER_NUM_SIZE] = {0};
 	_pSyn_DutTestResult->_binCodes.clear();
 
-	std::string strArgsValue("");
-	std::vector<std::string> listOfArgValue;
-
-	//OTPCheckInfo
-	_pSyn_DutTestInfo->_otpCheckInfo._bExecuted = false;
 	int arrIncrement[4] = {3, 1, -1, -3};	//swap the value
 	for (auto i = 0; i < BS0_SIZE; i++)
 	{
 		_pSyn_DutTestInfo->_otpCheckInfo._UserSpecifiedBS0[i] = sysConfig._arrUserSpecifiedBS0[i + arrIncrement[i % 4]];
 		_pSyn_DutTestInfo->_otpCheckInfo._UserSpecifiedBS1[i] = sysConfig._arrUserSpecifiedBS1[i + arrIncrement[i % 4]];
 	}
-	if (sysConfig.GetSyn_TestStepInfo(std::string("OTPCheck"), strArgsValue))
-	{
-		ParseTestStepArgs(strArgsValue, listOfArgValue);
-		size_t ilistSize = listOfArgValue.size();
-		if (ilistSize < 14)
-		{
-			for (size_t t = 1; t <= 14 - ilistSize; t++)
-				listOfArgValue.push_back(std::string(""));
-		}
-		if (0 != listOfArgValue[0].length())
-			_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_LNA = atoi(listOfArgValue[0].c_str());
-		if (0 != listOfArgValue[0].length())
-			_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PGA_OOPR = atoi(listOfArgValue[1].c_str());
-		if (0 != listOfArgValue[0].length())
-			_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SNR= atoi(listOfArgValue[2].c_str());
 
-	}
+	//std::string strArgsValue("");
+	//std::vector<std::string> listOfArgValue;
+
 
 
 	////InitializationStep
@@ -154,62 +136,6 @@ void Syn_Dut::InitData(Syn_SysConfig &sysConfig)
 	//	if (0 != listOfArgValue[13].length())
 	//		_pSyn_DutTestInfo->_initInfo.m_nProductId = strtoul(listOfArgValue[13].c_str(), NULL, 0);
 	//}
-
-	//Calibrate
-	_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted = false;
-	_pSyn_DutTestInfo->_calibrationInfo.m_nLnaIdx = 1028;
-	_pSyn_DutTestInfo->_calibrationInfo.m_nPgaIdx = 1140;
-	_pSyn_DutTestInfo->_calibrationInfo.m_bForceCal = 0;
-	_pSyn_DutTestInfo->_calibrationInfo.m_nNumImagesToDiscard = 20;
-	_pSyn_DutTestInfo->_calibrationInfo.m_nLnaOffsetLow = 108;
-	_pSyn_DutTestInfo->_calibrationInfo.m_nLnaOffsetHigh = 148;
-	_pSyn_DutTestInfo->_calibrationInfo.m_nPgaLimitLow = 108;
-	_pSyn_DutTestInfo->_calibrationInfo.m_nPgaLimitHigh = 148;
-	_pSyn_DutTestInfo->_calibrationInfo.m_nCalType = 0;
-	_pSyn_DutTestInfo->_calibrationInfo.m_nPgaOffsetRatio = (float)0.3;
-	_pSyn_DutTestInfo->_calibrationInfo.m_nNumPgaSamples = 4;
-	_pSyn_DutTestInfo->_calibrationInfo.m_nPgaVarianceLimit = 90;
-	_pSyn_DutTestInfo->_calibrationInfo.m_nHpfOffset = 0;
-	_pSyn_DutTestInfo->_calibrationInfo.m_bPgaFineTuning = 0;
-	if (sysConfig.GetSyn_TestStepInfo(std::string("Calibrate"), strArgsValue))
-	{
-		ParseTestStepArgs(strArgsValue, listOfArgValue);
-		size_t ilistSize = listOfArgValue.size();
-		if (ilistSize < 14)
-		{
-			for (size_t t = 1; t <= 14 - ilistSize; t++)
-				listOfArgValue.push_back(std::string(""));
-		}
-
-		if (0 != listOfArgValue[0].length())
-			_pSyn_DutTestInfo->_calibrationInfo.m_nLnaIdx = atoi(listOfArgValue[0].c_str());
-		if (0 != listOfArgValue[1].length())
-			_pSyn_DutTestInfo->_calibrationInfo.m_nPgaIdx = atoi(listOfArgValue[1].c_str());
-		if (0 != listOfArgValue[2].length())
-			_pSyn_DutTestInfo->_calibrationInfo.m_bForceCal = atoi(listOfArgValue[2].c_str()) ? 1 : 0;
-		if (0 != listOfArgValue[3].length())
-			_pSyn_DutTestInfo->_calibrationInfo.m_nNumImagesToDiscard = atoi(listOfArgValue[3].c_str());
-		if (0 != listOfArgValue[4].length())
-			_pSyn_DutTestInfo->_calibrationInfo.m_nLnaOffsetLow = atoi(listOfArgValue[4].c_str());
-		if (0 != listOfArgValue[5].length())
-			_pSyn_DutTestInfo->_calibrationInfo.m_nLnaOffsetHigh = atoi(listOfArgValue[5].c_str());
-		if (0 != listOfArgValue[6].length())
-			_pSyn_DutTestInfo->_calibrationInfo.m_nPgaLimitLow = atoi(listOfArgValue[6].c_str());
-		if (0 != listOfArgValue[7].length())
-			_pSyn_DutTestInfo->_calibrationInfo.m_nPgaLimitHigh = atoi(listOfArgValue[7].c_str());
-		if (0 != listOfArgValue[8].length())
-			_pSyn_DutTestInfo->_calibrationInfo.m_nCalType = atoi(listOfArgValue[8].c_str());
-		if (0 != listOfArgValue[9].length())
-			_pSyn_DutTestInfo->_calibrationInfo.m_nPgaOffsetRatio = stof(listOfArgValue[9]);//(float)_tstof((LPCTSTR)listOfArgValue[9].c_str());
-		if (0 != listOfArgValue[10].length())
-			_pSyn_DutTestInfo->_calibrationInfo.m_nNumPgaSamples = atoi(listOfArgValue[10].c_str());
-		if (0 != listOfArgValue[11].length())
-			_pSyn_DutTestInfo->_calibrationInfo.m_nPgaVarianceLimit = atoi(listOfArgValue[11].c_str());
-		if (0 != listOfArgValue[12].length())
-			_pSyn_DutTestInfo->_calibrationInfo.m_nHpfOffset = atoi(listOfArgValue[12].c_str());
-		if (0 != listOfArgValue[13].length())
-			_pSyn_DutTestInfo->_calibrationInfo.m_bPgaFineTuning = atoi(listOfArgValue[13].c_str());
-	}
 
 	////AcquireFPSSamples
 	//_pSyn_DutTestInfo->_acquireFpsInfo.m_bExecuted = false;
@@ -1024,37 +950,6 @@ void Syn_Dut::InitData(Syn_SysConfig &sysConfig)
 	//}
 }
 
-bool Syn_Dut::ParseTestStepArgs(const std::string &strArgsValue, std::vector<std::string> &olistOfArgValue, std::string strSymbol)
-{
-	olistOfArgValue.clear();
-
-	unsigned int iLength = strArgsValue.length();
-	if (0 == iLength)
-	{
-		return false;
-	}
-
-	std::string strTempValue = strArgsValue;
-	while (true)
-	{
-		size_t SymbolPosition = strTempValue.find(strSymbol);
-		if (SymbolPosition == std::string::npos)
-		{
-			if (0 != strTempValue.length())
-			{
-				olistOfArgValue.push_back(strTempValue);
-			}
-			break;
-		}
-
-		std::string strArgValue = strTempValue.substr(0, SymbolPosition);
-		olistOfArgValue.push_back(strArgValue);
-		strTempValue = strTempValue.substr(SymbolPosition + 1, strTempValue.length() - SymbolPosition);
-		//strTempValue = strTempValue.substr(SymbolPosition + strSymbol.length(), strTempValue.length() - SymbolPosition-strSymbol.length());
-	}
-
-	return true;
-}
 
 bool Syn_Dut::FindPatch(std::string patchName, Syn_PatchInfo &patchInfo)
 {

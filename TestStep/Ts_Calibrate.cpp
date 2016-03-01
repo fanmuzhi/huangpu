@@ -1,8 +1,8 @@
 #include "Ts_Calibrate.h"
 
 
-Ts_Calibrate::Ts_Calibrate(string &strName, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
-:Syn_FingerprintTest(strName, pDutCtrl, pDut)
+Ts_Calibrate::Ts_Calibrate(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
+:Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
 {
 }
 
@@ -28,6 +28,64 @@ void Ts_Calibrate::SetUp()
 		return;
 	}
 
+	//parse args
+	std::vector<std::string> listOfArgValue;
+
+	_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted = false;
+	_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nLnaIdx = 1028;
+	_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nPgaIdx = 1140;
+	_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bForceCal = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nNumImagesToDiscard = 20;
+	_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nLnaOffsetLow = 108;
+	_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nLnaOffsetHigh = 148;
+	_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nPgaLimitLow = 108;
+	_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nPgaLimitHigh = 148;
+	_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nCalType = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nPgaOffsetRatio = (float)0.3;
+	_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nNumPgaSamples = 4;
+	_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nPgaVarianceLimit = 90;
+	_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nHpfOffset = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bPgaFineTuning = 0;
+
+	ParseTestStepArgs(_strArgs, listOfArgValue);
+	size_t ilistSize = listOfArgValue.size();
+	if (ilistSize < 14)
+	{
+		for (size_t t = 1; t <= 14 - ilistSize; t++)
+			listOfArgValue.push_back(std::string(""));
+	}
+
+	if (0 != listOfArgValue[0].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nLnaIdx = atoi(listOfArgValue[0].c_str());
+	if (0 != listOfArgValue[1].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nPgaIdx = atoi(listOfArgValue[1].c_str());
+	if (0 != listOfArgValue[2].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bForceCal = atoi(listOfArgValue[2].c_str()) ? 1 : 0;
+	if (0 != listOfArgValue[3].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nNumImagesToDiscard = atoi(listOfArgValue[3].c_str());
+	if (0 != listOfArgValue[4].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nLnaOffsetLow = atoi(listOfArgValue[4].c_str());
+	if (0 != listOfArgValue[5].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nLnaOffsetHigh = atoi(listOfArgValue[5].c_str());
+	if (0 != listOfArgValue[6].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nPgaLimitLow = atoi(listOfArgValue[6].c_str());
+	if (0 != listOfArgValue[7].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nPgaLimitHigh = atoi(listOfArgValue[7].c_str());
+	if (0 != listOfArgValue[8].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nCalType = atoi(listOfArgValue[8].c_str());
+	if (0 != listOfArgValue[9].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nPgaOffsetRatio = stof(listOfArgValue[9]);//(float)_tstof((LPCTSTR)listOfArgValue[9].c_str());
+	if (0 != listOfArgValue[10].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nNumPgaSamples = atoi(listOfArgValue[10].c_str());
+	if (0 != listOfArgValue[11].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nPgaVarianceLimit = atoi(listOfArgValue[11].c_str());
+	if (0 != listOfArgValue[12].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nHpfOffset = atoi(listOfArgValue[12].c_str());
+	if (0 != listOfArgValue[13].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bPgaFineTuning = atoi(listOfArgValue[13].c_str());
+
+
+	//Power on
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 	_pSyn_DutCtrl->FpUnloadPatch();
 
