@@ -68,12 +68,12 @@ namespace MTConfigGenerator {
 
 			//Create a list of all known steps. Put them in the order in which they should be executed.
 			m_nOrderIdxColWidth = 50;
-			m_pAvailableStepsArr	= new(vector<TestStep>);
+			m_pAvailableStepsArr = new(vector<TestStep>);
 
 			m_pAvailableStepsArr->push_back(TestStep("OTPCheck",
-				"TAG_ProjID;TAG_LNA;TAG_SNR;TAG_PGA_OOPR;TAG_FlexID;TAG_WOF_BOT;TAG_DutTempAdc;TAG_WOF_TOP;TAG_PGA_OOPP;TAG_SCM_WOF_BOT;TAG_PART_NUMBERS",		//args
-				"1;1;1;1;1;1;1;1;1;1;1",		//default value
-				"0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check"));	//explanation
+				"TAG_ProjID;TAG_LNA;TAG_SNR;TAG_PGA_OOPR;TAG_FlexID;TAG_WOF_BOT;TAG_DutTempAdc;TAG_WOF_TOP;TAG_PGA_OOPP;TAG_SCM_WOF_BOT;TAG_SCM_WOF_TOP;TAG_PART_NUMBERS",		//args
+				"1;1;1;1;1;1;1;1;1;1;1;1",		//default value
+				"0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check"));	//explanation
 			//m_pAvailableStepsArr->push_back(TestStep("InitializationStep",
 			//			"BGA;Flex ID;Trim with Stimulus (top);Trim with Stimulus (bottom);Trim with Stimulus (left);Trim with Stimulus (right);Build #;Trim without Stimulus (top);Trim without Stimulus (bottom);Trim without Stimulus (left);Trim without Stimulus (right);Max Log File Size;Verbose Log;Project ID;Has Flash;Engineering Security;Production Security;Verify ATE Pass bit",
 			//			"0;0x08F3;0;0;1;0;132;0;0;1;0;100;0;0;0;0;0;0",
@@ -154,10 +154,10 @@ namespace MTConfigGenerator {
 			//			"7;25;60;5000;10;3;3;0.9;20;13;3.7",
 			//			"for Viper only;for Viper only;for Viper only;for Viper only;not used;not used;not used;not used;for Viper only;With alternate VCC (for Viper only);Alternate VCC (V) (for Viper only)"));
 
-			//m_pAvailableStepsArr->push_back(TestStep("Calibrate",
-			//			"LNA Print File Index;PGA Print File Index;Force Calibration;Discard Images;LNA Offset (Low);LNA Offset (High);PGA Limit (Low);PGA Limit (High);Cal Type;PGA Ratio;Number of PGA samples;Stage2 OTP Variance Threshold;HPF blob offset;PGA Fine Tuning",
-			//			"1028;1140;0;20;108;148;108;148;0;0.3;4;90;0;0",
-			//			";;0=Do not force, 1=force (used in C++ only);# images to discard;;;;;0= 1 offset/row, 1= 1 offset/pixel;PGA Offset Ratio;;> fails;HPF offset (0 = disabled);0 = Don't tune, 1 = tune"));
+			m_pAvailableStepsArr->push_back(TestStep("Calibrate",
+				"LNA Print File Index;PGA Print File Index;Force Calibration;Discard Images;LNA Offset (Low);LNA Offset (High);PGA Limit (Low);PGA Limit (High);Cal Type;PGA Ratio;Number of PGA samples;Stage2 OTP Variance Threshold;HPF blob offset;PGA Fine Tuning",
+				"1028;1140;0;20;108;148;108;148;0;0.3;4;90;0;0",
+				";;0=Do not force, 1=force (used in C++ only);# images to discard;;;;;0= 1 offset/row, 1= 1 offset/pixel;PGA Offset Ratio;;> fails;HPF offset (0 = disabled);0 = Don't tune, 1 = tune"));
 
 			//m_pAvailableStepsArr->push_back(TestStep("ReadDutAdc",
 			//			"",

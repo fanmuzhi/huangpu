@@ -47,16 +47,17 @@ typedef unsigned char UINT8; // UINT8 is created to handle MPC04 data
 #define	BOOT_SEC			1
 
 #define	TAG_CAL					0X0E
+#define	EXT_TAG_PRODUCT_ID		0x00000002L
 #define	EXT_TAG_LNA				0x80000003L
-#define	EXT_TAG_PGA_OOPR		0x80000007L		//PGA one offset per row.
 #define	EXT_TAG_SNR				0x80000005L
+#define	EXT_TAG_PGA_OOPR		0x80000007L		//PGA one offset per row.
 #define	EXT_TAG_FlexId			0x80000008L
 #define	EXT_TAG_WOF_BOT			0x80000009L
 #define	EXT_TAG_DutTempAdc		0x8000000AL
 #define	EXT_TAG_WOF_TOP			0x8000000BL
-#define	EXT_TAG_SCM_WOF_BOT		0x8000000DL
 #define	EXT_TAG_PGA_OOPP		0x8000000CL		//PGA one offset per pixel.
-#define	EXT_TAG_PRODUCT_ID		0x00000002L
+#define	EXT_TAG_SCM_WOF_BOT		0x8000000DL
+#define	EXT_TAG_SCM_WOF_TOP		0x8000000EL
 #define EXT_TAG_PART_NUMBERS	0x8000000FL
 #define	NUM_EXT_TAGS		11
 
@@ -109,6 +110,7 @@ typedef struct
 	int		_bCheckTAG_DutTempAdc;
 	int		_bCheckTAG_WOF_TOP;
 	int		_bCheckTAG_SCM_WOF_BOT;
+	int		_bCheckTAG_SCM_WOF_TOP;
 	int		_bCheckTAG_PGA_OOPP;
 	int		_bCheckTAG_PRODUCT_ID;
 	int		_bCheckTAG_PART_NUMBERS;

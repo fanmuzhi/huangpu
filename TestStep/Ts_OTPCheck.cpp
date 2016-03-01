@@ -41,11 +41,29 @@ void Ts_OTPCheck::SetUp()
 			listOfArgValue.push_back(std::string(""));
 	}
 	if (0 != listOfArgValue[0].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_LNA = atoi(listOfArgValue[0].c_str());
-	if (0 != listOfArgValue[0].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PGA_OOPR = atoi(listOfArgValue[1].c_str());
-	if (0 != listOfArgValue[0].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PRODUCT_ID= atoi(listOfArgValue[0].c_str());
+	if (0 != listOfArgValue[1].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_LNA = atoi(listOfArgValue[1].c_str());
+	if (0 != listOfArgValue[2].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SNR= atoi(listOfArgValue[2].c_str());
+	if (0 != listOfArgValue[3].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PGA_OOPR = atoi(listOfArgValue[3].c_str());
+	if (0 != listOfArgValue[4].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_FlexId= atoi(listOfArgValue[4].c_str());
+	if (0 != listOfArgValue[5].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_BOT= atoi(listOfArgValue[5].c_str());
+	if (0 != listOfArgValue[6].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_DutTempAdc= atoi(listOfArgValue[6].c_str());
+	if (0 != listOfArgValue[7].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_TOP= atoi(listOfArgValue[7].c_str());
+	if (0 != listOfArgValue[8].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PGA_OOPP= atoi(listOfArgValue[8].c_str());
+	if (0 != listOfArgValue[9].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_BOT= atoi(listOfArgValue[9].c_str());
+	if (0 != listOfArgValue[10].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_TOP= atoi(listOfArgValue[10].c_str());
+	if (0 != listOfArgValue[11].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PART_NUMBERS= atoi(listOfArgValue[11].c_str());
 
 	//Power On
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
@@ -106,6 +124,69 @@ void Ts_OTPCheck::Execute()
 	{
 		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._MainSector1Array[i] = arOTP[i + BS0_SIZE + BS1_SIZE + MS0_SIZE];
 	}
+
+	uint8_t pDst[MS0_SIZE];
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PRODUCT_ID)
+	{
+		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PRODUCT_ID, pDst, MS0_SIZE);
+		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nProductId_count = count;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_LNA)
+	{
+		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, pDst, MS0_SIZE);
+		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nLNA_count = count;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SNR)
+	{
+		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SNR, pDst, MS0_SIZE);
+		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nSNR_count = count;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PGA_OOPR)
+	{
+		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPR, pDst, MS0_SIZE);
+		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPGA_OOPR_count = count;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_FlexId)
+	{
+		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_FlexId, pDst, MS0_SIZE);
+		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nFlexId_count = count;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_BOT)
+	{
+		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_BOT, pDst, MS0_SIZE);
+		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofBot_count = count;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_DutTempAdc)
+	{
+		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_DutTempAdc, pDst, MS0_SIZE);
+		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nDutTempAdc_count = count;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_TOP)
+	{
+		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_TOP, pDst, MS0_SIZE);
+		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofTop_count= count;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PGA_OOPP)
+	{
+		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPP, pDst, MS0_SIZE);
+		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPGA_OOPP_count= count;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_BOT)
+	{
+		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_BOT, pDst, MS0_SIZE);
+		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nScmWofBot_count= count;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_TOP)
+	{
+		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_TOP, pDst, MS0_SIZE);
+		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nScmWofTop_count= count;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PART_NUMBERS)
+	{
+		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PART_NUMBERS, pDst, MS0_SIZE);
+		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPartNumberId_count= count;
+	}
+
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bExecuted = true;
 
