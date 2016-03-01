@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
-    <SysConfigFile>D:/57K0_Test_Cpp.xml</SysConfigFile>
-    <NumSites>2</NumSites>
-    <Site1 AdcBaseLines="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 " Voltages="3300 3300 3300 3300">1684806</Site1>
-    <Site2 AdcBaseLines="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 " Voltages="3300 3300 3300 3300">1456665</Site2>
+    <SysConfigFile>C:/Users/bqiling/Google Drive/Metallica 77A0/580-005895-01r1(FM-000133-003)_OFilm_ZTE.xml</SysConfigFile>
+    <NumSites>1</NumSites>
+    <Site1 Voltages="3981284 1714932988 1 3981308" AdcBaseLines="3981220 75 6707720 75 1718404756 6707720 3981244 1715066028 1723692956 3981260 1715066645 1723692956 4294967295 3981276 1715095712 1 ">1405853</Site1>
     <AutoController></AutoController>
 </LocalSettings>

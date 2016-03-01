@@ -342,7 +342,7 @@ typedef struct
 	uint8_t     m_pPGAOtpArray[NUM_PGA_OOPP_OTP_ROWS * MAXCOL];
 	int			m_nStage2VarianceScore;
 
-	FPSFrame arr_ImageFPSFrame;
+	FPSFrame	arr_ImageFPSFrame;
 }CalibrationResults;
 
 ///////////////////////////// ////////////////////////

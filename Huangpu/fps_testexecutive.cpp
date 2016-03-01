@@ -1210,7 +1210,7 @@ void FPS_TestExecutive::ImageCalibration(unsigned int iSiteNumber)
 	{
 		for (int n = 0; n < columnNumber; n++)
 		{
-			data[m*(columnNumber)+n] = (pCurrentDutTestResult->_acquireFpsResults).arr_ImageFPSFrame.arr[m][n];
+			data[m*(columnNumber)+n] = (pCurrentDutTestResult->_calibrationResults).arr_ImageFPSFrame.arr[m][n];
 		}
 	}
 	QImage image((uchar*)data.constData(), columnNumber, rowNumber,QImage::Format_Indexed8);

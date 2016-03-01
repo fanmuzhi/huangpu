@@ -10,6 +10,40 @@ Ts_Calibrate::~Ts_Calibrate()
 {
 }
 
+void Ts_Calibrate::SetUp()
+{
+	Syn_Exception ex(0);
+	if (NULL == _pSyn_DutCtrl)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutCtrlNull);
+		ex.SetDescription("_pSyn_DutCtrl is NULL!");
+		throw ex;
+		return;
+	}
+	if (NULL == _pSyn_Dut)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutNull);
+		ex.SetDescription("_pSyn_Dut is NULL!");
+		throw ex;
+		return;
+	}
+
+	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+	_pSyn_DutCtrl->FpUnloadPatch();
+
+	//load ImgAcqPatch
+	Syn_PatchInfo ImgAcqPatchInfo;
+	if (!_pSyn_Dut->FindPatch("ImageAcqPatch", ImgAcqPatchInfo))
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+		ex.SetDescription("ImageAcqPatch Patch is NULL!");
+		throw ex;
+		return;
+	}
+	_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);
+}
+
+
 void Ts_Calibrate::Excute()
 {
 	Syn_Exception ex(0);
@@ -60,18 +94,6 @@ void Ts_Calibrate::Excute()
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nHpfOffset)
 		(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch)[_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nHpfOffset] &= 0xFE;
 
-	_pSyn_DutCtrl->FpUnloadPatch();
-
-	//load ImgAcqPatch
-	Syn_PatchInfo ImgAcqPatchInfo;
-	if (!_pSyn_Dut->FindPatch("ImageAcqPatch", ImgAcqPatchInfo))
-	{
-		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-		ex.SetDescription("ImageAcqPatch Patch is NULL!");
-		throw ex;
-		return;
-	}
-	_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);
 
 	//check LNA tag in OTP
 	uint8_t		pSrc[2] = { 0, 0 };
@@ -107,7 +129,7 @@ void Ts_Calibrate::Excute()
 		bSuccess = CalculatePgaOffsets_OOPP(numCols, numRows, _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults);
 		if (!bSuccess)
 		{
-			//site.PushBinCodes(BinCodes::m_sStages1Or2CalFail);
+			_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sStages1Or2CalFail);
 			_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_bPass = 0;
 		}
 		else
@@ -121,7 +143,7 @@ void Ts_Calibrate::Excute()
 				//If the variance is not within spec, record the error.
 				if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nStage2VarianceScore > _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nPgaVarianceLimit)
 				{
-					//site.PushBinCodes(BinCodes::m_sStage2VarianceFail);
+					_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sStage2VarianceFail);
 					_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_bPass = 0;
 				}
 			}
@@ -133,23 +155,19 @@ void Ts_Calibrate::Excute()
 	delete pFrame;
 	pFrame = NULL;*/
 
-	GetFingerprintImage(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults, &(_pSyn_Dut->_pSyn_DutTestResult->_acquireFpsResults.arr_ImageFPSFrame), numRows, numCols);
-}
-
-void Ts_Calibrate::SetUp()
-{
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+	GetFingerprintImage(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults, &(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.arr_ImageFPSFrame), numRows, numCols);
 }
 
 void Ts_Calibrate::ProcessData()
 {
-	uint16_t numRows = _pSyn_Dut->_RowNumber;
-	uint16_t numCols = _pSyn_Dut->_ColumnNumber;
+	//uint16_t numRows = _pSyn_Dut->_RowNumber;
+	//uint16_t numCols = _pSyn_Dut->_ColumnNumber;
 
-	GetFingerprintImage(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults, &(_pSyn_Dut->_pSyn_DutTestResult->_acquireFpsResults.arr_ImageFPSFrame), numRows, numCols);
+	//GetFingerprintImage(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults, &(_pSyn_Dut->_pSyn_DutTestResult->_acquireFpsResults.arr_ImageFPSFrame), numRows, numCols);
 }
 
 void Ts_Calibrate::CleanUp()
 {
+	_pSyn_DutCtrl->FpUnloadPatch();
 	PowerOff();
 }
