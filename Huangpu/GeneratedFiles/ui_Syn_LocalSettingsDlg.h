@@ -59,7 +59,7 @@ public:
     QTableWidget *SiteTableWidget;
     QHBoxLayout *horizontalLayout_2;
     QPushButton *ModifySerialNumberPushButton;
-    QPushButton *UpdateSitePushButton;
+    QPushButton *UpdateADCOffsetsPushButton;
     QFrame *frame;
     QGridLayout *gridLayout_7;
     QPushButton *CancelPushButton;
@@ -207,10 +207,10 @@ public:
 
         horizontalLayout_2->addWidget(ModifySerialNumberPushButton);
 
-        UpdateSitePushButton = new QPushButton(SiteGroupBox);
-        UpdateSitePushButton->setObjectName(QStringLiteral("UpdateSitePushButton"));
+        UpdateADCOffsetsPushButton = new QPushButton(SiteGroupBox);
+        UpdateADCOffsetsPushButton->setObjectName(QStringLiteral("UpdateADCOffsetsPushButton"));
 
-        horizontalLayout_2->addWidget(UpdateSitePushButton);
+        horizontalLayout_2->addWidget(UpdateADCOffsetsPushButton);
 
 
         gridLayout_6->addLayout(horizontalLayout_2, 2, 0, 1, 1);
@@ -271,7 +271,7 @@ public:
         QTableWidgetItem *___qtablewidgetitem2 = SiteTableWidget->horizontalHeaderItem(2);
         ___qtablewidgetitem2->setText(QApplication::translate("Syn_LocalSettingsDlg", "ADC Offsets", 0));
         ModifySerialNumberPushButton->setText(QApplication::translate("Syn_LocalSettingsDlg", "Modify SerialNumber", 0));
-        UpdateSitePushButton->setText(QApplication::translate("Syn_LocalSettingsDlg", "Update", 0));
+        UpdateADCOffsetsPushButton->setText(QApplication::translate("Syn_LocalSettingsDlg", "Update ADC Offsets", 0));
         CancelPushButton->setText(QApplication::translate("Syn_LocalSettingsDlg", "Cancel", 0));
         OKPushButton->setText(QApplication::translate("Syn_LocalSettingsDlg", "OK", 0));
     } // retranslateUi

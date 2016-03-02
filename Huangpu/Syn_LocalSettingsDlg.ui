@@ -170,9 +170,9 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="UpdateSitePushButton">
+         <widget class="QPushButton" name="UpdateADCOffsetsPushButton">
           <property name="text">
-           <string>Update</string>
+           <string>Update ADC Offsets</string>
           </property>
          </widget>
         </item>

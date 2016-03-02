@@ -11,6 +11,7 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 //, _logfile("sys.log")
 , _pSyn_LocalSettingsDlg(NULL)
 , _pSyn_SerialNumberManageDlg(NULL)
+, _pSyn_UpdateADCOffsetsDlg(NULL)
 , _pSyn_DeviceManager(NULL)
 {
 	//ui setting
@@ -75,6 +76,12 @@ FPS_TestExecutive::~FPS_TestExecutive()
 	{
 		delete _pSyn_SerialNumberManageDlg;
 		_pSyn_SerialNumberManageDlg = NULL;
+	}
+
+	if (NULL != _pSyn_UpdateADCOffsetsDlg)
+	{
+		delete _pSyn_UpdateADCOffsetsDlg;
+		_pSyn_UpdateADCOffsetsDlg = NULL;
 	}
 
 	if (NULL != _pSyn_DeviceManager)
@@ -267,15 +274,6 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 			QMessageBox::information(this, QString("Error"), QString("Can't retrieve the Serial Number:") + QString::number(uiSerialNumber) + QString(" device,check it,please!"));
 			//continue;
 		}
-
-		//adc test
-		/*uint32_t AdcBaseLines[NUM_CURRENT_VALUES][KNUMGAINS] = {0};
-		_pSyn_DeviceManager->UpdateADCOffsets(_ListOfSitePtr[t - 1], 3300, 3300, 3300, 3300, AdcBaseLines);
-		for (int gainIdx = 0; gainIdx < KNUMGAINS; gainIdx++)
-		{
-			for (int adcIdx = 0; adcIdx < NUM_CURRENT_VALUES; adcIdx++)
-				cout << AdcBaseLines[adcIdx][gainIdx] << endl;
-		}*/
 	}
 	ui.TestTableWidget->setHorizontalHeaderLabels(strListOfHeader);
 
@@ -319,6 +317,7 @@ void FPS_TestExecutive::CreateLocalSettings()
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->SelectSysConfigFilePushButton, SIGNAL(clicked()), this, SLOT(SelectConfigFile()));
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->SiteCountsLineEdit, SIGNAL(editingFinished()), this, SLOT(ModifySiteCounts()));//returnPressed
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->ModifySerialNumberPushButton, SIGNAL(clicked()), this, SLOT(ModifySerialNumber()));
+	QObject::connect(_pSyn_LocalSettingsDlg->ui->UpdateADCOffsetsPushButton, SIGNAL(clicked()), this, SLOT(CreateUpdateADCOffsetsDlg()));
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->SiteTableWidget, SIGNAL(cellClicked(int, int)), this, SLOT(SetLeds(int, int)));
 
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->OKPushButton, SIGNAL(clicked()), this, SLOT(ConfirmSite()));
@@ -367,10 +366,10 @@ void FPS_TestExecutive::CreateLocalSettings()
 		_pSyn_LocalSettingsDlg->ui->SiteTableWidget->setItem(i, 1, new QTableWidgetItem(strSerialNumber));
 		_pSyn_LocalSettingsDlg->ui->SiteTableWidget->setItem(i, 2, new QTableWidgetItem(strAdcBaseLinesValue));
 
-		/*_TempVoltagesValue.nVdd = CurrentAdcBaseLineInfo.m_nVdd;
+		_TempVoltagesValue.nVdd = CurrentAdcBaseLineInfo.m_nVdd;
 		_TempVoltagesValue.nVio = CurrentAdcBaseLineInfo.m_nVio;
 		_TempVoltagesValue.nVled = CurrentAdcBaseLineInfo.m_nVled;
-		_TempVoltagesValue.nVddh = CurrentAdcBaseLineInfo.m_nVddh;*/
+		_TempVoltagesValue.nVddh = CurrentAdcBaseLineInfo.m_nVddh;
 	}
 
 
@@ -396,6 +395,13 @@ void FPS_TestExecutive::CloseLocalSettingsDialog()
 		_pSyn_SerialNumberManageDlg->hide();
 		delete _pSyn_SerialNumberManageDlg;
 		_pSyn_SerialNumberManageDlg = NULL;
+	}
+
+	if (NULL != _pSyn_UpdateADCOffsetsDlg)
+	{
+		_pSyn_UpdateADCOffsetsDlg->hide();
+		delete _pSyn_UpdateADCOffsetsDlg;
+		_pSyn_UpdateADCOffsetsDlg = NULL;
 	}
 
 	if (NULL != _pSyn_DeviceManager)
@@ -575,12 +581,12 @@ void FPS_TestExecutive::ConfirmSite()
 		}
 
 		//need modify...................................................................................
-		/*CurrentAdcBaseLineInfo.m_nVdd = _TempVoltagesValue.nVdd;
+		CurrentAdcBaseLineInfo.m_nVdd = _TempVoltagesValue.nVdd;
 		CurrentAdcBaseLineInfo.m_nVio = _TempVoltagesValue.nVio;
 		CurrentAdcBaseLineInfo.m_nVled = _TempVoltagesValue.nVled;
-		CurrentAdcBaseLineInfo.m_nVddh = _TempVoltagesValue.nVddh;*/
+		CurrentAdcBaseLineInfo.m_nVddh = _TempVoltagesValue.nVddh;
 
-		//CurrentSiteSettings._adcBaseLineInfo = CurrentAdcBaseLineInfo;
+		CurrentSiteSettings._adcBaseLineInfo = CurrentAdcBaseLineInfo;
 		_LocalSettingsInfo._listOfSiteSettings.push_back(CurrentSiteSettings);
 	}
 
@@ -605,6 +611,13 @@ void FPS_TestExecutive::ConfirmSite()
 		{
 			delete _pSyn_SerialNumberManageDlg;
 			_pSyn_SerialNumberManageDlg = NULL;
+		}
+
+		if (NULL != _pSyn_UpdateADCOffsetsDlg)
+		{
+			_pSyn_UpdateADCOffsetsDlg->hide();
+			delete _pSyn_UpdateADCOffsetsDlg;
+			_pSyn_UpdateADCOffsetsDlg = NULL;
 		}
 
 		if (NULL != _pSyn_DeviceManager)
@@ -686,8 +699,6 @@ void FPS_TestExecutive::ModifySerialNumber()
 	
 }
 
-
-
 void FPS_TestExecutive::ConfirmSerialNumberForSite()
 {
 	bool focus = _pSyn_SerialNumberManageDlg->ui.SerialNumberTableWidget->isItemSelected(_pSyn_SerialNumberManageDlg->ui.SerialNumberTableWidget->currentItem());
@@ -721,11 +732,105 @@ void FPS_TestExecutive::CloseSiteManageDialog()
 	_pSyn_SerialNumberManageDlg = NULL;
 }
 
+void FPS_TestExecutive::CreateUpdateADCOffsetsDlg()
+{
+	if (NULL != _pSyn_UpdateADCOffsetsDlg)
+	{
+		_pSyn_UpdateADCOffsetsDlg->hide();
+		delete _pSyn_UpdateADCOffsetsDlg;
+		_pSyn_UpdateADCOffsetsDlg = NULL;
+	}
 
+	_pSyn_UpdateADCOffsetsDlg = new Syn_UpdateADCOffsetsDlg();
+	_pSyn_UpdateADCOffsetsDlg->show();
 
+	_pSyn_UpdateADCOffsetsDlg->ui.VddLineEdit->setText(QString("1800"));
+	_pSyn_UpdateADCOffsetsDlg->ui.VioLineEdit->setText(QString("1800"));
+	_pSyn_UpdateADCOffsetsDlg->ui.VledLineEdit->setText(QString("3300"));
+	_pSyn_UpdateADCOffsetsDlg->ui.VddhLineEdit->setText(QString("3300"));
 
+	QObject::connect(_pSyn_UpdateADCOffsetsDlg->ui.OKPushButton, SIGNAL(clicked()), this, SLOT(UpdateADCOffsets()));
+	QObject::connect(_pSyn_UpdateADCOffsetsDlg->ui.CancelPushButton, SIGNAL(clicked()), this, SLOT(CloseUpdateADCOffsetsDialog()));
+}
 
+void FPS_TestExecutive::UpdateADCOffsets()
+{
+	if (NULL == _pSyn_UpdateADCOffsetsDlg)
+	{
+		return;
+	}
 
+	if (NULL == _pSyn_DeviceManager)
+	{
+		_pSyn_DeviceManager = new Syn_DeviceManager();
+	}
+	_pSyn_DeviceManager->Open();
+
+	QString strVdd = _pSyn_UpdateADCOffsetsDlg->ui.VddLineEdit->text();
+	QString strVio = _pSyn_UpdateADCOffsetsDlg->ui.VioLineEdit->text();
+	QString strVled = _pSyn_UpdateADCOffsetsDlg->ui.VledLineEdit->text();
+	QString strVddh = _pSyn_UpdateADCOffsetsDlg->ui.VddhLineEdit->text();
+
+	uint32_t uiVdd = strVdd.toInt();
+	uint32_t uiVio = strVio.toInt();
+	uint32_t uiVled = strVled.toInt();
+	uint32_t uiVddh = strVddh.toInt();
+
+	//if (uiVdd<0 || uiVdd>3300)
+
+	int iSiteCounts = _pSyn_LocalSettingsDlg->ui->SiteTableWidget->rowCount();
+	if (0 == iSiteCounts)
+	{
+		return;
+	}
+
+	_TempVoltagesValue.nVdd = uiVdd;
+	_TempVoltagesValue.nVio = uiVio;
+	_TempVoltagesValue.nVled = uiVled;
+	_TempVoltagesValue.nVddh = uiVddh;
+
+	uint32_t rc = 0;
+	for (int i = 0; i < iSiteCounts; i++)
+	{
+		QString strSerialNumber("");
+		QTableWidgetItem *item = _pSyn_LocalSettingsDlg->ui->SiteTableWidget->item(i, 1);
+		if (NULL != item)
+		{
+			strSerialNumber = item->text();
+			uint32_t uiSerialNumber = strSerialNumber.toInt();
+			uint32_t arAdcBaseLines[NUM_CURRENT_VALUES][KNUMGAINS] = { 0 };
+
+			rc = _pSyn_DeviceManager->UpdateADCOffsets(uiSerialNumber, uiVdd, uiVio, uiVled, uiVddh, arAdcBaseLines);
+			if (Syn_ExceptionCode::Syn_OK == rc)
+			{
+				QString strAdcBaseLinesValue("");
+				for (int a = 0; a < NUM_CURRENT_VALUES; a++)
+				{
+					for (int b = 0; b < KNUMGAINS; b++)
+					{
+						strAdcBaseLinesValue += QString::number(arAdcBaseLines[a][b]) + QString(" ");
+					}
+				}
+
+				_pSyn_LocalSettingsDlg->ui->SiteTableWidget->setItem(i, 2, new QTableWidgetItem(strAdcBaseLinesValue));
+			}
+		}
+	}
+
+	_pSyn_UpdateADCOffsetsDlg->hide();
+	delete _pSyn_UpdateADCOffsetsDlg;
+	_pSyn_UpdateADCOffsetsDlg = NULL;
+}
+
+void FPS_TestExecutive::CloseUpdateADCOffsetsDialog()
+{
+	if (NULL != _pSyn_UpdateADCOffsetsDlg)
+	{
+		_pSyn_UpdateADCOffsetsDlg->hide();
+		delete _pSyn_UpdateADCOffsetsDlg;
+		_pSyn_UpdateADCOffsetsDlg = NULL;
+	}
+}
 
 
 

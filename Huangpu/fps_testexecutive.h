@@ -18,6 +18,8 @@
 #include "Ui_Syn_LocalSettingsDlg.h"
 #include "Syn_SerialNumberManageDlg.h"
 #include "Ui_Syn_SerialNumberManageDlg.h"
+#include "Syn_UpdateADCOffsetsDlg.h"
+#include "Ui_Syn_UpdateADCOffsetsDlg.h"
 #include "Syn_ThreadDebug.h"//for debug
 
 //DutUtls
@@ -82,6 +84,12 @@ public Q_SLOTS:
 	void ConfirmSerialNumberForSite();
 	void CloseSiteManageDialog();
 
+	void CreateUpdateADCOffsetsDlg();
+
+	void UpdateADCOffsets();
+	void CloseUpdateADCOffsetsDialog();
+
+
 
 	//void RunningTest();
 
@@ -122,12 +130,13 @@ private:
 	//Son Dialog
 	Syn_LocalSettingsDlg *_pSyn_LocalSettingsDlg;
 	Syn_SerialNumberManageDlg *_pSyn_SerialNumberManageDlg;
+	Syn_UpdateADCOffsetsDlg *_pSyn_UpdateADCOffsetsDlg;
 
 	//LocalSetting config Operation
 	Syn_LocalSettings _LocalSettingsInfo;
 
 	//Temp Voltages,save VoltagesValue from user define or configfile
-	//Syn_VoltagesValue _TempVoltagesValue;
+	Syn_VoltagesValue _TempVoltagesValue;
 
 	bool _bStopTag;
 
