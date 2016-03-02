@@ -196,16 +196,17 @@ uint32_t Syn_Site::Close()
 	{
 		return _uiErrorFlag;
 	}
-	if (_siteState != TestDataReady)
+
+	if (_siteState == TestDataReady || _siteState == Idle)
 	{
-		return  Syn_ExceptionCode::Syn_SiteStateError;
+		delete _pSyn_Dut;
+		_pSyn_Dut = NULL;
+		_siteState = Closed;
+
+		return  Syn_ExceptionCode::Syn_OK;
 	}
-	delete _pSyn_Dut;
-	_pSyn_Dut = NULL;
 
-	_siteState = Closed;
-
-	return Syn_ExceptionCode::Syn_OK;
+	return Syn_ExceptionCode::Syn_SiteStateError;
 }
 
 uint32_t Syn_Site::ExecuteScript(uint8_t scriptID)
@@ -392,15 +393,27 @@ uint32_t Syn_Site::GetTestInfo(Syn_DutTestInfo * &opTestInfo)
 uint32_t Syn_Site::GetTestResult(Syn_DutTestResult * &opTestResult)
 {
 	opTestResult = NULL;
+
+	if (_siteState == SiteState::Error)
+	{
+		return _uiErrorFlag;
+	}
+	if (_siteState != TestDataReady)
+	{
+		return Syn_ExceptionCode::Syn_SiteStateError;
+	}
+
 	if (NULL != _pSyn_Dut)
 	{
 		if (NULL != _pSyn_Dut->_pSyn_DutTestResult)
 		{
 			opTestResult = _pSyn_Dut->_pSyn_DutTestResult;
-
+			_siteState = Idle;
 			return Syn_ExceptionCode::Syn_OK;
 		}
 	}
+
+	_siteState = Error;
 
 	return Syn_ExceptionCode::Syn_DutResultNull;
 }

@@ -82,13 +82,47 @@ protected:
 		}
 		else
 		{
-			while (_run)
+			uint32_t rc = _pSyn_Site->Open();
+			if (rc == 0)
 			{
-				//_pSyn_Site->GetFingerprintImage();
+				rc = _pSyn_Site->ExecuteTestStep("Calibrate");
+				Syn_DutTestResult * TestResult = NULL;
+				rc = _pSyn_Site->GetTestResult(TestResult);
+				rc = _pSyn_Site->ExecuteTestStep("AcqImgNoFinger");
+				if (rc == 0)
+				{
+					while (_run)
+					{
+						SiteState oState;
+						_pSyn_Site->GetState(oState);
+						if (TestDataReady == oState)
+						{
+							unsigned int iSiteNumber(0);
+							_pSyn_Site->GetSiteNumber(iSiteNumber);
+							emit send(iSiteNumber);
+							break;
+						}
+						else if (Error == oState)
+						{
+							unsigned int iSiteNumber(0);
+							_pSyn_Site->GetSiteNumber(iSiteNumber);
+							emit send(iSiteNumber);
+							break;
+						}
 
-				//_pSyn_Site->GetSiteInfo(_SiteInfo);
-				//emit send((void*)&_SiteInfo);
+					}
+				}
 			}
+
+			//while (_run)
+			//{
+			//	//_pSyn_Site->GetFingerprintImage();
+
+			//	//_pSyn_Site->GetSiteInfo(_SiteInfo);
+			//	//emit send((void*)&_SiteInfo);
+			//}
+
+
 		}
 
 		

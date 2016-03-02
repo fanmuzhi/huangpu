@@ -106,8 +106,8 @@ public Q_SLOTS:
 	//Calibration,Fingerprint
 	void PushCablicationImageButton();
 	void ImageCalibration(unsigned int iSiteNumber);
-	//void PushFigerprintImageButton();
-	//void FigerprintImage(void * pSiteInfo);
+	void PushFigerprintImageButton();
+	void FigerprintImage(unsigned int iSiteNumber);
 
 private:
 
