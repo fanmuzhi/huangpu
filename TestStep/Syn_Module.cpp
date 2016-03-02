@@ -200,3 +200,23 @@ bool Syn_Module::CheckDUTexists()
 	return IsExists;
 }
 
+
+void Syn_Module::ImageDecode(FPSFrame *pDecodedFrame, FPSFrame *pEncodedFrame, int nNumRow, int nNumCol, int nNumFrames)
+{
+	int layer;
+	int row,col;
+	int kernelM=144;
+	float sumElements = 0;	
+
+	for(layer = 0; layer < nNumFrames; layer++)
+	{
+		//copy data in Finger data into pFrameWith
+		for(row = 0; row < nNumRow; row++)
+		{
+			for(col = 0; col < nNumCol; col++)
+			{
+				pDecodedFrame[layer].arr[row][col] = pEncodedFrame[layer].arr[row][col];
+			}
+		}
+	}
+}

@@ -34,6 +34,7 @@ Syn_FingerprintTest::Syn_FingerprintTest(string &strName, string &strArgs, Syn_D
 	}
 }
 
+
 Syn_FingerprintTest::~Syn_FingerprintTest()
 {
 	if (NULL != _pSyn_Module)
@@ -42,6 +43,7 @@ Syn_FingerprintTest::~Syn_FingerprintTest()
 		_pSyn_Module = NULL;
 	}
 }
+
 
 void Syn_FingerprintTest::PowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep)
 {
@@ -53,6 +55,7 @@ void Syn_FingerprintTest::PowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nP
 	_pSyn_Module->PowerOn(nPwrVdd, nPwrVio, nPwrVled, nPwrVddh, bDisableSleep);
 }
 
+
 void Syn_FingerprintTest::PowerOff()
 {
 	if (NULL == _pSyn_Module)
@@ -62,6 +65,7 @@ void Syn_FingerprintTest::PowerOff()
 
 	_pSyn_Module->PowerOff();
 }
+
 
 void Syn_FingerprintTest::CopyToPrintPatch(uint8_t* pSrc, uint8_t* pPrintPatch, int nNumBytes, int nPatchIdx)
 {
@@ -73,6 +77,7 @@ void Syn_FingerprintTest::CopyToPrintPatch(uint8_t* pSrc, uint8_t* pPrintPatch, 
 	_pSyn_Module->CopyToPrintPatch(pSrc, pPrintPatch, nNumBytes, nPatchIdx);
 }
 
+
 bool Syn_FingerprintTest::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRows, CalibrationInfo &calInfo, CalibrationResults &calResult)
 {
 	if (NULL == _pSyn_Module)
@@ -82,6 +87,7 @@ bool Syn_FingerprintTest::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 
 	return _pSyn_Module->CalculatePgaOffsets_OOPP(numCols, numRows, calInfo, calResult);
 }
+
 
 void Syn_FingerprintTest::GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *pFrame, int nNumRows, int nNumCols)
 {
@@ -93,6 +99,7 @@ void Syn_FingerprintTest::GetFingerprintImage(CalibrationResults &pCalResults, F
 	_pSyn_Module->GetFingerprintImage(pCalResults, pFrame, nNumRows, nNumCols);
 }
 
+
 void Syn_FingerprintTest::CalculateLnaOffsetsBinarySearch(FPSFrame* pFrame, uint8_t* pLnaValues, int nNumRows, int nNumCols, CalibrationInfo &CalInfo, CalibrationResults &CalResults)
 {
 	if (NULL == _pSyn_Module)
@@ -102,6 +109,7 @@ void Syn_FingerprintTest::CalculateLnaOffsetsBinarySearch(FPSFrame* pFrame, uint
 
 	_pSyn_Module->CalculateLnaOffsetsBinarySearch(pFrame, pLnaValues, nNumRows, nNumCols, CalInfo, CalResults);
 }
+
 
 void Syn_FingerprintTest::GetRowAverages(FPSFrame* pFrame, int nColBegin, int nColEnd, uint8_t* pAverages, int nNumRows)
 {
@@ -113,6 +121,7 @@ void Syn_FingerprintTest::GetRowAverages(FPSFrame* pFrame, int nColBegin, int nC
 	_pSyn_Module->GetRowAverages(pFrame, nColBegin, nColEnd, pAverages, nNumRows);
 }
 
+
 bool Syn_FingerprintTest::CheckDUTexists()
 {
 	if (NULL == _pSyn_Module)
@@ -122,6 +131,18 @@ bool Syn_FingerprintTest::CheckDUTexists()
 
 	return _pSyn_Module->CheckDUTexists();
 }
+
+
+void Syn_FingerprintTest::ImageDecode(FPSFrame *pDecodeFrame, FPSFrame *pEncodeFrame, int nNumRow, int nNumCol, int nNumFrames)
+{
+	if (NULL == _pSyn_Module)
+	{
+		return;
+	}
+
+	return _pSyn_Module->ImageDecode(pDecodeFrame, pEncodeFrame, nNumRow, nNumCol, nNumFrames);
+}
+
 
 bool Syn_FingerprintTest::ParseTestStepArgs(const std::string &strArgsValue, std::vector<std::string> &olistOfArgValue, std::string strSymbol)
 {

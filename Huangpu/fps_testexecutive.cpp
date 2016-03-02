@@ -45,7 +45,7 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 
 	//Calibration,Fingerprint
 	QObject::connect(ui.ImageCalibrationPushButton, SIGNAL(clicked()), this, SLOT(PushCablicationImageButton()));
-	//QObject::connect(ui.FigerprintImagePushButton, SIGNAL(clicked()), this, SLOT(PushFigerprintImageButton())); 
+	QObject::connect(ui.FigerprintImagePushButton, SIGNAL(clicked()), this, SLOT(PushFigerprintImageButton())); 
 
 	_threadForDebug._dbgType = getImageType;
 	//QObject::connect(&(_threadForDebug), SIGNAL(send(unsigned int)), this, SLOT(FigerprintImage(unsigned int)));
@@ -695,8 +695,6 @@ void FPS_TestExecutive::ModifySerialNumber()
 	{
 		_pSyn_SerialNumberManageDlg->ui.SerialNumberTableWidget->setItem(i - 1, 0, new QTableWidgetItem(QString::number(listOfSerialNumber[i-1])));
 	}
-
-	
 }
 
 void FPS_TestExecutive::ConfirmSerialNumberForSite()

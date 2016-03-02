@@ -3,6 +3,7 @@
 #include "Syn_FingerprintTest.h"
 #include "Ts_Calibrate.h"
 #include "Ts_OTPCheck.h"
+#include "Ts_AcqImgNoFinger.h"
 
 Syn_TestStepFactory::Syn_TestStepFactory()
 {
@@ -33,6 +34,10 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	else if (std::string("OTPCheck") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_OTPCheck(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("AcqImgNoFinger") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_AcqImgNoFinger(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else
 	{

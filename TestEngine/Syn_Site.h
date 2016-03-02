@@ -91,7 +91,7 @@ public:
 
 
 	//add by Jerry:2016_02_24(set NotConnected Site Status) maybe delete at end
-	inline void SetSiteNotConnected(){ _siteState = NotConnected; };
+	//inline void SetSiteNotConnected(){ _siteState = NotConnected; };
 
 private:
 

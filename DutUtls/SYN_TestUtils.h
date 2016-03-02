@@ -47,16 +47,17 @@ typedef unsigned char UINT8; // UINT8 is created to handle MPC04 data
 #define	BOOT_SEC			1
 
 #define	TAG_CAL					0X0E
+#define	EXT_TAG_PRODUCT_ID		0x00000002L
 #define	EXT_TAG_LNA				0x80000003L
-#define	EXT_TAG_PGA_OOPR		0x80000007L		//PGA one offset per row.
 #define	EXT_TAG_SNR				0x80000005L
+#define	EXT_TAG_PGA_OOPR		0x80000007L		//PGA one offset per row.
 #define	EXT_TAG_FlexId			0x80000008L
 #define	EXT_TAG_WOF_BOT			0x80000009L
 #define	EXT_TAG_DutTempAdc		0x8000000AL
 #define	EXT_TAG_WOF_TOP			0x8000000BL
-#define	EXT_TAG_SCM_WOF_BOT		0x8000000DL
 #define	EXT_TAG_PGA_OOPP		0x8000000CL		//PGA one offset per pixel.
-#define	EXT_TAG_PRODUCT_ID		0x00000002L
+#define	EXT_TAG_SCM_WOF_BOT		0x8000000DL
+#define	EXT_TAG_SCM_WOF_TOP		0x8000000EL
 #define EXT_TAG_PART_NUMBERS	0x8000000FL
 #define	NUM_EXT_TAGS		11
 
@@ -109,6 +110,7 @@ typedef struct
 	int		_bCheckTAG_DutTempAdc;
 	int		_bCheckTAG_WOF_TOP;
 	int		_bCheckTAG_SCM_WOF_BOT;
+	int		_bCheckTAG_SCM_WOF_TOP;
 	int		_bCheckTAG_PGA_OOPP;
 	int		_bCheckTAG_PRODUCT_ID;
 	int		_bCheckTAG_PART_NUMBERS;
@@ -730,18 +732,30 @@ typedef struct
 	int			m_bExecuted;
 	int			m_nNumImagesToDiscard;
 	int			m_nNumImagesWithoutStimulus;
-	int			m_nNumImagesWithStimulus;
-}AcquireFPSInfo;
+}AcqImgNoFingerInfo;
 
 typedef struct
 {
 	FPSFrame	m_arImagesWithoutStimulus[MAXFRAMES];//NONCDM
-	FPSFrame	m_arImagesWithStimulus[MAXFRAMES];//NONCDM
-	FPSFrame	arr_finger[MAXFRAMES];//CDM
 	FPSFrame	arr_nofinger[MAXFRAMES];//CDM
 
 	FPSFrame	arr_ImageFPSFrame;
-}AcquireFPSResults;
+}AcqImgNoFingerResult;
+
+typedef struct
+{
+	int			m_bExecuted;
+	int			m_nNumImagesToDiscard;
+	int			m_nNumImagesWithStimulus;
+}AcqImgFingerInfo;
+
+typedef struct
+{
+	FPSFrame	m_arImagesWithStimulus[MAXFRAMES];//NONCDM
+	FPSFrame	arr_finger[MAXFRAMES];//CDM
+
+	FPSFrame	arr_ImageFPSFrame;
+}AcqImgFingerResult;
 
 ///////////////////////////// ////////////////////////
 //////////////////////////// ////////////////////////
@@ -1016,7 +1030,7 @@ int get_signal_value(FPSFrame* fingerdata, FPSFrame* nofingerdata, SNRInfo* info
 float get_noise_value(FPSFrame* fingerdata, FPSFrame* nofingerdata, SNRInfo* info, int minrow, int maxrow, int mincol, int maxcol,int regions,SNRResults* results);
 void SNR_Fill_Log(FPSFrame* fingerdata, FPSFrame* nofingerdata, SNRResults* pResults, int numRows, int numCols, int numFrames);
 void get_span(int span[MAXFRAMES], int *min, int *max, int numFrames);
-void SYN_SNRExecute(AcquireFPSResults* fingerdata, AcquireFPSResults* nofingerdata, SNRInfo* info,SNRResults* results,int numRows, int numCols, int bIsBga);
+void SYN_SNRExecute(AcqImgFingerResult* fingerdata, AcqImgNoFingerResult* nofingerdata, SNRInfo* info,SNRResults* results,int numRows, int numCols, int bIsBga);
 FPSFrame* get_snr_frame_ptr(FPSFrame *smp,int frameNo);
 //END OF FUNCTION PROTOTYPES for SNR Test
 
@@ -1024,7 +1038,7 @@ FPSFrame* get_snr_frame_ptr(FPSFrame *smp,int frameNo);
 //////////////////////////// ////////////////////////
 ///////////////////////////	////////////////////////
 //FUNCTION PROTOTYPES for Pegged Pixels Test
-void SYN_PeggedPixelsExecute(AcquireFPSResults* nofingerdata, PeggedPixelsInfo* info,PeggedPixelsResults* results, int nTrimLeft, int nTrimRight, int nTrimTop, int nTrimBottom, int numRow, int numCol);
+void SYN_PeggedPixelsExecute(AcqImgNoFingerResult* nofingerdata, PeggedPixelsInfo* info,PeggedPixelsResults* results, int nTrimLeft, int nTrimRight, int nTrimTop, int nTrimBottom, int numRow, int numCol);
 FPSFrame* get_pegged_frame_ptr(FPSFrame *smp,int frameNo);
 //END OF FUNCTION PROTOTYPES for Pegged Pixels Test
 
@@ -1051,13 +1065,13 @@ void SYN_PixelPatchTestExecute(PixelPatchInfo* pInfo, PixelPatchResults *pResult
 void SYN_SpiFlashTestExecute(SpiFlashInfo* pInfo, SpiFlashResults *pResults);
 
 //FUNCTION PROTOTYPES for Pixel Test
-void SYN_PixelTestExecute(AcquireFPSResults* nofingerdata,PixelInfo* info, PixelResults* results,int nTrimLeft, int nTrimRight, int nTrimTop, int nTrimBottom,int numRows, int numCols);
+void SYN_PixelTestExecute(AcqImgNoFingerResult* nofingerdata,PixelInfo* info, PixelResults* results,int nTrimLeft, int nTrimRight, int nTrimTop, int nTrimBottom,int numRows, int numCols);
 
 //FUNCTION PROTOTYPES for Floored Pixels Test
-void SYN_FlooredPixelsExecute(AcquireFPSResults* nofingerdata, FlooredPixelsInfo* info, FlooredPixelsResults* results,int nTrimLeft, int nTrimRight, int nTrimTop, int nTrimBottom, int numRow, int numCol);
+void SYN_FlooredPixelsExecute(AcqImgNoFingerResult* nofingerdata, FlooredPixelsInfo* info, FlooredPixelsResults* results,int nTrimLeft, int nTrimRight, int nTrimTop, int nTrimBottom, int numRow, int numCol);
 
 //FUNCTION PROTOTYPES for Floored Pixels Test
-void SYN_ConsecutivePixelsExecute(AcquireFPSResults* nofingerdata, ConsecutivePixelsInfo* info, ConsecutivePixelsResults* results,int nTrimLeft, int nTrimRight, int nTrimTop, int nTrimBottom,int numRows, int numCols);
+void SYN_ConsecutivePixelsExecute(AcqImgNoFingerResult* nofingerdata, ConsecutivePixelsInfo* info, ConsecutivePixelsResults* results,int nTrimLeft, int nTrimRight, int nTrimTop, int nTrimBottom,int numRows, int numCols);
 
 //FUNCTION PROTOTYPES for Current Test
 void SYN_CurrentExecute(CurrentInfo* info, CurrentResults* results);
@@ -1077,7 +1091,7 @@ void SYN_ProcessBtnTestData(BtnTestInfo* pInfo, BtnTestResults* pResults);
 void SYN_RAMTestExecute(RAMTestInfo* pInfo, RAMTestResults* pResults);
 
 //normalized finger and nofinger images are obtained
-void get_sensor_matrices(AcquireFPSResults* pFrames, SNRInfo *pInfo, SNRResults* pResult, float nofinger[MAXROW][MAXCOL], float finger[MAXROW][MAXCOL],int numRows, int numCols);
+void get_sensor_matrices(AcqImgNoFingerResult* pFrames, SNRInfo *pInfo, SNRResults* pResult, float nofinger[MAXROW][MAXCOL], float finger[MAXROW][MAXCOL],int numRows, int numCols);
 
 //CALIBRATION PROTOTYPES
 ///////////////////////////////////////////////////////////////////
@@ -1113,9 +1127,9 @@ int getWovarLineVariance(uint8_t *pData, int nLength, int nStride, int nBitsIgno
 //Imperfections
 void SYN_ImperfectionsTestExecute(SNRResults* fingerdata, ImperfectionsTestInfo* info, ImperfectionsTestResults* results,int nTrimLeft, int nTrimRight, int nTrimTop, int nTrimBottom,int numRows, int numCols);
 
-void SYN_ConsecutivePixelsExecute(AcquireFPSResults* nofingerdata, ConsecutivePixelsInfo* info, ConsecutivePixelsResults* results,int nTrimLeft, int nTrimRight, int nTrimTop, int nTrimBottom,int numRows, int numCols);
+void SYN_ConsecutivePixelsExecute(AcqImgNoFingerResult* nofingerdata, ConsecutivePixelsInfo* info, ConsecutivePixelsResults* results,int nTrimLeft, int nTrimRight, int nTrimTop, int nTrimBottom,int numRows, int numCols);
 //
-void SYN_RXStandardDevExecute(AcquireFPSResults* fingerdata, RxStandardDevInfo* pInfo, RxStandardDevResults* pResults, int nTrimLeft, int nTrimRight, int nTrimTop, int nTrimBottom,int numRows, int numCols);
+void SYN_RXStandardDevExecute(AcqImgFingerResult* fingerdata, RxStandardDevInfo* pInfo, RxStandardDevResults* pResults, int nTrimLeft, int nTrimRight, int nTrimTop, int nTrimBottom,int numRows, int numCols);
 
 void SYN_GetVersion(int* pMajorVer, int* pMinorVer, int* pDevelopmentVer);
 
@@ -1125,5 +1139,5 @@ void SYN_RetainModeExecute(RetainModeInfo* pInfo, RetainModeResults* pResults);
 //FUNCTION PROTOTYPES for AFE Test
 void SYN_AFETestExecute(AFETestInfo* pInfo, AFETestResults* pResults);
 
-void SYN_SDKBaselineTest(SdkBaselineTestInfo* pInfo, SdkBaselineTestResults* pResults, AcquireFPSResults* nofingerdata, int nNumRows, int nNumCols, int numFrames);
+void SYN_SDKBaselineTest(SdkBaselineTestInfo* pInfo, SdkBaselineTestResults* pResults, AcqImgNoFingerResult* nofingerdata, int nNumRows, int nNumCols, int numFrames);
 #endif //__SYN_TestUtils__
