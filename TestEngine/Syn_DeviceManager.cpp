@@ -83,139 +83,82 @@ void Syn_DeviceManager::GetSerialNumberList(std::vector<uint32_t> &serialNumberL
 	}
 }
 
-uint32_t Syn_DeviceManager::UpdateFirmware(std::vector<Syn_Site*> &listOfSite)
+uint32_t Syn_DeviceManager::UpdateFirmware()
 {
 	uint32_t err = 0;
 
-	/*if (NULL != _pDeviceSerNumArray)
+	if (NULL != _pDeviceSerNumArray)
 	{
-		Syn_DutCtrl * _pSyn_DutCtrl = NULL;
+		
 		try
 		{
 			for (int i = 0; i < _deviceCount; i++)
 			{
-<<<<<<< HEAD
-				uint32_t rc = Syn_DutCtrl::CreateDutCtrlInstance(DutController::Syn_MPC04, _pDeviceSerNumArray[i], _pSyn_DutCtrl);
-				if (_pSyn_DutCtrl == NULL)
+				Syn_DutCtrl * pCtrl = NULL;
+				uint32_t rc = Syn_DutCtrl::CreateDutCtrlInstance(DutController::Syn_MPC04, _pDeviceSerNumArray[i], pCtrl);
+				if (pCtrl != NULL)
 				{
-					return rc;
-				}
+					pCtrl->UpdateMPC04Firmware();
 
-				_pSyn_DutCtrl->UpdateMPC04Firmware();
-
-				delete _pSyn_DutCtrl;
-				_pSyn_DutCtrl = NULL;
-=======
-				Syn_DutCtrl * pSyn_DutCtrl = NULL;
-				Syn_DutCtrl::CreateDutCtrlInstance(DutController::Syn_MPC04, _pDeviceSerNumArray[i], pSyn_DutCtrl);
-				if (NULL != pSyn_DutCtrl)
-				{
-					pSyn_DutCtrl->UpdateMPC04Firmware();
-					delete pSyn_DutCtrl;
-					pSyn_DutCtrl = NULL;
+					delete pCtrl;
+					pCtrl = NULL;
 				}
-				else
-				{
-					err = 0x1004;//Syn_DutCtrlNull:device in used
-				}
->>>>>>> zhangrui_dev
 			}
 		}
 		catch (Syn_Exception ex)
 		{
-			if (_pSyn_DutCtrl != NULL)
-			{
-				delete _pSyn_DutCtrl;
-				_pSyn_DutCtrl = NULL;
-			}
 			err = ex.GetError();
 		}
-<<<<<<< HEAD
 		catch (...)
 		{
-			if (_pSyn_DutCtrl != NULL)
-			{
-				delete _pSyn_DutCtrl;
-				_pSyn_DutCtrl = NULL;
-			}
 			err = Syn_ExceptionCode::Syn_UnknownError;
 		}
-=======
-	}*/
-
-	try
-	{
-		for (size_t i = 1; i <= listOfSite.size(); i++)
-		{
-			Syn_Site *pSiteInstance = listOfSite[i - 1];
-			if (NULL != pSiteInstance)
-			{
-				Syn_DutCtrl *pCtrl = NULL;
-				pSiteInstance->GeDutCtrl(pCtrl);
-				if (NULL != pCtrl)
-				{
-					pCtrl->UpdateMPC04Firmware();
-				}
-			}
-		}
-	}
-	catch (Syn_Exception ex)
-	{
-		err = ex.GetError();
 	}
 
-	
 	return err;
 }
 
-uint32_t Syn_DeviceManager::UpdateADCOffsets(Syn_Site* &pSiteInstance, uint32_t nVdd, uint32_t nVio, uint32_t nVled, uint32_t nVddh, uint32_t arAdcBaseLines[NUM_CURRENT_VALUES][KNUMGAINS])
+uint32_t Syn_DeviceManager::UpdateADCOffsets(uint32_t uiSerialNumber, uint32_t nVdd, uint32_t nVio, uint32_t nVled, uint32_t nVddh, uint32_t arAdcBaseLines[NUM_CURRENT_VALUES][KNUMGAINS])
 {
 	uint32_t err = 0;
 
-	if (NULL == pSiteInstance)
+	Syn_DutCtrl *pCtrl = NULL;
+	uint32_t rc = Syn_DutCtrl::CreateDutCtrlInstance(DutController::Syn_MPC04, uiSerialNumber, pCtrl);
+	if (NULL!=pCtrl)
 	{
-		return 0x1000;
-	}
-
-	try
-	{
-		Syn_DutCtrl *pCtrl = NULL;
-		pSiteInstance->GeDutCtrl(pCtrl);
-		if (NULL != pCtrl)
+		try
 		{
 			pCtrl->SetVoltages(nVdd, nVio, nVled, nVddh);
 
 			for (int gainIdx = 0; gainIdx < KNUMGAINS; gainIdx++)
 			{
-				uint32_t arValues[NUM_CURRENT_VALUES] = {0};
+				uint32_t arValues[NUM_CURRENT_VALUES] = { 0 };
 				pCtrl->GetCurrentSenseValues(gainIdx, 64, arValues);
 				for (int adcIdx = 0; adcIdx<NUM_CURRENT_VALUES; adcIdx++)
 					arAdcBaseLines[adcIdx][gainIdx] = arValues[adcIdx];
 			}
 		}
-	}
-	catch (Syn_Exception ex)
-	{
-		err = ex.GetError();
+		catch (Syn_Exception ex)
+		{
+			err = ex.GetError();
+		}
+		
+		delete pCtrl;
+		pCtrl = NULL;
 	}
 
 	return err;
 }
 
-uint32_t Syn_DeviceManager::SetLeds(Syn_Site* &pSiteInstance)
+uint32_t Syn_DeviceManager::SetLeds(uint32_t uiSerialNumber)
 {
 	uint32_t err = 0;
 
-	if (NULL == pSiteInstance)
+	Syn_DutCtrl *pCtrl = NULL;
+	uint32_t rc = Syn_DutCtrl::CreateDutCtrlInstance(DutController::Syn_MPC04, uiSerialNumber, pCtrl);
+	if (NULL != pCtrl)
 	{
-		return 0x1000;
-	}
-
-	try
-	{
-		Syn_DutCtrl *pCtrl = NULL;
-		pSiteInstance->GeDutCtrl(pCtrl);
-		if (NULL != pCtrl)
+		try
 		{
 			for (int i = 0; i<10; i++)
 			{
@@ -225,10 +168,13 @@ uint32_t Syn_DeviceManager::SetLeds(Syn_Site* &pSiteInstance)
 				::Sleep(50);
 			}
 		}
-	}
-	catch (Syn_Exception ex)
-	{
-		err = ex.GetError();
+		catch (Syn_Exception ex)
+		{
+			err = ex.GetError();
+		}
+
+		delete pCtrl;
+		pCtrl = NULL;
 	}
 
 	return err;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
-    <SysConfigFile>C:/Users/bqiling/Google Drive/Metallica 109A0/109A0_For_Huangpu.xml</SysConfigFile>
+    <SysConfigFile>C:/Users/bqiling/Google Drive/Metallica 77A0/580-00xxx-01r5(FM-000133-03)_ZTE_A2_OFilm.xml</SysConfigFile>
     <NumSites>1</NumSites>
-    <Site1 AdcBaseLines="3981156 75 8412384 75 1722140308 8412384 3981180 1718801580 1727428508 3981196 1718802197 1727428508 4294967295 3981212 1718831264 1 " Voltages="3981220 1718668540 1 3981244">1405853</Site1>
+    <Site1 AdcBaseLines="4178348 75 4804384 75 1731380884 4804384 4178372 1728042156 1736669084 4178388 1728042773 1736669084 4294967295 4178404 1728071840 1 " Voltages="4178412 1727909116 1 4178436">1405853</Site1>
     <AutoController></AutoController>
 </LocalSettings>

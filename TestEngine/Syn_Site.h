@@ -30,7 +30,6 @@ enum SiteState
 
 class Syn_Site
 {
-	friend class Syn_DeviceManager;//add by Jerry:2016_02_26(for Syn_DeviceManager::UpdateFirmware & Syn_DeviceManager::UpdateADCOffsets,DurCtrl can only created once)
 
 public:
 
@@ -92,7 +91,7 @@ public:
 
 
 	//add by Jerry:2016_02_24(set NotConnected Site Status) maybe delete at end
-	inline void SetSiteNotConnected(){ _siteState = NotConnected; };
+	//inline void SetSiteNotConnected(){ _siteState = NotConnected; };
 
 private:
 
@@ -101,9 +100,6 @@ private:
 
 	/*site initiazlization*/
 	uint32_t Init();
-
-	//function
-	void GeDutCtrl(Syn_DutCtrl * &opDutCtrl){ opDutCtrl = _pSyn_DutCtrl; };
 
 	//variable
 	std::string _strConfigFilePath;
