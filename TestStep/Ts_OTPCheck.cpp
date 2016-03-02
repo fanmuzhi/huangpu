@@ -29,7 +29,6 @@ void Ts_OTPCheck::SetUp()
 		return;
 	}
 
-
 	//Parse Args
 	std::vector<std::string> listOfArgValue;
 	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bExecuted = false;
@@ -187,9 +186,7 @@ void Ts_OTPCheck::Execute()
 		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPartNumberId_count= count;
 	}
 
-
 	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bExecuted = true;
-
 }
 
 void Ts_OTPCheck::ProcessData()

@@ -33,6 +33,8 @@ public:
 
 	bool ParseTestStepArgs(const std::string &strArgsValue, std::vector<std::string> &olistOfArgValue, std::string strSymbol = std::string(" "));
 
+	void ImageDecode(FPSFrame *pDecodeFrame, FPSFrame *pEncodeFrame, int nNumRow, int nNumCol, int nNumFrames);
+
 protected:
 
 	Syn_Module *_pSyn_Module;

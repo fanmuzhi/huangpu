@@ -218,14 +218,18 @@ void Ts_Calibrate::Execute()
 		(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch)[_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nHpfOffset] |= 0x01;
 
 	GetFingerprintImage(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults, &(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.arr_ImageFPSFrame), numRows, numCols);
+
+	_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted = true;
 }
 
 void Ts_Calibrate::ProcessData()
 {
-	//uint16_t numRows = _pSyn_Dut->_RowNumber;
-	//uint16_t numCols = _pSyn_Dut->_ColumnNumber;
-
-	//GetFingerprintImage(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults, &(_pSyn_Dut->_pSyn_DutTestResult->_acquireFpsResults.arr_ImageFPSFrame), numRows, numCols);
+	if (!_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted)
+	{
+		Syn_Exception ex(Syn_ExceptionCode::Syn_TestStepNotExecuted);
+		ex.SetDescription("TestStep Calibrate is not executed!");
+		throw ex;
+	}
 }
 
 void Ts_Calibrate::CleanUp()
