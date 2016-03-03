@@ -23,9 +23,11 @@ public:
 
 	void SetStopTag(bool stoptag);
 
+	void SetFlag(int iFlag){ _iFlag = iFlag; };
+
 signals:
 
-	void send(void * TestResultValue);
+	void send(unsigned int iSiteNumber);
 
 protected:
 
@@ -37,8 +39,7 @@ private:
 
 	Syn_Site *_pSyn_Site;
 
-	//Syn_SiteInfo		_SiteInfo;
-	//Syn_DutTestInfo		_TestInfo;
+	int _iFlag;
 };
 
 #endif // SYN_THREAD_H
