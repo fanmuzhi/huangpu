@@ -2,7 +2,7 @@
 <LocalSettings>
     <SysConfigFile>D:/57K0_Test_Cpp.xml</SysConfigFile>
     <NumSites>2</NumSites>
-    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="696 697 694 798 698 697 697 697 704 780 1531 3739 699 698 698 698 ">1684806</Site1>
-    <Site2 Voltages="1800 1800 3300 3300" AdcBaseLines="692 694 696 841 692 693 693 693 701 780 1545 3750 696 696 696 696 ">1456665</Site2>
+    <Site1 AdcBaseLines="696 697 694 798 698 697 697 697 704 780 1531 3739 699 698 698 698 " Voltages="1800 1800 3300 3300">1684806</Site1>
+    <Site2 AdcBaseLines="692 694 696 841 692 693 693 693 701 780 1545 3750 696 696 696 696 " Voltages="1800 1800 3300 3300">1456665</Site2>
     <AutoController></AutoController>
 </LocalSettings>

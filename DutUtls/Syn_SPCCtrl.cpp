@@ -602,7 +602,6 @@ void Syn_SPCCtrl::UpdateMPC04Firmware()
 					sequenceFound = true;
 					//str.Format("%c%c%c%c%c%c%c%c", line[15], line[16], line[13], line[14], line[11], line[12], line[9], line[10]);
 					//str = line[15]+line[16]+line[13]+line[14]+line[11]+line[12]+line[9]+line[10];
-					sscanf(str.c_str(), "%x", &fileAppRev);
 					str = "";
 					str.push_back(line[15]);
 					str.push_back(line[16]);
@@ -612,6 +611,7 @@ void Syn_SPCCtrl::UpdateMPC04Firmware()
 					str.push_back(line[12]);
 					str.push_back(line[9]);
 					str.push_back(line[10]);
+					sscanf(str.c_str(), "%x", &fileAppRev);
 					LOG(INFO) << "File Application Rev: " << fileAppRev;
 					if (((int)nRevApplication != fileAppRev))
 						AppUpdate = true;
