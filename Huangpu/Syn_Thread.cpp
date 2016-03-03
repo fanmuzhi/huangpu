@@ -28,8 +28,10 @@ void Syn_Thread::run()
 			rc = _pSyn_Site->Open();
 			if (rc == 0)
 			{
-				rc = _pSyn_Site->ExecuteTestStep("Calibrate");
 				Syn_DutTestResult * TestResult = NULL;
+				rc = _pSyn_Site->ExecuteTestStep("DRdyTest");
+				rc = _pSyn_Site->GetTestResult(TestResult);
+				rc = _pSyn_Site->ExecuteTestStep("Calibrate");
 				rc = _pSyn_Site->GetTestResult(TestResult);
 				rc = _pSyn_Site->ExecuteTestStep("AcqImgNoFinger");
 				if (rc == 0)

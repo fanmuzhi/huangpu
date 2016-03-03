@@ -210,6 +210,8 @@ void Syn_SPCCtrl::FpReadBuff(uint8_t *pDst, int numBytes)
 	uint32_t timeout = TIMEOUT;
 
 	this->FpRead(1, 0xFF, pDst, numBytes);
+	uint16_t returnValue = *((uint16_t*)pDst);
+	LOG(DEBUG) << "0x" << hex << returnValue;
 	while (timeout && (*((uint16_t*)pDst) == 0xFFFF))
 	{
 		this->FpRead(1, 0xFF, pDst, numBytes);
@@ -469,7 +471,6 @@ void Syn_SPCCtrl::GpioSetPinType(uint16_t portId, uint32_t mskPins, uint16_t pin
 //
 void Syn_SPCCtrl::GpioPinRead(uint16_t portID, uint32_t mskPins, uint32_t* pMskPinState)
 {
-	LOG(INFO) << "Read from GPIO";
 
 	uint32_t err;
 	err = MPC_GpioPinRead(syn_DeviceHandle, portID, mskPins, pMskPinState, TIMEOUT);
@@ -486,6 +487,9 @@ void Syn_SPCCtrl::GpioPinRead(uint16_t portID, uint32_t mskPins, uint32_t* pMskP
 		ex.SetDescription("GpioPinRead() DUT communication failure.");
 		throw ex;
 	}
+
+	int result = (*pMskPinState & mskPins) ? 1 : 0;
+	LOG(INFO) << "Read from GPIO:" << result;
 }
 
 

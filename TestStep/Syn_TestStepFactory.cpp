@@ -5,6 +5,7 @@
 #include "Ts_OTPCheck.h"
 #include "Ts_AcqImgNoFinger.h"
 #include "Ts_AcqImgFinger.h"
+#include "Ts_DRdyTest.h"
 
 Syn_TestStepFactory::Syn_TestStepFactory()
 {
@@ -43,6 +44,10 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	else if (std::string("AcqImgFinger") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_AcqImgFinger(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("DRdyTest") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_DRdyTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else
 	{
