@@ -261,8 +261,12 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 				break;
 		}
 		
-		ui.TestTableWidget->setItem(0, t - 1, new QTableWidgetItem(QString::number(iSiteNumber) + QString(" (") + QString::number(uiSerialNumber) + QString(") ")));
-		ui.TestTableWidget->setItem(1, t - 1, new QTableWidgetItem(strSiteStatus));
+		QTableWidgetItem *itemSiteNumber = new QTableWidgetItem(QString::number(iSiteNumber) + QString(" (") + QString::number(uiSerialNumber) + QString(") "));
+		QTableWidgetItem *itemSiteStatus = new QTableWidgetItem(strSiteStatus);
+		itemSiteNumber->setTextAlignment(Qt::AlignCenter);
+		itemSiteStatus->setTextAlignment(Qt::AlignCenter);
+		ui.TestTableWidget->setItem(0, t - 1, itemSiteNumber);
+		ui.TestTableWidget->setItem(1, t - 1, itemSiteStatus);
 
 		/*QTableWidgetItem *cubesHeaderItem = new QTableWidgetItem(tr("Cubes"));
 		cubesHeaderItem->setIcon(QIcon(QPixmap(":/Images/cubed.png")));
@@ -964,7 +968,10 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 
 	QLabel *pImageLabel = new QLabel();
 	pImageLabel->setPixmap(QPixmap::fromImage(image));
-	ui.TestTableWidget->setCellWidget(iRowNumber, iSiteNumber-1, pImageLabel);
+	pImageLabel->setAlignment(Qt::AlignCenter);
+	ui.TestTableWidget->setCellWidget(iRowNumber, iSiteNumber - 1, pImageLabel); 
+	//ui.TestTableWidget->cellWidget(iRowNumber, iSiteNumber - 1)->setStyle(QStyleFactory::create("Fusion"));
+
 	ui.TestTableWidget->resizeRowToContents(iRowNumber);
 
 	_FinishedSiteCounts += 1;
