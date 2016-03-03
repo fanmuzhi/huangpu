@@ -21,10 +21,50 @@ void Syn_Thread::run()
 	unsigned int iSiteNumber(0);
 	_pSyn_Site->GetSiteNumber(iSiteNumber);
 
-	//_pSyn_Site->Run();
+	uint32_t rc(0);
+	switch (_iFlag)
+	{
+		case 1:
+			rc = _pSyn_Site->Open();
+			if (rc == 0)
+			{
+				rc = _pSyn_Site->ExecuteTestStep("Calibrate");
+				Syn_DutTestResult * TestResult = NULL;
+				rc = _pSyn_Site->GetTestResult(TestResult);
+				rc = _pSyn_Site->ExecuteTestStep("AcqImgNoFinger");
+				if (rc == 0)
+				{
+					emit send(iSiteNumber);
+				}
+			}
 
-	//_pSyn_Site->GetSiteInfo(_SiteInfo);
-	//emit send((void*)&_SiteInfo);
+		case 2:
+			/*rc = _pSyn_Site->Open();
+			if (rc == 0)
+			{
+				rc = _pSyn_Site->ExecuteTestStep("AcqImgFinger");
+				if (rc == 0)
+				{
+					emit send(iSiteNumber);
+				}
+			}*/
+
+			rc = _pSyn_Site->ExecuteTestStep("AcqImgFinger");
+			//Syn_DutTestResult * TestResult = NULL;
+			//rc = _pSyn_Site->GetTestResult(TestResult);
+			//rc = _pSyn_Site->ExecuteTestStep("AcqImgNoFinger");
+			if (rc == 0)
+			{
+				emit send(iSiteNumber);
+			}
+
+		default:
+			if (rc == 0)
+			{
+				rc = _pSyn_Site->ExecuteTestStep("Calibrate");
+			}
+	}
+
 
 	_stopped = true;
 }

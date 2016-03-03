@@ -92,6 +92,9 @@ public Q_SLOTS:
 
 
 	//void RunningTest();
+	void Run();
+	void ReceiveSiteInfo(unsigned int iSiteNumber);
+
 
 	//void ReceiveDutTestResultSlot(void * pDutTestResult);
 
@@ -145,7 +148,7 @@ private:
 
 	Syn_ThreadDebug _threadForDebugCalibrate;
 
-
+	unsigned int _FinishedSiteCounts;
 };
 
 #endif // FPS_TESTEXECUTIVE_H
