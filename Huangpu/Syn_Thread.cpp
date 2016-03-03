@@ -34,6 +34,8 @@ void Syn_Thread::run()
 				rc = _pSyn_Site->ExecuteTestStep("AcqImgNoFinger");
 				if (rc == 0)
 				{
+					rc = _pSyn_Site->GetTestResult(TestResult);
+					rc = _pSyn_Site->ExecuteTestStep("PeggedPixelsTest");
 					emit send(iSiteNumber);
 				}
 			}
