@@ -606,6 +606,8 @@ void FPS_TestExecutive::ConfirmSite()
 		pLocalSettingsInstance = NULL;
 	}
 
+	_pSyn_DeviceManager->UpdateFirmware();
+
 	//ReConstruct SiteList
 	if (ConstructSiteList(_LocalSettingsInfo))
 	{
