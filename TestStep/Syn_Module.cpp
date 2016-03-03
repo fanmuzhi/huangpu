@@ -37,6 +37,8 @@ void Syn_Module::PowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, b
 		_pSyn_DutCtrl->FpWaitDeviceReady();
 		//Configure sensor not to go back to sleep.
 		_pSyn_DutCtrl->FpDisableSleep();
+		_pSyn_DutCtrl->FpWaitForCMDComplete();
+		_pSyn_DutCtrl->FpReadAndCheckStatus(0);
 	}
 }
 

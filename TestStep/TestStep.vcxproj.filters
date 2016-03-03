@@ -45,6 +45,9 @@
     <ClInclude Include="Ts_AcqImgFinger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Ts_DRdyTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Syn_FingerprintTest.cpp">
@@ -72,6 +75,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Ts_AcqImgFinger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_DRdyTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

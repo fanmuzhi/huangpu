@@ -15,6 +15,7 @@
 //third-party
 #include "easylogging++.h"
 
+
 bool Syn_SPCCtrl::_bDLLInitialized = false;
 
 Syn_SPCCtrl::Syn_SPCCtrl(uint32_t iSerialNumber)
@@ -270,8 +271,8 @@ void Syn_SPCCtrl::FpDisableSleep()
 
 	uint8_t pSrc[2] = { 0 };
 	this->FpWrite(1, VCSFW_CMD::TIDLE_SET, pSrc, sizeof(pSrc));
-	this->FpWaitForCMDComplete();
-	this->FpReadAndCheckStatus(0);
+	//this->FpWaitForCMDComplete();
+	//this->FpReadAndCheckStatus(0);
 }
 
 
