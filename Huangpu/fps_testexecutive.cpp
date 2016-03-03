@@ -842,12 +842,15 @@ void FPS_TestExecutive::Run()
 		return;
 	}
 
+
 	_FinishedSiteCounts = 0;
 
 	unsigned int iRunFlag(0);
 	QString qText = ui.pushButtonRun->text();
 	if (QString("Run") == qText)
 	{
+		ui.LocalSettingsPushButton->setDisabled(true);
+
 		iRunFlag = 1;
 	}
 	else if (QString("Continue") == qText)
@@ -948,7 +951,7 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 		{
 			for (int n = 0; n < columnNumber; n++)
 			{
-				data[m*(columnNumber)+n] = (pCurrentDutTestResult->_calibrationResults).arr_ImageFPSFrame.arr[m][n];
+				data[m*(columnNumber)+n] = (pCurrentDutTestResult->_acqImgFingerResult).arr_ImageFPSFrame.arr[m][n];
 			}
 		}
 
@@ -979,6 +982,9 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 		else if (2==iFlag)
 		{
 			ui.pushButtonRun->setText(QString("Run"));
+
+			ui.LocalSettingsPushButton->setDisabled(false);
+
 		}
 	}
 }

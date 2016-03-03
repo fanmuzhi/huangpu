@@ -39,17 +39,23 @@ void Syn_Thread::run()
 			}
 
 		case 2:
-			rc = _pSyn_Site->Open();
+			/*rc = _pSyn_Site->Open();
 			if (rc == 0)
 			{
-				rc = _pSyn_Site->ExecuteTestStep("Calibrate");
-				//Syn_DutTestResult * TestResult = NULL;
-				//rc = _pSyn_Site->GetTestResult(TestResult);
-				//rc = _pSyn_Site->ExecuteTestStep("AcqImgNoFinger");
+				rc = _pSyn_Site->ExecuteTestStep("AcqImgFinger");
 				if (rc == 0)
 				{
 					emit send(iSiteNumber);
 				}
+			}*/
+
+			rc = _pSyn_Site->ExecuteTestStep("AcqImgFinger");
+			//Syn_DutTestResult * TestResult = NULL;
+			//rc = _pSyn_Site->GetTestResult(TestResult);
+			//rc = _pSyn_Site->ExecuteTestStep("AcqImgNoFinger");
+			if (rc == 0)
+			{
+				emit send(iSiteNumber);
 			}
 
 		default:
