@@ -37,7 +37,7 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	//Thread
 	for (int i = 1; i <= DeviceCounts; i++)
 	{
-		//QObject::connect(&(_SynThreadArray[i - 1]), SIGNAL(send(void*)), this, SLOT(ReceiveSiteInfoSlot(void*)));
+		QObject::connect(&(_SynThreadArray[i - 1]), SIGNAL(send(unsigned int, const QString)), this, SLOT(ReceiveTest(unsigned int, const QString)));
 		QObject::connect(&(_SynThreadArray[i - 1]), SIGNAL(send(unsigned int)), this, SLOT(ReceiveSiteInfo(unsigned int)));
 	}
 	
@@ -1689,4 +1689,147 @@ void FPS_TestExecutive::Display(uint8_t* pDst, unsigned int StartPos, unsigned i
 		s += (QString::number(pDst[i], 16)).toUpper() + ",";
 	}
 	ui.textBrowser->append(s);
+}
+
+void FPS_TestExecutive::ReceiveTest(unsigned int iSiteNumber, const QString strTestStepName)
+{
+	bool synFind(false);
+
+	unsigned int iFlag(0);
+	QString qText = ui.pushButtonRun->text();
+	if (QString("Run") == qText)
+	{
+		iFlag = 1;
+	}
+	else if (QString("Continue") == qText)
+	{
+		iFlag = 2;
+	}
+
+	Syn_DutTestResult *pCurrentDutTestResult = NULL;
+	Syn_SysConfig CurrentSysConfig;
+	unsigned int iPos(0);
+	for (size_t i = 0; i < _ListOfSitePtr.size(); i++)
+	{
+		unsigned int iTempSiteNumber(0);
+		_ListOfSitePtr[i]->GetSiteNumber(iTempSiteNumber);
+		if (iSiteNumber == iTempSiteNumber)
+		{
+			//_ListOfSitePtr[i]->GetTestInfo(*CurrentDutTestInfo);
+			SiteState oTempState;
+			_ListOfSitePtr[i]->GetState(oTempState);
+			if (oTempState == SiteState::Error)
+			{
+				string errMsg = "";
+				_ListOfSitePtr[i]->GetRunTimeError(errMsg);
+				QMessageBox::information(this, QString("Error"), QString("Calibrate Error:") + QString::fromStdString(errMsg));
+				return;
+			}
+			//_ListOfSitePtr[i]->GetTestResult(pCurrentDutTestResult);
+			_ListOfSitePtr[i]->GetSysConfig(CurrentSysConfig);
+			iPos = i;
+			synFind = true;
+			break;
+		}
+	}
+
+	if (!synFind)// || NULL == pCurrentDutTestResult)
+		return;
+
+	int rowNumber = CurrentSysConfig._uiNumRows;
+	int columnNumber = CurrentSysConfig._uiNumCols;
+
+	QTableWidgetItem *item = new QTableWidgetItem(strTestStepName);
+	item->setTextAlignment(Qt::AlignCenter);
+	ui.TestTableWidget->setItem(2, iSiteNumber - 1, item);
+	
+
+	/*QVector<QRgb> vcolorTable;
+	for (int i = 0; i < 256; i++)
+	{
+		vcolorTable.append(qRgb(i, i, i));
+	}
+	QByteArray data;
+	data.resize((rowNumber)*(columnNumber));
+
+	unsigned int iRowNumber(0);
+	if (1 == iFlag)
+	{
+		for (int m = 0; m < rowNumber; m++)
+		{
+			for (int n = 0; n < columnNumber; n++)
+			{
+				data[m*(columnNumber)+n] = (pCurrentDutTestResult->_acqImgNoFingerResult).arr_ImageFPSFrame.arr[m][n];
+			}
+		}
+
+		iRowNumber = 8;
+
+		QString qResult("");
+		if (pCurrentDutTestResult->_peggedPixelsResults.m_bPass)
+		{
+			qResult = QString("Pass");
+		}
+		else
+		{
+			qResult = QString("Fail");
+		}
+
+		//
+		QTableWidgetItem *item = new QTableWidgetItem(qResult);
+		item->setTextAlignment(Qt::AlignCenter);
+		ui.TestTableWidget->setItem(3, iSiteNumber - 1, item);
+
+	}
+	else if (2 == iFlag)
+	{
+		for (int m = 0; m < rowNumber; m++)
+		{
+			for (int n = 0; n < columnNumber; n++)
+			{
+				data[m*(columnNumber)+n] = (pCurrentDutTestResult->_acqImgFingerResult).arr_ImageFPSFrame.arr[m][n];
+			}
+		}
+
+		iRowNumber = 9;
+
+		QString strSNRValue = QString::number(pCurrentDutTestResult->_snrResults.SNR[6]);
+
+		QTableWidgetItem *item = new QTableWidgetItem(strSNRValue);
+		item->setTextAlignment(Qt::AlignCenter);
+		ui.TestTableWidget->setItem(5, iSiteNumber - 1, item);
+	}
+
+	QImage image((uchar*)data.constData(), columnNumber, rowNumber, QImage::Format_Indexed8);
+	image.setColorTable(vcolorTable);
+	image = image.copy(HEADER, 0, columnNumber - HEADER, rowNumber);
+
+	QLabel *pImageLabel = new QLabel();
+	pImageLabel->setPixmap(QPixmap::fromImage(image));
+	pImageLabel->setAlignment(Qt::AlignCenter);
+	ui.TestTableWidget->setCellWidget(iRowNumber, iSiteNumber - 1, pImageLabel);
+	//ui.TestTableWidget->cellWidget(iRowNumber, iSiteNumber - 1)->setStyle(QStyleFactory::create("Fusion"));
+
+	ui.TestTableWidget->resizeRowToContents(iRowNumber);
+
+	_FinishedSiteCounts += 1;
+	if (2 == iFlag)
+	{
+		_ListOfSitePtr[iSiteNumber - 1]->Close();
+	}
+
+	if (_FinishedSiteCounts == _ListOfSitePtr.size())
+	{
+		if (1 == iFlag)
+		{
+			ui.pushButtonRun->setText(QString("Continue"));
+		}
+		else if (2 == iFlag)
+		{
+			ui.pushButtonRun->setText(QString("Run"));
+
+			ui.LocalSettingsPushButton->setDisabled(false);
+
+		}
+	}*/
 }
