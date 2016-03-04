@@ -8,6 +8,10 @@
 #include "Ts_PeggedPixelsTest.h"
 #include "Ts_FlooredPixelsTest.h"
 #include "Ts_ConsecutivePixels.h"
+#include "Ts_SNRTest.h"
+#include "Ts_PixelTest.h"
+#include "Ts_SharpnessTest.h"
+#include "Ts_Imperfections.h"
 
 Syn_TestStepFactory::Syn_TestStepFactory()
 {
@@ -58,6 +62,22 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	else if (std::string("ConsecutivePixels") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_ConsecutivePixels(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("SNRTest") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_SNRTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("PixelTest") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_PixelTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("SharpnessTest") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_SharpnessTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("Imperfections") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_Imperfections(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else
 	{

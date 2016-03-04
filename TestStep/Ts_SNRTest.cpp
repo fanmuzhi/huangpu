@@ -120,93 +120,170 @@ void Ts_SNRTest::Execute()
 
 void Ts_SNRTest::ProcessData()
 {
-	//int nTrimLeft = 0;
-	//int nTrimRight = 0;
-	//int nTrimTop = 0;
-	//int nTrimBottom = 0;
-	//int numRows = _pSyn_Dut->_RowNumber;
-	//int numCols = _pSyn_Dut->_ColumnNumber;
+	int numRows = _pSyn_Dut->_RowNumber;
+	int numCols = _pSyn_Dut->_ColumnNumber;
+	int bIsBga = 0;
 
-	//int i, j, k, temp = 0;
-	//int numFrames, failRow, failCol, countRow, countCol, failLimit; //these are filled out by structure from .cpp file.
-	//int temp_sum = 0;
-	//int temp_val = 0;
+	float NOISE = 0.0, SNR = 0.0;
 
-	//int temp_pegged[MAXCOL] = { 0 };
+	int minrow, mincol, maxcol, maxrow, SIGNAL = 0;//;, s_ROW,s_COL;
+	int i, j, k;//for 9 regions
+	int M, N; //no of elements in row and columns of the segment window.
+	int C0, C1, C2, R0, R1;
+	int C[4], R[3];
 
-	//countCol = 0;
-	//countRow = 0;
+	int all_zones_passed = 1;
+	int overall_passed = 1;
 
-	//_pSyn_Dut->_pSyn_DutTestResult->_peggedPixelsResults.m_bPass = 1;//set the device to pass to begin with.
+	//debug
+	for (i = 0; i<10; i++)
+	{
+		_pSyn_Dut->_pSyn_DutTestResult->_snrResults.SNR[i] = 0;
+		_pSyn_Dut->_pSyn_DutTestResult->_snrResults.SIGNAL[i] = 0;
+		_pSyn_Dut->_pSyn_DutTestResult->_snrResults.NOISE[i] = 0;
+	}
 
-	//numFrames = _pSyn_Dut->_pSyn_DutTestInfo->_peggedPixelsInfo.numFrames;
-	//failCol = _pSyn_Dut->_pSyn_DutTestInfo->_peggedPixelsInfo.fail_col;
-	//failRow = _pSyn_Dut->_pSyn_DutTestInfo->_peggedPixelsInfo.fail_row;
-	//failLimit = _pSyn_Dut->_pSyn_DutTestInfo->_peggedPixelsInfo.fail_limits;//225
-	////set up the nofinger avg matrix that is obtained by taking the arithmetic mean of 30 frames of nofinger data.
-	//for (i = 0; i<numRows; i++)
-	//{
-	//	for (j = 0; j<numCols; j++)
-	//	{
-	//		for (k = 0; k<_pSyn_Dut->_pSyn_DutTestInfo->_peggedPixelsInfo.numFrames; k++)
-	//		{
-	//			temp_sum += (_pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.m_arImagesWithoutStimulus)[k].arr[i][j];
-	//		}
+	// Get min/max cols and min/max rows from SNRInfo struct
+	N = _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.numMaxCols - (_pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.numMinCols + HEADER);
+	M = _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.numMaxRows - _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.numMinRows;
 
-	//		temp_val = temp_sum / numFrames;
-	//		(_pSyn_Dut->_pSyn_DutTestResult->_peggedPixelsResults.avg)[i][j] = temp_val;
+	//ZONE DIVISION STARTS HERE
+	C0 = N / 3;
+	C1 = C0 + C0;
+	C2 = N;
+	C[0] = 0;
+	C[1] = C0;
+	C[2] = C1;
+	C[3] = C2;
+	//
+	R0 = M / 2;
+	R1 = R0 + R0;
+	R[0] = 0;
+	R[1] = R0;
+	R[2] = R1;
 
-	//		temp_sum = 0;
-	//		temp_val = 0;
-	//	}
-	//}
-	////scan through each row.
-	//for (i = nTrimTop; i<numRows - nTrimBottom; i++)
-	//{
-	//	for (j = HEADER + nTrimLeft; j<numCols - nTrimRight; j++)
-	//	{
-	//		if ((_pSyn_Dut->_pSyn_DutTestResult->_peggedPixelsResults.avg)[i][j] >= failLimit)
-	//		{
-	//			countRow += 1;
-	//			temp += 1;
-	//		}
-	//		if (temp > failRow)//fail the test if the count is greater than our expected limits.
-	//			_pSyn_Dut->_pSyn_DutTestResult->_peggedPixelsResults.m_bPass = 0;
-	//	}
+	SNR_Fill_Log(_pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.arr_finger, _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.arr_nofinger, &(_pSyn_Dut->_pSyn_DutTestResult->_snrResults), numRows, numCols, _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.numFrames);
 
-	//	temp_pegged[i - nTrimTop] = countRow;
-	//	countRow = 0;
-	//	(_pSyn_Dut->_pSyn_DutTestResult->_peggedPixelsResults.pegged_pixel_rows)[i - nTrimTop] = temp;
-	//	temp = 0;
-	//}
+	k = 0;
+	for (i = 0; i<2; i++)//row
+	{
+		for (j = 0; j<3; j++)//col
+		{
+			if (k == 0)
+			{
+				mincol = _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.numMinCols + C[0] + HEADER;
+				maxcol = C[1] + HEADER;
+				minrow = R[0];
+				maxrow = R[1];
+			}
+			if (k == 1)
+			{
+				mincol = C[1] + HEADER;
+				maxcol = C[2] + HEADER;
+				minrow = R[0];
+				maxrow = R[1];
+			}
+			if (k == 2)
+			{
+				mincol = C[2] + HEADER;
+				maxcol = C[3] + HEADER;
+				minrow = R[0];
+				maxrow = R[1];
+			}
+			if (k == 3)
+			{
+				mincol = _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.numMinCols + HEADER + C[0];
+				maxcol = C[1] + HEADER;
+				minrow = R[1];
+				maxrow = R[2];
+			}
+			if (k == 4)
+			{
+				mincol = C[1] + HEADER;
+				maxcol = C[2] + HEADER;
+				minrow = R[1];
+				maxrow = R[2];
+			}
+			if (k == 5)
+			{
+				mincol = C[2] + HEADER;
+				maxcol = C[3] + HEADER;
+				minrow = R[1];
+				maxrow = R[2];
+			}
 
-	////assign number of pegged 
-	//_pSyn_Dut->_pSyn_DutTestResult->_peggedPixelsResults.pegged_ROW = max_array(temp_pegged, numCols);
+			SIGNAL = get_signal_value(_pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.arr_finger, _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.arr_nofinger, &(_pSyn_Dut->_pSyn_DutTestInfo->_snrInfo), minrow, maxrow, mincol, maxcol, k, &(_pSyn_Dut->_pSyn_DutTestResult->_snrResults));
+			NOISE = get_noise_value(_pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.arr_finger, _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.arr_nofinger, &(_pSyn_Dut->_pSyn_DutTestInfo->_snrInfo), minrow, maxrow, mincol, maxcol, k, &(_pSyn_Dut->_pSyn_DutTestResult->_snrResults));//,s_ROW,s_COL);
+			SNR = SIGNAL / NOISE;
 
-	////initialize temp_pegged;
-	//for (i = 0; i<numCols; i++)
-	//	temp_pegged[i] = 0;
-	////scan through each col.
-	//for (j = HEADER + nTrimLeft; j<numCols - nTrimRight; j++)
-	//{
-	//	for (i = nTrimTop; i<numRows - nTrimBottom; i++)
-	//	{
-	//		if ((_pSyn_Dut->_pSyn_DutTestResult->_peggedPixelsResults.avg)[i][j] >= failLimit)
-	//		{
-	//			countCol += 1;
-	//			temp += 1;
-	//		}
-	//		if (temp > failCol)//fail the test if the count is greater than our expected limits.
-	//			_pSyn_Dut->_pSyn_DutTestResult->_peggedPixelsResults.m_bPass = 0;
-	//	}
+			_pSyn_Dut->_pSyn_DutTestResult->_snrResults.SIGNAL[k] = SIGNAL;
+			_pSyn_Dut->_pSyn_DutTestResult->_snrResults.NOISE[k] = NOISE;
+			_pSyn_Dut->_pSyn_DutTestResult->_snrResults.SNR[k] = SNR;
 
-	//	temp_pegged[j - nTrimLeft - HEADER] = countCol;
-	//	countCol = 0;
-	//	_pSyn_Dut->_pSyn_DutTestResult->_peggedPixelsResults.pegged_pixel_cols[j - nTrimLeft - HEADER] = temp;
-	//	temp = 0;
-	//}
-	////assign number of pegged
-	//_pSyn_Dut->_pSyn_DutTestResult->_peggedPixelsResults.pegged_COL = max_array(temp_pegged, numCols);
+			SIGNAL = 0;
+			NOISE = 0.0;
+			SNR = 0.0;
+			k += 1;
+
+			if (k == 6)//if the overall window is looked at.
+			{
+				minrow = _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.numMinRows;
+				maxrow = _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.numMaxRows;
+				mincol = _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.numMinCols + HEADER;
+				maxcol = _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.numMaxCols;
+
+				SIGNAL = get_signal_value(_pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.arr_finger, _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.arr_nofinger, &(_pSyn_Dut->_pSyn_DutTestInfo->_snrInfo), minrow, maxrow, mincol, maxcol, k, &(_pSyn_Dut->_pSyn_DutTestResult->_snrResults));
+				NOISE = get_noise_value(_pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.arr_finger, _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.arr_nofinger, &(_pSyn_Dut->_pSyn_DutTestInfo->_snrInfo), minrow, maxrow, mincol, maxcol, k, &(_pSyn_Dut->_pSyn_DutTestResult->_snrResults));//,s_ROW,s_COL);
+				SNR = SIGNAL / NOISE;
+
+				_pSyn_Dut->_pSyn_DutTestResult->_snrResults.SIGNAL[k] = SIGNAL;
+				_pSyn_Dut->_pSyn_DutTestResult->_snrResults.NOISE[k] = NOISE;
+				_pSyn_Dut->_pSyn_DutTestResult->_snrResults.SNR[k] = SNR;
+			}
+		}
+
+	}
+
+	//region 6 is the full picture.
+	for (k = 0; k<7; k++)
+	{
+		if (!bIsBga)
+		{
+			if (k != 6)//zones
+			{
+				if (!((_pSyn_Dut->_pSyn_DutTestResult->_snrResults.SIGNAL[k] >= _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.limit_zone_signal_low && _pSyn_Dut->_pSyn_DutTestResult->_snrResults.SIGNAL[k] <= _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.limit_zone_signal_high) &&
+					(_pSyn_Dut->_pSyn_DutTestResult->_snrResults.NOISE[k] >= _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.limit_zone_noise_low  && _pSyn_Dut->_pSyn_DutTestResult->_snrResults.NOISE[k] <= _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.limit_zone_noise_high) &&
+					(_pSyn_Dut->_pSyn_DutTestResult->_snrResults.SNR[k] >= _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.limit_zone_snr_low    && _pSyn_Dut->_pSyn_DutTestResult->_snrResults.SNR[k] <= _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.limit_zone_snr_high))
+					)
+					all_zones_passed = 0;
+			}
+			else //overall
+			{
+				if (!((_pSyn_Dut->_pSyn_DutTestResult->_snrResults.SIGNAL[k] >= _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.limit_overall_signal_low && _pSyn_Dut->_pSyn_DutTestResult->_snrResults.SIGNAL[k] <= _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.limit_overall_signal_high) &&
+					(_pSyn_Dut->_pSyn_DutTestResult->_snrResults.NOISE[k] >= _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.limit_overall_noise_low  && _pSyn_Dut->_pSyn_DutTestResult->_snrResults.NOISE[k] <= _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.limit_overall_noise_high) &&
+					(_pSyn_Dut->_pSyn_DutTestResult->_snrResults.SNR[k] >= _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.limit_overall_snr_low    && _pSyn_Dut->_pSyn_DutTestResult->_snrResults.SNR[k] <= _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.limit_overall_snr_high))
+					)
+					overall_passed = 0;
+			}
+		}
+		else
+		{
+			if (k != 6)//zones
+			{
+				if (!((_pSyn_Dut->_pSyn_DutTestResult->_snrResults.NOISE[k] >= _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.limit_zone_noise_low  && _pSyn_Dut->_pSyn_DutTestResult->_snrResults.NOISE[k] <= _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.limit_zone_noise_high)))
+					all_zones_passed = 0;
+			}
+			else //overall			
+			{
+				if (!((_pSyn_Dut->_pSyn_DutTestResult->_snrResults.NOISE[k] >= _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.limit_overall_noise_low  && _pSyn_Dut->_pSyn_DutTestResult->_snrResults.NOISE[k] <= _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.limit_overall_noise_high)))
+					overall_passed = 0;
+			}
+		}
+	}
+	if (all_zones_passed && overall_passed)
+		_pSyn_Dut->_pSyn_DutTestResult->_snrResults.bPass = 1;
+	else
+		_pSyn_Dut->_pSyn_DutTestResult->_snrResults.bPass = 0;
 
 }
 

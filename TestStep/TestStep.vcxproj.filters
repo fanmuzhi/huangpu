@@ -57,6 +57,15 @@
     <ClInclude Include="Ts_SNRTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Ts_PixelTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_SharpnessTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_Imperfections.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Syn_FingerprintTest.cpp">
@@ -96,6 +105,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Ts_SNRTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_PixelTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_SharpnessTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_Imperfections.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

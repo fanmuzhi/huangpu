@@ -858,6 +858,14 @@ void FPS_TestExecutive::Run()
 		ui.LocalSettingsPushButton->setDisabled(true);
 
 		iRunFlag = 1;
+
+		for (int i = 1; i <= iSiteCounts; i++)
+		{
+			if (NULL != ui.TestTableWidget->cellWidget(8,i-1))
+				ui.TestTableWidget->removeCellWidget(8, i - 1);
+			if (NULL != ui.TestTableWidget->cellWidget(9, i - 1))
+				ui.TestTableWidget->removeCellWidget(9, i-1);
+		}
 	}
 	else if (QString("Continue") == qText)
 	{
@@ -978,6 +986,12 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 		}
 
 		iRowNumber = 9;
+
+		QString strSNRValue = QString::number(pCurrentDutTestResult->_snrResults.SNR[6]);
+		
+		QTableWidgetItem *item = new QTableWidgetItem(strSNRValue);
+		item->setTextAlignment(Qt::AlignCenter);
+		ui.TestTableWidget->setItem(5, iSiteNumber - 1, item);
 	}
 	
 	QImage image((uchar*)data.constData(), columnNumber, rowNumber, QImage::Format_Indexed8);
