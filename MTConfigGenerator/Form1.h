@@ -70,14 +70,25 @@ namespace MTConfigGenerator {
 			m_nOrderIdxColWidth = 50;
 			m_pAvailableStepsArr = new(vector<TestStep>);
 
-			m_pAvailableStepsArr->push_back(TestStep("OTPCheck",
-				"TAG_ProjID;TAG_LNA;TAG_SNR;TAG_PGA_OOPR;TAG_FlexID;TAG_WOF_BOT;TAG_DutTempAdc;TAG_WOF_TOP;TAG_PGA_OOPP;TAG_SCM_WOF_BOT;TAG_SCM_WOF_TOP;TAG_PART_NUMBERS",		//args
-				"1;1;1;1;1;1;1;1;1;1;1;1",		//default value
-				"0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check"));	//explanation
-			//m_pAvailableStepsArr->push_back(TestStep("InitializationStep",
-			//			"BGA;Flex ID;Trim with Stimulus (top);Trim with Stimulus (bottom);Trim with Stimulus (left);Trim with Stimulus (right);Build #;Trim without Stimulus (top);Trim without Stimulus (bottom);Trim without Stimulus (left);Trim without Stimulus (right);Max Log File Size;Verbose Log;Project ID;Has Flash;Engineering Security;Production Security;Verify ATE Pass bit",
-			//			"0;0x08F3;0;0;1;0;132;0;0;1;0;100;0;0;0;0;0;0",
-			//			"0=false, 1=true;;pixels (inclusive);pixels (inclusive);pixels (inclusive);pixels (inclusive);1-65535;pixels (inclusive);pixels (inclusive);pixels (inclusive);pixels (inclusive);MB (used in C++ only);0=false, 1=true (used in C++ only);32 bit value (0=don't write to OTP);0=false, 1=true;0 = disabled, 1 = enabled. Must be same as Security step setting.;0 = disabled, 1 = enabled. Must be same as Security step setting.;0 = do not check, 1 = check it."));
+			m_pAvailableStepsArr->push_back(TestStep("InitializationStep",
+				"BGA;Flex ID;Trim with Stimulus (top);Trim with Stimulus (bottom);Trim with Stimulus (left);Trim with Stimulus (right);Build #;Trim without Stimulus (top);Trim without Stimulus (bottom);Trim without Stimulus (left);Trim without Stimulus (right);Max Log File Size;Verbose Log;Project ID;Has Flash;Engineering Security;Production Security;Verify ATE Pass bit",
+				"0;0x08F3;0;0;1;0;132;0;0;1;0;100;0;0;0;0;0;0",
+				"0=false, 1=true;;pixels (inclusive);pixels (inclusive);pixels (inclusive);pixels (inclusive);1-65535;pixels (inclusive);pixels (inclusive);pixels (inclusive);pixels (inclusive);MB (used in C++ only);0=false, 1=true (used in C++ only);32 bit value (0=don't write to OTP);0=false, 1=true;0 = disabled, 1 = enabled. Must be same as Security step setting.;0 = disabled, 1 = enabled. Must be same as Security step setting.;0 = do not check, 1 = check it."));
+
+			//m_pAvailableStepsArr->push_back(TestStep("OscTrim",
+			//			"Low Limit;High Limit;Initial Trim;Default Trim",
+			//			"122000;123000;0x380;0",
+			//			"Hz;Hz;;Used when frequency pin is not available"));
+
+			//m_pAvailableStepsArr->push_back(TestStep("SlowOsc",
+			//			"Low Limit;High Limit;Default HVOsc Trim;Default HVOsc Bias",
+			//			"475000;501000;0;0",
+			//			"Hz;Hz;Used when frequency pin is not available;Used when frequency pin is not available"));
+
+			m_pAvailableStepsArr->push_back(TestStep("OTPWriteBootSector",
+				"",
+				"",
+				""));
 
 			//m_pAvailableStepsArr->push_back(TestStep("VerifyPackageType",
 			//			"Package type",
@@ -104,15 +115,6 @@ namespace MTConfigGenerator {
 			//			"1000",
 			//			"used in C++ only"));
 
-			//m_pAvailableStepsArr->push_back(TestStep("OscTrim",
-			//			"Low Limit;High Limit;Initial Trim;Default Trim",
-			//			"122000;123000;0x380;0",
-			//			"Hz;Hz;;Used when frequency pin is not available"));
-
-			//m_pAvailableStepsArr->push_back(TestStep("SlowOsc",
-			//			"Low Limit;High Limit;Default HVOsc Trim;Default HVOsc Bias",
-			//			"475000;501000;0;0",
-			//			"Hz;Hz;Used when frequency pin is not available;Used when frequency pin is not available"));
 
 			//m_pAvailableStepsArr->push_back(TestStep("OpensShortsTest",
 			//			"# Response Bytes;Delay",
@@ -173,6 +175,14 @@ namespace MTConfigGenerator {
 			//			"Discard Images;Images w/o Stimulus;Images with Stimulus",
 			//			"20;30;30",
 			//			"# images to discard;# image acquisitions without stimulus;0 = no stimulus involved"));
+			m_pAvailableStepsArr->push_back(TestStep("AcqImgNoFinger",
+				"Discard Images;Images Without Stimulus",
+				"20;30",
+				"images to discard;image acquisitions without stimulus"));
+			m_pAvailableStepsArr->push_back(TestStep("AcqImgFinger",
+				"Discard Images;Images With Stimulus",
+				"20;30",
+				"images to discard;image acquisitions with stimulus"));
 
 			//m_pAvailableStepsArr->push_back(TestStep("ButtonTestWithStimulus",
 			//			"Port ID;Pin Mask;Expected State",
@@ -184,50 +194,50 @@ namespace MTConfigGenerator {
 			//			"7;25;60;5000;10;3;3;0.9;20;13;3.7",
 			//			"copy from SCM_WOFWithoutStimulus-Minimum Delta arg;copy from SCM_WOFWithoutStimulus-Trigger Min Threshold arg;copy from SCM_WOFWithoutStimulus-Trigger Max Threshold arg;copy from SCM_WOFWithoutStimulus-# Response Bytes arg;not used;not used;not used;not used;copy from SCM_WOFWithoutStimulus-Minimum Delta2 arg;With alternate VCC (copy from SCM_WOFWithoutStimulus-Minimum Delta3 arg);Alternate VCC (V) (copy from SCM_WOFWithoutStimulus-VCC arg)"));
 
-			//m_pAvailableStepsArr->push_back(TestStep("PeggedPixelsTest",
-			//			"Image Count;MaxPegged/row;MaxPegged/col;Pegged Threshold",
-			//			"30;9;28;225",
-			//			"copy from AcquireFPSSamples-Images w/o Stimulus arg;;;0-255 (inclusive)"));
+			m_pAvailableStepsArr->push_back(TestStep("PeggedPixelsTest",
+				"Image Count;MaxPegged/row;MaxPegged/col;Pegged Threshold",
+				"30;9;28;225",
+				"copy from AcquireFPSSamples-Images w/o Stimulus arg;;;0-255 (inclusive)"));
 
-			//m_pAvailableStepsArr->push_back(TestStep("FlooredPixelsTest",
-			//			"Image Count;MaxFloored/row;MaxFloored/col;Floored Threshold",
-			//			"30;9;28;25",
-			//			"copy from AcquireFPSSamples-Images w/o Stimulus arg;;;0-255 (inclusive)"));
+			m_pAvailableStepsArr->push_back(TestStep("FlooredPixelsTest",
+				"Image Count;MaxFloored/row;MaxFloored/col;Floored Threshold",
+				"30;9;28;25",
+				"copy from AcquireFPSSamples-Images w/o Stimulus arg;;;0-255 (inclusive)"));
 
-			//m_pAvailableStepsArr->push_back(TestStep("DRdyTest",
-			//			"Port ID;Pin Mask",
-			//			"1;0x10",
-			//			"0=Port A, 1=Port B... (used in C++ only);e.g. 0x8000 (used in C++ only)"));
+			m_pAvailableStepsArr->push_back(TestStep("DRdyTest",
+				"Port ID;Pin Mask",
+				"1;0x10",
+				"0=Port A, 1=Port B... (used in C++ only);e.g. 0x8000 (used in C++ only)"));
 
-			//m_pAvailableStepsArr->push_back(TestStep("ConsecutivePixels",
-			//			"Pegged Threshold;Floored Threshold;Max Adjacent;Trim (top, bottom, left, right);Image Count",
-			//			"225;25;4;7;30",
-			//			"0-255 (copy from PeggedPixelsTest-Pegged Threshold arg);0-255 (copy from FlooredPixelsTest-Floored Threshold arg);pixels;not used (pixels);copy from AcquireFPSSamples-Images w/o Stimulus arg"));
+			m_pAvailableStepsArr->push_back(TestStep("ConsecutivePixels",
+				"Pegged Threshold;Floored Threshold;Max Adjacent;Trim (top, bottom, left, right);Image Count",
+				"225;25;4;7;30",
+				"0-255 (copy from PeggedPixelsTest-Pegged Threshold arg);0-255 (copy from FlooredPixelsTest-Floored Threshold arg);pixels;not used (pixels);copy from AcquireFPSSamples-Images w/o Stimulus arg"));
 
 			//m_pAvailableStepsArr->push_back(TestStep("SDKBaselineTest",
 			//			"Trim top;Trim bottom;Trim left;Trim right;Truncate bits;Stride width;Max sum allowed;Percent fail",
 			//			"4;5;0;0;3;3;250;25",
 			//			"pixels;pixels;pixels;pixels;bits;pixels;value;percent"));
 
-			//m_pAvailableStepsArr->push_back(TestStep("CurrentTest",
-			//			"Low Gain;High Gain;Image Acq Analog Max;Image Acq Digital Max;Image Acq Analog Min;Image Acq Digital Min;WOE Sleep current Max;WOE Sleep Current Min;WOE Sleep Current Delay",
-			//			"2;3;50;5;1;0.01;0.150;0;500",
-			//			"0=1, 1=10, 2=100 or 3=1000;0=1, 1=10, 2=100 or 3=1000;mA;mA;mA (Viper only);mA (Viper only);mA (Viper only);mA (Viper only);mSec (Viper only)"));
+			m_pAvailableStepsArr->push_back(TestStep("CurrentTest",
+				"Low Gain;High Gain;Image Acq Analog Max;Image Acq Digital Max;Image Acq Analog Min;Image Acq Digital Min;WOE Sleep current Max;WOE Sleep Current Min;WOE Sleep Current Delay",
+				"2;3;50;5;1;0.01;0.150;0;500",
+				"0=1, 1=10, 2=100 or 3=1000;0=1, 1=10, 2=100 or 3=1000;mA;mA;mA (Viper only);mA (Viper only);mA (Viper only);mA (Viper only);mSec (Viper only)"));
 
-			//m_pAvailableStepsArr->push_back(TestStep("SNRTest",
-			//			"Image Count;Trim Left;Trim Right;Trim Top;Trim Bottom;Percent Ignored;SNR Hi Limit / image;SNR Lo Limit / image;Signal Hi Limit / image;Signal Lo Limit / image;Noise Hi Limit / image;Noise Lo Limit / image;SNR Hi / zone;SNR Lo / zone;Signal Hi / zone;Signal Lo / zone;Noise Hi / zone;Noise Lo / zone",
-			//			"30;0;0;0;0;10;500;25;500;80;5;0;500;14;500;50;6;0",
-			//			"copy from AcquireFPSSamples-Images with Stimulus arg;not used;not used;not used;not used;%;;;;;;;;;;;;"));
+			m_pAvailableStepsArr->push_back(TestStep("SNRTest",
+				"Image Count;Trim Left;Trim Right;Trim Top;Trim Bottom;Percent Ignored;SNR Hi Limit / image;SNR Lo Limit / image;Signal Hi Limit / image;Signal Lo Limit / image;Noise Hi Limit / image;Noise Lo Limit / image;SNR Hi / zone;SNR Lo / zone;Signal Hi / zone;Signal Lo / zone;Noise Hi / zone;Noise Lo / zone",
+				"30;0;0;0;0;10;500;25;500;80;5;0;500;14;500;50;6;0",
+				"copy from AcquireFPSSamples-Images with Stimulus arg;not used;not used;not used;not used;%;;;;;;;;;;;;"));
 
-			//m_pAvailableStepsArr->push_back(TestStep("PixelTest",
-			//	"Image Count;Threshold (row);Threshold (col);Trim (top, bottom, left, right);Threshold Range;# Failed Pixels Permitted",
-			//			"30;50;50;0;35;0",
-			//			"copy from AcquireFPSSamples-Images w/o Stimulus arg;not used (0-255);not used (0-255);not used (pixels);+/- from 0;"));
+			m_pAvailableStepsArr->push_back(TestStep("PixelTest",
+				"Image Count;Threshold (row);Threshold (col);Trim (top, bottom, left, right);Threshold Range;# Failed Pixels Permitted",
+				"30;50;50;0;35;0",
+				"copy from AcquireFPSSamples-Images w/o Stimulus arg;not used (0-255);not used (0-255);not used (pixels);+/- from 0;"));
 
-			//m_pAvailableStepsArr->push_back(TestStep("DeltaPixelTest",
-			//			"Image Count;Delta Threshold (row);Delta Threshold (col);MaxFailed/image",
-			//			"30;0;0;10",
-			//			"copy from AcquireFPSSamples-Images w/o Stimulus arg;0-255;0-255;pixels (inclusive)"));
+			m_pAvailableStepsArr->push_back(TestStep("DeltaPixelTest",
+				"Image Count;Delta Threshold (row);Delta Threshold (col);MaxFailed/image",
+				"30;0;0;10",
+				"copy from AcquireFPSSamples-Images w/o Stimulus arg;0-255;0-255;pixels (inclusive)"));
 
 			//m_pAvailableStepsArr->push_back(TestStep("SetOTPBits",
 			//			"",
@@ -244,25 +254,25 @@ namespace MTConfigGenerator {
 			//			"0;0;0;Red;22;0x80001600;0x04;5000",
 			//			"0 = disabled, 1 = enabled (LabView only);0 = disabled, 1 = enabled (LabView only);0 = disabled, 1 = enabled (LabView only);String to describe LED (Production only);Aux pin number (1-30) (Production only);Sensor's LED register address (Production only);0x02 = green, 0x04 = red (Production only);Input signal timeout (ms) (Production only)"));
 
-			//m_pAvailableStepsArr->push_back(TestStep("SharpnessTest",
-			//			"Percent Variation Limit",
-			//			"20",
-			//			"%  (>= fails)"));
+			m_pAvailableStepsArr->push_back(TestStep("SharpnessTest",
+				"Percent Variation Limit",
+				"20",
+				"%  (>= fails)"));
 
-			//m_pAvailableStepsArr->push_back(TestStep("LaplacianTest",
-			//			"Percent Variation Limit",
-			//			"20",
-			//			"%  (>= fails)"));
+			m_pAvailableStepsArr->push_back(TestStep("LaplacianTest",
+				"Percent Variation Limit",
+				"20",
+				"%  (>= fails)"));
 
-			//m_pAvailableStepsArr->push_back(TestStep("RxStandardDev",
-			//			"Variance of Standard Dev;Image Count",
-			//			"30;30",
-			//			"%  (> fails);copy from AcquireFPSSamples-Images w/ Stimulus arg"));
+			m_pAvailableStepsArr->push_back(TestStep("RxStandardDev",
+				"Variance of Standard Dev;Image Count",
+				"30;30",
+				"%  (> fails);copy from AcquireFPSSamples-Images w/ Stimulus arg"));
 
-			//m_pAvailableStepsArr->push_back(TestStep("Imperfections",
-			//			"High Threshold;Low Threshold;Consecutive Limit",
-			//			"100;150;5",
-			//			";;(> fails)"));
+			m_pAvailableStepsArr->push_back(TestStep("Imperfections",
+				"High Threshold;Low Threshold;Consecutive Limit",
+				"100;150;5",
+				";;(> fails)"));
 
 			//m_pAvailableStepsArr->push_back(TestStep("ProductIdTest",
 			//			"",
@@ -278,16 +288,25 @@ namespace MTConfigGenerator {
 			//			"Customer-specific OTP Byte",
 			//			"0",
 			//			"0 = Don't write to customer-specific OTP byte."));
+			m_pAvailableStepsArr->push_back(TestStep("OTPWriteMainSector",
+				"",
+				"",
+				""));
+
+			m_pAvailableStepsArr->push_back(TestStep("OTPCheck",
+				"TAG_ProjID;TAG_LNA;TAG_SNR;TAG_PGA_OOPR;TAG_FlexID;TAG_WOF_BOT;TAG_DutTempAdc;TAG_WOF_TOP;TAG_PGA_OOPP;TAG_SCM_WOF_BOT;TAG_SCM_WOF_TOP;TAG_PART_NUMBERS",		//args
+				"1;1;1;1;1;1;1;1;1;1;1;1",		//default value
+				"0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check;0=not check 1=check"));	//explanation
 
 			//m_pAvailableStepsArr->push_back(TestStep("Security",
 			//	"Engineering Security;Production Security;USB Comm.;Ownership;# of Ownership runs;Verify Flash Clear;ECC Flag",
 			//			"0;0;0;0;5;0;0",
 			//			"0 = disabled, 1 = enabled. Must be same as Initialization step setting.;0 = disabled, 1 = enabled. Must be same as Initialization step setting.;0 = disabled, 1 = enabled.;0 = disabled, 1 = enabled.;value;0 = disabled, 1 = enabled.;0 = disabled, 1 = enabled."));
 
-			//m_pAvailableStepsArr->push_back(TestStep("FinalizationStep",
-			//			"",
-			//			"",
-			//			""));
+			m_pAvailableStepsArr->push_back(TestStep("FinalizationStep",
+				"",
+				"",
+				""));
 
 			System::Drawing::Size size = m_lstTestSeq->ClientSize;
 			this->m_colOrderIdx->Width = m_nOrderIdxColWidth;

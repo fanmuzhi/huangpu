@@ -95,6 +95,7 @@
     <ClInclude Include="Ts_ConsecutivePixels.h" />
     <ClInclude Include="Ts_FlooredPixelsTest.h" />
     <ClInclude Include="Ts_Imperfections.h" />
+    <ClInclude Include="Ts_InitializationStep.h" />
     <ClInclude Include="Ts_OTPCheck.h" />
     <ClInclude Include="Ts_PeggedPixelsTest.h" />
     <ClInclude Include="Ts_PixelTest.h" />
@@ -114,6 +115,7 @@
     <ClCompile Include="Ts_ConsecutivePixels.cpp" />
     <ClCompile Include="Ts_FlooredPixelsTest.cpp" />
     <ClCompile Include="Ts_Imperfections.cpp" />
+    <ClCompile Include="Ts_InitializationStep.cpp" />
     <ClCompile Include="Ts_OTPCheck.cpp" />
     <ClCompile Include="Ts_PeggedPixelsTest.cpp" />
     <ClCompile Include="Ts_PixelTest.cpp" />
