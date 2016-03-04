@@ -1,6 +1,5 @@
 #include "Ts_FlooredPixelsTest.h"
 
-
 Ts_FlooredPixelsTest::Ts_FlooredPixelsTest(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
 {
