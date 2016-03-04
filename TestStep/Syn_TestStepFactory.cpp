@@ -6,6 +6,9 @@
 #include "Ts_AcqImgNoFinger.h"
 #include "Ts_AcqImgFinger.h"
 #include "Ts_DRdyTest.h"
+#include "Ts_PeggedPixelsTest.h"
+#include "Ts_FlooredPixelsTest.h"
+#include "Ts_ConsecutivePixels.h"
 
 Syn_TestStepFactory::Syn_TestStepFactory()
 {
@@ -48,6 +51,18 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	else if (std::string("DRdyTest") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_DRdyTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("PeggedPixelsTest") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_PeggedPixelsTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("FlooredPixelsTest") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_FlooredPixelsTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("ConsecutivePixels") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_ConsecutivePixels(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else
 	{

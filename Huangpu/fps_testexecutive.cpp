@@ -950,6 +950,22 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 		}
 
 		iRowNumber = 8;
+
+		QString qResult("");
+		if (pCurrentDutTestResult->_peggedPixelsResults.m_bPass)
+		{
+			qResult = QString("Pass");
+		}
+		else
+		{
+			qResult = QString("Fail");
+		}
+
+		//
+		QTableWidgetItem *item = new QTableWidgetItem(qResult);
+		item->setTextAlignment(Qt::AlignCenter);
+		ui.TestTableWidget->setItem(3, iSiteNumber - 1, item);
+
 	}
 	else if (2 == iFlag)
 	{

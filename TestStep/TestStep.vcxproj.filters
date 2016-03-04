@@ -46,6 +46,16 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ts_DRdyTest.h">
+    <ClInclude Include="Ts_PeggedPixelsTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_FlooredPixelsTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_ConsecutivePixels.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_SNRTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -78,6 +88,16 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Ts_DRdyTest.cpp">
+    <ClCompile Include="Ts_PeggedPixelsTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_FlooredPixelsTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_ConsecutivePixels.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_SNRTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
