@@ -59,11 +59,6 @@ void Ts_DRdyTest::Execute()
 	uint32_t nDRdyState;
 	uint8_t  pResult[2];
 
-	//set XRESET to 0 (high, normal working)
-	_pSyn_DutCtrl->GpioSetPinType(7, 0x10, 6);
-	_pSyn_DutCtrl->GpioPinWrite(7, 0x10, 0);
-
-
 	//set DRdy pin to input.
 	_pSyn_DutCtrl->GpioSetPinType(portID, pinMsk, 5);
 

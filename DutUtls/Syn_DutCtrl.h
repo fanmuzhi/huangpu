@@ -80,6 +80,8 @@ public:
 
 	virtual void GetCurrentSenseValues(uint16_t gainIdx, uint16_t oversample, uint32_t arCurrentSenseValues[4]) {}
 
+	virtual void FpMpcGetSelfTestResults(uint16_t overSamples, uint32_t arValues[MPC_SELF_TEST_BUFFER]) = 0;
+
 protected:
 
 	uint32_t syn_SerialNumber;

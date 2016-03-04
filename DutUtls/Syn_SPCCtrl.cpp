@@ -518,6 +518,23 @@ void Syn_SPCCtrl::GpioPinWrite(uint16_t portID, uint32_t mskPins, uint32_t mskPi
 }
 
 
+void Syn_SPCCtrl::FpMpcGetSelfTestResults(uint16_t overSamples, uint32_t arValues[MPC_SELF_TEST_BUFFER])
+{
+	LOG(INFO) << "MPC04 Self Test";
+	
+	uint32_t err;
+	Syn_Exception ex(err);
+	uint32_t gain, offset;
+	err = MPC_GetTestValues(syn_DeviceHandle, overSamples, &gain, &offset, arValues, TIMEOUT);
+	if (err != MpcApiError::ERR_OK)
+	{
+		ex.SetError(err);
+		ex.SetDescription("FpMpcGetSelfTestResults DUT communication failure.");
+		throw ex;
+	}
+}
+
+
 void Syn_SPCCtrl::UpdateMPC04Firmware()
 {
 	uint32_t error = 0;

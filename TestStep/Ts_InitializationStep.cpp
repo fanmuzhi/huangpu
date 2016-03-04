@@ -104,10 +104,17 @@ void Ts_InitializationStep::Execute()
 		return;
 	}
 	//GPIO init
+	_pSyn_DutCtrl->GpioSetPinType(8, 0x10, 5);	//Pin 13 = input (possible button)	
+	_pSyn_DutCtrl->GpioSetPinType(1, 0x10, 5);	//Pin 3 = input (DRDY). Needs xbar setup.
+	_pSyn_DutCtrl->GpioSetPinType(6, 0x80, 6);	//Pin 14 = output (Osc)
+	_pSyn_DutCtrl->GpioPinWrite(6, 0x80, 0x80);	//Set pin 14 high.
+	_pSyn_DutCtrl->GpioSetPinType(7, 0x10, 6);	//Pin 16 = output (Ext reset)
+	_pSyn_DutCtrl->GpioPinWrite(7, 0x10, 0x0);	//Set pin 16 high (reverse logic).
 
 	//MPC04 self test
 
 	//MPC04 Get ver
+	_pSyn_DutCtrl->FpGetVersion(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo._GerVerArray, VERSION_SIZE);
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_bExecuted = true;
 }
@@ -126,4 +133,62 @@ void Ts_InitializationStep::ProcessData()
 void Ts_InitializationStep::CleanUp()
 {
 
+}
+
+
+bool Ts_InitializationStep::CheckMPCVoltages()
+{
+	bool	  bSuccess		 = true;
+	float	  c1			 = (float)0.000732;
+	float	  nMeasuredVdd   = 0;
+	float	  nMeasuredVio   = 0;
+	float	  nMeasuredVddtx = 0;
+	float	  nMeasuredVled  = 0;
+
+	float	  nTargetVdd    =  (float) _pSyn_Dut->_uiDutpwrVdd_mV/ 1000;
+	float	  nTargetVio     = (float) _pSyn_Dut->_uiDutpwrVio_mV/ 1000;
+	float	  nTargetVddtx   = (float) _pSyn_Dut->_uiDutpwrVddh_mV/ 1000;
+	float	  nTargetVled    = (float) _pSyn_Dut->_uiDutpwrVled_mV/ 1000;
+
+	float	  nPercentLimit  = (float) 0.05; //hardcoded value of 5%
+	float	  nPercentError  = (float) 0;
+
+	uint32_t  arValues[MPC_SELF_TEST_BUFFER]; //comes from mpc api
+
+	//Set Voltages to values specified in config and wait for voltages to settle.
+	_pSyn_DutCtrl->SetVoltages(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV);
+
+	//Get Self Test Values:
+	_pSyn_DutCtrl->FpMpcGetSelfTestResults(64, arValues);
+
+	////Calculate voltages
+	nMeasuredVdd   = arValues[12] * c1 * 2;
+	nMeasuredVio   = arValues[13] * c1 * 2;
+	nMeasuredVddtx = arValues[14] * c1 * 2;
+	nMeasuredVled  = arValues[15] * c1 * 2;
+
+	//Save measured voltages for log.
+	_pSyn_Dut->_pSyn_DutTestResult->_initResults.m_nMeasuredVdd		= nMeasuredVdd;
+	_pSyn_Dut->_pSyn_DutTestResult->_initResults.m_nMeasuredVio		= nMeasuredVio;
+	_pSyn_Dut->_pSyn_DutTestResult->_initResults.m_nMeasuredVddtx	= nMeasuredVddtx;
+	_pSyn_Dut->_pSyn_DutTestResult->_initResults.m_nMeasuredVled	= nMeasuredVled;
+
+	//Find percentage error
+	nPercentError = (nTargetVdd == (float)0.0) ? (float)0.05 : (float)fabs((nMeasuredVdd - nTargetVdd)/nTargetVdd);
+	if (nPercentError > nPercentLimit)
+		bSuccess = false;
+
+	nPercentError = (nTargetVio == (float)0.0) ? (float)0.05 : (float)fabs((nMeasuredVio - nTargetVio)/nTargetVio);
+	if (nPercentError > nPercentLimit)
+		bSuccess = false;
+
+	nPercentError = (nTargetVddtx == (float)0.0) ? (float)0.05 : (float)fabs((nMeasuredVddtx - nTargetVddtx)/nTargetVddtx);
+	if (nPercentError > nPercentLimit)
+		bSuccess = false;
+
+	nPercentError = (nTargetVled == (float)0.0) ? (float)0.05 : (float)fabs((nMeasuredVled - nTargetVled)/nTargetVled);
+	if (nPercentError > nPercentLimit)
+		bSuccess = false;
+
+	return bSuccess;
 }

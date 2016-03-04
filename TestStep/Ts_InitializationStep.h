@@ -7,6 +7,8 @@ public:
 	Ts_InitializationStep(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
 	virtual ~Ts_InitializationStep();
 
+	bool CheckMPCVoltages();
+
 	virtual void	SetUp();
 
 	virtual void	Execute();
