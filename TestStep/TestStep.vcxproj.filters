@@ -1,44 +1,137 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Ts_AcqImgFinger.cpp" />
-    <ClCompile Include="Ts_AcqImgNoFinger.cpp" />
-    <ClCompile Include="Ts_Calibrate.cpp" />
-    <ClCompile Include="Syn_FingerprintTest.cpp" />
-    <ClCompile Include="Syn_MetallicaModule.cpp" />
-    <ClCompile Include="Syn_Module.cpp" />
-    <ClCompile Include="Syn_TestStepFactory.cpp" />
-    <ClCompile Include="Syn_ViperModule.cpp" />
-    <ClCompile Include="Ts_DRdyTest.cpp" />
-    <ClCompile Include="Ts_ConsecutivePixels.cpp" />
-    <ClCompile Include="Ts_FlooredPixelsTest.cpp" />
-    <ClCompile Include="Ts_Imperfections.cpp" />
-    <ClCompile Include="Ts_OTPCheck.cpp" />
-    <ClCompile Include="Ts_PeggedPixelsTest.cpp" />
-    <ClCompile Include="Ts_PixelTest.cpp" />
-    <ClCompile Include="Ts_SharpnessTest.cpp" />
-    <ClCompile Include="Ts_SNRTest.cpp" />
-    <ClCompile Include="Ts_InitializationStep.cpp" />
+    <ClCompile Include="Syn_FingerprintTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Syn_MetallicaModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Syn_Module.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Syn_TestStepFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Syn_ViperModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_AcqImgFinger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_AcqImgNoFinger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_Calibrate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_ConsecutivePixels.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_DRdyTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_FlooredPixelsTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_Imperfections.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_InitializationStep.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_OTPCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_PeggedPixelsTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_PixelTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_SharpnessTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_SNRTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_RxStandardDev.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Ts_AcqImgFinger.h" />
-    <ClInclude Include="Ts_AcqImgNoFinger.h" />
-    <ClInclude Include="Ts_Calibrate.h" />
-    <ClInclude Include="Syn_FingerprintTest.h" />
-    <ClInclude Include="Syn_MetallicaModule.h" />
-    <ClInclude Include="Syn_Module.h" />
-    <ClInclude Include="Syn_TestStep.h" />
-    <ClInclude Include="Syn_TestStepFactory.h" />
-    <ClInclude Include="Syn_ViperModule.h" />
-    <ClInclude Include="Ts_DRdyTest.h" />
-    <ClInclude Include="Ts_ConsecutivePixels.h" />
-    <ClInclude Include="Ts_FlooredPixelsTest.h" />
-    <ClInclude Include="Ts_Imperfections.h" />
-    <ClInclude Include="Ts_OTPCheck.h" />
-    <ClInclude Include="Ts_PeggedPixelsTest.h" />
-    <ClInclude Include="Ts_PixelTest.h" />
-    <ClInclude Include="Ts_SharpnessTest.h" />
-    <ClInclude Include="Ts_SNRTest.h" />
-    <ClInclude Include="Ts_InitializationStep.h" />
+    <ClInclude Include="Syn_FingerprintTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Syn_MetallicaModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Syn_Module.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Syn_TestStep.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Syn_TestStepFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Syn_ViperModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_AcqImgFinger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_AcqImgNoFinger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_Calibrate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_ConsecutivePixels.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_DRdyTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_FlooredPixelsTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_Imperfections.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_InitializationStep.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_OTPCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_PeggedPixelsTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_PixelTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_SharpnessTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_SNRTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_RxStandardDev.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4cc21038-30dd-4637-9cfc-9d91c78c3c23}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{72585986-671e-4278-a1af-991017046ee4}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{9164128f-d597-4b5c-8212-4307cc7c4670}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
