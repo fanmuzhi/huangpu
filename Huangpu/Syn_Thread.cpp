@@ -6,6 +6,8 @@ Syn_Thread::Syn_Thread()
 : QThread()
 , _stopped(true)
 , _pSyn_Site(NULL)
+, _bFinished(true)
+, _strPreTestStepName("")
 {
 }
 
@@ -29,15 +31,27 @@ void Syn_Thread::run()
 		if (rc == 0)
 		{
 			rc = _pSyn_Site->ExecuteTestStep("Calibrate");
+			emit send(iSiteNumber, "Calibrate");
+
 			Syn_DutTestResult * TestResult = NULL;
+
 			rc = _pSyn_Site->GetTestResult(TestResult);
 			rc = _pSyn_Site->ExecuteTestStep("AcqImgNoFinger");
-			if (rc == 0)
-			{
-				rc = _pSyn_Site->GetTestResult(TestResult);
-				rc = _pSyn_Site->ExecuteTestStep("PeggedPixelsTest");
-				emit send(iSiteNumber);
-			}
+			emit send(iSiteNumber, "AcqImgNoFinger");
+
+			rc = _pSyn_Site->GetTestResult(TestResult);
+			rc = _pSyn_Site->ExecuteTestStep("PeggedPixelsTest");
+			emit send(iSiteNumber, "PeggedPixelsTest");
+
+			rc = _pSyn_Site->GetTestResult(TestResult);
+			rc = _pSyn_Site->ExecuteTestStep("FlooredPixelsTest");
+			emit send(iSiteNumber, "FlooredPixelsTest");
+
+			rc = _pSyn_Site->GetTestResult(TestResult);
+			rc = _pSyn_Site->ExecuteTestStep("ConsecutivePixels");
+			emit send(iSiteNumber, "ConsecutivePixels");
+
+			emit send(iSiteNumber);
 		}
 	}
 	else if (2 == _iFlag)
@@ -45,16 +59,36 @@ void Syn_Thread::run()
 		if (rc == 0)
 		{
 			rc = _pSyn_Site->ExecuteTestStep("AcqImgFinger");
+			emit send(iSiteNumber, "AcqImgFinger");
+
 			Syn_DutTestResult * TestResult = NULL;
+			
 			rc = _pSyn_Site->GetTestResult(TestResult);
 			rc = _pSyn_Site->ExecuteTestStep("SNRTest");
+			emit send(iSiteNumber, "SNRTest");
+
+			rc = _pSyn_Site->GetTestResult(TestResult);
+			rc = _pSyn_Site->ExecuteTestStep("PixelTest");
+			emit send(iSiteNumber, "PixelTest");
+
+			rc = _pSyn_Site->GetTestResult(TestResult);
+			rc = _pSyn_Site->ExecuteTestStep("SharpnessTest");
+			emit send(iSiteNumber, "SharpnessTest");
+
+			rc = _pSyn_Site->GetTestResult(TestResult);
+			rc = _pSyn_Site->ExecuteTestStep("Imperfections");
+			emit send(iSiteNumber, "Imperfections");
+
 			emit send(iSiteNumber);
+
 		}
 	}
 	else
 	{
 		//rc = _pSyn_Site->ExecuteTestStep("Calibrate");
 	}
+
+	
 
 	_stopped = true;
 }

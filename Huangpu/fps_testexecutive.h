@@ -112,6 +112,9 @@ public Q_SLOTS:
 	void PushFigerprintImageButton();
 	void FigerprintImage(unsigned int iSiteNumber);
 
+
+	void ReceiveTest(unsigned int iSiteNumber, const QString strTestStepName);
+
 private:
 
 	//private function

@@ -48,70 +48,78 @@ void Ts_SharpnessTest::Execute()
 
 void Ts_SharpnessTest::ProcessData()
 {
-	//int nTrimLeft = 0;
-	//int nTrimRight = 0;
-	//int nTrimTop = 0;
-	//int nTrimBottom = 0;
-	//int numRows = _pSyn_Dut->_RowNumber;
-	//int numCols = _pSyn_Dut->_ColumnNumber;
+	int nTrimLeft = 0;
+	int nTrimRight = 0;
+	int nTrimTop = 0;
+	int nTrimBottom = 0;
+	int numRows = _pSyn_Dut->_RowNumber;
+	int numCols = _pSyn_Dut->_ColumnNumber;
 
-	//int i, j;
-	//int M = height;
-	//int N = width;
-	//int C0 = N / 3;
-	//int C1 = C0 + C0;
-	//int C2 = N;
-	//int min, max;
-	//float measure;
+	//call get_sensor_matrices in .c
+	float nofinger[MAXROW][MAXCOL] = { 0 };
+	float finger[MAXROW][MAXCOL] = { 0 };
+	get_sensor_matrices(&(_pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult), &(_pSyn_Dut->_pSyn_DutTestInfo->_snrInfo), &(_pSyn_Dut->_pSyn_DutTestResult->_snrResults), nofinger, finger, numRows, numCols);
 
-	//float zones[3] = { 0 };
-	//float tempImg[MAXROW][MAXCOL];
+	int height = numRows - (nTrimTop + nTrimBottom);
+	int width = numCols - HEADER - (nTrimLeft + nTrimRight);
 
-	//pResults->bPass = 1;
+	int i, j;
+	int M = height;
+	int N = width;
+	int C0 = N / 3;
+	int C1 = C0 + C0;
+	int C2 = N;
+	int min, max;
+	float measure;
 
-	////overall
-	//get_sharpness(M, N, pImg, &measure, pResults);
-	//pResults->SHARPNESS[3] = measure;
-	////zone 1
-	//for (i = 0; i<M; i++)
-	//{
-	//	for (j = 0; j<C0; j++)
-	//	{
-	//		tempImg[i][j] = pImg[i][j];
-	//	}
-	//}
-	//get_sharpness(M, (C0 + 1), tempImg, &measure, pResults);
-	//pResults->SHARPNESS[0] = measure;
-	////zone 2
-	//for (i = 0; i<M; i++)
-	//{
-	//	for (j = C0; j<C1; j++)
-	//	{
-	//		tempImg[i][j - C0] = pImg[i][j];
-	//	}
-	//}
-	//get_sharpness(M, (C1 - C0 + 1), tempImg, &measure, pResults);
-	//pResults->SHARPNESS[1] = measure;
-	////zone 3
-	//for (i = 0; i<M; i++)
-	//{
-	//	for (j = C1; j<C2; j++)
-	//	{
-	//		tempImg[i][j - C1] = pImg[i][j];
-	//	}
-	//}
-	//get_sharpness(M, (C2 - C1 + 1), tempImg, &measure, pResults);
-	//pResults->SHARPNESS[2] = measure;
+	float zones[3] = { 0 };
+	float tempImg[MAXROW][MAXCOL];
+	
+	_pSyn_Dut->_pSyn_DutTestResult->_SharpnessResults.bPass = 1;
 
-	//zones[0] = pResults->SHARPNESS[0];
-	//zones[1] = pResults->SHARPNESS[1];
-	//zones[2] = pResults->SHARPNESS[2];
-	//min = find_min(zones, 3);
-	//max = find_max(zones, 3);
-	//pResults->percent = (float)abs((int)(((zones[max] - zones[min]) / pResults->SHARPNESS[3]) * 100));
+	//overall
+	get_sharpness(M, N, finger, &measure, &(_pSyn_Dut->_pSyn_DutTestResult->_SharpnessResults));
+	_pSyn_Dut->_pSyn_DutTestResult->_SharpnessResults.SHARPNESS[3] = measure;
+	//zone 1
+	for (i = 0; i<M; i++)
+	{
+		for (j = 0; j<C0; j++)
+		{
+			tempImg[i][j] = finger[i][j];
+		}
+	}
+	get_sharpness(M, (C0 + 1), tempImg, &measure, &(_pSyn_Dut->_pSyn_DutTestResult->_SharpnessResults));
+	_pSyn_Dut->_pSyn_DutTestResult->_SharpnessResults.SHARPNESS[0] = measure;
+	//zone 2
+	for (i = 0; i<M; i++)
+	{
+		for (j = C0; j<C1; j++)
+		{
+			tempImg[i][j - C0] = finger[i][j];
+		}
+	}
+	get_sharpness(M, (C1 - C0 + 1), tempImg, &measure, &(_pSyn_Dut->_pSyn_DutTestResult->_SharpnessResults));
+	_pSyn_Dut->_pSyn_DutTestResult->_SharpnessResults.SHARPNESS[1] = measure;
+	//zone 3
+	for (i = 0; i<M; i++)
+	{
+		for (j = C1; j<C2; j++)
+		{
+			tempImg[i][j - C1] = finger[i][j];
+		}
+	}
+	get_sharpness(M, (C2 - C1 + 1), tempImg, &measure, &(_pSyn_Dut->_pSyn_DutTestResult->_SharpnessResults));
+	_pSyn_Dut->_pSyn_DutTestResult->_SharpnessResults.SHARPNESS[2] = measure;
 
-	//if (pResults->percent > pInfo->limit)
-	//	pResults->bPass = 0;
+	zones[0] = _pSyn_Dut->_pSyn_DutTestResult->_SharpnessResults.SHARPNESS[0];
+	zones[1] = _pSyn_Dut->_pSyn_DutTestResult->_SharpnessResults.SHARPNESS[1];
+	zones[2] = _pSyn_Dut->_pSyn_DutTestResult->_SharpnessResults.SHARPNESS[2];
+	min = find_min(zones, 3);
+	max = find_max(zones, 3);
+	_pSyn_Dut->_pSyn_DutTestResult->_SharpnessResults.percent = (float)abs((int)(((zones[max] - zones[min]) / _pSyn_Dut->_pSyn_DutTestResult->_SharpnessResults.SHARPNESS[3]) * 100));
+
+	if (_pSyn_Dut->_pSyn_DutTestResult->_SharpnessResults.percent > _pSyn_Dut->_pSyn_DutTestInfo->_SharpnessInfo.limit)
+		_pSyn_Dut->_pSyn_DutTestResult->_SharpnessResults.bPass = 0;
 
 }
 
