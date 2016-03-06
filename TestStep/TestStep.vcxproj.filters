@@ -132,6 +132,7 @@
     </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{9164128f-d597-4b5c-8212-4307cc7c4670}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
 </Project>

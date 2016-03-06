@@ -13,6 +13,7 @@
 #include "Ts_PixelTest.h"
 #include "Ts_SharpnessTest.h"
 #include "Ts_Imperfections.h"
+#include "Ts_RxStandardDev.h"
 
 Syn_TestStepFactory::Syn_TestStepFactory()
 {
@@ -83,6 +84,10 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	else if (std::string("Imperfections") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_Imperfections(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("RxStandardDev") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_RxStandardDev(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else
 	{
