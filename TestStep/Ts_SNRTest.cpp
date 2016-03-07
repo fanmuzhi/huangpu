@@ -115,6 +115,11 @@ void Ts_SNRTest::SetUp()
 
 void Ts_SNRTest::Execute()
 {
+	if (0 != _pSyn_Dut->_pSyn_DutTestResult->_binCodes.size())
+	{
+		return;
+	}
+
 	_pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.m_bExecuted = true;
 }
 
@@ -280,16 +285,21 @@ void Ts_SNRTest::ProcessData()
 			}
 		}
 	}
+
+	_pSyn_Dut->_pSyn_DutTestResult->_snrResults.OTPVal_SNR = _pSyn_Dut->_pSyn_DutTestResult->_snrResults.SNR[REGIONS-1];
+	_pSyn_Dut->_pSyn_DutTestResult->_snrResults.OTPVal_Noise = _pSyn_Dut->_pSyn_DutTestResult->_snrResults.NOISE[REGIONS-1];
+	_pSyn_Dut->_pSyn_DutTestResult->_snrResults.OTPVal_Signal = _pSyn_Dut->_pSyn_DutTestResult->_snrResults.SIGNAL[REGIONS-1];
+
 	if (all_zones_passed && overall_passed)
 		_pSyn_Dut->_pSyn_DutTestResult->_snrResults.bPass = 1;
 	else
 		_pSyn_Dut->_pSyn_DutTestResult->_snrResults.bPass = 0;
 
-
 	if (!(_pSyn_Dut->_pSyn_DutTestResult->_snrResults.bPass))
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sSnrFail);
 	}
+
 }
 
 void Ts_SNRTest::CleanUp()

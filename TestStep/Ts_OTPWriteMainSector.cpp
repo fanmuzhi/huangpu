@@ -101,13 +101,16 @@ void Ts_OTPWriteMainSector::Execute()
 
 	//flexID
 	//If flex ID values have not been stored in the OTP.
-	nFlexId_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_FlexId, arMS0, MS0_SIZE);
-	if (nFlexId_count == 0)
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_bExecuted)
 	{
-		memset(arMS0, 0, sizeof(arMS0));
-		arMS0[0] = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nFlexId;
-		arMS0[1] = (uint8_t)((_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nFlexId) >> 8);
-		BurnToOTP(EXT_TAG_FlexId, arMS0, 8);
+		nFlexId_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_FlexId, arMS0, MS0_SIZE);
+		if (nFlexId_count == 0)
+		{
+			memset(arMS0, 0, sizeof(arMS0));
+			arMS0[0] = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nFlexId;
+			arMS0[1] = (uint8_t)((_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nFlexId) >> 8);
+			BurnToOTP(EXT_TAG_FlexId, arMS0, 8);
+		}
 	}
 
 	//if (//WOF)
