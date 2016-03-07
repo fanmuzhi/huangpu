@@ -54,6 +54,7 @@ void Ts_PeggedPixelsTest::SetUp()
 
 void Ts_PeggedPixelsTest::Execute()
 {
+	_pSyn_Dut->_pSyn_DutTestInfo->_peggedPixelsInfo.m_bExecuted = true;
 
 }
 
@@ -146,6 +147,11 @@ void Ts_PeggedPixelsTest::ProcessData()
 	}
 	//assign number of pegged
 	_pSyn_Dut->_pSyn_DutTestResult->_peggedPixelsResults.pegged_COL = max_array(temp_pegged, numCols);
+
+	if (!(_pSyn_Dut->_pSyn_DutTestResult->_peggedPixelsResults.m_bPass))
+	{
+		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sPeggedPixFail);
+	}
 
 }
 

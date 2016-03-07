@@ -61,6 +61,7 @@ void Ts_PixelTest::SetUp()
 
 void Ts_PixelTest::Execute()
 {
+	_pSyn_Dut->_pSyn_DutTestInfo->_pixelInfo.m_bExecuted = true;
 
 }
 
@@ -142,6 +143,11 @@ void Ts_PixelTest::ProcessData()
 
 	if (nCountBadPixel > _pSyn_Dut->_pSyn_DutTestInfo->_pixelInfo.nCountFailedPixels)
 		_pSyn_Dut->_pSyn_DutTestResult->_pixelResults.bPass = 0;
+
+	if (!(_pSyn_Dut->_pSyn_DutTestResult->_pixelResults.bPass))
+	{
+		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sPixelUniformityFail);
+	}
 }
 
 void Ts_PixelTest::CleanUp()

@@ -46,7 +46,7 @@ void Ts_RxStandardDev::SetUp()
 
 void Ts_RxStandardDev::Execute()
 {
-
+	_pSyn_Dut->_pSyn_DutTestInfo->_RxStandardDevInfo.m_bExecuted = true;
 }
 
 void Ts_RxStandardDev::ProcessData()
@@ -100,6 +100,11 @@ void Ts_RxStandardDev::ProcessData()
 
 		// SS ask to present max percent data in the log
 		_pSyn_Dut->_pSyn_DutTestResult->_RxStandardDevResults.max_percent = (_pSyn_Dut->_pSyn_DutTestResult->_RxStandardDevResults.percent[row - nTrimTop] > _pSyn_Dut->_pSyn_DutTestResult->_RxStandardDevResults.max_percent) ? _pSyn_Dut->_pSyn_DutTestResult->_RxStandardDevResults.percent[row - nTrimTop] : _pSyn_Dut->_pSyn_DutTestResult->_RxStandardDevResults.max_percent;
+	}
+
+	if (!(_pSyn_Dut->_pSyn_DutTestResult->_RxStandardDevResults.m_bPass))
+	{
+		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sStdDevOfRxFail);
 	}
 }
 

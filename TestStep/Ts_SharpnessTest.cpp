@@ -43,6 +43,7 @@ void Ts_SharpnessTest::SetUp()
 
 void Ts_SharpnessTest::Execute()
 {
+	_pSyn_Dut->_pSyn_DutTestInfo->_SharpnessInfo.m_bExecuted = true;
 
 }
 
@@ -121,6 +122,10 @@ void Ts_SharpnessTest::ProcessData()
 	if (_pSyn_Dut->_pSyn_DutTestResult->_SharpnessResults.percent > _pSyn_Dut->_pSyn_DutTestInfo->_SharpnessInfo.limit)
 		_pSyn_Dut->_pSyn_DutTestResult->_SharpnessResults.bPass = 0;
 
+	if (!(_pSyn_Dut->_pSyn_DutTestResult->_SharpnessResults.bPass))
+	{
+		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sSharpnessFail);
+	}
 }
 
 void Ts_SharpnessTest::CleanUp()

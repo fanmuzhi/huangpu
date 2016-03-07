@@ -115,7 +115,7 @@ void Ts_SNRTest::SetUp()
 
 void Ts_SNRTest::Execute()
 {
-
+	_pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.m_bExecuted = true;
 }
 
 void Ts_SNRTest::ProcessData()
@@ -285,6 +285,11 @@ void Ts_SNRTest::ProcessData()
 	else
 		_pSyn_Dut->_pSyn_DutTestResult->_snrResults.bPass = 0;
 
+
+	if (!(_pSyn_Dut->_pSyn_DutTestResult->_snrResults.bPass))
+	{
+		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sSnrFail);
+	}
 }
 
 void Ts_SNRTest::CleanUp()

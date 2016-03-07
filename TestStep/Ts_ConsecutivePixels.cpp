@@ -60,6 +60,7 @@ void Ts_ConsecutivePixels::SetUp()
 
 void Ts_ConsecutivePixels::Execute()
 {
+	_pSyn_Dut->_pSyn_DutTestInfo->_consecutivePixelsInfo.m_bExecuted = true;
 
 }
 
@@ -279,6 +280,11 @@ void Ts_ConsecutivePixels::ProcessData()
 	_pSyn_Dut->_pSyn_DutTestResult->_consecutivePixelsResults.floored_COL = max_array(_pSyn_Dut->_pSyn_DutTestResult->_consecutivePixelsResults.consecutive_floored_cols, numCols - HEADER - (nTrimLeft + nTrimRight));
 	_pSyn_Dut->_pSyn_DutTestResult->_consecutivePixelsResults.pegged_COL = max_array(_pSyn_Dut->_pSyn_DutTestResult->_consecutivePixelsResults.consecutive_pegged_cols, numCols - HEADER - (nTrimLeft + nTrimRight));
 
+	if (!(_pSyn_Dut->_pSyn_DutTestResult->_consecutivePixelsResults.m_bPass))
+	{
+		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sConsecutivePeggedPixFail);
+		//_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sConsecutiveFlooredPixFail);
+	}
 }
 
 void Ts_ConsecutivePixels::CleanUp()

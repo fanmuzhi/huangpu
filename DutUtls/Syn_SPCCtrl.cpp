@@ -522,7 +522,7 @@ void Syn_SPCCtrl::FpMpcGetSelfTestResults(uint16_t overSamples, uint32_t arValue
 {
 	LOG(INFO) << "MPC04 Self Test";
 	
-	uint32_t err;
+	uint32_t err(0);
 	Syn_Exception ex(err);
 	uint32_t gain, offset;
 	err = MPC_GetTestValues(syn_DeviceHandle, overSamples, &gain, &offset, arValues, TIMEOUT);

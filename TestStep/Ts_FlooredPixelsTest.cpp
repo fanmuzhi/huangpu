@@ -55,6 +55,7 @@ void Ts_FlooredPixelsTest::SetUp()
 
 void Ts_FlooredPixelsTest::Execute()
 {
+	_pSyn_Dut->_pSyn_DutTestInfo->_flooredPixelsInfo.m_bExecuted = true;
 
 }
 
@@ -133,6 +134,10 @@ void Ts_FlooredPixelsTest::ProcessData()
 			_pSyn_Dut->_pSyn_DutTestResult->_flooredPixelsResults.floored_COL = nFailCount;
 	}
 
+	if (!(_pSyn_Dut->_pSyn_DutTestResult->_flooredPixelsResults.m_bPass))
+	{
+		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sFlooredPixFail);
+	}
 }
 
 void Ts_FlooredPixelsTest::CleanUp()

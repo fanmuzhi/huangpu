@@ -54,6 +54,7 @@ void Ts_Imperfections::SetUp()
 
 void Ts_Imperfections::Execute()
 {
+	_pSyn_Dut->_pSyn_DutTestInfo->_imperfectionsTestInfo.m_bExecuted = true;
 
 }
 
@@ -178,6 +179,11 @@ void Ts_Imperfections::ProcessData()
 
 	_pSyn_Dut->_pSyn_DutTestResult->_imperfectionsTestResults.pegged_ROW = max_array(_pSyn_Dut->_pSyn_DutTestResult->_imperfectionsTestResults.consecutive_pegged_rows, numRows - (nTrimTop + nTrimBottom));
 	_pSyn_Dut->_pSyn_DutTestResult->_imperfectionsTestResults.pegged_COL = max_array(_pSyn_Dut->_pSyn_DutTestResult->_imperfectionsTestResults.consecutive_pegged_cols, numCols - HEADER - (nTrimLeft + nTrimRight));
+
+	if (!(_pSyn_Dut->_pSyn_DutTestResult->_imperfectionsTestResults.m_bPass))
+	{
+		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sImperfectionsFail);
+	}
 }
 
 void Ts_Imperfections::CleanUp()
