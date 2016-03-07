@@ -50,6 +50,8 @@ public:
 
 	virtual uint8_t FpOtpRomTagRead(uint32_t nExtTag, uint8_t* pDst, int numBytes) = 0;
 
+	virtual void FpOtpRomTagWrite(uint8_t* pDst, int numBytes) = 0;
+
 	virtual void FpWaitForCMDComplete() = 0;
 
 	virtual void FpReadBuff(uint8_t *pDst, int numBytes) = 0;

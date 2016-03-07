@@ -61,6 +61,9 @@
     <ClCompile Include="Ts_LaplacianTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Ts_OTPWriteMainSector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Syn_FingerprintTest.h">
@@ -124,6 +127,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ts_LaplacianTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_OTPWriteMainSector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

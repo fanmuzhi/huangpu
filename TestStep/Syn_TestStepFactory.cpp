@@ -14,6 +14,7 @@
 #include "Ts_SharpnessTest.h"
 #include "Ts_Imperfections.h"
 #include "Ts_RxStandardDev.h"
+#include "Ts_OTPWriteMainSector.h"
 
 Syn_TestStepFactory::Syn_TestStepFactory()
 {
@@ -88,6 +89,10 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	else if (std::string("RxStandardDev") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_RxStandardDev(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("OTPWriteMainSector") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_OTPWriteMainSector(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else
 	{

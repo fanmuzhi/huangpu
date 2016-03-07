@@ -35,6 +35,9 @@ public:
 
 	void ImageDecode(FPSFrame *pDecodeFrame, FPSFrame *pEncodeFrame, int nNumRow, int nNumCol, int nNumFrames);
 
+	void BurnToOTP(long nRecType, uint8_t* pSrc, int numBytes);
+
+
 protected:
 
 	Syn_Module *_pSyn_Module;

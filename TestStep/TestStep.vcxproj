@@ -98,6 +98,7 @@
     <ClInclude Include="Ts_InitializationStep.h" />
     <ClInclude Include="Ts_LaplacianTest.h" />
     <ClInclude Include="Ts_OTPCheck.h" />
+    <ClInclude Include="Ts_OTPWriteMainSector.h" />
     <ClInclude Include="Ts_PeggedPixelsTest.h" />
     <ClInclude Include="Ts_PixelTest.h" />
     <ClInclude Include="Ts_RxStandardDev.h" />
@@ -120,6 +121,7 @@
     <ClCompile Include="Ts_InitializationStep.cpp" />
     <ClCompile Include="Ts_LaplacianTest.cpp" />
     <ClCompile Include="Ts_OTPCheck.cpp" />
+    <ClCompile Include="Ts_OTPWriteMainSector.cpp" />
     <ClCompile Include="Ts_PeggedPixelsTest.cpp" />
     <ClCompile Include="Ts_PixelTest.cpp" />
     <ClCompile Include="Ts_RxStandardDev.cpp" />

@@ -57,7 +57,7 @@ void Ts_DRdyTest::Execute()
 	int portID = _pSyn_Dut->_pSyn_DutTestInfo->_DRdyInfo.m_portId;
 	int pinMsk = _pSyn_Dut->_pSyn_DutTestInfo->_DRdyInfo.m_pinMsk;
 	uint32_t nDRdyState;
-	uint8_t  pResult[2];
+	uint8_t  pResult[2] = {0,0};
 
 	//set DRdy pin to input.
 	_pSyn_DutCtrl->GpioSetPinType(portID, pinMsk, 5);
