@@ -58,6 +58,8 @@ public:
 
 	virtual void FpReadAndCheckStatus(uint16_t statusIgnore) = 0;		//check status of VCSFW_STATUS
 
+	virtual void FpRunPatchTest(uint8_t *pDst, int numBytes) = 0;
+
 	virtual void FpWaitDeviceReady() = 0;
 
 	virtual void FpDisableSleep() = 0;

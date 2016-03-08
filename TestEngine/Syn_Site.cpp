@@ -332,7 +332,7 @@ void Syn_Site::RunScript(uint8_t scriptID)
 
 bool Syn_Site::GetTestScriptInfo(uint8_t scriptID, Syn_TestScript &oTestScriptInfo)
 {
-	std::string strScriptName;
+	/*std::string strScriptName;
 
 	switch (scriptID)
 	{
@@ -357,17 +357,27 @@ bool Syn_Site::GetTestScriptInfo(uint8_t scriptID, Syn_TestScript &oTestScriptIn
 		default:
 			strScriptName = "PreCheck";
 			break;
-	}
+	}*/
 
 	bool IsExists(false);
 
-	for (size_t i = 1; i <= _SysConfig._listTestScript.size(); i++)
+	/*for (size_t i = 1; i <= _SysConfig._listTestScript.size(); i++)
 	{
 		if (strScriptName == _SysConfig._listTestScript[i - 1]._strScriptName)
 		{
 			oTestScriptInfo = _SysConfig._listTestScript[i - 1];
 			IsExists = true;
 			break;
+		}
+	}*/
+
+	oTestScriptInfo._listOfTestStep.clear();
+	for(size_t i = 1; i <= _SysConfig._listTestSteps.size(); i++)
+	{
+		if (scriptID == _SysConfig._listTestSteps[i - 1]._uiScriptID)
+		{
+			oTestScriptInfo._listOfTestStep.push_back(_SysConfig._listTestSteps[i - 1]);
+			IsExists = true;
 		}
 	}
 		

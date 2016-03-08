@@ -45,7 +45,7 @@ void Ts_AcqImgFinger::SetUp()
 	if (0 != listOfArgValue[0].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_acqImgFingerInfo.m_nNumImagesToDiscard= atoi(listOfArgValue[0].c_str());
 	if (0 != listOfArgValue[1].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_acqImgFingerInfo.m_nNumImagesWithStimulus= atoi(listOfArgValue[0].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_acqImgFingerInfo.m_nNumImagesWithStimulus= atoi(listOfArgValue[1].c_str());
 
 	//power on
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);

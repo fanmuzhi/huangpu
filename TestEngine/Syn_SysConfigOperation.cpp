@@ -177,12 +177,12 @@ uint32_t Syn_SysConfigOperation::GetSysConfig(Syn_SysConfig &oSyn_SysConfig)
 		else if (std::string("TestSeq") == strNodeName)
 		{
 			//TestScript
-			Syn_TestScript CurrentTestScript;
+			/*Syn_TestScript CurrentTestScript;
 			rapidxml::xml_attribute<> *attribute = node->first_attribute("Script");
 			if (NULL != attribute)
 			{
 				CurrentTestScript._strScriptName = attribute->value();
-			}
+			}*/
 
 			for (rapidxml::xml_node<char> *TestNode = node->first_node(); TestNode != NULL; TestNode = TestNode->next_sibling())
 			{
@@ -197,12 +197,12 @@ uint32_t Syn_SysConfigOperation::GetSysConfig(Syn_SysConfig &oSyn_SysConfig)
 					//cout << CurrentSyn_TestStepInfo._strTestStepName << " " << CurrentSyn_TestStepInfo._strTestStepArgs << endl;
 				}
 
-				CurrentTestScript._listOfTestStep.push_back(CurrentSyn_TestStepInfo);
-				//oSyn_SysConfig._listTestSteps.push_back(CurrentSyn_TestStepInfo);
+				//CurrentTestScript._listOfTestStep.push_back(CurrentSyn_TestStepInfo);
+				oSyn_SysConfig._listTestSteps.push_back(CurrentSyn_TestStepInfo);
 			}
 			SysConfigJudgeTag += 1;
 
-			oSyn_SysConfig._listTestScript.push_back(CurrentTestScript);
+			//oSyn_SysConfig._listTestScript.push_back(CurrentTestScript);
 
 		}
 		else if (std::string("ImageAcqPatch") == strNodeName || std::string("PrintFile") == strNodeName || std::string("OtpReadWritePatch") == strNodeName || std::string("OpensShortsPatch") == strNodeName || std::string("WofPatch") == strNodeName || std::string("WofLowPowerPatch") == strNodeName || std::string("ScmWofPatch") == strNodeName || std::string("AfePatch") == strNodeName

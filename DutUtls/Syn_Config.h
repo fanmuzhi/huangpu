@@ -22,6 +22,8 @@ struct Syn_TestStepInfo
 
 	string _strTestStepName;
 	string _strTestStepArgs;
+
+	uint8_t _uiScriptID;
 };
 
 struct Syn_TestScript
@@ -83,7 +85,7 @@ struct Syn_SysConfig
 			_arrUserSpecifiedBS1[i] = original._arrUserSpecifiedBS1[i];
 		}
 
-		/*_listTestSteps.clear();
+		_listTestSteps.clear();
 		for (size_t i = 1; i <= original._listTestSteps.size(); i++)
 		{
 			Syn_TestStepInfo CurrentSyn_TestStepInfo;
@@ -92,8 +94,8 @@ struct Syn_SysConfig
 			CurrentSyn_TestStepInfo._strTestStepArgs = (original._listTestSteps)[i - 1]._strTestStepArgs;
 
 			_listTestSteps.push_back(CurrentSyn_TestStepInfo);
-		}*/
-		_listTestScript.clear();
+		}
+		/*_listTestScript.clear();
 		for (size_t i = 1; i <= original._listTestScript.size(); i++)
 		{
 			Syn_TestScript CurrentTestScriptInfo;
@@ -109,7 +111,7 @@ struct Syn_SysConfig
 			}
 
 			_listTestScript.push_back(CurrentTestScriptInfo);
-		}
+		}*/
 
 		_listPatchInfo.clear();
 		for (size_t i = 1; i <= original._listPatchInfo.size(); i++)
@@ -151,7 +153,7 @@ struct Syn_SysConfig
 	bool GetSyn_TestStepInfo(const std::string &strTestStepName, std::string &ostrArgsValue)
 	{
 		bool IsExists(false);
-		/*for (size_t i = 1; i <= _listTestSteps.size(); i++)
+		for (size_t i = 1; i <= _listTestSteps.size(); i++)
 		{
 			if (strTestStepName == _listTestSteps[i - 1]._strTestStepName)
 			{
@@ -159,9 +161,9 @@ struct Syn_SysConfig
 				IsExists = true;
 				break;
 			}
-		}*/
+		}
 
-		for (size_t i = 1; i <= _listTestScript.size(); i++)
+		/*for (size_t i = 1; i <= _listTestScript.size(); i++)
 		{
 			for (size_t j = 1; j <= (_listTestScript[i - 1]._listOfTestStep).size(); j++)
 			{
@@ -172,7 +174,7 @@ struct Syn_SysConfig
 					return IsExists;
 				}
 			}
-		}
+		}*/
 
 		return IsExists;
 	}
@@ -195,9 +197,8 @@ struct Syn_SysConfig
 	uint8_t			_arrUserSpecifiedBS0[BS0_SIZE];//BootSector0
 	uint8_t			_arrUserSpecifiedBS1[BS1_SIZE];//BootSector1
 
-	vector<Syn_TestScript>		_listTestScript;//TestSeq
-	//vector<Syn_TestStepInfo>	_listTestSteps;
-
+	//vector<Syn_TestScript>		_listTestScript;//TestSeq
+	vector<Syn_TestStepInfo>	_listTestSteps;
 	
 	vector<Syn_PatchInfo>		_listPatchInfo;//All patch
 	

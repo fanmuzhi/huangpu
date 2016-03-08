@@ -91,9 +91,9 @@ void Syn_Thread::run()
 			rc = _pSyn_Site->ExecuteTestStep("RxStandardDev");
 			emit send(iSiteNumber, "RxStandardDev");
 
-			rc = _pSyn_Site->GetTestResult(TestResult);
+			/*rc = _pSyn_Site->GetTestResult(TestResult);
 			rc = _pSyn_Site->ExecuteTestStep("OTPWriteMainSector");
-			emit send(iSiteNumber, "OTPWriteMainSector");
+			emit send(iSiteNumber, "OTPWriteMainSector");*/
 
 			emit send(iSiteNumber);
 

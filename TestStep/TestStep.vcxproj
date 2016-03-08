@@ -100,6 +100,7 @@
     <ClInclude Include="Ts_OTPCheck.h" />
     <ClInclude Include="Ts_OTPWriteMainSector.h" />
     <ClInclude Include="Ts_PeggedPixelsTest.h" />
+    <ClInclude Include="Ts_PixelPatchTest.h" />
     <ClInclude Include="Ts_PixelTest.h" />
     <ClInclude Include="Ts_RxStandardDev.h" />
     <ClInclude Include="Ts_SharpnessTest.h" />
@@ -123,6 +124,7 @@
     <ClCompile Include="Ts_OTPCheck.cpp" />
     <ClCompile Include="Ts_OTPWriteMainSector.cpp" />
     <ClCompile Include="Ts_PeggedPixelsTest.cpp" />
+    <ClCompile Include="Ts_PixelPatchTest.cpp" />
     <ClCompile Include="Ts_PixelTest.cpp" />
     <ClCompile Include="Ts_RxStandardDev.cpp" />
     <ClCompile Include="Ts_SharpnessTest.cpp" />

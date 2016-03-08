@@ -227,7 +227,6 @@ void Syn_SPCCtrl::FpReadBuff(uint8_t *pDst, int numBytes)
 	//return ((pDst[0] << 8) + pDst[1]);
 }
 
-
 void Syn_SPCCtrl::FpReadAndCheckStatus(uint16_t statusIgnore)
 {
 	uint8_t numbytes = 2;
@@ -244,6 +243,32 @@ void Syn_SPCCtrl::FpReadAndCheckStatus(uint16_t statusIgnore)
 		ex.SetDescription("FpReadAndCheckStatus() DUT return status: " + returnValue);
 		throw ex;
 	}
+}
+
+void Syn_SPCCtrl::FpRunPatchTest(uint8_t *pDst, int numBytes)
+{
+	uint32_t timeout = TIMEOUT;
+
+	uint8_t numbytes = 2;
+	uint8_t pSrc[10] = { 0 };
+
+	this->FpWrite(1, VCSFW_CMD::TEST_RUN, pSrc, 0);
+
+	this->FpRead(1, 0xFF, pSrc, numbytes);
+	uint16_t returnValue = *((uint16_t*)pSrc);
+	LOG(DEBUG) << "0x" << hex << returnValue;
+	while (timeout && 0 != returnValue)
+	{
+		this->FpRead(1, 0xFF, pSrc, numbytes);
+		returnValue = *((uint16_t*)pSrc);
+		timeout--;
+	}
+
+	this->FpWrite(1, VCSFW_CMD::TEST_READ, pSrc, 0);//253
+	this->FpWaitForCMDComplete();
+	this->FpReadAndCheckStatus(0);
+
+	this->FpRead(1, 0x00FF, pDst, numBytes);
 }
 
 void Syn_SPCCtrl::FpWaitDeviceReady()
