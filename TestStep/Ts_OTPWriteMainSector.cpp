@@ -62,43 +62,45 @@ void Ts_OTPWriteMainSector::Execute()
 	//nScmWofBot_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nScmWofBot_count;
 	//nProductId_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nProductId_count;
 
-	if (!(_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted))
+	//Cablirate
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted)
 	{
-		return;
+		//If LNA values have not been stored in the OTP.
+		nLNA_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, arMS0, MS0_SIZE);
+		if (nLNA_count == 0)
+			BurnToOTP(EXT_TAG_LNA, &(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults).m_pPrintPatch[(_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nLnaIdx], _pSyn_Dut->_RowNumber);
+
+		//If PGA values (one offset per pixel) have not been stored in the OTP.
+		if ((_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nCalType == 1)//kPgaCalTypeOneOffsetPerPixel
+		{
+			nPGA_OOPP_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPP, arMS0, MS0_SIZE);
+			if (nPGA_OOPP_count == 0)
+				BurnToOTP(EXT_TAG_PGA_OOPP, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_arPgaOffsets, NUM_PGA_OOPP_OTP_ROWS * (nNumCols - 8));
+		}
+
+		//If PGA (one offset per row) values have not been stored in the OTP.
+		if ((_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nCalType == 0)//kPgaCalTypeOneOffsetPerRow
+		{
+			nPGA_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPR, arMS0, MS0_SIZE);
+			if (nPGA_count == 0)
+				BurnToOTP(EXT_TAG_PGA_OOPR, &(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults).m_pPrintPatch[(_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nPgaIdx], _pSyn_Dut->_RowNumber);
+		}
 	}
-
-	//If LNA values have not been stored in the OTP.
-	nLNA_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, arMS0, MS0_SIZE);
-	if (nLNA_count == 0)
-		BurnToOTP(EXT_TAG_LNA, &(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults).m_pPrintPatch[(_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nLnaIdx], _pSyn_Dut->_RowNumber);
-
-	//If PGA values (one offset per pixel) have not been stored in the OTP.
-	if ((_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nCalType == 1)//kPgaCalTypeOneOffsetPerPixel
-	{
-		nPGA_OOPP_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPP, arMS0, MS0_SIZE);
-		if (nPGA_OOPP_count == 0)
-			BurnToOTP(EXT_TAG_PGA_OOPP, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_arPgaOffsets, NUM_PGA_OOPP_OTP_ROWS * (nNumCols - 8));
-	}
-
-	//If PGA (one offset per row) values have not been stored in the OTP.
-	if ((_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nCalType == 0)//kPgaCalTypeOneOffsetPerRow
-	{
-		nPGA_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPR, arMS0, MS0_SIZE);
-		if (nPGA_count == 0)
-			BurnToOTP(EXT_TAG_PGA_OOPR, &(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults).m_pPrintPatch[(_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nPgaIdx], _pSyn_Dut->_RowNumber);
-	}
-
+	
 	//If SNR values have not been stored in the OTP.
-	nSNR_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SNR, arMS0, MS0_SIZE);
-	if (nSNR_count == 0)
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.m_bExecuted)
 	{
-		arMS0[0] = (uint8_t)((_pSyn_Dut->_pSyn_DutTestResult->_snrResults).OTPVal_SNR);
-		arMS0[1] = (uint8_t)((_pSyn_Dut->_pSyn_DutTestResult->_snrResults).OTPVal_Signal);
-		arMS0[2] = (uint8_t)((_pSyn_Dut->_pSyn_DutTestResult->_snrResults).OTPVal_Noise);
-		arMS0[3] = 0;
-		BurnToOTP(EXT_TAG_SNR, arMS0, 4);
+		nSNR_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SNR, arMS0, MS0_SIZE);
+		if (nSNR_count == 0)
+		{
+			arMS0[0] = (uint8_t)((_pSyn_Dut->_pSyn_DutTestResult->_snrResults).OTPVal_SNR);
+			arMS0[1] = (uint8_t)((_pSyn_Dut->_pSyn_DutTestResult->_snrResults).OTPVal_Signal);
+			arMS0[2] = (uint8_t)((_pSyn_Dut->_pSyn_DutTestResult->_snrResults).OTPVal_Noise);
+			arMS0[3] = 0;
+			BurnToOTP(EXT_TAG_SNR, arMS0, 4);
+		}
 	}
-
+	
 	//flexID
 	//If flex ID values have not been stored in the OTP.
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_bExecuted)
@@ -115,9 +117,9 @@ void Ts_OTPWriteMainSector::Execute()
 
 	//if (//WOF)
 	//If WOF(bottom) values have not been stored in the OTP.
-	nWofBot_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_BOT, arMS0, MS0_SIZE);
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bExecutedWithStimulus)
 	{
+		nWofBot_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_BOT, arMS0, MS0_SIZE);
 		if (nWofBot_count == 0)
 		{
 			if (_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_bPassAtGain100)
@@ -140,9 +142,9 @@ void Ts_OTPWriteMainSector::Execute()
 
 	//if (//SCM_WOF)
 	//If SCM WOF(bottom) values have not been stored in the OTP.
-	nScmWofBot_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_BOT, arMS0, MS0_SIZE);
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_bExecutedWithStimulus)
 	{
+		nScmWofBot_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_BOT, arMS0, MS0_SIZE);
 		if (nScmWofBot_count == 0)
 		{
 			if (_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_bPassAtGain100)
@@ -164,9 +166,9 @@ void Ts_OTPWriteMainSector::Execute()
 	}
 
 	//If temperature ADC values have not been stored in the OTP.
-	nDutTempAdc_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_DutTempAdc, arMS0, MS0_SIZE);
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_ReadDutAdcInfo.m_bExecuted)
 	{
+		nDutTempAdc_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_DutTempAdc, arMS0, MS0_SIZE);
 		if (nDutTempAdc_count == 0)
 		{
 			memset(arMS0, 0, sizeof(arMS0));
@@ -177,9 +179,9 @@ void Ts_OTPWriteMainSector::Execute()
 	}
 
 	//projID
-	nProductId_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PRODUCT_ID, arMS0, MS0_SIZE);
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nProductId != 0)
 	{
+		nProductId_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PRODUCT_ID, arMS0, MS0_SIZE);
 		if (nProductId_count == 0)
 		{
 			memset(arMS0, 0, sizeof(arMS0));
