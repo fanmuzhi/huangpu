@@ -1,5 +1,6 @@
 #pragma once
 #include "Syn_FingerprintTest.h"
+
 class Ts_PixelPatchTest : public Syn_FingerprintTest
 {
 public:

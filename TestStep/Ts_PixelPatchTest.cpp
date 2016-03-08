@@ -80,6 +80,11 @@ void Ts_PixelPatchTest::ProcessData()
 		_pSyn_Dut->_pSyn_DutTestResult->_pixelPatchResults.m_bPass = 1;
 	else
 		_pSyn_Dut->_pSyn_DutTestResult->_pixelPatchResults.m_bPass = 0;
+
+	if (!(_pSyn_Dut->_pSyn_DutTestResult->_pixelPatchResults.m_bPass))
+	{
+		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sPixPatchFail);
+	}
 }
 
 void Ts_PixelPatchTest::CleanUp()
