@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
-    <SysConfigFile>D:/57K0_Test_Cpp.xml</SysConfigFile>
+    <SysConfigFile>C:/Users/bqiling/Google Drive/Metallica 77A0/580-005895-01r2(FM-000133-003)_OFilm_ZTE_Qiling_Modified.xml</SysConfigFile>
     <NumSites>1</NumSites>
-    <Site1 AdcBaseLines="696 696 697 811 695 695 695 773 696 697 704 1255 698 698 698 816 " Voltages="1800 1800 3300 3300">1456665</Site1>
+    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="696 696 697 811 695 695 695 773 696 697 704 1255 698 698 698 816 ">1405853</Site1>
     <AutoController></AutoController>
 </LocalSettings>

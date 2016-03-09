@@ -46,7 +46,7 @@ void Ts_AcqImgNoFinger::SetUp()
 	if (0 != listOfArgValue[0].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_acqImgNoFingerInfo.m_nNumImagesToDiscard= atoi(listOfArgValue[0].c_str());
 	if (0 != listOfArgValue[1].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_acqImgNoFingerInfo.m_nNumImagesWithoutStimulus= atoi(listOfArgValue[0].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_acqImgNoFingerInfo.m_nNumImagesWithoutStimulus= atoi(listOfArgValue[1].c_str());
 
 	//power on
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
