@@ -247,26 +247,41 @@ void Syn_SPCCtrl::FpReadAndCheckStatus(uint16_t statusIgnore)
 
 void Syn_SPCCtrl::FpRunPatchTest(uint8_t *pDst, int numBytes)
 {
-	uint32_t timeout = TIMEOUT;
+	uint32_t timeout = 10000;
 
 	uint8_t numbytes = 2;
-	uint8_t pSrc[10] = { 0 };
+	uint8_t pSrc[10];
 
 	this->FpWrite(1, VCSFW_CMD::TEST_RUN, pSrc, 0);
+	::Sleep(2000);
 
-	this->FpRead(1, 0xFF, pSrc, numbytes);
+	this->FpReadBuff(pSrc, numbytes);
 	uint16_t returnValue = *((uint16_t*)pSrc);
 	LOG(DEBUG) << "0x" << hex << returnValue;
 	while (timeout && 0 != returnValue)
+	//while (0 != returnValue)
 	{
-		this->FpRead(1, 0xFF, pSrc, numbytes);
+		this->FpRead(1, 0x00FF, pSrc, numbytes);
 		returnValue = *((uint16_t*)pSrc);
 		timeout--;
 	}
 
+	::Sleep(2000);
+	timeout = 10000;
 	this->FpWrite(1, VCSFW_CMD::TEST_READ, pSrc, 0);//253
-	this->FpWaitForCMDComplete();
-	this->FpReadAndCheckStatus(0);
+	/*this->FpWaitForCMDComplete();
+	this->FpReadAndCheckStatus(0);*/
+	this->FpReadBuff(pSrc, numbytes);
+	returnValue = *((uint16_t*)pSrc);
+	LOG(DEBUG) << "0x" << hex << returnValue;
+	while (timeout && 0 != returnValue)
+	{
+		this->FpRead(1, 0x00FF, pSrc, numbytes);
+		returnValue = *((uint16_t*)pSrc);
+		timeout--;
+	}
+	::Sleep(2000);
+
 
 	this->FpRead(1, 0x00FF, pDst, numBytes);
 }
@@ -452,7 +467,6 @@ void Syn_SPCCtrl::FpGetImage(uint8_t *pDst, int numBytes)
 	this->FpRead(0x02, 0x00, pDst, numBytes);
 }
 
-	
 //
 //FpGetImage2, to capture image
 //

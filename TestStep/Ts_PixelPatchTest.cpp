@@ -1,5 +1,7 @@
 #include "Ts_PixelPatchTest.h"
 
+#include "windows.h"
+
 Ts_PixelPatchTest::Ts_PixelPatchTest(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
 {
@@ -60,6 +62,7 @@ void Ts_PixelPatchTest::SetUp()
 		return;
 	}
 	_pSyn_DutCtrl->FpLoadPatch(PixelPatchInfo._pArrayBuf, PixelPatchInfo._uiArraySize);
+	::Sleep(1000);
 }
 
 void Ts_PixelPatchTest::Execute()
@@ -90,5 +93,6 @@ void Ts_PixelPatchTest::ProcessData()
 void Ts_PixelPatchTest::CleanUp()
 {
 	_pSyn_DutCtrl->FpUnloadPatch();
+	::Sleep(1000);
 	PowerOff();
 }

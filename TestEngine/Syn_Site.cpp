@@ -55,7 +55,7 @@ Syn_Site::~Syn_Site()
 	}
 }
 
-uint32_t Syn_Site::CreateSiteInstance(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath, Syn_Site * &opSiteInstance)
+uint32_t Syn_Site::CreateSiteInstance(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath, const AdcBaseLineInfo &iADCInfo, Syn_Site * &opSiteInstance)
 {
 	opSiteInstance = NULL;
 
@@ -66,6 +66,23 @@ uint32_t Syn_Site::CreateSiteInstance(uint8_t siteNumber, uint32_t deviceSerNumb
 		delete opSiteInstance;
 		opSiteInstance = NULL;
 	}
+	else
+	{
+		opSiteInstance->_ADCInfo.m_bExecuted = true;
+		opSiteInstance->_ADCInfo.m_nVdd = iADCInfo.m_nVdd;
+		opSiteInstance->_ADCInfo.m_nVio = iADCInfo.m_nVio;
+		opSiteInstance->_ADCInfo.m_nVled = iADCInfo.m_nVled;
+		opSiteInstance->_ADCInfo.m_nVddh = iADCInfo.m_nVddh;
+
+		for (int a = 0; a < NUM_CURRENT_VALUES; a++)
+		{
+			for (int b = 0; b < KNUMGAINS; b++)
+			{
+				(opSiteInstance->_ADCInfo.m_arAdcBaseLines)[a][b] = (iADCInfo.m_arAdcBaseLines)[a][b];
+			}
+		}
+	}
+	
 
 	return rc;
 }
@@ -183,7 +200,7 @@ uint32_t Syn_Site::Open()
 	_pSyn_Dut->SetPatchInfo(_SysConfig._listPatchInfo);
 
 	//fill info
-	_pSyn_Dut->InitData(_SysConfig);
+	_pSyn_Dut->InitData(_SysConfig,_ADCInfo);
 
 	_siteState = Idle;
 

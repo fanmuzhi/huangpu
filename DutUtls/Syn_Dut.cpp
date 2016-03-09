@@ -43,7 +43,7 @@ bool Syn_Dut::CreateDutInstance(ProjectType iType, Syn_Dut * &opSyn_DutInstance)
 	return true;
 }
 
-void Syn_Dut::InitData(Syn_SysConfig &sysConfig)
+void Syn_Dut::InitData(Syn_SysConfig &sysConfig, AdcBaseLineInfo &iAdcBaseLineInfo)
 {
 	bool rc(true);
 
@@ -60,6 +60,7 @@ void Syn_Dut::InitData(Syn_SysConfig &sysConfig)
 	if (NULL == _pSyn_DutTestInfo)
 	{
 		_pSyn_DutTestInfo = new Syn_DutTestInfo();
+		_pSyn_DutTestInfo->_adcBaselineInfo = iAdcBaseLineInfo;
 	}
 
 	if (NULL == _pSyn_DutTestResult)

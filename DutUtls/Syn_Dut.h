@@ -119,7 +119,7 @@ public:
 	static bool CreateDutInstance(ProjectType iType, Syn_Dut * &opSyn_DutInstance);
 
 	//function
-	void InitData(Syn_SysConfig &sysConfig);
+	void InitData(Syn_SysConfig &sysConfig, AdcBaseLineInfo &iAdcBaseLineInfo);
 
 	bool FindPatch(std::string patchName, Syn_PatchInfo &patchInfo);
 
