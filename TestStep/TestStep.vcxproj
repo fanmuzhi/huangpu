@@ -91,6 +91,7 @@
     <ClInclude Include="Syn_TestStep.h" />
     <ClInclude Include="Syn_TestStepFactory.h" />
     <ClInclude Include="Syn_ViperModule.h" />
+    <ClInclude Include="Ts_CurrentTest.h" />
     <ClInclude Include="Ts_DRdyTest.h" />
     <ClInclude Include="Ts_ConsecutivePixels.h" />
     <ClInclude Include="Ts_FlooredPixelsTest.h" />
@@ -100,10 +101,12 @@
     <ClInclude Include="Ts_OTPCheck.h" />
     <ClInclude Include="Ts_OTPWriteMainSector.h" />
     <ClInclude Include="Ts_PeggedPixelsTest.h" />
+    <ClInclude Include="Ts_PixelPatchTest.h" />
     <ClInclude Include="Ts_PixelTest.h" />
     <ClInclude Include="Ts_RxStandardDev.h" />
     <ClInclude Include="Ts_SharpnessTest.h" />
     <ClInclude Include="Ts_SNRTest.h" />
+    <ClInclude Include="Ts_WoVarTest.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Ts_AcqImgFinger.cpp" />
@@ -114,6 +117,7 @@
     <ClCompile Include="Syn_Module.cpp" />
     <ClCompile Include="Syn_TestStepFactory.cpp" />
     <ClCompile Include="Syn_ViperModule.cpp" />
+    <ClCompile Include="Ts_CurrentTest.cpp" />
     <ClCompile Include="Ts_DRdyTest.cpp" />
     <ClCompile Include="Ts_ConsecutivePixels.cpp" />
     <ClCompile Include="Ts_FlooredPixelsTest.cpp" />
@@ -123,10 +127,12 @@
     <ClCompile Include="Ts_OTPCheck.cpp" />
     <ClCompile Include="Ts_OTPWriteMainSector.cpp" />
     <ClCompile Include="Ts_PeggedPixelsTest.cpp" />
+    <ClCompile Include="Ts_PixelPatchTest.cpp" />
     <ClCompile Include="Ts_PixelTest.cpp" />
     <ClCompile Include="Ts_RxStandardDev.cpp" />
     <ClCompile Include="Ts_SharpnessTest.cpp" />
     <ClCompile Include="Ts_SNRTest.cpp" />
+    <ClCompile Include="Ts_WoVarTest.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

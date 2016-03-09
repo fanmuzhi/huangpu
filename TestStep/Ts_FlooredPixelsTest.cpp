@@ -52,7 +52,6 @@ void Ts_FlooredPixelsTest::SetUp()
 		_pSyn_Dut->_pSyn_DutTestInfo->_flooredPixelsInfo.fail_limits = atoi(listOfArgValue[3].c_str());
 }
 
-
 void Ts_FlooredPixelsTest::Execute()
 {
 	_pSyn_Dut->_pSyn_DutTestInfo->_flooredPixelsInfo.m_bExecuted = true;

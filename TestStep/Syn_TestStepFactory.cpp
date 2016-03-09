@@ -15,6 +15,9 @@
 #include "Ts_Imperfections.h"
 #include "Ts_RxStandardDev.h"
 #include "Ts_OTPWriteMainSector.h"
+#include "Ts_PixelPatchTest.h"
+#include "Ts_WoVarTest.h"
+#include "Ts_CurrentTest.h"
 
 Syn_TestStepFactory::Syn_TestStepFactory()
 {
@@ -93,6 +96,18 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	else if (std::string("OTPWriteMainSector") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_OTPWriteMainSector(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("PixelPatchTest") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_PixelPatchTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("WoVarTest") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_WoVarTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("CurrentTest") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_CurrentTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else
 	{

@@ -124,6 +124,31 @@ public:
         WOF2_CONFIGURE               = 118,
         WOF2_STATUS_GET              = 119,
         READ_RAW_FPDATA              = 120,
-        RXSELECT                     = 121 /* viper2 */
+        RXSELECT                     = 121, /* viper2 */
+		TEST_RXSELECT                = RXSELECT,
+		TEMPERATURE_READ             = 122,
+		AUTORESTART_STAT_GET         = 123,
+		ECHO						 = 124,
+		BOOTLDR_PATCH				 = 125,
+		GET_NAV_STATUS_V2            = 126,
+		FRAME_READ                   = 127,
+		FRAME_ACQ                    = 128,
+		FRAME_FINISH                 = 129,
+		FRAME_STATE_GET              = 130,
+		IOTA_WRITE                   = 131,
+		FLASH_ERASE                  = 132,
+		TEST_SPIFLASH_CHECKSUM       = 133,
+		EVENT_CONFIG                 = 134,
+		EVENT_READ                   = 135,
+
+		/*
+		* These following commands are for ATE, characterization and firmware test
+		* patches the also get used in the USDK5 for device specific calibration.
+		*/
+		TEST_PARAMETER_SET           = 250,
+		TEST_CONTINUE                = 251,
+		TEST_LENGTH_READ             = 252,
+		TEST_READ                    = 253,
+		TEST_RUN                     = 254
     };
 };

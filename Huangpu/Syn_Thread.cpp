@@ -87,13 +87,25 @@ void Syn_Thread::run()
 			rc = _pSyn_Site->ExecuteTestStep("ConsecutivePixels");
 			emit send(iSiteNumber, "ConsecutivePixels");
 
+			/*rc = _pSyn_Site->GetTestResult(TestResult);
+			rc = _pSyn_Site->ExecuteTestStep("PixelPatchTest");
+			emit send(iSiteNumber, "PixelPatchTest");*/
+
+			/*rc = _pSyn_Site->GetTestResult(TestResult);
+			rc = _pSyn_Site->ExecuteTestStep("WoVarTest");
+			emit send(iSiteNumber, "WoVarTest");*/
+
+			rc = _pSyn_Site->GetTestResult(TestResult);
+			rc = _pSyn_Site->ExecuteTestStep("CurrentTest");
+			emit send(iSiteNumber, "CurrentTest");
+
 			rc = _pSyn_Site->GetTestResult(TestResult);
 			rc = _pSyn_Site->ExecuteTestStep("RxStandardDev");
 			emit send(iSiteNumber, "RxStandardDev");
 
-			rc = _pSyn_Site->GetTestResult(TestResult);
+			/*rc = _pSyn_Site->GetTestResult(TestResult);
 			rc = _pSyn_Site->ExecuteTestStep("OTPWriteMainSector");
-			emit send(iSiteNumber, "OTPWriteMainSector");
+			emit send(iSiteNumber, "OTPWriteMainSector");*/
 
 			emit send(iSiteNumber);
 
@@ -103,8 +115,6 @@ void Syn_Thread::run()
 	{
 		//rc = _pSyn_Site->ExecuteTestStep("Calibrate");
 	}
-
-	
 
 	_stopped = true;
 }

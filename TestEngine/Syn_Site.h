@@ -34,7 +34,7 @@ class Syn_Site
 public:
 
 	//static function
-	static uint32_t CreateSiteInstance(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath, Syn_Site * &opSiteInstance);
+	static uint32_t CreateSiteInstance(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath, const AdcBaseLineInfo &iADCInfo, Syn_Site * &opSiteInstance);
 
 	/*need call Open function*/
 	//Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath);
@@ -120,6 +120,8 @@ private:
 
 	uint32_t _uiErrorFlag;
 	std::string _strErrorMessage;
+
+	AdcBaseLineInfo _ADCInfo;
 
 private:
 
