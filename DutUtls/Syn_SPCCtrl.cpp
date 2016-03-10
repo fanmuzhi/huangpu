@@ -245,7 +245,7 @@ void Syn_SPCCtrl::FpReadAndCheckStatus(uint16_t statusIgnore)
 	}
 }
 
-void Syn_SPCCtrl::FpRunPatchTest(uint8_t *pDst, int numBytes)
+void Syn_SPCCtrl::FpRunPatchTest(uint8_t *pDstResult, int numBytes)
 {
 	uint32_t timeout = 10000;
 
@@ -283,7 +283,9 @@ void Syn_SPCCtrl::FpRunPatchTest(uint8_t *pDst, int numBytes)
 	::Sleep(2000);
 
 
-	this->FpRead(1, 0x00FF, pDst, numBytes);
+	this->FpRead(1, 0x00FF, pDstResult, numBytes);
+
+	
 }
 
 void Syn_SPCCtrl::FpWaitDeviceReady()

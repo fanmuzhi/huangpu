@@ -41,7 +41,7 @@ public:
 
 	virtual void FpReadAndCheckStatus(uint16_t statusIgnore);
 
-	virtual void FpRunPatchTest(uint8_t *pDst, int numBytes);
+	virtual void FpRunPatchTest(uint8_t *pDstResult, int numBytes);
 
 	virtual void FpWaitDeviceReady();
 

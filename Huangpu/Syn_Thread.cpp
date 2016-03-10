@@ -47,10 +47,6 @@ void Syn_Thread::run()
 			rc = _pSyn_Site->ExecuteTestStep("FlooredPixelsTest");
 			emit send(iSiteNumber, "FlooredPixelsTest");
 
-			/*rc = _pSyn_Site->GetTestResult(TestResult);
-			rc = _pSyn_Site->ExecuteTestStep("ConsecutivePixels");
-			emit send(iSiteNumber, "ConsecutivePixels");*/
-
 			rc = _pSyn_Site->GetTestResult(TestResult);
 			rc = _pSyn_Site->ExecuteTestStep("DRdyTest");
 			emit send(iSiteNumber, "DRdyTest");
