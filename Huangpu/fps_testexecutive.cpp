@@ -1254,6 +1254,60 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 
 void FPS_TestExecutive::GetVersionForDutDump()
 {
+	int iSiteCurrentIndex = ui.comboBox->currentIndex();
+	if (iSiteCurrentIndex<0)
+	{
+		cout << "Error:FPS_TestExecutive - iSiteCurrentIndex is less than 0!" << endl;
+		return;
+	}
+
+	size_t iSiteCounts = _ListOfSitePtr.size();
+	if (0 == iSiteCounts)
+	{
+		cout << "Error:FPS_TestExecutive - iSiteCounts is 0!" << endl;
+		return;
+	}
+
+	if (iSiteCurrentIndex > iSiteCounts)
+	{
+		cout << "Error:FPS_TestExecutive - iSiteCounts is less than iSiteCurrentIndex!" << endl;
+		return;
+	}
+
+	Syn_Site *pSelectedSite = _ListOfSitePtr[iSiteCurrentIndex];
+	if (NULL == pSelectedSite)
+	{
+		cout << "Error:FPS_TestExecutive - pSelectedSite is NULL!" << endl;
+		return;
+	}
+
+	uint32_t rc = pSelectedSite->Open();
+	if (rc != 0)
+	{
+		QMessageBox::information(this, QString("Error"), QString::number(rc));
+		return;
+	}
+
+	rc = pSelectedSite->ExecuteTestStep("PixelPatchTest");
+	if (rc != 0)
+	{
+		QMessageBox::information(this, QString("Error"), QString::number(rc));
+		return;
+	}
+	Syn_DutTestInfo *oDutTestInfo = NULL;
+	rc = pSelectedSite->GetTestInfo(oDutTestInfo);
+	if (rc != 0)
+	{
+		QMessageBox::information(this, QString("Error"), QString::number(rc));
+		return;
+	}
+	Syn_DutTestResult *oDutTestResult = NULL;
+	rc = pSelectedSite->GetTestResult(oDutTestResult);
+	if (rc != 0)
+	{
+		QMessageBox::information(this, QString("Error"), QString::number(rc));
+		return;
+	}
 //	int iSiteCurrentIndex = ui.comboBox->currentIndex();
 //	if (iSiteCurrentIndex<0)
 //	{

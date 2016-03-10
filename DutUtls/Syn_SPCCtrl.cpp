@@ -186,21 +186,24 @@ void Syn_SPCCtrl::FpGetStatus(uint8_t* pDst, int numBytes)
 	LOG(DEBUG) << "0x" << hex << *((uint32_t*)pDst);
 }
 
-void Syn_SPCCtrl::FpWaitForCMDComplete()
+void Syn_SPCCtrl::FpWaitForCMDComplete(const uint32_t timeout)
 {
-	uint32_t timeout = TIMEOUT;
 	uint8_t	pDst[4];
+	uint32_t _timeout = timeout;
 
 	this->FpGetStatus(pDst, 4);
-	while (timeout && (*((uint32_t*)pDst) != 0x30000003))
+
+	//status 10000003: 1 = reply ready +  3= processed command
+	//status 30000003: 3 = DRDY deaaserted and reply ready +  3= processed command
+	while (_timeout && ((*((uint32_t*)pDst) & 0x10000003) != 0x10000003))
 	{
 		this->FpGetStatus(pDst, 4);
-		timeout--;
+		_timeout--;
 	}
-	if (timeout == 0)
+	if (_timeout == 0)
 	{
 		Syn_Exception ex(MpcApiError::ERR_COMMUNICATION_FAILED);
-		ex.SetDescription("FpWaitForCommandCompleteAndReturnErrorCode() DUT communication failure.");
+		ex.SetDescription("FpWaitForCommandCompleteAndR1eturnErrorCode() DUT communication failure.");
 		throw ex;
 	}
 }
@@ -247,42 +250,24 @@ void Syn_SPCCtrl::FpReadAndCheckStatus(uint16_t statusIgnore)
 
 void Syn_SPCCtrl::FpRunPatchTest(uint8_t *pDst, int numBytes)
 {
-	uint32_t timeout = 10000;
+	uint32_t timeout = 5000;
 
 	uint8_t numbytes = 2;
 	uint8_t pSrc[10];
+	uint8_t pResult[2];
 
 	this->FpWrite(1, VCSFW_CMD::TEST_RUN, pSrc, 0);
-	::Sleep(2000);
+	//::Sleep(2000);
 
-	this->FpReadBuff(pSrc, numbytes);
-	uint16_t returnValue = *((uint16_t*)pSrc);
-	LOG(DEBUG) << "0x" << hex << returnValue;
-	while (timeout && 0 != returnValue)
-	//while (0 != returnValue)
-	{
-		this->FpRead(1, 0x00FF, pSrc, numbytes);
-		returnValue = *((uint16_t*)pSrc);
-		timeout--;
-	}
+	this->FpWaitForCMDComplete(timeout);
+	//this->FpNoop();
+	this->FpRead(1, 0xFF, pResult, sizeof(pResult));
 
-	::Sleep(2000);
-	timeout = 10000;
+	::Sleep(500);
+	//this->FpWaitDeviceReady();
+
 	this->FpWrite(1, VCSFW_CMD::TEST_READ, pSrc, 0);//253
-	/*this->FpWaitForCMDComplete();
-	this->FpReadAndCheckStatus(0);*/
-	this->FpReadBuff(pSrc, numbytes);
-	returnValue = *((uint16_t*)pSrc);
-	LOG(DEBUG) << "0x" << hex << returnValue;
-	while (timeout && 0 != returnValue)
-	{
-		this->FpRead(1, 0x00FF, pSrc, numbytes);
-		returnValue = *((uint16_t*)pSrc);
-		timeout--;
-	}
-	::Sleep(2000);
-
-
+	this->FpWaitForCMDComplete(timeout);
 	this->FpRead(1, 0x00FF, pDst, numBytes);
 }
 
@@ -315,6 +300,16 @@ void Syn_SPCCtrl::FpDisableSleep()
 	this->FpWrite(1, VCSFW_CMD::TIDLE_SET, pSrc, sizeof(pSrc));
 	//this->FpWaitForCMDComplete();
 	//this->FpReadAndCheckStatus(0);
+}
+
+void Syn_SPCCtrl::FpEnterSleep()
+{
+	LOG(INFO) << "Enable Sleep";
+
+	uint8_t pSrc[2] = { 0xE8, 0x03 };	//delay time to enter into retain mode.
+	this->FpWrite(1, VCSFW_CMD::TIDLE_SET, pSrc, sizeof(pSrc));
+	this->FpWaitForCMDComplete();
+	this->FpReadAndCheckStatus(0);
 }
 
 

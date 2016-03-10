@@ -35,8 +35,16 @@ void Ts_RetainMode::SetUp()
 
 void Ts_RetainMode::Execute()
 {
+	_pSyn_DutCtrl->FpEnterSleep();
 
 }
+
+
+void Ts_RetainMode::ProcessData()
+{
+
+}
+
 
 void Ts_RetainMode::CleanUp()
 {

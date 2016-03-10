@@ -103,6 +103,7 @@
     <ClInclude Include="Ts_PeggedPixelsTest.h" />
     <ClInclude Include="Ts_PixelPatchTest.h" />
     <ClInclude Include="Ts_PixelTest.h" />
+    <ClInclude Include="Ts_RetainMode.h" />
     <ClInclude Include="Ts_RxStandardDev.h" />
     <ClInclude Include="Ts_SharpnessTest.h" />
     <ClInclude Include="Ts_SNRTest.h" />
@@ -129,6 +130,7 @@
     <ClCompile Include="Ts_PeggedPixelsTest.cpp" />
     <ClCompile Include="Ts_PixelPatchTest.cpp" />
     <ClCompile Include="Ts_PixelTest.cpp" />
+    <ClCompile Include="Ts_RetainMode.cpp" />
     <ClCompile Include="Ts_RxStandardDev.cpp" />
     <ClCompile Include="Ts_SharpnessTest.cpp" />
     <ClCompile Include="Ts_SNRTest.cpp" />
