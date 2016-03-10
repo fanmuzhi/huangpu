@@ -79,7 +79,7 @@ void Ts_CurrentTest::Execute()
 	_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_bExecuted = true;
 
 	FPSFrame * pFrame = new FPSFrame;
-	uint32_t arCurrentVals[NUM_CURRENT_VALUES] = {0};
+	uint32_t arCurrentVals[NUM_CURRENT_VALUES] = { 0 };
 	uint32_t arCurrentSums[NUM_CURRENT_VALUES] = { 0 };
 	//CalibrationResults* pCalResults = &site.m_calibrationResults;
 
