@@ -52,17 +52,19 @@ public:
 
 	virtual void FpOtpRomTagWrite(uint8_t* pDst, int numBytes) = 0;
 
-	virtual void FpWaitForCMDComplete() = 0;
+	virtual void FpWaitForCMDComplete(const uint32_t timeout = 2000) = 0;
 
 	virtual void FpReadBuff(uint8_t *pDst, int numBytes) = 0;
 
 	virtual void FpReadAndCheckStatus(uint16_t statusIgnore) = 0;		//check status of VCSFW_STATUS
 
-	virtual void FpRunPatchTest(uint8_t *pDstResult, int numBytes) = 0;
+	virtual void FpRunPatchTest(uint8_t *pDst, int numBytes) = 0;
 
 	virtual void FpWaitDeviceReady() = 0;
 
 	virtual void FpDisableSleep() = 0;
+
+	virtual void FpEnterSleep() = 0;
 
 	virtual void FpGetVersion(uint8_t *pDst, int numBytes) = 0;
 

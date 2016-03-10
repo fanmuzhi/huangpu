@@ -35,17 +35,19 @@ public:
 
 	virtual void FpOtpRomTagWrite(uint8_t* pDst, int numBytes);
 
-	virtual void FpWaitForCMDComplete();
+	virtual void FpWaitForCMDComplete(const uint32_t timeout = 2000);
 
 	virtual void FpReadBuff(uint8_t *pDst, int numBytes);
 
 	virtual void FpReadAndCheckStatus(uint16_t statusIgnore);
 
-	virtual void FpRunPatchTest(uint8_t *pDstResult, int numBytes);
+	virtual void FpRunPatchTest(uint8_t *pDst, int numBytes);
 
 	virtual void FpWaitDeviceReady();
 
 	virtual void FpDisableSleep();
+
+	virtual void FpEnterSleep();
 
 	virtual void FpNoop();
 

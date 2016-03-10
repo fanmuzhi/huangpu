@@ -18,6 +18,7 @@
 #include "Ts_PixelPatchTest.h"
 #include "Ts_WoVarTest.h"
 #include "Ts_CurrentTest.h"
+#include "Ts_RetainMode.h"
 
 Syn_TestStepFactory::Syn_TestStepFactory()
 {
@@ -108,6 +109,10 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	else if (std::string("CurrentTest") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_CurrentTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("RetainMode") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_RetainMode(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else
 	{

@@ -149,14 +149,15 @@ uint32_t Syn_Site::Init()
 
 uint32_t Syn_Site::Open()
 {
-	if (_siteState == SiteState::Error)
-	{
-		return _uiErrorFlag;
-	}
-	if (_siteState != SiteState::Closed)
+	if (_siteState == SiteState::Running)
 	{
 		return Syn_ExceptionCode::Syn_SiteStateError;
 	}
+	//if (_siteState != SiteState::Closed)
+	//{
+	//	return Syn_ExceptionCode::Syn_SiteStateError;
+	//}
+	_uiErrorFlag = 0;
 
 	bool rc(false);
 
