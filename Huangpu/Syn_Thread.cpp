@@ -83,9 +83,9 @@ void Syn_Thread::run()
 			rc = _pSyn_Site->ExecuteTestStep("ConsecutivePixels");
 			emit send(iSiteNumber, "ConsecutivePixels");
 
-			/*rc = _pSyn_Site->GetTestResult(TestResult);
+			rc = _pSyn_Site->GetTestResult(TestResult);
 			rc = _pSyn_Site->ExecuteTestStep("PixelPatchTest");
-			emit send(iSiteNumber, "PixelPatchTest");*/
+			emit send(iSiteNumber, "PixelPatchTest");
 
 			rc = _pSyn_Site->GetTestResult(TestResult);
 			rc = _pSyn_Site->ExecuteTestStep("WoVarTest");

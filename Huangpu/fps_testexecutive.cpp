@@ -253,9 +253,6 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 			case Closed:
 				strSiteStatus = "Closed";
 				break;
-			case NotConnected:
-				strSiteStatus = "Not Connected";
-				break;
 			default:
 				strSiteStatus = "Error";
 				break;
@@ -275,12 +272,6 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 		ui.TestTableWidget->setColumnWidth(t - 1, 200);
 
 		strListOfHeader.append(QString("#") + QString::number(iSiteNumber));
-
-		if (NotConnected == oSiteState)
-		{
-			QMessageBox::information(this, QString("Error"), QString("Can't retrieve the Serial Number:") + QString::number(uiSerialNumber) + QString(" device,check it,please!"));
-			//continue;
-		}
 	}
 	ui.TestTableWidget->setHorizontalHeaderLabels(strListOfHeader);
 
@@ -921,7 +912,8 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 			{
 				string errMsg = "";
 				_ListOfSitePtr[i]->GetRunTimeError(errMsg);
-				QMessageBox::information(this, QString("Error"), QString("Calibrate Error:") + QString::fromStdString(errMsg));
+				QMessageBox::information(this, QString("Error"), QString("Error:") + QString::fromStdString(errMsg));
+				ui.LocalSettingsPushButton->setEnabled(true);
 				return;
 			}
 			_ListOfSitePtr[i]->GetTestResult(pCurrentDutTestResult);
@@ -1512,11 +1504,6 @@ void FPS_TestExecutive::PushCablicationImageButton()
 
 	SiteState oTempState;
 	_ListOfSitePtr[iSiteCurrentIndex]->GetState(oTempState);
-	if (NotConnected == oTempState)
-	{
-		QMessageBox::information(this, QString("Error"), QString("Cablication Error:Selected Site is NotConnected!"));
-		return;
-	}
 	if (Error == oTempState)
 	{
 		QMessageBox::information(this, QString("Error"), QString("Cablication Error:Selected Site's state is Error!"));
