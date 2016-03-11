@@ -16,8 +16,6 @@ extern "C" {
 #include "SYN_TestUtils.h"
 };
 
-//#include <windows.h> 
-
 enum SiteState
 {
 	Idle = 0x8001,
@@ -74,13 +72,6 @@ public:
 	};
 
 	static bool RegisterLoggingConfig();
-
-	//void Run();						//main test entrance.
-	//uint32_t ReadOTP();					//for debug.
-	//void GetVersion();				//for debug.
-	//void Calibration();				//for debug
-	//void GetFingerprintImage();		//for debug
-	//void PowerOff();//debug
 
 	inline void SetSiteNumber(unsigned int iSiteNumber){ _iSiteNumber = iSiteNumber; };
 	inline void GetSiteNumber(unsigned int &oSiteNumber){ oSiteNumber = _iSiteNumber; };
