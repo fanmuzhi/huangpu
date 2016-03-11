@@ -112,9 +112,20 @@ void Ts_InitializationStep::Execute()
 	_pSyn_DutCtrl->GpioPinWrite(7, 0x10, 0x0);	//Set pin 16 high (reverse logic).
 
 	//MPC04 self test
+	if (! this->CheckMPCVoltages())
+	{
+		//MPC04 self test fail
+		//throw error	
+	}
+
+	//poweron
 
 	//MPC04 Get ver
 	_pSyn_DutCtrl->FpGetVersion(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo._GerVerArray, VERSION_SIZE);
+
+	//fill the gerVerInfo to DUT serial number
+	//fill other info
+
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_bExecuted = true;
 }
