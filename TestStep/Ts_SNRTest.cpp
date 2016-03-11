@@ -115,10 +115,10 @@ void Ts_SNRTest::SetUp()
 
 void Ts_SNRTest::Execute()
 {
-	if (0 != _pSyn_Dut->_pSyn_DutTestResult->_binCodes.size())
-	{
-		return;
-	}
+	//if (0 != _pSyn_Dut->_pSyn_DutTestResult->_binCodes.size())
+	//{
+	//	return;
+	//}
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.m_bExecuted = true;
 }
@@ -304,5 +304,4 @@ void Ts_SNRTest::ProcessData()
 
 void Ts_SNRTest::CleanUp()
 {
-	PowerOff();
 }

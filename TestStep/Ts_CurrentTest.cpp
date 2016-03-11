@@ -101,7 +101,9 @@ void Ts_CurrentTest::Execute()
 		}
 		_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_arImageAcqCurrentVals[ADC4] = arCurrentSums[ADC4] / NUM_CURRENT_DRAW_READINGS;
 
-		uint32_t	arCurrentSums[NUM_CURRENT_VALUES] = { 0 };
+		//cleanup
+		memset(arCurrentVals, 0, sizeof(arCurrentVals));
+		memset(arCurrentSums, 0, sizeof(arCurrentSums));
 
 		//Get the current readings when DUT is actively acquiring an image.
 		for (int i = 0; i<NUM_CURRENT_DRAW_READINGS; i++)

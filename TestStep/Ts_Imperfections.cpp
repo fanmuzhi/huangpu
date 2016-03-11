@@ -188,5 +188,4 @@ void Ts_Imperfections::ProcessData()
 
 void Ts_Imperfections::CleanUp()
 {
-	PowerOff();
 }

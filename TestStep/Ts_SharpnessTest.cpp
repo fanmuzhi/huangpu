@@ -130,5 +130,4 @@ void Ts_SharpnessTest::ProcessData()
 
 void Ts_SharpnessTest::CleanUp()
 {
-	PowerOff();
 }

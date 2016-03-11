@@ -152,5 +152,4 @@ void Ts_PixelTest::ProcessData()
 
 void Ts_PixelTest::CleanUp()
 {
-	PowerOff();
 }
