@@ -49,6 +49,7 @@ void Ts_AcqImgNoFinger::SetUp()
 		_pSyn_Dut->_pSyn_DutTestInfo->_acqImgNoFingerInfo.m_nNumImagesWithoutStimulus= atoi(listOfArgValue[1].c_str());
 
 	//power on
+	PowerOff();
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 	_pSyn_DutCtrl->FpUnloadPatch();
 

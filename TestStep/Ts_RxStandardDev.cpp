@@ -110,5 +110,4 @@ void Ts_RxStandardDev::ProcessData()
 
 void Ts_RxStandardDev::CleanUp()
 {
-	PowerOff();
 }

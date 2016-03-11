@@ -157,5 +157,4 @@ void Ts_PeggedPixelsTest::ProcessData()
 
 void Ts_PeggedPixelsTest::CleanUp()
 {
-	PowerOff();
 }

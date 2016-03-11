@@ -49,6 +49,7 @@ void Ts_PixelPatchTest::SetUp()
 		_pSyn_Dut->_pSyn_DutTestInfo->_pixelPatchInfo.m_nDelay_ms = atoi(listOfArgValue[1].c_str());
 
 	//Power On
+	PowerOff();
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 	_pSyn_DutCtrl->FpUnloadPatch();
 

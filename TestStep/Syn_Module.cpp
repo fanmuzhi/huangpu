@@ -115,8 +115,9 @@ void Syn_Module::GetFingerprintImageForCurrentTest(CalibrationResults& pCalResul
 
 	//If the caller is requesting current draw readings.
 	//WritePrintFile(pCalResults);
-	_pSyn_DutCtrl->FpWrite(1, 2, (uint8_t*)pCalResults.m_pPrintPatch, pCalResults.m_nPrintPatchSize);
-	_pSyn_DutCtrl->FpWaitForCMDComplete();
+	_pSyn_DutCtrl->FpWritePrintFile((uint8_t*)pCalResults.m_pPrintPatch, pCalResults.m_nPrintPatchSize);
+	//_pSyn_DutCtrl->FpWrite(1, 2, (uint8_t*)pCalResults.m_pPrintPatch, pCalResults.m_nPrintPatchSize);
+	//_pSyn_DutCtrl->FpWaitForCMDComplete();
 
 	for (int i = 0; i<2; i++)
 	{
@@ -132,18 +133,7 @@ void Syn_Module::GetFingerprintImageForCurrentTest(CalibrationResults& pCalResul
 
 
 	//Wait for the sensor to generate complete image.
-	int timeout = 300;
-	uint8_t		pDst[4];
-	_pSyn_DutCtrl->FpGetStatus(pDst, sizeof(pDst));
-	while (timeout-- && ((pDst[3] & 0x02) == 0))
-		_pSyn_DutCtrl->FpGetStatus(pDst, sizeof(pDst));
-
-	if (timeout == 0)
-	{
-		Syn_Exception ex(0);
-		ex.SetDescription("Timeout waiting for image.");
-		throw ex;
-	}
+	_pSyn_DutCtrl->FpWaitForCMDComplete();
 
 	//Pull sensor's image data.
 	uint8_t* pImgBuf = new uint8_t[(nRows * nCols)];

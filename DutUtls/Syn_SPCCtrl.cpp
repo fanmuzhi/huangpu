@@ -447,7 +447,7 @@ void Syn_SPCCtrl::FpWritePrintFile(uint8_t *pPrintPatch, int numBytes)
 
 	this->FpWrite(1, VCSFW_CMD::GET_PRINT, pPrintPatch, numBytes);
 	this->FpWaitForCMDComplete();
-	this->FpReadAndCheckStatus(0);
+	//this->FpReadAndCheckStatus(0);
 }
 
 

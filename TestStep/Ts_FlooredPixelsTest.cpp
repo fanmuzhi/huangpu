@@ -141,5 +141,4 @@ void Ts_FlooredPixelsTest::ProcessData()
 
 void Ts_FlooredPixelsTest::CleanUp()
 {
-	PowerOff();
 }

@@ -289,5 +289,4 @@ void Ts_ConsecutivePixels::ProcessData()
 
 void Ts_ConsecutivePixels::CleanUp()
 {
-	PowerOff();
 }

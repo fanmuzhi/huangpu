@@ -1280,7 +1280,20 @@ void FPS_TestExecutive::GetVersionForDutDump()
 		return;
 	}
 
-	rc = pSelectedSite->ExecuteTestStep("PixelPatchTest");
+	Syn_DutTestResult *oDutTestResult = NULL;
+	rc = pSelectedSite->ExecuteTestStep("Calibrate");
+	if (rc != 0)
+	{
+		QMessageBox::information(this, QString("Error"), QString::number(rc));
+		return;
+	}
+	rc = pSelectedSite->GetTestResult(oDutTestResult);
+	if (rc != 0)
+	{
+		QMessageBox::information(this, QString("Error"), QString::number(rc));
+		return;
+	}
+	rc = pSelectedSite->ExecuteTestStep("CurrentTest");
 	if (rc != 0)
 	{
 		QMessageBox::information(this, QString("Error"), QString::number(rc));
@@ -1293,7 +1306,6 @@ void FPS_TestExecutive::GetVersionForDutDump()
 		QMessageBox::information(this, QString("Error"), QString::number(rc));
 		return;
 	}
-	Syn_DutTestResult *oDutTestResult = NULL;
 	rc = pSelectedSite->GetTestResult(oDutTestResult);
 	if (rc != 0)
 	{
