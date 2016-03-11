@@ -28,6 +28,9 @@
     <ClCompile Include="Ts_ConsecutivePixels.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Ts_CurrentTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Ts_DRdyTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -40,13 +43,31 @@
     <ClCompile Include="Ts_InitializationStep.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Ts_LaplacianTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Ts_OTPCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_OTPWriteBootSector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_OTPWriteMainSector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Ts_PeggedPixelsTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Ts_PixelPatchTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Ts_PixelTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_RetainMode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_RxStandardDev.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Ts_SharpnessTest.cpp">
@@ -55,25 +76,7 @@
     <ClCompile Include="Ts_SNRTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Ts_RxStandardDev.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Ts_LaplacianTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Ts_OTPWriteMainSector.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Ts_PixelPatchTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Ts_WoVarTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Ts_CurrentTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Ts_RetainMode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -108,6 +111,9 @@
     <ClInclude Include="Ts_ConsecutivePixels.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Ts_CurrentTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Ts_DRdyTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -120,13 +126,31 @@
     <ClInclude Include="Ts_InitializationStep.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Ts_LaplacianTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Ts_OTPCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_OTPWriteBootSector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_OTPWriteMainSector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ts_PeggedPixelsTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Ts_PixelPatchTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Ts_PixelTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_RetainMode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_RxStandardDev.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ts_SharpnessTest.h">
@@ -135,39 +159,21 @@
     <ClInclude Include="Ts_SNRTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Ts_RxStandardDev.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Ts_LaplacianTest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Ts_OTPWriteMainSector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Ts_PixelPatchTest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Ts_WoVarTest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Ts_CurrentTest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Ts_RetainMode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{4cc21038-30dd-4637-9cfc-9d91c78c3c23}</UniqueIdentifier>
+      <UniqueIdentifier>{a1af44ae-e280-4d5b-99ee-4bb245a2b7bd}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{72585986-671e-4278-a1af-991017046ee4}</UniqueIdentifier>
+      <UniqueIdentifier>{f65c259d-4882-4cde-8abd-30f03f2ab8a5}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
     <Filter Include="Resource Files">
-      <UniqueIdentifier>{9164128f-d597-4b5c-8212-4307cc7c4670}</UniqueIdentifier>
+      <UniqueIdentifier>{5ff7331d-f52f-4c48-9740-0577c1aff101}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>

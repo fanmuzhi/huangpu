@@ -20,7 +20,7 @@
 #include <vector>
 #include <string>
 #include <time.h>
-#include <thread>
+//#include <thread>
 
 #define ELPP_STL_LOGGING
 #define ELPP_THREAD_SAFE
@@ -83,7 +83,6 @@ uint32_t Syn_Site::CreateSiteInstance(uint8_t siteNumber, uint32_t deviceSerNumb
 		}
 	}
 	
-
 	return rc;
 }
 
@@ -210,21 +209,20 @@ uint32_t Syn_Site::Open()
 
 uint32_t Syn_Site::Close()
 {
-	if (_siteState == SiteState::Error)
+	if (_siteState == SiteState::Running)
 	{
-		return _uiErrorFlag;
+		return Syn_ExceptionCode::Syn_SiteStateError;
 	}
 
-	if (_siteState == TestDataReady || _siteState == Idle)
+	if (NULL != _pSyn_Dut)
 	{
 		delete _pSyn_Dut;
 		_pSyn_Dut = NULL;
-		_siteState = Closed;
-
-		return  Syn_ExceptionCode::Syn_OK;
 	}
+	
+	_siteState = Closed;
 
-	return Syn_ExceptionCode::Syn_SiteStateError;
+	return  Syn_ExceptionCode::Syn_OK;
 }
 
 uint32_t Syn_Site::ExecuteScript(uint8_t scriptID)
@@ -243,7 +241,7 @@ uint32_t Syn_Site::ExecuteScript(uint8_t scriptID)
 
 	//std::thread siteThread(RunScript, this, scriptID);
 
-	std::thread siteThread([&]()
+	/*std::thread siteThread([&]()
 	{
 		this->RunScript(scriptID);
 	});
@@ -252,7 +250,18 @@ uint32_t Syn_Site::ExecuteScript(uint8_t scriptID)
 	//siteThread.join();
 	
 	//return Syn_ExceptionCode::Syn_SiteThread;
-	return Syn_ExceptionCode::Syn_OK;
+	return Syn_ExceptionCode::Syn_OK;*/
+
+	RunScript(scriptID);
+
+	if (TestDataReady == _siteState)
+	{
+		return Syn_ExceptionCode::Syn_OK;
+	}
+	else
+	{
+		return _uiErrorFlag;
+	}
 }
 
 void Syn_Site::RunScript(uint8_t scriptID)
@@ -319,10 +328,8 @@ void Syn_Site::RunScript(uint8_t scriptID)
 				//_uiErrorFlag = Syn_Info::
 				_strErrorMessage = ex.GetDescription();
 				_uiErrorFlag = ex.GetError();
-
 				delete pTestStep;
 				pTestStep = NULL;
-				
 				break;
 			}
 			catch (...)

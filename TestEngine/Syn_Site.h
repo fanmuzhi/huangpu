@@ -24,8 +24,7 @@ enum SiteState
 	TestDataReady,
 	Running,
 	Error,
-	Closed,
-	NotConnected//add by Jerry:2016_02_24(for display Site State) maybe delete at end
+	Closed
 };
 
 class Syn_Site
@@ -88,10 +87,6 @@ public:
 	inline void GetSerialNumber(uint32_t &oSerialNumber){ oSerialNumber = _uiSerialNumber; };
 
 	inline void GetSysConfig(Syn_SysConfig &oConfig){ oConfig = _SysConfig; };
-
-
-	//add by Jerry:2016_02_24(set NotConnected Site Status) maybe delete at end
-	//inline void SetSiteNotConnected(){ _siteState = NotConnected; };
 
 private:
 
