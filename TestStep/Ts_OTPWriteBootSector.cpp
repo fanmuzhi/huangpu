@@ -26,10 +26,28 @@ void Ts_OTPWriteBootSector::SetUp()
 		throw ex;
 		return;
 	}
+
+	PowerOff();
+	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+
+	_pSyn_DutCtrl->FpUnloadPatch();
+
+	//load OTPReadWritePatch
+	Syn_PatchInfo OTPRWPatchInfo;
+	if (!_pSyn_Dut->FindPatch("OtpReadWritePatch", OTPRWPatchInfo))
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+		ex.SetDescription("OtpReadWritePatch Patch is NULL!");
+		throw ex;
+		return;
+	}
+	_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
 }
 
 void Ts_OTPWriteBootSector::Execute()
 {
+	uint8_t arOTP[BS0_SIZE + BS1_SIZE + MS0_SIZE + MS1_SIZE] = { 0 };
+	_pSyn_DutCtrl->FpOtpRomRead();
 
 }
 

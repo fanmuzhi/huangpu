@@ -405,8 +405,6 @@ uint8_t Syn_SPCCtrl::FpOtpRomTagRead(uint32_t nExtTag, uint8_t* pDst, int numByt
 }
 
 
-
-
 void Syn_SPCCtrl::FpOtpRomTagWrite(uint8_t* pDst, int numBytes)
 {
 	LOG(INFO) << "OTPRom Tag Write";
@@ -415,9 +413,6 @@ void Syn_SPCCtrl::FpOtpRomTagWrite(uint8_t* pDst, int numBytes)
 	this->FpWaitForCMDComplete();
 	this->FpReadAndCheckStatus(0);
 }
-
-
-
 
 
 void Syn_SPCCtrl::FpGetVersion(uint8_t *pDst, int numBytes)
