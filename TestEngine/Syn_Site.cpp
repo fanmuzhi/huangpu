@@ -201,7 +201,7 @@ uint32_t Syn_Site::Open()
 
 	//fill info
 	_pSyn_Dut->InitData(_SysConfig,_ADCInfo);
-
+	
 	_siteState = Idle;
 
 	return Syn_ExceptionCode::Syn_OK;

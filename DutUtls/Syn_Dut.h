@@ -142,4 +142,5 @@ public:
 
 	ProjectType		_eProjectType;
 	
+	bool b_Pass;
 };

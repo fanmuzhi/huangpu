@@ -30,10 +30,14 @@ void Syn_Thread::run()
 		rc = _pSyn_Site->Open();
 		if (rc == 0)
 		{
+			Syn_DutTestResult * TestResult = NULL;
+
+			rc = _pSyn_Site->ExecuteTestStep("InitializationStep");
+			emit send(iSiteNumber, "InitializationStep");
+
+			rc = _pSyn_Site->GetTestResult(TestResult);
 			rc = _pSyn_Site->ExecuteTestStep("Calibrate");
 			emit send(iSiteNumber, "Calibrate");
-
-			Syn_DutTestResult * TestResult = NULL;
 
 			rc = _pSyn_Site->GetTestResult(TestResult);
 			rc = _pSyn_Site->ExecuteTestStep("AcqImgNoFinger");
@@ -102,6 +106,10 @@ void Syn_Thread::run()
 			/*rc = _pSyn_Site->GetTestResult(TestResult);
 			rc = _pSyn_Site->ExecuteTestStep("OTPWriteMainSector");
 			emit send(iSiteNumber, "OTPWriteMainSector");*/
+
+			rc = _pSyn_Site->GetTestResult(TestResult);
+			rc = _pSyn_Site->ExecuteTestStep("FinalizationStep");
+			emit send(iSiteNumber, "FinalizationStep");
 
 			emit send(iSiteNumber);
 

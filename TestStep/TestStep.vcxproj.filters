@@ -79,6 +79,9 @@
     <ClCompile Include="Ts_WoVarTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Ts_FinalizationStep.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Syn_FingerprintTest.h">
@@ -160,6 +163,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ts_WoVarTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_FinalizationStep.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

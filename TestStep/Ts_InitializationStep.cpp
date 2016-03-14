@@ -172,6 +172,10 @@ void Ts_InitializationStep::ProcessData()
 		throw ex;
 	}
 
+	for (int i = 0; i < DUT_SER_NUM_SIZE; i++)
+	{
+		_pSyn_Dut->_pSyn_DutTestResult->_arSerialNum[i] = (_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number)[i];
+	}
 }
 
 void Ts_InitializationStep::CleanUp()

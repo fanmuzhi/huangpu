@@ -2,6 +2,6 @@
 <LocalSettings>
     <SysConfigFile>D:/580-005895-01r2(FM-000133-003)_OFilm_ZTE_Qiling_Modified_For_Huangpu.xml</SysConfigFile>
     <NumSites>1</NumSites>
-    <Site1 Voltages="1800 1800 0 3300" AdcBaseLines="696 696 697 697 696 695 695 695 696 695 692 855 696 696 696 696 ">1456665</Site1>
+    <Site1 AdcBaseLines="694 695 696 691 694 695 695 695 695 697 695 854 695 695 696 696 " Voltages="1800 1800 0 3300">1456665</Site1>
     <AutoController></AutoController>
 </LocalSettings>

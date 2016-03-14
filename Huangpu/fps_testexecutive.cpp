@@ -1317,7 +1317,7 @@ void FPS_TestExecutive::GetVersionForDutDump()
 
 	QDateTime timeValue = QDateTime::fromTime_t(pInfo->_getVerInfo.buildtime);
 	ui.textBrowser->append(QString("buildtime:") + timeValue.toString());
-	ui.textBrowser->append(QString("buildnum:") + QString::number(pInfo->_getVerInfo.buildnum,16));
+	ui.textBrowser->append(QString("buildnum:") + QString::number(pInfo->_getVerInfo.buildnum,16).toUpper());
 	ui.textBrowser->append(QString("vmajor:") + QString::number(pInfo->_getVerInfo.vmajor));
 	ui.textBrowser->append(QString("vminor:") + QString::number(pInfo->_getVerInfo.vminor));
 	ui.textBrowser->append(QString("target:") + QString::number(pInfo->_getVerInfo.target));
