@@ -116,16 +116,49 @@ void Ts_InitializationStep::Execute()
 	{
 		//MPC04 self test fail
 		//throw error	
+		Syn_Exception ex(Syn_ExceptionCode::Syn_ERR_INITIALIZATION_FAILED);
+		ex.SetDescription("TestStep InitializationStep:MPC04 self test fail!");
+		throw ex;
 	}
 
 	//poweron
+	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+
+	if (VERSION_SIZE < 36)
+	{
+		Syn_Exception ex(Syn_ExceptionCode::Syn_ERR_INITIALIZATION_FAILED);
+		ex.SetDescription("TestStep InitializationStep:VERSION_SIZE error!");
+		throw ex;
+	}
 
 	//MPC04 Get ver
 	_pSyn_DutCtrl->FpGetVersion(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo._GerVerArray, VERSION_SIZE);
 
+	uint8_t *pTempArray = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo._GerVerArray;
+
 	//fill the gerVerInfo to DUT serial number
 	//fill other info
+	//memcpy(&(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.buildtime), &pTempArray[0], 4);
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.buildtime = (uint32_t)pTempArray[0] << 0 | (uint32_t)pTempArray[1] << 8 | (uint32_t)pTempArray[2] << 16 | (uint32_t)pTempArray[3] << 24;
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.buildnum = pTempArray[4] << 0 | pTempArray[5] << 8 | pTempArray[6] << 16 | pTempArray[7]<<24;
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.vmajor = pTempArray[8];
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.vminor = pTempArray[9];
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.target = pTempArray[10];
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.product = pTempArray[11];
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.siliconrev = pTempArray[12];
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.formalrel = pTempArray[13];
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.platform = pTempArray[14];
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.patch = pTempArray[15];
+	memcpy(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number, &(pTempArray[16]), 6);
+	memcpy(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.security, &(pTempArray[22]), 2);
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.patchsig = pTempArray[24] << 0 | pTempArray[25] << 8 | pTempArray[26] << 16 | pTempArray[27]<<24; 
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.iface = pTempArray[28];
+	memcpy(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.otpsig, &(pTempArray[29]), 3);
 
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.otpspare1 = pTempArray[32] << 0 | pTempArray[33]<<8;
+
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.reserved = pTempArray[34];
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.device_type = pTempArray[35];
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_bExecuted = true;
 }
@@ -143,9 +176,8 @@ void Ts_InitializationStep::ProcessData()
 
 void Ts_InitializationStep::CleanUp()
 {
-
+	PowerOff();
 }
-
 
 bool Ts_InitializationStep::CheckMPCVoltages()
 {
