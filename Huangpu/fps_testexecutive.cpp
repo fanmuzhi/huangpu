@@ -4,6 +4,8 @@
 //Qt
 #include <QtWidgets>
 
+#include <time.h>
+
 FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 : QMainWindow(parent)
 , _bStopTag(true)
@@ -1281,6 +1283,61 @@ void FPS_TestExecutive::GetVersionForDutDump()
 	}
 
 	Syn_DutTestResult *oDutTestResult = NULL;
+	rc = pSelectedSite->ExecuteTestStep("InitializationStep");
+	if (rc != 0)
+	{
+		QMessageBox::information(this, QString("Error"), QString::number(rc));
+		return;
+	}
+	rc = pSelectedSite->GetTestResult(oDutTestResult);
+	if (rc != 0)
+	{
+		QMessageBox::information(this, QString("Error"), QString::number(rc));
+		return;
+	}
+
+	Syn_DutTestInfo *pInfo = NULL;
+	rc = pSelectedSite->GetTestInfo(pInfo);
+	if (rc != 0)
+	{
+		QMessageBox::information(this, QString("Error"), QString::number(rc));
+		return;
+	}
+
+	ui.textBrowser->clear();
+	ui.textBrowser->append(QString("Version:"));
+	/*for (int i = 1; i <= VERSION_SIZE / 4; i++)
+	{
+		int StartPos = (i - 1) * 4;
+		int EndPos = i * 4 - 1;
+
+		Display(pInfo->_getVerInfo._GerVerArray, StartPos, EndPos);
+	}*/
+
+
+	QDateTime timeValue = QDateTime::fromTime_t(pInfo->_getVerInfo.buildtime);
+	ui.textBrowser->append(QString("buildtime:") + timeValue.toString());
+	ui.textBrowser->append(QString("buildnum:") + QString::number(pInfo->_getVerInfo.buildnum,16));
+	ui.textBrowser->append(QString("vmajor:") + QString::number(pInfo->_getVerInfo.vmajor));
+	ui.textBrowser->append(QString("vminor:") + QString::number(pInfo->_getVerInfo.vminor));
+	ui.textBrowser->append(QString("target:") + QString::number(pInfo->_getVerInfo.target));
+	ui.textBrowser->append(QString("product:") + QString::number(pInfo->_getVerInfo.product));
+	ui.textBrowser->append(QString("siliconrev:") + QString::number(pInfo->_getVerInfo.siliconrev));
+	ui.textBrowser->append(QString("formalrel:") + QString::number(pInfo->_getVerInfo.formalrel));
+	ui.textBrowser->append(QString("platform:") + QString::number(pInfo->_getVerInfo.platform));
+	ui.textBrowser->append(QString("patch:") + QString::number(pInfo->_getVerInfo.patch));
+	ui.textBrowser->append(QString("serial_number:") + QString::number(pInfo->_getVerInfo.serial_number[0],16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[1],16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[2],16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[3],16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[4],16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[5],16));
+	ui.textBrowser->append(QString("security:") + QString::number(pInfo->_getVerInfo.security[0]) + QString("|") + QString::number(pInfo->_getVerInfo.security[1]));
+	ui.textBrowser->append(QString("patchsig:") + QString::number(pInfo->_getVerInfo.patchsig));
+	ui.textBrowser->append(QString("iface:") + QString::number(pInfo->_getVerInfo.iface));
+	ui.textBrowser->append(QString("otpsig:") + QString::number(pInfo->_getVerInfo.otpsig[0]) + QString("|") + QString::number(pInfo->_getVerInfo.otpsig[1]) + QString("|") + QString::number(pInfo->_getVerInfo.otpsig[2]));
+	ui.textBrowser->append(QString("otpspare1:") + QString::number(pInfo->_getVerInfo.otpspare1));
+	ui.textBrowser->append(QString("reserved:") + QString::number(pInfo->_getVerInfo.reserved));
+	ui.textBrowser->append(QString("device_type:") + QString::number(pInfo->_getVerInfo.device_type));
+
+	pSelectedSite->Close();
+
+	/*Syn_DutTestResult *oDutTestResult = NULL;
 	rc = pSelectedSite->ExecuteTestStep("Calibrate");
 	if (rc != 0)
 	{
@@ -1311,7 +1368,7 @@ void FPS_TestExecutive::GetVersionForDutDump()
 	{
 		QMessageBox::information(this, QString("Error"), QString::number(rc));
 		return;
-	}
+	}*/
 //	int iSiteCurrentIndex = ui.comboBox->currentIndex();
 //	if (iSiteCurrentIndex<0)
 //	{
@@ -1357,6 +1414,7 @@ void FPS_TestExecutive::GetVersionForDutDump()
 
 //		Display(pDutTestInfo->_getVerInfo._GerVerArray, StartPos, EndPos);
 //	}
+
 
 }
 

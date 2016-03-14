@@ -132,6 +132,25 @@ typedef struct
 typedef struct
 {
 	uint8_t  _GerVerArray[VERSION_SIZE];
+
+	uint32_t   buildtime;        /* Unix-style build time, in seconds   *//*  from 1/1/1970 12:00 AM GMT         */
+	uint32_t   buildnum;         /* build number                        */
+	uint8_t    vmajor;           /* major version                       */
+	uint8_t    vminor;           /* minor version                       */
+	uint8_t    target;           /* target, e.g. VCSFW_TARGET_ROM       */
+	uint8_t    product;          /* product, e.g.  VCSFW_PRODUCT_FALCON */
+	uint8_t    siliconrev;       /* silicon revision                    */
+	uint8_t    formalrel;        /* boolean: non-zero -> formal release */
+	uint8_t    platform;         /* Platform (PCB) revision             */
+	uint8_t    patch;            /* patch level                         */
+	uint8_t    serial_number[6]; /* 48-bit Serial Number                */
+	uint8_t    security[2];      /* bytes 0 and 1 of OTP                */
+	uint32_t   patchsig;         /* opaque patch signature              */
+	uint8_t    iface;            /* interface type, see below           */
+	uint8_t    otpsig[3];        /* OTP Patch Signature                 */
+	uint16_t   otpspare1;        /* spare space                         */
+	uint8_t    reserved;         /* reserved byte                       */
+	uint8_t    device_type;      /* device type                         */
 }GetVerInfo;
 
 ///////////////////////////// ////////////////////////
