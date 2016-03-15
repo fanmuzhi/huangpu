@@ -121,8 +121,8 @@ public:
         horizontalLayout->setSpacing(6);
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
         TestTableWidget = new QTableWidget(tab);
-        if (TestTableWidget->rowCount() < 10)
-            TestTableWidget->setRowCount(10);
+        if (TestTableWidget->rowCount() < 9)
+            TestTableWidget->setRowCount(9);
         QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
         TestTableWidget->setVerticalHeaderItem(0, __qtablewidgetitem);
         QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
@@ -130,7 +130,6 @@ public:
         QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
         TestTableWidget->setVerticalHeaderItem(2, __qtablewidgetitem2);
         QTableWidgetItem *__qtablewidgetitem3 = new QTableWidgetItem();
-        __qtablewidgetitem3->setBackground(QColor(85, 255, 0));
         TestTableWidget->setVerticalHeaderItem(3, __qtablewidgetitem3);
         QTableWidgetItem *__qtablewidgetitem4 = new QTableWidgetItem();
         TestTableWidget->setVerticalHeaderItem(4, __qtablewidgetitem4);
@@ -142,8 +141,6 @@ public:
         TestTableWidget->setVerticalHeaderItem(7, __qtablewidgetitem7);
         QTableWidgetItem *__qtablewidgetitem8 = new QTableWidgetItem();
         TestTableWidget->setVerticalHeaderItem(8, __qtablewidgetitem8);
-        QTableWidgetItem *__qtablewidgetitem9 = new QTableWidgetItem();
-        TestTableWidget->setVerticalHeaderItem(9, __qtablewidgetitem9);
         TestTableWidget->setObjectName(QStringLiteral("TestTableWidget"));
         TestTableWidget->setAutoScroll(false);
         TestTableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -275,23 +272,21 @@ public:
         QTableWidgetItem *___qtablewidgetitem = TestTableWidget->verticalHeaderItem(0);
         ___qtablewidgetitem->setText(QApplication::translate("FPS_TestExecutiveClass", "Test Site", 0));
         QTableWidgetItem *___qtablewidgetitem1 = TestTableWidget->verticalHeaderItem(1);
-        ___qtablewidgetitem1->setText(QApplication::translate("FPS_TestExecutiveClass", "Status", 0));
+        ___qtablewidgetitem1->setText(QApplication::translate("FPS_TestExecutiveClass", "SerialNumber", 0));
         QTableWidgetItem *___qtablewidgetitem2 = TestTableWidget->verticalHeaderItem(2);
-        ___qtablewidgetitem2->setText(QApplication::translate("FPS_TestExecutiveClass", "Test Step", 0));
+        ___qtablewidgetitem2->setText(QApplication::translate("FPS_TestExecutiveClass", "Status", 0));
         QTableWidgetItem *___qtablewidgetitem3 = TestTableWidget->verticalHeaderItem(3);
-        ___qtablewidgetitem3->setText(QApplication::translate("FPS_TestExecutiveClass", "Result(Pass/Fail)", 0));
+        ___qtablewidgetitem3->setText(QApplication::translate("FPS_TestExecutiveClass", "Test Step", 0));
         QTableWidgetItem *___qtablewidgetitem4 = TestTableWidget->verticalHeaderItem(4);
         ___qtablewidgetitem4->setText(QApplication::translate("FPS_TestExecutiveClass", "Result BinCode", 0));
         QTableWidgetItem *___qtablewidgetitem5 = TestTableWidget->verticalHeaderItem(5);
         ___qtablewidgetitem5->setText(QApplication::translate("FPS_TestExecutiveClass", "SNR", 0));
         QTableWidgetItem *___qtablewidgetitem6 = TestTableWidget->verticalHeaderItem(6);
-        ___qtablewidgetitem6->setText(QApplication::translate("FPS_TestExecutiveClass", "BGA SN", 0));
+        ___qtablewidgetitem6->setText(QApplication::translate("FPS_TestExecutiveClass", "Pass/Fail", 0));
         QTableWidgetItem *___qtablewidgetitem7 = TestTableWidget->verticalHeaderItem(7);
-        ___qtablewidgetitem7->setText(QApplication::translate("FPS_TestExecutiveClass", "Pass/Total", 0));
+        ___qtablewidgetitem7->setText(QApplication::translate("FPS_TestExecutiveClass", "Image(NoFinger)", 0));
         QTableWidgetItem *___qtablewidgetitem8 = TestTableWidget->verticalHeaderItem(8);
-        ___qtablewidgetitem8->setText(QApplication::translate("FPS_TestExecutiveClass", "Image(NoFinger)", 0));
-        QTableWidgetItem *___qtablewidgetitem9 = TestTableWidget->verticalHeaderItem(9);
-        ___qtablewidgetitem9->setText(QApplication::translate("FPS_TestExecutiveClass", "Image(FakeFinger)", 0));
+        ___qtablewidgetitem8->setText(QApplication::translate("FPS_TestExecutiveClass", "Image(FakeFinger)", 0));
         TestOperationGroupBox->setTitle(QApplication::translate("FPS_TestExecutiveClass", "Test Operation", 0));
         pushButtonRun->setText(QApplication::translate("FPS_TestExecutiveClass", "Run", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("FPS_TestExecutiveClass", "Main", 0));

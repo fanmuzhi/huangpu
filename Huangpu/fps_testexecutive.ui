@@ -70,24 +70,17 @@
                </row>
                <row>
                 <property name="text">
+                 <string>SerialNumber</string>
+                </property>
+               </row>
+               <row>
+                <property name="text">
                  <string>Status</string>
                 </property>
                </row>
                <row>
                 <property name="text">
                  <string>Test Step</string>
-                </property>
-               </row>
-               <row>
-                <property name="text">
-                 <string>Result(Pass/Fail)</string>
-                </property>
-                <property name="background">
-                 <color>
-                  <red>85</red>
-                  <green>255</green>
-                  <blue>0</blue>
-                 </color>
                 </property>
                </row>
                <row>
@@ -102,12 +95,7 @@
                </row>
                <row>
                 <property name="text">
-                 <string>BGA SN</string>
-                </property>
-               </row>
-               <row>
-                <property name="text">
-                 <string>Pass/Total</string>
+                 <string>Pass/Fail</string>
                 </property>
                </row>
                <row>
