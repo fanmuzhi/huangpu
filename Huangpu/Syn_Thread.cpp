@@ -36,7 +36,7 @@ void Syn_Thread::run()
 			if (Syn_ExceptionCode::Syn_OK != rc)
 			{
 				emit send(iSiteNumber, "InitializationStep", "Fail");
-				_pSyn_Site->Close();
+				emit send(iSiteNumber);
 				return;
 			}
 			else
@@ -88,6 +88,13 @@ void Syn_Thread::run()
 		if (rc == 0)
 		{
 			Syn_DutTestResult * TestResult = NULL;
+
+			SiteState oState;
+			_pSyn_Site->GetState(oState);
+			if (SiteState::Error == oState)
+			{
+				return;
+			}
 
 			rc = _pSyn_Site->ExecuteTestStep("AcqImgFinger");
 			emit send(iSiteNumber, "AcqImgFinger","Pass");
