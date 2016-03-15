@@ -132,7 +132,16 @@ void Ts_InitializationStep::Execute()
 	}
 
 	//MPC04 Get ver
-	_pSyn_DutCtrl->FpGetVersion(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo._GerVerArray, VERSION_SIZE);
+	try
+	{
+		_pSyn_DutCtrl->FpGetVersion(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo._GerVerArray, VERSION_SIZE);
+	}
+	catch (Syn_Exception ex)
+	{
+		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sDutCommFail);
+		//throw ex;
+		return;
+	}
 
 	uint8_t *pTempArray = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo._GerVerArray;
 

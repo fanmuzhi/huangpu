@@ -137,6 +137,9 @@ void Ts_FlooredPixelsTest::ProcessData()
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sFlooredPixFail);
 	}
+
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_flooredPixelsResults.m_elapsedtime);
+
 }
 
 void Ts_FlooredPixelsTest::CleanUp()

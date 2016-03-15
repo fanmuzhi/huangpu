@@ -109,6 +109,10 @@ bool Syn_LocalSettingConfig::GetLocalSettings(Syn_LocalSettings &oSyn_LocalSetti
 		{
 			oSyn_LocalSettings._strSysConfigFilePath = element.text().toStdString();
 		}
+		if (QString("LogFilePath") == strTagName)
+		{
+			oSyn_LocalSettings._strLogFilePath = element.text().toStdString();
+		}
 		else if (QString("AutoController") == strTagName)
 		{
 			oSyn_LocalSettings._strAutoController = element.text().toStdString();
@@ -185,6 +189,13 @@ bool Syn_LocalSettingConfig::SetLocalSettings(Syn_LocalSettings iSyn_LocalSettin
 	QDomText SysConfigFileTextNode = q_DomDocument.createTextNode(strSysConfigFilePath);
 	rootNode.appendChild(SysConfigFileNode);
 	SysConfigFileNode.appendChild(SysConfigFileTextNode);
+
+	//LogFilePath
+	QDomElement LogFilePathNode = q_DomDocument.createElement("LogFilePath");
+	QString strLogFilePath(QString::fromStdString(iSyn_LocalSettings._strLogFilePath));
+	QDomText LogFileTextNode = q_DomDocument.createTextNode(strLogFilePath);
+	rootNode.appendChild(LogFilePathNode);
+	LogFilePathNode.appendChild(LogFileTextNode);
 
 	//NumSites
 	int iNumSites = iSyn_LocalSettings._listOfSiteSettings.size();

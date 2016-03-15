@@ -18,67 +18,23 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_8">
    <item row="1" column="0">
-    <widget class="QGroupBox" name="OptionsGroupBox">
+    <widget class="QGroupBox" name="LogFileGroupBox">
      <property name="title">
-      <string>Options</string>
+      <string>LogFile Path</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_5">
       <item row="0" column="0">
-       <widget class="QGroupBox" name="ModeGroupBox">
-        <property name="title">
-         <string>Mode</string>
+       <widget class="QLineEdit" name="LogFileLineEdit">
+        <property name="readOnly">
+         <bool>true</bool>
         </property>
-        <layout class="QGridLayout" name="gridLayout_2">
-         <item row="0" column="0">
-          <widget class="QCheckBox" name="VerboseLogCheckBox">
-           <property name="text">
-            <string>Verbose Log</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QCheckBox" name="QAModeCheckBox">
-           <property name="text">
-            <string>QA Mode</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QCheckBox" name="LGAModecheckBox">
-           <property name="text">
-            <string>LGA Mode</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QGroupBox" name="AutoRepeatGroupBox">
-        <property name="title">
-         <string>Auto Repeat</string>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="SelectLogFilePushButton">
+        <property name="text">
+         <string>Select</string>
         </property>
-        <layout class="QGridLayout" name="gridLayout_3">
-         <item row="0" column="0">
-          <widget class="QCheckBox" name="AutoRepeatEnabledCheckBox">
-           <property name="text">
-            <string>Enabled</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QGroupBox" name="AutoControllerGroupBox">
-        <property name="title">
-         <string>Auto Controller</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_4">
-         <item row="0" column="0">
-          <widget class="QComboBox" name="AutoControllerComboBox"/>
-         </item>
-        </layout>
        </widget>
       </item>
      </layout>

@@ -184,6 +184,8 @@ void Ts_Imperfections::ProcessData()
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sImperfectionsFail);
 	}
+
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_imperfectionsTestResults.m_elapsedtime);
 }
 
 void Ts_Imperfections::CleanUp()

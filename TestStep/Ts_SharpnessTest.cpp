@@ -126,6 +126,9 @@ void Ts_SharpnessTest::ProcessData()
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sSharpnessFail);
 	}
+
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_SharpnessResults.m_elapsedtime);
+
 }
 
 void Ts_SharpnessTest::CleanUp()

@@ -175,6 +175,8 @@ void Ts_CurrentTest::ProcessData()
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sImagingCurrentFail);
 	}
+
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_currentResults.m_elapsedtime);
 }
 
 void Ts_CurrentTest::CleanUp()

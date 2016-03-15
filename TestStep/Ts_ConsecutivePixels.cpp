@@ -285,6 +285,8 @@ void Ts_ConsecutivePixels::ProcessData()
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sConsecutivePeggedPixFail);
 		//_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sConsecutiveFlooredPixFail);
 	}
+
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_consecutivePixelsResults.m_elapsedtime);
 }
 
 void Ts_ConsecutivePixels::CleanUp()
