@@ -90,16 +90,8 @@ public Q_SLOTS:
 	void UpdateADCOffsets();
 	void CloseUpdateADCOffsetsDialog();
 
-
-
-	//void RunningTest();
 	void Run();
 	void ReceiveSiteInfo(unsigned int iSiteNumber);
-
-
-	//void ReceiveDutTestResultSlot(void * pDutTestResult);
-
-	//void ReceiveSiteInfoSlot(void * pSiteInfo);
 
 	//Debug
 	//Dut dump
