@@ -273,3 +273,21 @@ void Syn_Module::ImageDecode(FPSFrame *pDecodedFrame, FPSFrame *pEncodedFrame, i
 		}
 	}
 }
+
+int8_t Syn_Module::CalcPgaOffset(uint8_t nPixelValue, float nRatio, float nConfigRatio)
+{
+	float nOffset;
+	float nDelta;
+
+	//      nRatio = (nRatio < 0.5 || nRatio > 3) ? nConfigRatio : nRatio;
+	nDelta = (float)nPixelValue - (float)128;
+	nOffset = (float)nDelta / nRatio;
+
+	if (nOffset > 127)
+		nOffset = 127;
+
+	if (nOffset < -128)
+		nOffset = -128;
+
+	return (int8_t)nOffset;
+}
