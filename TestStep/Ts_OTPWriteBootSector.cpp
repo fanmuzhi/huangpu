@@ -47,7 +47,7 @@ void Ts_OTPWriteBootSector::SetUp()
 void Ts_OTPWriteBootSector::Execute()
 {
 	uint8_t arOTP[BS0_SIZE + BS1_SIZE + MS0_SIZE + MS1_SIZE] = { 0 };
-	_pSyn_DutCtrl->FpOtpRomRead();
+	//_pSyn_DutCtrl->FpOtpRomRead();
 
 }
 

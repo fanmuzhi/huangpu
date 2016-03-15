@@ -238,7 +238,6 @@ void Syn_SPCCtrl::FpReadAndCheckStatus(uint16_t statusIgnore)
 	
 	//uint16_t returnValue = (pDst[0] << 8) + pDst[1];
 	uint16_t returnValue = *((uint16_t*)pDst);
-	LOG(DEBUG) << "0x" << hex << returnValue;
 
 	if (statusIgnore != returnValue && returnValue != 0)
 	{
@@ -250,7 +249,7 @@ void Syn_SPCCtrl::FpReadAndCheckStatus(uint16_t statusIgnore)
 
 void Syn_SPCCtrl::FpRunPatchTest(uint8_t *pDst, int numBytes)
 {
-	uint32_t timeout = 5000;
+	uint32_t timeout = 1000;
 
 	uint8_t numbytes = 2;
 	uint8_t pSrc[10];
@@ -754,6 +753,7 @@ void Syn_SPCCtrl::UpdateMPC04Firmware()
 				throw ex;
 			}
 			LOG(INFO) << "MPC04 Firmware update process: " << nPercent;
+			::Sleep(5);
 		}
 
 		//Wait for the Update command to complete.
