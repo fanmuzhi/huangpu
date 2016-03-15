@@ -13,8 +13,6 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QComboBox>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
@@ -33,19 +31,10 @@ class Ui_Syn_LocalSettingsDlg
 {
 public:
     QGridLayout *gridLayout_8;
-    QGroupBox *OptionsGroupBox;
+    QGroupBox *LogFileGroupBox;
     QGridLayout *gridLayout_5;
-    QGroupBox *ModeGroupBox;
-    QGridLayout *gridLayout_2;
-    QCheckBox *VerboseLogCheckBox;
-    QCheckBox *QAModeCheckBox;
-    QCheckBox *LGAModecheckBox;
-    QGroupBox *AutoRepeatGroupBox;
-    QGridLayout *gridLayout_3;
-    QCheckBox *AutoRepeatEnabledCheckBox;
-    QGroupBox *AutoControllerGroupBox;
-    QGridLayout *gridLayout_4;
-    QComboBox *AutoControllerComboBox;
+    QLineEdit *LogFileLineEdit;
+    QPushButton *SelectLogFilePushButton;
     QGroupBox *SysConfigFileGroupBox;
     QGridLayout *gridLayout;
     QLineEdit *SysConfigFileLlineEdit;
@@ -76,66 +65,25 @@ public:
         gridLayout_8->setSpacing(6);
         gridLayout_8->setContentsMargins(11, 11, 11, 11);
         gridLayout_8->setObjectName(QStringLiteral("gridLayout_8"));
-        OptionsGroupBox = new QGroupBox(Syn_LocalSettingsDlg);
-        OptionsGroupBox->setObjectName(QStringLiteral("OptionsGroupBox"));
-        gridLayout_5 = new QGridLayout(OptionsGroupBox);
+        LogFileGroupBox = new QGroupBox(Syn_LocalSettingsDlg);
+        LogFileGroupBox->setObjectName(QStringLiteral("LogFileGroupBox"));
+        gridLayout_5 = new QGridLayout(LogFileGroupBox);
         gridLayout_5->setSpacing(6);
         gridLayout_5->setContentsMargins(11, 11, 11, 11);
         gridLayout_5->setObjectName(QStringLiteral("gridLayout_5"));
-        ModeGroupBox = new QGroupBox(OptionsGroupBox);
-        ModeGroupBox->setObjectName(QStringLiteral("ModeGroupBox"));
-        gridLayout_2 = new QGridLayout(ModeGroupBox);
-        gridLayout_2->setSpacing(6);
-        gridLayout_2->setContentsMargins(11, 11, 11, 11);
-        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
-        VerboseLogCheckBox = new QCheckBox(ModeGroupBox);
-        VerboseLogCheckBox->setObjectName(QStringLiteral("VerboseLogCheckBox"));
+        LogFileLineEdit = new QLineEdit(LogFileGroupBox);
+        LogFileLineEdit->setObjectName(QStringLiteral("LogFileLineEdit"));
+        LogFileLineEdit->setReadOnly(true);
 
-        gridLayout_2->addWidget(VerboseLogCheckBox, 0, 0, 1, 1);
+        gridLayout_5->addWidget(LogFileLineEdit, 0, 0, 1, 1);
 
-        QAModeCheckBox = new QCheckBox(ModeGroupBox);
-        QAModeCheckBox->setObjectName(QStringLiteral("QAModeCheckBox"));
+        SelectLogFilePushButton = new QPushButton(LogFileGroupBox);
+        SelectLogFilePushButton->setObjectName(QStringLiteral("SelectLogFilePushButton"));
 
-        gridLayout_2->addWidget(QAModeCheckBox, 0, 1, 1, 1);
-
-        LGAModecheckBox = new QCheckBox(ModeGroupBox);
-        LGAModecheckBox->setObjectName(QStringLiteral("LGAModecheckBox"));
-
-        gridLayout_2->addWidget(LGAModecheckBox, 0, 2, 1, 1);
+        gridLayout_5->addWidget(SelectLogFilePushButton, 0, 1, 1, 1);
 
 
-        gridLayout_5->addWidget(ModeGroupBox, 0, 0, 1, 1);
-
-        AutoRepeatGroupBox = new QGroupBox(OptionsGroupBox);
-        AutoRepeatGroupBox->setObjectName(QStringLiteral("AutoRepeatGroupBox"));
-        gridLayout_3 = new QGridLayout(AutoRepeatGroupBox);
-        gridLayout_3->setSpacing(6);
-        gridLayout_3->setContentsMargins(11, 11, 11, 11);
-        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
-        AutoRepeatEnabledCheckBox = new QCheckBox(AutoRepeatGroupBox);
-        AutoRepeatEnabledCheckBox->setObjectName(QStringLiteral("AutoRepeatEnabledCheckBox"));
-
-        gridLayout_3->addWidget(AutoRepeatEnabledCheckBox, 0, 0, 1, 1);
-
-
-        gridLayout_5->addWidget(AutoRepeatGroupBox, 1, 0, 1, 1);
-
-        AutoControllerGroupBox = new QGroupBox(OptionsGroupBox);
-        AutoControllerGroupBox->setObjectName(QStringLiteral("AutoControllerGroupBox"));
-        gridLayout_4 = new QGridLayout(AutoControllerGroupBox);
-        gridLayout_4->setSpacing(6);
-        gridLayout_4->setContentsMargins(11, 11, 11, 11);
-        gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
-        AutoControllerComboBox = new QComboBox(AutoControllerGroupBox);
-        AutoControllerComboBox->setObjectName(QStringLiteral("AutoControllerComboBox"));
-
-        gridLayout_4->addWidget(AutoControllerComboBox, 0, 0, 1, 1);
-
-
-        gridLayout_5->addWidget(AutoControllerGroupBox, 2, 0, 1, 1);
-
-
-        gridLayout_8->addWidget(OptionsGroupBox, 1, 0, 1, 1);
+        gridLayout_8->addWidget(LogFileGroupBox, 1, 0, 1, 1);
 
         SysConfigFileGroupBox = new QGroupBox(Syn_LocalSettingsDlg);
         SysConfigFileGroupBox->setObjectName(QStringLiteral("SysConfigFileGroupBox"));
@@ -252,14 +200,8 @@ public:
     void retranslateUi(QWidget *Syn_LocalSettingsDlg)
     {
         Syn_LocalSettingsDlg->setWindowTitle(QApplication::translate("Syn_LocalSettingsDlg", "Local Settings", 0));
-        OptionsGroupBox->setTitle(QApplication::translate("Syn_LocalSettingsDlg", "Options", 0));
-        ModeGroupBox->setTitle(QApplication::translate("Syn_LocalSettingsDlg", "Mode", 0));
-        VerboseLogCheckBox->setText(QApplication::translate("Syn_LocalSettingsDlg", "Verbose Log", 0));
-        QAModeCheckBox->setText(QApplication::translate("Syn_LocalSettingsDlg", "QA Mode", 0));
-        LGAModecheckBox->setText(QApplication::translate("Syn_LocalSettingsDlg", "LGA Mode", 0));
-        AutoRepeatGroupBox->setTitle(QApplication::translate("Syn_LocalSettingsDlg", "Auto Repeat", 0));
-        AutoRepeatEnabledCheckBox->setText(QApplication::translate("Syn_LocalSettingsDlg", "Enabled", 0));
-        AutoControllerGroupBox->setTitle(QApplication::translate("Syn_LocalSettingsDlg", "Auto Controller", 0));
+        LogFileGroupBox->setTitle(QApplication::translate("Syn_LocalSettingsDlg", "LogFile Path", 0));
+        SelectLogFilePushButton->setText(QApplication::translate("Syn_LocalSettingsDlg", "Select", 0));
         SysConfigFileGroupBox->setTitle(QApplication::translate("Syn_LocalSettingsDlg", "Config File", 0));
         SelectSysConfigFilePushButton->setText(QApplication::translate("Syn_LocalSettingsDlg", "Select", 0));
         SiteGroupBox->setTitle(QApplication::translate("Syn_LocalSettingsDlg", "Site", 0));

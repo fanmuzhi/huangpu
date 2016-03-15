@@ -106,6 +106,9 @@ void Ts_RxStandardDev::ProcessData()
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sStdDevOfRxFail);
 	}
+
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_RxStandardDevResults.m_elapsedtime);
+
 }
 
 void Ts_RxStandardDev::CleanUp()

@@ -20,6 +20,7 @@
 #include "Ts_CurrentTest.h"
 #include "Ts_RetainMode.h"
 #include "Ts_InitializationStep.h"
+#include "Ts_FinalizationStep.h"
 
 Syn_TestStepFactory::Syn_TestStepFactory()
 {
@@ -119,9 +120,13 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	{
 		opTestStepInstance = new Ts_InitializationStep(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
+	else if (std::string("FinalizationStep") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_FinalizationStep(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
 	else
 	{
-		rc = false;
+		rc = false; 
 	}
 
 	return rc;

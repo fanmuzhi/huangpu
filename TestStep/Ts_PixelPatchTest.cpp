@@ -87,6 +87,8 @@ void Ts_PixelPatchTest::ProcessData()
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sPixPatchFail);
 	}
+
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_pixelPatchResults.m_elapsedtime);
 }
 
 void Ts_PixelPatchTest::CleanUp()

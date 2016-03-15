@@ -5,6 +5,8 @@
 #include <QtWidgets>
 
 #include <time.h>
+#include <stdio.h>
+#include <io.h>
 
 FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 : QMainWindow(parent)
@@ -39,7 +41,7 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	//Thread
 	for (int i = 1; i <= DeviceCounts; i++)
 	{
-		QObject::connect(&(_SynThreadArray[i - 1]), SIGNAL(send(unsigned int, const QString)), this, SLOT(ReceiveTest(unsigned int, const QString)));
+		QObject::connect(&(_SynThreadArray[i - 1]), SIGNAL(send(unsigned int, const QString, const QString)), this, SLOT(ReceiveTest(unsigned int, const QString, const QString)));
 		QObject::connect(&(_SynThreadArray[i - 1]), SIGNAL(send(unsigned int)), this, SLOT(ReceiveSiteInfo(unsigned int)));
 	}
 	
@@ -315,6 +317,7 @@ void FPS_TestExecutive::CreateLocalSettings()
 	//localSettings slots
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->CancelPushButton, SIGNAL(clicked()), this, SLOT(CloseLocalSettingsDialog()));
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->SelectSysConfigFilePushButton, SIGNAL(clicked()), this, SLOT(SelectConfigFile()));
+	QObject::connect(_pSyn_LocalSettingsDlg->ui->SelectLogFilePushButton, SIGNAL(clicked()), this, SLOT(SelectLogFilePath()));
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->SiteCountsLineEdit, SIGNAL(editingFinished()), this, SLOT(ModifySiteCounts()));//returnPressed
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->ModifySerialNumberPushButton, SIGNAL(clicked()), this, SLOT(ModifySerialNumber()));
 	QObject::connect(_pSyn_LocalSettingsDlg->ui->UpdateADCOffsetsPushButton, SIGNAL(clicked()), this, SLOT(CreateUpdateADCOffsetsDlg()));
@@ -335,6 +338,10 @@ void FPS_TestExecutive::CreateLocalSettings()
 	//operation
 	_pSyn_LocalSettingsDlg->ui->SysConfigFileLlineEdit->clear();
 	_pSyn_LocalSettingsDlg->ui->SysConfigFileLlineEdit->setText(QString::fromStdString(_LocalSettingsInfo._strSysConfigFilePath));
+
+	_pSyn_LocalSettingsDlg->ui->LogFileLineEdit->clear();
+	_pSyn_LocalSettingsDlg->ui->LogFileLineEdit->setText(QString::fromStdString(_LocalSettingsInfo._strLogFilePath));
+
 
 	unsigned int iLocalSettingSiteCounts = _LocalSettingsInfo._listOfSiteSettings.size();
 	_pSyn_LocalSettingsDlg->ui->SiteCountsLineEdit->clear();
@@ -425,6 +432,22 @@ void FPS_TestExecutive::SelectConfigFile()
 		_pSyn_LocalSettingsDlg->ui->SysConfigFileLlineEdit->setText(strConfigFilePath);
 
 		_LocalSettingsInfo._strSysConfigFilePath = strConfigFilePath.toStdString();
+	}
+}
+
+void FPS_TestExecutive::SelectLogFilePath()
+{
+	QString strLogFileFolderPath = QFileDialog::getExistingDirectory(_pSyn_LocalSettingsDlg, "Select LogFile Path");
+	if (QString("") != strLogFileFolderPath)
+	{
+		QFile TempFile(strLogFileFolderPath);
+		if (!TempFile.exists())
+			return;
+
+		_pSyn_LocalSettingsDlg->ui->LogFileLineEdit->clear();
+		_pSyn_LocalSettingsDlg->ui->LogFileLineEdit->setText(strLogFileFolderPath);
+
+		_LocalSettingsInfo._strLogFilePath = strLogFileFolderPath.toStdString();
 	}
 }
 
@@ -538,11 +561,20 @@ void FPS_TestExecutive::ConfirmSite()
 	}
 	_LocalSettingsInfo._strSysConfigFilePath = strConfigFilePath.toStdString();
 
-	_LocalSettingsInfo.m_bVerboseMode = _pSyn_LocalSettingsDlg->ui->VerboseLogCheckBox->isChecked();
+	QString strLogFilePath = _pSyn_LocalSettingsDlg->ui->LogFileLineEdit->text();
+	QFile Logfile(strLogFilePath);
+	if (!Logfile.exists())
+	{
+		QMessageBox::critical(_pSyn_LocalSettingsDlg, QString("Error"), QString("LogFile Path is not exists,check it please!"));
+		return;
+	}
+	_LocalSettingsInfo._strLogFilePath = strLogFilePath.toStdString();
+
+	/*_LocalSettingsInfo.m_bVerboseMode = _pSyn_LocalSettingsDlg->ui->VerboseLogCheckBox->isChecked();
 	_LocalSettingsInfo.m_bQAMode = _pSyn_LocalSettingsDlg->ui->QAModeCheckBox->isChecked();
 	_LocalSettingsInfo.m_bLGAMode = _pSyn_LocalSettingsDlg->ui->LGAModecheckBox->isChecked();
 	_LocalSettingsInfo.m_bRunRepeatedly = _pSyn_LocalSettingsDlg->ui->AutoRepeatEnabledCheckBox->isChecked();
-	_LocalSettingsInfo._strAutoController = _pSyn_LocalSettingsDlg->ui->AutoControllerComboBox->currentText().toStdString();
+	_LocalSettingsInfo._strAutoController = _pSyn_LocalSettingsDlg->ui->AutoControllerComboBox->currentText().toStdString();*/
 
 	//Set SiteInfo
 	//fill current info to LocalSettings Config
@@ -841,7 +873,6 @@ void FPS_TestExecutive::Run()
 		return;
 	}
 
-
 	_FinishedSiteCounts = 0;
 
 	unsigned int iRunFlag(0);
@@ -854,10 +885,22 @@ void FPS_TestExecutive::Run()
 
 		for (int i = 1; i <= iSiteCounts; i++)
 		{
-			if (NULL != ui.TestTableWidget->cellWidget(8,i-1))
+			if (NULL != ui.TestTableWidget->item(2,i-1))
+				ui.TestTableWidget->takeItem(2, i - 1);
+			if (NULL != ui.TestTableWidget->item(3, i - 1))
+				ui.TestTableWidget->takeItem(3, i - 1);
+			if (NULL != ui.TestTableWidget->item(4, i - 1))
+				ui.TestTableWidget->takeItem(4, i - 1);
+			if (NULL != ui.TestTableWidget->item(5, i - 1))
+				ui.TestTableWidget->takeItem(5, i - 1);
+			if (NULL != ui.TestTableWidget->item(6, i - 1))
+				ui.TestTableWidget->takeItem(6, i - 1);
+			if (NULL != ui.TestTableWidget->item(7, i - 1))
+				ui.TestTableWidget->takeItem(7, i - 1);
+			if (NULL != ui.TestTableWidget->cellWidget(8, i - 1))
 				ui.TestTableWidget->removeCellWidget(8, i - 1);
 			if (NULL != ui.TestTableWidget->cellWidget(9, i - 1))
-				ui.TestTableWidget->removeCellWidget(9, i-1);
+				ui.TestTableWidget->removeCellWidget(9, i - 1);
 		}
 	}
 	else if (QString("Continue") == qText)
@@ -912,10 +955,16 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 			_ListOfSitePtr[i]->GetState(oTempState);
 			if (oTempState == SiteState::Error)
 			{
+				_FinishedSiteCounts += 1;
 				string errMsg = "";
 				_ListOfSitePtr[i]->GetRunTimeError(errMsg);
-				QMessageBox::information(this, QString("Error"), QString("Error:") + QString::fromStdString(errMsg));
-				ui.LocalSettingsPushButton->setEnabled(true);
+				//QMessageBox::information(this, QString("Error"), QString("Error:") + QString::fromStdString(errMsg));
+				//ui.LocalSettingsPushButton->setEnabled(true);
+				return;
+			}
+			else if (oTempState == SiteState::Closed)
+			{
+				_FinishedSiteCounts += 1;
 				return;
 			}
 			_ListOfSitePtr[i]->GetTestResult(pCurrentDutTestResult);
@@ -952,22 +1001,6 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 		}
 
 		iRowNumber = 8;
-
-		QString qResult("");
-		if (pCurrentDutTestResult->_peggedPixelsResults.m_bPass)
-		{
-			qResult = QString("Pass");
-		}
-		else
-		{
-			qResult = QString("Fail");
-		}
-
-		//
-		QTableWidgetItem *item = new QTableWidgetItem(qResult);
-		item->setTextAlignment(Qt::AlignCenter);
-		ui.TestTableWidget->setItem(3, iSiteNumber - 1, item);
-
 	}
 	else if (2 == iFlag)
 	{
@@ -983,9 +1016,55 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 
 		QString strSNRValue = QString::number(pCurrentDutTestResult->_snrResults.SNR[6]);
 		
-		QTableWidgetItem *item = new QTableWidgetItem(strSNRValue);
-		item->setTextAlignment(Qt::AlignCenter);
-		ui.TestTableWidget->setItem(5, iSiteNumber - 1, item);
+		QTableWidgetItem *itemSNR = new QTableWidgetItem(strSNRValue);
+		itemSNR->setTextAlignment(Qt::AlignCenter);
+		ui.TestTableWidget->setItem(5, iSiteNumber - 1, itemSNR);
+
+		//BinCode
+		QString qsBinCodes("");
+		for (size_t i = 1; i <= pCurrentDutTestResult->_binCodes.size(); i++)
+		{
+			if (1 == i)
+			{
+				qsBinCodes += QString::fromStdString(pCurrentDutTestResult->_binCodes[i - 1]);
+			}
+			else
+			{
+				qsBinCodes = qsBinCodes + QString(" , ") + QString::fromStdString(pCurrentDutTestResult->_binCodes[i - 1]);
+			}
+		}
+		QTableWidgetItem *itemBinCode = new QTableWidgetItem(qsBinCodes);
+		itemBinCode->setTextAlignment(Qt::AlignCenter);
+		ui.TestTableWidget->setItem(4, iSiteNumber - 1, itemBinCode);
+
+		//TotalResults
+		QString strTotalResults("");
+		if (1 == pCurrentDutTestResult->_binCodes.size())
+		{
+			if (Syn_BinCodes::m_sPass == pCurrentDutTestResult->_binCodes[0])
+			{
+				strTotalResults = "Pass";
+			}
+			else
+			{
+				strTotalResults = "Fail";
+			}
+		}
+		else
+		{
+			strTotalResults = "Fail";
+		}
+		QTableWidgetItem *itemTotalResults = new QTableWidgetItem(strTotalResults);
+		itemTotalResults->setTextAlignment(Qt::AlignCenter);
+		if (QString("Pass") == strTotalResults)
+		{
+			itemTotalResults->setBackgroundColor(QColor(0, 255, 0));
+		}
+		else
+		{
+			itemTotalResults->setBackgroundColor(QColor(255, 0, 0));
+		}
+		ui.TestTableWidget->setItem(7, iSiteNumber - 1, itemTotalResults);
 	}
 	
 	QImage image((uchar*)data.constData(), columnNumber, rowNumber, QImage::Format_Indexed8);
@@ -1003,6 +1082,12 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 	_FinishedSiteCounts += 1;
 	if (2 == iFlag)
 	{
+		//writelog
+		Syn_DutTestInfo *pDutInfo = NULL;
+		_ListOfSitePtr[iSiteNumber - 1]->GetTestInfo(pDutInfo);
+
+		WriteLog(_LocalSettingsInfo._strLogFilePath, pDutInfo, pCurrentDutTestResult, rowNumber, columnNumber);
+
 		_ListOfSitePtr[iSiteNumber - 1]->Close();
 	}
 
@@ -1317,7 +1402,7 @@ void FPS_TestExecutive::GetVersionForDutDump()
 
 	QDateTime timeValue = QDateTime::fromTime_t(pInfo->_getVerInfo.buildtime);
 	ui.textBrowser->append(QString("buildtime:") + timeValue.toString());
-	ui.textBrowser->append(QString("buildnum:") + QString::number(pInfo->_getVerInfo.buildnum,16));
+	ui.textBrowser->append(QString("buildnum:") + QString::number(pInfo->_getVerInfo.buildnum,16).toUpper());
 	ui.textBrowser->append(QString("vmajor:") + QString::number(pInfo->_getVerInfo.vmajor));
 	ui.textBrowser->append(QString("vminor:") + QString::number(pInfo->_getVerInfo.vminor));
 	ui.textBrowser->append(QString("target:") + QString::number(pInfo->_getVerInfo.target));
@@ -1802,7 +1887,7 @@ void FPS_TestExecutive::Display(uint8_t* pDst, unsigned int StartPos, unsigned i
 	ui.textBrowser->append(s);
 }
 
-void FPS_TestExecutive::ReceiveTest(unsigned int iSiteNumber, const QString strTestStepName)
+void FPS_TestExecutive::ReceiveTest(unsigned int iSiteNumber, const QString strTestStepName, const QString strPassResults)
 {
 	bool synFind(false);
 
@@ -1833,7 +1918,13 @@ void FPS_TestExecutive::ReceiveTest(unsigned int iSiteNumber, const QString strT
 			{
 				string errMsg = "";
 				_ListOfSitePtr[i]->GetRunTimeError(errMsg);
-				QMessageBox::information(this, QString("Error"), QString("Calibrate Error:") + QString::fromStdString(errMsg));
+				//QMessageBox::information(this, QString("Error"), QString("Error:") + QString::fromStdString(errMsg));
+				_FinishedSiteCounts += 1;
+				return;
+			}
+			else if (oTempState == SiteState::Closed)
+			{
+				_FinishedSiteCounts += 1;
 				return;
 			}
 			//_ListOfSitePtr[i]->GetTestResult(pCurrentDutTestResult);
@@ -1850,9 +1941,31 @@ void FPS_TestExecutive::ReceiveTest(unsigned int iSiteNumber, const QString strT
 	int rowNumber = CurrentSysConfig._uiNumRows;
 	int columnNumber = CurrentSysConfig._uiNumCols;
 
-	QTableWidgetItem *item = new QTableWidgetItem(strTestStepName);
-	item->setTextAlignment(Qt::AlignCenter);
-	ui.TestTableWidget->setItem(2, iSiteNumber - 1, item);
+	QString qsStepAndResult = strTestStepName + QString(" : ") + strPassResults;
+	if (NULL != ui.TestTableWidget->item(2, iSiteNumber - 1))
+	{
+		QString qsTempContent = ui.TestTableWidget->item(2, iSiteNumber - 1)->text();
+		ui.TestTableWidget->item(2, iSiteNumber - 1)->setText(qsTempContent + QString("\n") + qsStepAndResult);
+		ui.TestTableWidget->resizeRowToContents(2);
+	}
+	else
+	{
+		QTableWidgetItem *item = new QTableWidgetItem(qsStepAndResult);
+		item->setTextAlignment(Qt::AlignCenter);
+		ui.TestTableWidget->setItem(2, iSiteNumber - 1, item);
+	}
+
+	/*QTableWidgetItem *itemResults = new QTableWidgetItem(strPassResults);
+	itemResults->setTextAlignment(Qt::AlignCenter);
+	if (QString("Pass") == strPassResults)
+	{
+		itemResults->setBackgroundColor(QColor(0,255,0));
+	}
+	else
+	{
+		itemResults->setBackgroundColor(QColor(255,0,0));
+	}
+	ui.TestTableWidget->setItem(3, iSiteNumber - 1, itemResults);*/
 	
 
 	/*QVector<QRgb> vcolorTable;
@@ -1943,4 +2056,271 @@ void FPS_TestExecutive::ReceiveTest(unsigned int iSiteNumber, const QString strT
 
 		}
 	}*/
+}
+
+void FPS_TestExecutive::WriteLog(std::string strFolderPath, Syn_DutTestInfo * DutInfo, Syn_DutTestResult * DutResults, int RowNumber, int ColumnNumber)
+{
+	if (NULL == DutInfo)
+		return;
+
+	if (NULL == DutResults)
+		return;
+
+	QString qsFolderPath = QString::fromStdString(strFolderPath);
+	QFile qfile(qsFolderPath);
+	if (!qfile.exists())
+		return;
+
+	QString qsSensorSerialNumber("");
+	for (int i = 0; i < DUT_SER_NUM_SIZE; i++)
+	{
+		QString qsSensorTempSerialNumber = QString::number(DutResults->_arSerialNum[i],16).toUpper();
+		qsSensorSerialNumber += qsSensorTempSerialNumber;
+	}
+
+	QString qsSerachContent = qsFolderPath + QString("\\*.csv");
+
+	std::string strSensorSerialNumber;
+	std::vector<std::string> lsitOfFileName;
+	long handle;
+	struct _finddata_t fileinfo;
+	handle = _findfirst(qsSerachContent.toStdString().c_str(), &fileinfo);
+	if (-1 == handle)
+	{
+		strSensorSerialNumber = (qsSensorSerialNumber + QString("_1")).toStdString();
+	}
+	else
+	{
+		int iCounts(0);
+
+		do
+		{
+			QString qsCSVFileName = fileinfo.name;
+			int iResults = qsCSVFileName.indexOf(qsSensorSerialNumber);
+			if (0 == iResults)
+			{
+				iCounts += 1;
+			}
+		} while (_findnext(handle, &fileinfo) == 0);
+
+		strSensorSerialNumber = (qsSensorSerialNumber + QString("_") + QString::number(iCounts+1)).toStdString();
+		_findclose(handle);
+	}
+
+	std::string stringFilePath(qsFolderPath.toStdString()+"\\"+strSensorSerialNumber + ".csv");
+	FILE *pFile = fopen(stringFilePath.c_str(), "a");
+	if (NULL == pFile)
+	{
+		return;
+	}
+
+	fprintf(pFile, "\n%%%%%%%%%%%%%%%%%%%%%%\n");
+	fprintf(pFile, "MTLog_Site_\n");
+
+	//Put in part number.
+	fprintf(pFile, "Part Number,%s\n", "");//DebugVersion
+
+	//fprintf(pFile, "ConfigFile,%s\n", _pSyn_Dut->_pSyn_DutTestInfo-);
+	fprintf(pFile, "\n%%%%%%%%%%%%%%%%%%%%%%\n");
+
+	fprintf(pFile, "\n---------------------\n");
+	const time_t t = time(NULL);
+	struct tm* current_time = localtime(&t);
+	fprintf(pFile, "Run %d,%s\n", "", asctime(current_time));
+
+	//Sensor Serial Number
+	fprintf(pFile, "Sensor Serial Number ,%s\n", qsSensorSerialNumber.toStdString().c_str());
+
+	//InitlizationStep
+	fprintf(pFile, "\nInitialization, %s,%lf ms\n", DutResults->_initResults.m_bPass ? "Pass" : "Fail", 0);
+
+	//Pixel Patch
+	fprintf(pFile, "\nPixel Patch, %s,%lf ms\n", DutResults->_pixelPatchResults.m_bPass ? "Pass" : "Fail", DutResults->_pixelPatchResults.m_elapsedtime);
+	fprintf(pFile, ",,,");
+	for (int i = 0; i < (DutInfo->_pixelPatchInfo.m_nNumResBytes) / 4; i++)
+		fprintf(pFile, "%d,", *((uint32_t*)&DutResults->_pixelPatchResults.m_pResponse[i * 4]));
+	fprintf(pFile, "\n");
+
+	//Cablication
+	fprintf(pFile, "\nCalibration, %s,%lf ms\n", DutResults->_calibrationResults.m_bPass ? "Pass" : "Fail", DutResults->_calibrationResults.m_elapsedtime);
+	// Stage1 LNA values from print patch
+	fprintf(pFile, ",,,Stage1");
+	for (int i = 0; i < RowNumber; i++)
+	{
+		fprintf(pFile, ",%02X", DutResults->_calibrationResults.m_pPrintPatch[i + DutInfo->_calibrationInfo.m_nLnaIdx]);
+	}
+	if (DutInfo->_calibrationInfo.m_nCalType == 0)
+	{
+		fprintf(pFile, "\n,,,Stage2");
+		for (int i = 0; i < RowNumber; i++)
+		{
+			fprintf(pFile, ",%02X", DutResults->_calibrationResults.m_arPgaOffsets[i]);
+		}
+		fprintf(pFile, "\n");
+	}
+	else if (DutInfo->_calibrationInfo.m_nCalType == 1)
+	{
+		fprintf(pFile, "\n,,,Stage2 Used");
+		for (int i = 0; i<(RowNumber) * (ColumnNumber - 8); i++)
+		{
+			fprintf(pFile, ",%02X", DutResults->_calibrationResults.m_arPgaOffsets[i]);
+		}
+		fprintf(pFile, "\n");
+	}
+	else
+	{
+		fprintf(pFile, ",,,Stage2 Used,N/A\n");
+	}
+	// Stage2 OTP values	
+	if (DutInfo->_calibrationInfo.m_nCalType == 1)
+	{
+		if (DutResults->_calibrationResults.m_nPGA_OOPP_count != 0)
+		{
+			fprintf(pFile, ",,,Stage2 OTP");
+			for (int i = 0; i< (NUM_PGA_OOPP_OTP_ROWS * (ColumnNumber - 8)); i++)
+			{
+				fprintf(pFile, ",%02X", DutResults->_calibrationResults.m_pPGAOtpArray[i]);
+			}
+
+			fprintf(pFile, "\n,,,Stage2 Variance Score,N/A\n");
+		}
+		else
+		{
+			fprintf(pFile, ",,,Stage2 OTP,N/A\n");
+			fprintf(pFile, ",,,Stage2 Variance Score,N/A\n");
+		}
+	}
+	fprintf(pFile, ",,,FlexId,%04X\n", DutInfo->_initInfo.m_nFlexId);
+
+	//Pegged Pixels Test
+	fprintf(pFile, "\nPegged Pixels Test,%s,%lf ms,Rows,", DutResults->_peggedPixelsResults.m_bPass ? "Pass" : "Fail", DutResults->_peggedPixelsResults.m_elapsedtime);
+	for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithoutStim + DutInfo->_initInfo.m_nTrimBotWithoutStim); i++)
+		fprintf(pFile, "%d,", DutResults->_peggedPixelsResults.pegged_pixel_rows[i]);
+
+	fprintf(pFile, "\n,,,Columns,");
+	for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
+		fprintf(pFile, "%d,", DutResults->_peggedPixelsResults.pegged_pixel_cols[i]);
+	fprintf(pFile, "\n");
+
+	//Floored Pixels Test
+	fprintf(pFile, "\nFloored Pixels Test,%s,%lf ms,Rows,", DutResults->_flooredPixelsResults.m_bPass ? "Pass" : "Fail", DutResults->_flooredPixelsResults.m_elapsedtime);
+	for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithoutStim + DutInfo->_initInfo.m_nTrimBotWithoutStim); i++)
+		fprintf(pFile, "%d,", DutResults->_flooredPixelsResults.floored_pixel_rows[i]);
+
+	fprintf(pFile, "\n,,,Columns,");
+	for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
+		fprintf(pFile, "%d,", DutResults->_flooredPixelsResults.floored_pixel_cols[i]);
+	fprintf(pFile, "\n");
+
+	//DRdy Test
+	fprintf(pFile, "\nDRdy Test,%s,%lf ms\n", DutResults->_DRdyResults.m_bPass ? "Pass" : "Fail", DutResults->_DRdyResults.m_elapsedtime);
+
+	//Consecutive Pixels Test
+	fprintf(pFile, "\nConsecutive Pixels Test,%s,%lf ms,Pegged Rows,", DutResults->_consecutivePixelsResults.m_bPass ? "Pass" : "Fail", DutResults->_consecutivePixelsResults.m_elapsedtime);
+	for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithoutStim + DutInfo->_initInfo.m_nTrimBotWithoutStim); i++)
+		fprintf(pFile, "%d,", DutResults->_consecutivePixelsResults.consecutive_pegged_rows[i]);
+
+	fprintf(pFile, "\n,,,Floored Rows,");
+	for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithoutStim + DutInfo->_initInfo.m_nTrimBotWithoutStim); i++)
+		fprintf(pFile, "%d,", DutResults->_consecutivePixelsResults.consecutive_floored_rows[i]);
+
+	fprintf(pFile, "\n,,,Pegged Columns,");
+	for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
+		fprintf(pFile, "%d,", DutResults->_consecutivePixelsResults.consecutive_pegged_cols[i]);
+
+	fprintf(pFile, "\n,,,Floored Columns,");
+	for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
+		fprintf(pFile, "%d,", DutResults->_consecutivePixelsResults.consecutive_floored_cols[i]);
+	fprintf(pFile, "\n");
+
+	//Current Test
+	fprintf(pFile, "\nCurrent Test,%s,%lf ms,", DutResults->_currentResults.bPass ? "Pass" : "Fail", DutResults->_currentResults.m_elapsedtime);
+	//If the test was successful.
+	if (DutResults->_currentResults.bPass != 0)
+	{
+		fprintf(pFile, "Digital image acq current (mA),%.3f\n", (float)(DutResults->_currentResults.m_nImageAcqDigCurrent_uA) / 1000);
+		fprintf(pFile, ",,,Analog image acq current (mA),%.3f\n", (float)(DutResults->_currentResults.m_nImageAcqAnaCurrent_uA) / 1000);
+	}
+	else
+	{
+		fprintf(pFile, "Digital image acq current (mA),%.3f\n", (float)(DutResults->_currentResults.m_nImageAcqDigCurrent_uA) / 1000);
+		fprintf(pFile, ",,,Analog image acq current (mA),%.3f\n", (float)(DutResults->_currentResults.m_nImageAcqAnaCurrent_uA) / 1000);
+	}
+
+	//SNR Test
+	fprintf(pFile, "\nSNR Test,%s,%lf ms,", DutResults->_snrResults.bPass ? "Pass" : "Fail", DutResults->_snrResults.m_elapsedtime);
+	fprintf(pFile, "Signal_Z1,Noise_Z1,SNR_Z1,Signal_Z2,Noise_Z2,SNR_Z2,Signal_Z3,Noise_Z3,SNR_Z3,Signal_Z4,Noise_Z4,SNR_Z4,Signal_Z5,Noise_Z5,SNR_Z5,Signal_Z6,Noise_Z6,SNR_Z6,Signal_OVERALL,Noise_OVERALL,SNR_OVERALL\n");
+	fprintf(pFile, ",,,");
+	for (int i = 0; i<REGIONS; i++)
+		fprintf(pFile, "%d,%f,%f,", DutResults->_snrResults.SIGNAL[i], DutResults->_snrResults.NOISE[i], DutResults->_snrResults.SNR[i]);
+	fprintf(pFile, "\n");
+
+	//Pixel Uniformity Test
+	fprintf(pFile, "\nPixel Uniformity Test,%s,%lf ms,", DutResults->_pixelResults.bPass ? "Pass" : "Fail", DutResults->_pixelResults.m_elapsedtime);
+	fprintf(pFile, "Minimum Pixel,Maximum Pixel,Failing Pixel Count\n");
+	fprintf(pFile, ",,,%d,%d,%d,", DutResults->_pixelResults.nMinPixelValue, DutResults->_pixelResults.nMaxPixelValue, DutResults->_pixelResults.nCountAboveThreshold);
+	fprintf(pFile, "\n");
+
+	//Sharpness Test
+	fprintf(pFile, "\nSharpness Test,%s,%lf ms\n", DutResults->_SharpnessResults.bPass ? "Pass" : "Fail", DutResults->_SharpnessResults.m_elapsedtime);
+	fprintf(pFile, ",,,Variation(%%),Zone1,Zone2,Zone3,Overall\n");
+	fprintf(pFile, ",,,%f,%d,%d,%d,%d", DutResults->_SharpnessResults.percent, (int)DutResults->_SharpnessResults.SHARPNESS[0], (int)DutResults->_SharpnessResults.SHARPNESS[1], (int)DutResults->_SharpnessResults.SHARPNESS[2], (int)DutResults->_SharpnessResults.SHARPNESS[3]);
+	fprintf(pFile, "\n");
+
+	//RxStandardDev Test
+	fprintf(pFile, "\nRxStandardDev Test,%s,%lf ms", DutResults->_RxStandardDevResults.m_bPass ? "Pass" : "Fail", DutResults->_RxStandardDevResults.m_elapsedtime);
+	fprintf(pFile, "\n,,,Percent:,");
+	for (int i = 0; i<(RowNumber - DutInfo->_initInfo.m_nTrimTopWithStim - DutInfo->_initInfo.m_nTrimBotWithStim); i++)
+		fprintf(pFile, "%f,", DutResults->_RxStandardDevResults.percent[i]);
+	fprintf(pFile, "\n");
+
+	//Imperfections Test
+	fprintf(pFile, "\nImperfections Test,%s,%lf ms,Along Rows,", DutResults->_imperfectionsTestResults.m_bPass ? "Pass" : "Fail", DutResults->_imperfectionsTestResults.m_elapsedtime);
+	for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithStim + DutInfo->_initInfo.m_nTrimBotWithStim); i++)
+		fprintf(pFile, "%d,", DutResults->_imperfectionsTestResults.consecutive_pegged_rows[i]);
+	fprintf(pFile, "\n,,,Along Columns,");
+	for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
+		fprintf(pFile, "%d,", DutResults->_imperfectionsTestResults.consecutive_pegged_cols[i]);
+	fprintf(pFile, "\n");
+
+	//Average No Finger & Average Finger
+	int numFrames = 30;
+	float temp = 0.0;
+	fprintf(pFile, "\nAverage No Finger\n");
+	for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithStim + DutInfo->_initInfo.m_nTrimBotWithStim); i++)
+	{
+		for (int j = 0; j<ColumnNumber - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); j++)
+		{
+			for (int k = 0; k<numFrames; k++)
+			{
+				temp += DutResults->_acqImgNoFingerResult.m_arImagesWithoutStimulus[k].arr[i][j];
+			}
+			fprintf(pFile, "%.0f,", temp / numFrames);
+			temp = 0.0;
+		}
+		fprintf(pFile, "\n");
+	}
+	temp = 0.0;
+	fprintf(pFile, "\nAverage Finger\n");
+	for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithStim + DutInfo->_initInfo.m_nTrimBotWithStim); i++)
+	{
+		for (int j = 0; j<ColumnNumber - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); j++)
+		{
+			for (int k = 0; k<numFrames; k++)
+			{
+				temp += DutResults->_acqImgFingerResult.m_arImagesWithStimulus[k].arr[i][j];
+			}
+			fprintf(pFile, "%.0f,", temp / numFrames);
+			temp = 0.0;
+		}
+		fprintf(pFile, "\n");
+	}
+
+	fprintf(pFile, "\n,Bin Codes");
+	for (size_t i = 1; i <= DutResults->_binCodes.size(); i++)
+	{
+		fprintf(pFile, ",%s", (DutResults->_binCodes[i - 1]).c_str());
+	}
+
+	fclose(pFile);
 }

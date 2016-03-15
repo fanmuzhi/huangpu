@@ -29,6 +29,8 @@ struct Syn_LocalSettings
 {
 	string					_strSysConfigFilePath;
 
+	string					_strLogFilePath;
+
 	vector<SiteSettings>	_listOfSiteSettings;
 
 	//?

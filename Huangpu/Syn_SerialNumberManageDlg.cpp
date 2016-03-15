@@ -5,7 +5,7 @@ Syn_SerialNumberManageDlg::Syn_SerialNumberManageDlg(QWidget *parent)
 {
 	ui.setupUi(this);
 
-	setWindowFlags(Qt::WindowCloseButtonHint);
+	setWindowFlags(windowFlags() | Qt::FramelessWindowHint | Qt::WindowTitleHint);
 
 	ui.SerialNumberTableWidget->setColumnWidth(1,320);
 	ui.SerialNumberTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);

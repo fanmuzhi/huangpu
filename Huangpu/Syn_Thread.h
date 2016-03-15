@@ -31,7 +31,7 @@ signals:
 
 	void send(unsigned int iSiteNumber);
 
-	void send(unsigned int iSiteNumber,const QString strTestStepName);
+	void send(unsigned int iSiteNumber, const QString strTestStepName, const QString strPassResults);
 
 protected:
 

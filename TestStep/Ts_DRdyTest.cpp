@@ -113,6 +113,8 @@ void Ts_DRdyTest::ProcessData()
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sDRdyPinFail);
 	}
+
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_DRdyResults.m_elapsedtime);
 }
 
 void Ts_DRdyTest::CleanUp()

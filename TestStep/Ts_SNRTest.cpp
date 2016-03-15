@@ -115,11 +115,6 @@ void Ts_SNRTest::SetUp()
 
 void Ts_SNRTest::Execute()
 {
-	//if (0 != _pSyn_Dut->_pSyn_DutTestResult->_binCodes.size())
-	//{
-	//	return;
-	//}
-
 	_pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.m_bExecuted = true;
 }
 
@@ -300,6 +295,7 @@ void Ts_SNRTest::ProcessData()
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sSnrFail);
 	}
 
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_snrResults.m_elapsedtime);
 }
 
 void Ts_SNRTest::CleanUp()

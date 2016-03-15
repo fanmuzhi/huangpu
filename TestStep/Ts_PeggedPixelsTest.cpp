@@ -152,6 +152,8 @@ void Ts_PeggedPixelsTest::ProcessData()
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sPeggedPixFail);
 	}
+	
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_peggedPixelsResults.m_elapsedtime);
 
 }
 

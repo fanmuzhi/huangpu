@@ -74,6 +74,7 @@ public Q_SLOTS:
 	void CreateLocalSettings();
 	void CloseLocalSettingsDialog();
 	void SelectConfigFile();
+	void SelectLogFilePath();
 	void ModifySiteCounts();
 	void ModifySerialNumber();
 	void SetLeds(int rowNumber, int columnNumber);
@@ -113,7 +114,9 @@ public Q_SLOTS:
 	void FigerprintImage(unsigned int iSiteNumber);
 
 
-	void ReceiveTest(unsigned int iSiteNumber, const QString strTestStepName);
+	void ReceiveTest(unsigned int iSiteNumber, const QString strTestStepName, const QString strPassResults);
+
+	void WriteLog(std::string strFolderPath, Syn_DutTestInfo * DutInfo, Syn_DutTestResult * DutResults,int RowNumber,int ColumnNumber);
 
 private:
 

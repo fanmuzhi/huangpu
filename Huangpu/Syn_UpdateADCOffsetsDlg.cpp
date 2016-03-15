@@ -5,7 +5,7 @@ Syn_UpdateADCOffsetsDlg::Syn_UpdateADCOffsetsDlg(QWidget *parent)
 {
 	ui.setupUi(this);
 
-	setWindowFlags(Qt::WindowCloseButtonHint);
+	setWindowFlags(windowFlags() | Qt::FramelessWindowHint | Qt::WindowTitleHint);
 
 	ui.VddLineEdit->setValidator(new QIntValidator(0, 3300, this));
 	ui.VioLineEdit->setValidator(new QIntValidator(0, 3300, this));

@@ -221,10 +221,13 @@ void Ts_Calibrate::Execute()
 	GetFingerprintImage(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults, &(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.arr_ImageFPSFrame), numRows, numCols);
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted = true;
+
 }
 
 void Ts_Calibrate::ProcessData()
 {
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_elapsedtime);
+
 	if (!_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted)
 	{
 		Syn_Exception ex(Syn_ExceptionCode::Syn_TestStepNotExecuted);

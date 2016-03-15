@@ -32,6 +32,8 @@ Syn_FingerprintTest::Syn_FingerprintTest(string &strName, string &strArgs, Syn_D
 			_pSyn_Module->SetDutCtrl(_pSyn_DutCtrl);
 			break;		
 	}
+
+	_starttime = time(NULL);
 }
 
 
@@ -218,4 +220,10 @@ void Syn_FingerprintTest::BurnToOTP(long nRecType, uint8_t* pSrc, int numBytes)
 
 	_pSyn_DutCtrl->FpOtpRomTagWrite(arOutBuf, nSize);
 
+}
+
+void Syn_FingerprintTest::ComputeRunningTime(double &ioRunningTime)
+{
+	_finishtime = time(NULL);
+	ioRunningTime = difftime(_finishtime, _starttime)*1000;
 }

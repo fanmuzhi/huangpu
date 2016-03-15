@@ -247,6 +247,7 @@ typedef struct
 	float OTPVal_Noise;
 	int   OTPVal_Signal;
 
+	double      m_elapsedtime;
 }SNRResults;
 //end structrues for SNR Test
 
@@ -364,6 +365,8 @@ typedef struct
 	int			m_nStage2VarianceScore;
 
 	FPSFrame	arr_ImageFPSFrame;
+
+	double      m_elapsedtime;
 }CalibrationResults;
 
 ///////////////////////////// ////////////////////////
@@ -476,6 +479,8 @@ typedef struct
 {
 	int m_bPass;
 	uint8_t		m_pResponse[MAX_WOVAR_RES_BYTES];
+
+	double      m_elapsedtime;
 }WoVarResults;
 
 ///////////////////////////// ////////////////////////
@@ -488,6 +493,8 @@ typedef struct
 	//for logfile
 	int pegged_pixel_rows[MAXCOL];
 	int pegged_pixel_cols[MAXCOL];
+
+	double      m_elapsedtime;
 }PeggedPixelsResults;
 
 typedef struct
@@ -512,6 +519,8 @@ typedef struct
 {
 	int			m_bPass;
 	uint8_t		m_pResponse[MAX_PIXEL_PATCH_RES_BYTES];
+
+	double      m_elapsedtime;
 }PixelPatchResults;
 
 //structrues for Pixel Test
@@ -538,6 +547,7 @@ typedef struct
 	int nMinPixelValue;
 	int nCountAboveThreshold;
 
+	double      m_elapsedtime;
 }PixelResults;
 
 ///////////////////////////// ////////////////////////
@@ -560,6 +570,8 @@ typedef struct
 	//for logfile
 	int floored_pixel_rows[MAXROW];
 	int floored_pixel_cols[MAXCOL];
+
+	double      m_elapsedtime;
 }FlooredPixelsResults;
 
 ///////////////////////////// ////////////////////////
@@ -587,6 +599,8 @@ typedef struct
 	int pegged_ROW;
 	int floored_COL;
 	int pegged_COL;
+
+	double      m_elapsedtime;
 }ConsecutivePixelsResults;
 
 ///////////////////////////// ////////////////////////
@@ -613,6 +627,8 @@ typedef struct
 	int pegged_ROW;
 	int floored_COL;
 	int pegged_COL;
+
+	double      m_elapsedtime;
 }ImperfectionsTestResults;
 
 
@@ -663,6 +679,8 @@ typedef struct
 	int	m_nImageAcqAnaCurrent_uA;
 	int	m_nSleepDigCurrent_uA;
 	int	m_nSleepAnaCurrent_uA;
+
+	double      m_elapsedtime;
 }CurrentResults;
 
 //////////////////////////// ////////////////////////
@@ -794,6 +812,8 @@ typedef struct
 	int			m_bPass;
 	uint8_t		m_arHiStates[NUM_DRDY_CHECKS];
 	uint8_t		m_arLoStates[NUM_DRDY_CHECKS];
+
+	double      m_elapsedtime;
 }DRdyResults;
 
 ///////////////////////////// ////////////////////////
@@ -915,6 +935,8 @@ typedef struct
 	int	  g[MAXROW][MAXCOL];
 	int	  pImg_t[MAXROW][MAXCOL];
 	float	percent;
+
+	double      m_elapsedtime;
 }SharpnessResults;
 
 typedef struct
@@ -937,6 +959,8 @@ typedef struct
 	float percent[MAXROW];
 	float max_percent;
 	int	  limit;
+
+	double      m_elapsedtime;
 }RxStandardDevResults;
 
 typedef struct

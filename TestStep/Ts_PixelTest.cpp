@@ -148,6 +148,8 @@ void Ts_PixelTest::ProcessData()
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sPixelUniformityFail);
 	}
+
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_pixelResults.m_elapsedtime);
 }
 
 void Ts_PixelTest::CleanUp()

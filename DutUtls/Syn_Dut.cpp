@@ -77,6 +77,8 @@ void Syn_Dut::InitData(Syn_SysConfig &sysConfig, AdcBaseLineInfo &iAdcBaseLineIn
 		_pSyn_DutTestInfo->_otpCheckInfo._UserSpecifiedBS1[i] = sysConfig._arrUserSpecifiedBS1[i + arrIncrement[i % 4]];
 	}
 
+	b_Pass = false;
+
 	//std::string strArgsValue("");
 	//std::vector<std::string> listOfArgValue;
 

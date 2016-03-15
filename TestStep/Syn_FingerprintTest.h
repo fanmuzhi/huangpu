@@ -6,6 +6,9 @@
 //
 #include "Syn_Exception.h"
 
+//std
+#include <time.h>
+
 class Syn_FingerprintTest :public Syn_TestStep
 {
 
@@ -40,10 +43,14 @@ public:
 
 	void BurnToOTP(long nRecType, uint8_t* pSrc, int numBytes);
 
+	void ComputeRunningTime(double &ioRunningTime);
 
 protected:
 
 	Syn_Module *_pSyn_Module;
+
+	//clock_t _starttime, _finishtime;
+	time_t _starttime, _finishtime;
 
 };
 
