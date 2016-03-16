@@ -36,11 +36,6 @@ void Ts_FinalizationStep::Execute()
 	if (0 == _pSyn_Dut->_pSyn_DutTestResult->_binCodes.size())
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sPass);
-		_pSyn_Dut->b_Pass = true;
-	}
-	else
-	{
-		_pSyn_Dut->b_Pass = false;
 	}
 }
 

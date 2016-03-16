@@ -122,6 +122,8 @@ void Ts_Calibrate::Execute()
 	}
 
 	//CheckDUTexists();
+
+	_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted = true;
 	
 	uint16_t numRows = _pSyn_Dut->_RowNumber;
 	uint16_t numCols = _pSyn_Dut->_ColumnNumber;
@@ -140,6 +142,8 @@ void Ts_Calibrate::Execute()
 	{
 		_pSyn_Dut->_pSyn_DutTestResult = new Syn_DutTestResult();
 	}
+
+	_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_bPass = 1;
 
 	//construct print file
 	//uint8_t* pPrintPatch = new uint8_t[PrintFileInfo._uiArraySize];		//put into CalibrationResult later

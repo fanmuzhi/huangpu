@@ -141,6 +141,4 @@ public:
 	uint16_t		_ColumnNumber;//NumCols
 
 	ProjectType		_eProjectType;
-	
-	bool b_Pass;
 };
