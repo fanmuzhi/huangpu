@@ -20,6 +20,7 @@
 #include "Ui_Syn_SerialNumberManageDlg.h"
 #include "Syn_UpdateADCOffsetsDlg.h"
 #include "Ui_Syn_UpdateADCOffsetsDlg.h"
+#include "Syn_BinCodesDlg.h"
 #include "Syn_ThreadDebug.h"//for debug
 
 //DutUtls
@@ -93,6 +94,8 @@ public Q_SLOTS:
 	void Run();
 	void ReceiveSiteInfo(unsigned int iSiteNumber);
 
+	void ReceiveTest(unsigned int iSiteNumber, const QString strTestStepName, const QString strPassResults);
+
 	//Debug
 	//Dut dump
 	void GetVersionForDutDump();
@@ -105,10 +108,15 @@ public Q_SLOTS:
 	void PushFigerprintImageButton();
 	void FigerprintImage(unsigned int iSiteNumber);
 
-
-	void ReceiveTest(unsigned int iSiteNumber, const QString strTestStepName, const QString strPassResults);
-
+	//write log
 	void WriteLog(std::string strFolderPath, Syn_DutTestInfo * DutInfo, Syn_DutTestResult * DutResults,int RowNumber,int ColumnNumber);
+
+	//bincode display
+	void DisplayBinCodes();
+	void CloseBinCodesDlg();
+
+	//
+	void ManageButtonStatus(int iFlag);
 
 private:
 
@@ -132,6 +140,7 @@ private:
 	Syn_LocalSettingsDlg *_pSyn_LocalSettingsDlg;
 	Syn_SerialNumberManageDlg *_pSyn_SerialNumberManageDlg;
 	Syn_UpdateADCOffsetsDlg *_pSyn_UpdateADCOffsetsDlg;
+	Syn_BinCodesDlg *_pSyn_BinCodesDlg;
 
 	//LocalSetting config Operation
 	Syn_LocalSettings _LocalSettingsInfo;

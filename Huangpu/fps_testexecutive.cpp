@@ -16,6 +16,7 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 , _pSyn_LocalSettingsDlg(NULL)
 , _pSyn_SerialNumberManageDlg(NULL)
 , _pSyn_UpdateADCOffsetsDlg(NULL)
+, _pSyn_BinCodesDlg(NULL)
 , _pSyn_DeviceManager(NULL)
 , _FinishedSiteCounts(0)
 {
@@ -44,6 +45,9 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 		QObject::connect(&(_SynThreadArray[i - 1]), SIGNAL(send(unsigned int, const QString, const QString)), this, SLOT(ReceiveTest(unsigned int, const QString, const QString)));
 		QObject::connect(&(_SynThreadArray[i - 1]), SIGNAL(send(unsigned int)), this, SLOT(ReceiveSiteInfo(unsigned int)));
 	}
+
+	//BinCodes Dislpay
+	QObject::connect(ui.BinCodesDisplayPushButton, SIGNAL(clicked()), this, SLOT(DisplayBinCodes()));
 	
 	//Debug
 	//OTP Dump
@@ -89,6 +93,12 @@ FPS_TestExecutive::~FPS_TestExecutive()
 	{
 		delete _pSyn_UpdateADCOffsetsDlg;
 		_pSyn_UpdateADCOffsetsDlg = NULL;
+	}
+
+	if (NULL != _pSyn_BinCodesDlg)
+	{
+		delete _pSyn_BinCodesDlg;
+		_pSyn_BinCodesDlg = NULL;
 	}
 
 	if (NULL != _pSyn_DeviceManager)
@@ -992,6 +1002,9 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 				QTableWidgetItem *itemState = new QTableWidgetItem(QString("Error"));
 				itemState->setTextAlignment(Qt::AlignCenter);
 				ui.TestTableWidget->setItem(2, iSiteNumber - 1, itemState);
+
+				this->ManageButtonStatus(iFlag);
+
 				return;
 			}
 			
@@ -1131,7 +1144,7 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 		ui.TestTableWidget->setItem(2, iSiteNumber - 1, itemState);
 	}
 
-	if (_FinishedSiteCounts == _ListOfSitePtr.size())
+	/*if (_FinishedSiteCounts == _ListOfSitePtr.size())
 	{
 		if (1 == iFlag)
 		{
@@ -1147,9 +1160,105 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 
 			ui.pushButtonRun->setDisabled(false);
 		}
-	}
+	}*/
+
+	this->ManageButtonStatus(iFlag);
 }
 
+void FPS_TestExecutive::ReceiveTest(unsigned int iSiteNumber, const QString strTestStepName, const QString strPassResults)
+{
+	bool synFind(false);
+
+	unsigned int iFlag(0);
+	QString qText = ui.pushButtonRun->text();
+	if (QString("Run") == qText)
+	{
+		iFlag = 1;
+	}
+	else if (QString("Continue") == qText)
+	{
+		iFlag = 2;
+	}
+
+	Syn_SysConfig CurrentSysConfig;
+	unsigned int iPos(0);
+	for (size_t i = 0; i < _ListOfSitePtr.size(); i++)
+	{
+		unsigned int iTempSiteNumber(0);
+		_ListOfSitePtr[i]->GetSiteNumber(iTempSiteNumber);
+		if (iSiteNumber == iTempSiteNumber)
+		{
+			//_ListOfSitePtr[i]->GetTestInfo(*CurrentDutTestInfo);
+			SiteState oTempState;
+			_ListOfSitePtr[i]->GetState(oTempState);
+			if (oTempState == SiteState::Error)
+			{
+				string errMsg = "";
+				_ListOfSitePtr[i]->GetRunTimeError(errMsg);
+				//QMessageBox::information(this, QString("Error"), QString("Error:") + QString::fromStdString(errMsg));
+
+				//State
+				QTableWidgetItem *itemState = new QTableWidgetItem(QString("Error"));
+				itemState->setTextAlignment(Qt::AlignCenter);
+				ui.TestTableWidget->setItem(2, iSiteNumber - 1, itemState);
+
+				return;
+			}
+
+			//_ListOfSitePtr[i]->GetTestResult(pCurrentDutTestResult);
+			_ListOfSitePtr[i]->GetSysConfig(CurrentSysConfig);
+			iPos = i;
+			synFind = true;
+			break;
+		}
+	}
+
+	if (!synFind)// || NULL == pCurrentDutTestResult)
+		return;
+
+	int rowNumber = CurrentSysConfig._uiNumRows;
+	int columnNumber = CurrentSysConfig._uiNumCols;
+
+	QString qsStepAndResult = strTestStepName + QString(" : ") + strPassResults;
+	if (NULL != ui.TestTableWidget->item(3, iSiteNumber - 1))
+	{
+		QString qsTempContent = ui.TestTableWidget->item(3, iSiteNumber - 1)->text();
+		ui.TestTableWidget->item(3, iSiteNumber - 1)->setText(qsTempContent + QString("\n") + qsStepAndResult);
+		ui.TestTableWidget->resizeRowToContents(3);
+	}
+	else
+	{
+		QTableWidgetItem *item = new QTableWidgetItem(qsStepAndResult);
+		item->setTextAlignment(Qt::AlignCenter);
+		ui.TestTableWidget->setItem(3, iSiteNumber - 1, item);
+	}
+
+	//State
+	QTableWidgetItem *itemState = new QTableWidgetItem(QString("Running"));
+	itemState->setTextAlignment(Qt::AlignCenter);
+	ui.TestTableWidget->setItem(2, iSiteNumber - 1, itemState);
+
+	//SerialNumber
+	if (QString("InitializationStep") == strTestStepName)
+	{
+		//Syn_DutTestResult *pCurrentDutTestResult = NULL;
+		Syn_DutTestInfo *DutInfo = NULL;
+		_ListOfSitePtr[iSiteNumber - 1]->GetTestInfo(DutInfo);
+		if (NULL != DutInfo)
+		{
+			QString qsSensorSerialNumber("");
+			for (int i = 0; i < DUT_SER_NUM_SIZE; i++)
+			{
+				QString qsSensorTempSerialNumber = QString::number(DutInfo->_getVerInfo.serial_number[i], 16).toUpper();
+				qsSensorSerialNumber += qsSensorTempSerialNumber;
+			}
+
+			QTableWidgetItem *itemSerialNumber = new QTableWidgetItem(qsSensorSerialNumber);
+			itemSerialNumber->setTextAlignment(Qt::AlignCenter);
+			ui.TestTableWidget->setItem(1, iSiteNumber - 1, itemSerialNumber);
+		}
+	}
+}
 
 void FPS_TestExecutive::GetVersionForDutDump()
 {
@@ -1707,101 +1816,6 @@ void FPS_TestExecutive::Display(uint8_t* pDst, unsigned int StartPos, unsigned i
 	ui.textBrowser->append(s);
 }
 
-void FPS_TestExecutive::ReceiveTest(unsigned int iSiteNumber, const QString strTestStepName, const QString strPassResults)
-{
-	bool synFind(false);
-
-	unsigned int iFlag(0);
-	QString qText = ui.pushButtonRun->text();
-	if (QString("Run") == qText)
-	{
-		iFlag = 1;
-	}
-	else if (QString("Continue") == qText)
-	{
-		iFlag = 2;
-	}
-
-	Syn_SysConfig CurrentSysConfig;
-	unsigned int iPos(0);
-	for (size_t i = 0; i < _ListOfSitePtr.size(); i++)
-	{
-		unsigned int iTempSiteNumber(0);
-		_ListOfSitePtr[i]->GetSiteNumber(iTempSiteNumber);
-		if (iSiteNumber == iTempSiteNumber)
-		{
-			//_ListOfSitePtr[i]->GetTestInfo(*CurrentDutTestInfo);
-			SiteState oTempState;
-			_ListOfSitePtr[i]->GetState(oTempState);
-			if (oTempState == SiteState::Error)
-			{
-				string errMsg = "";
-				_ListOfSitePtr[i]->GetRunTimeError(errMsg);
-				//QMessageBox::information(this, QString("Error"), QString("Error:") + QString::fromStdString(errMsg));
-
-				//State
-				QTableWidgetItem *itemState = new QTableWidgetItem(QString("Error"));
-				itemState->setTextAlignment(Qt::AlignCenter);
-				ui.TestTableWidget->setItem(2, iSiteNumber - 1, itemState);
-
-				return;
-			}
-			
-			//_ListOfSitePtr[i]->GetTestResult(pCurrentDutTestResult);
-			_ListOfSitePtr[i]->GetSysConfig(CurrentSysConfig);
-			iPos = i;
-			synFind = true;
-			break;
-		}
-	}
-
-	if (!synFind)// || NULL == pCurrentDutTestResult)
-		return;
-
-	int rowNumber = CurrentSysConfig._uiNumRows;
-	int columnNumber = CurrentSysConfig._uiNumCols;
-
-	QString qsStepAndResult = strTestStepName + QString(" : ") + strPassResults;
-	if (NULL != ui.TestTableWidget->item(3, iSiteNumber - 1))
-	{
-		QString qsTempContent = ui.TestTableWidget->item(3, iSiteNumber - 1)->text();
-		ui.TestTableWidget->item(3, iSiteNumber - 1)->setText(qsTempContent + QString("\n") + qsStepAndResult);
-		ui.TestTableWidget->resizeRowToContents(3);
-	}
-	else
-	{
-		QTableWidgetItem *item = new QTableWidgetItem(qsStepAndResult);
-		item->setTextAlignment(Qt::AlignCenter);
-		ui.TestTableWidget->setItem(3, iSiteNumber - 1, item);
-	}
-
-	//State
-	QTableWidgetItem *itemState = new QTableWidgetItem(QString("Running"));
-	itemState->setTextAlignment(Qt::AlignCenter);
-	ui.TestTableWidget->setItem(2, iSiteNumber - 1, itemState);
-
-	//SerialNumber
-	if (QString("InitializationStep") == strTestStepName)
-	{
-		//Syn_DutTestResult *pCurrentDutTestResult = NULL;
-		Syn_DutTestInfo *DutInfo = NULL;
-		_ListOfSitePtr[iSiteNumber - 1]->GetTestInfo(DutInfo);
-		if (NULL != DutInfo)
-		{
-			QString qsSensorSerialNumber("");
-			for (int i = 0; i < DUT_SER_NUM_SIZE; i++)
-			{
-				QString qsSensorTempSerialNumber = QString::number(DutInfo->_getVerInfo.serial_number[i],16).toUpper();
-				qsSensorSerialNumber += qsSensorTempSerialNumber;
-			}
-
-			QTableWidgetItem *itemSerialNumber = new QTableWidgetItem(qsSensorSerialNumber);
-			itemSerialNumber->setTextAlignment(Qt::AlignCenter);
-			ui.TestTableWidget->setItem(1, iSiteNumber - 1, itemSerialNumber);
-		}
-	}
-}
-
 void FPS_TestExecutive::WriteLog(std::string strFolderPath, Syn_DutTestInfo * DutInfo, Syn_DutTestResult * DutResults, int RowNumber, int ColumnNumber)
 {
 	if (NULL == DutInfo)
@@ -2067,4 +2081,66 @@ void FPS_TestExecutive::WriteLog(std::string strFolderPath, Syn_DutTestInfo * Du
 	}
 
 	fclose(pFile);
+}
+
+void FPS_TestExecutive::DisplayBinCodes()
+{
+	if (NULL == _pSyn_BinCodesDlg)
+	{
+		_pSyn_BinCodesDlg = new Syn_BinCodesDlg();
+	}
+
+	if (_pSyn_BinCodesDlg->isHidden())
+	{
+		_pSyn_BinCodesDlg->show();
+	}
+
+	QObject::connect(_pSyn_BinCodesDlg->ui.ClosePushButton, SIGNAL(clicked()), this, SLOT(CloseBinCodesDlg()));
+}
+
+void FPS_TestExecutive::CloseBinCodesDlg()
+{
+	if (NULL == _pSyn_BinCodesDlg)
+		return;
+
+	_pSyn_BinCodesDlg->hide();
+}
+
+void FPS_TestExecutive::ManageButtonStatus(int iFlag)
+{
+	if (_FinishedSiteCounts == _ListOfSitePtr.size())
+	{
+		bool bAllFailed(true);
+		for (size_t i = 1; i <= _ListOfSitePtr.size(); i++)
+		{
+			SiteState oTmpState;
+			_ListOfSitePtr[i - 1]->GetState(oTmpState);
+			if (SiteState::Error != oTmpState)
+			{
+				bAllFailed = false;
+				break;
+			}
+		}
+
+		if (bAllFailed)
+		{
+			ui.LocalSettingsPushButton->setDisabled(false);
+			ui.pushButtonRun->setDisabled(false);
+		}
+		else
+		{
+			if (1 == iFlag)
+			{
+				ui.pushButtonRun->setText(QString("Continue"));
+				ui.pushButtonRun->setDisabled(false);
+			}
+			else if (2 == iFlag)
+			{
+				ui.pushButtonRun->setText(QString("Run"));
+				ui.LocalSettingsPushButton->setDisabled(false);
+				ui.pushButtonRun->setDisabled(false);
+			}
+		}
+		
+	}
 }

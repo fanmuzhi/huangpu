@@ -51,13 +51,13 @@ void Ts_CurrentTest::SetUp()
 	if (0 != listOfArgValue[1].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nHighGain = atoi(listOfArgValue[1].c_str()) % 4;//Gain range is 0-3.
 	if (0 != listOfArgValue[2].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqAnaMax_uA = stof(listOfArgValue[2]) * 1000;//(int)(_tstof((LPCTSTR)listOfArgValue[2].c_str()) * 1000);
+		_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqAnaMax_uA = (int)(stof(listOfArgValue[2]) * 1000);//(int)(_tstof((LPCTSTR)listOfArgValue[2].c_str()) * 1000);
 	if (0 != listOfArgValue[3].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqDigMax_uA = stof(listOfArgValue[3]) * 1000;//(int)(_tstof((LPCTSTR)listOfArgValue[3].c_str()) * 1000);
+		_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqDigMax_uA = (int)(stof(listOfArgValue[3]) * 1000);//(int)(_tstof((LPCTSTR)listOfArgValue[3].c_str()) * 1000);
 	if (0 != listOfArgValue[4].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqAnaMin_uA = stof(listOfArgValue[4]) * 1000;//(int)(_tstof((LPCTSTR)listOfArgValue[4].c_str()) * 1000);
+		_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqAnaMin_uA = (int)(stof(listOfArgValue[4]) * 1000);//(int)(_tstof((LPCTSTR)listOfArgValue[4].c_str()) * 1000);
 	if (0 != listOfArgValue[5].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqDigMin_uA = stof(listOfArgValue[5]) * 1000;//(int)(_tstof((LPCTSTR)listOfArgValue[5].c_str()) * 1000);
+		_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqDigMin_uA = (int)(stof(listOfArgValue[5]) * 1000);//(int)(_tstof((LPCTSTR)listOfArgValue[5].c_str()) * 1000);
 
 	//power on
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);

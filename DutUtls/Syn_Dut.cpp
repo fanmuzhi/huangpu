@@ -31,6 +31,8 @@ Syn_Dut::~Syn_Dut()
 		delete _pSyn_DutTestResult;
 		_pSyn_DutTestResult = NULL;
 	}
+
+	_listOfPatchInfo.clear();
 }
 
 bool Syn_Dut::CreateDutInstance(ProjectType iType, Syn_Dut * &opSyn_DutInstance)
