@@ -32,6 +32,8 @@ public:
 
 	void ImageDecode(FPSFrame *pDecodeFrame, FPSFrame *pEncodeFrame, int nNumRow, int nNumCol, int nNumFrames);
 
+	int8_t CalcPgaOffset(uint8_t nPixelValue, float nRatio, float nConfigRatio);
+
 	//virtual function
 	virtual	void CopyToPrintPatch(uint8_t* pSrc, uint8_t* pPrintPatch, int nNumBytes, int nPatchIdx) = 0;
 
