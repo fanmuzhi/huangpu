@@ -267,7 +267,7 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 		itemSiteNumber->setTextAlignment(Qt::AlignCenter);
 		itemSiteStatus->setTextAlignment(Qt::AlignCenter);
 		ui.TestTableWidget->setItem(0, t - 1, itemSiteNumber);
-		ui.TestTableWidget->setItem(1, t - 1, itemSiteStatus);
+		ui.TestTableWidget->setItem(2, t - 1, itemSiteStatus);
 
 		/*QTableWidgetItem *cubesHeaderItem = new QTableWidgetItem(tr("Cubes"));
 		cubesHeaderItem->setIcon(QIcon(QPixmap(":/Images/cubed.png")));
@@ -1859,10 +1859,10 @@ void FPS_TestExecutive::WriteLog(std::string strFolderPath, Syn_DutTestInfo * Du
 	}
 
 	fprintf(pFile, "\n%%%%%%%%%%%%%%%%%%%%%%\n");
-	fprintf(pFile, "MTLog_Site_\n");
+	fprintf(pFile, "MTLog\n");
 
 	//Put in part number.
-	fprintf(pFile, "Part Number,%s\n", "");//DebugVersion
+	//fprintf(pFile, "Part Number,%s\n", "");//DebugVersion
 
 	//fprintf(pFile, "ConfigFile,%s\n", _pSyn_Dut->_pSyn_DutTestInfo-);
 	fprintf(pFile, "\n%%%%%%%%%%%%%%%%%%%%%%\n");
