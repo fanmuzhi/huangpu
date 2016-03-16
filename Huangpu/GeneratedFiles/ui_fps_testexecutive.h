@@ -42,6 +42,7 @@ public:
     QGroupBox *SettingOptionGroupBox;
     QGridLayout *gridLayout_2;
     QPushButton *LocalSettingsPushButton;
+    QPushButton *BinCodesDisplayPushButton;
     QGroupBox *TestGroupBox;
     QGridLayout *gridLayout;
     QTabWidget *tabWidget;
@@ -99,6 +100,11 @@ public:
         LocalSettingsPushButton->setObjectName(QStringLiteral("LocalSettingsPushButton"));
 
         gridLayout_2->addWidget(LocalSettingsPushButton, 0, 0, 1, 1);
+
+        BinCodesDisplayPushButton = new QPushButton(SettingOptionGroupBox);
+        BinCodesDisplayPushButton->setObjectName(QStringLiteral("BinCodesDisplayPushButton"));
+
+        gridLayout_2->addWidget(BinCodesDisplayPushButton, 0, 1, 1, 1);
 
 
         gridLayout_4->addWidget(SettingOptionGroupBox, 0, 0, 1, 1);
@@ -268,6 +274,7 @@ public:
         exitAct->setText(QApplication::translate("FPS_TestExecutiveClass", "Exit", 0));
         SettingOptionGroupBox->setTitle(QApplication::translate("FPS_TestExecutiveClass", "Setting Options", 0));
         LocalSettingsPushButton->setText(QApplication::translate("FPS_TestExecutiveClass", "Local Settings", 0));
+        BinCodesDisplayPushButton->setText(QApplication::translate("FPS_TestExecutiveClass", "BinCodes Display", 0));
         TestGroupBox->setTitle(QApplication::translate("FPS_TestExecutiveClass", "Test", 0));
         QTableWidgetItem *___qtablewidgetitem = TestTableWidget->verticalHeaderItem(0);
         ___qtablewidgetitem->setText(QApplication::translate("FPS_TestExecutiveClass", "Test Site", 0));

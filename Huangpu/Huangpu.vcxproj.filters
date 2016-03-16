@@ -95,6 +95,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_Syn_UpdateADCOffsetsDlg.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="Syn_BinCodesDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Syn_BinCodesDlg.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Syn_BinCodesDlg.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="fps_testexecutive.h">
@@ -130,6 +139,12 @@
     <CustomBuild Include="Syn_UpdateADCOffsetsDlg.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="Syn_BinCodesDlg.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Syn_BinCodesDlg.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_fps_testexecutive.h">
@@ -145,6 +160,9 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_Syn_UpdateADCOffsetsDlg.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_Syn_BinCodesDlg.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>

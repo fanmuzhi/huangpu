@@ -46,7 +46,6 @@ void Syn_Thread::run()
 
 			rc = _pSyn_Site->GetTestResult(TestResult);
 			rc = _pSyn_Site->ExecuteTestStep("PixelPatchTest");
-			rc = _pSyn_Site->GetTestResult(TestResult);
 			if (NULL != TestResult)
 			{
 				emit send(iSiteNumber, "PixelPatchTest", TestResult->_pixelPatchResults.m_bPass ? "Pass" : "Fail");
@@ -56,8 +55,8 @@ void Syn_Thread::run()
 				emit send(iSiteNumber, "PixelPatchTest", "Fail");
 			}
 
+			rc = _pSyn_Site->GetTestResult(TestResult); 
 			rc = _pSyn_Site->ExecuteTestStep("WoVarTest");
-			rc = _pSyn_Site->GetTestResult(TestResult);
 			if (NULL != TestResult)
 			{
 				emit send(iSiteNumber, "WoVarTest", TestResult->_woVarResults.m_bPass ? "Pass" : "Fail");
@@ -67,15 +66,15 @@ void Syn_Thread::run()
 				emit send(iSiteNumber, "WoVarTest", "Fail");
 			}
 
-			rc = _pSyn_Site->ExecuteTestStep("Calibrate");
 			rc = _pSyn_Site->GetTestResult(TestResult);
+			rc = _pSyn_Site->ExecuteTestStep("Calibrate");
 			if (NULL != TestResult)
 				emit send(iSiteNumber, "Calibrate", TestResult->_calibrationResults.m_bPass ? "Pass" : "Fail");
 			else
 				emit send(iSiteNumber, "Calibrate", "Fail");
 
+			rc = _pSyn_Site->GetTestResult(TestResult);
 			rc = _pSyn_Site->ExecuteTestStep("AcqImgNoFinger");
-			//rc = _pSyn_Site->GetTestResult(TestResult);
 			if (NULL != TestResult)
 				emit send(iSiteNumber, "AcqImgNoFinger", "Pass");
 			else
@@ -102,70 +101,69 @@ void Syn_Thread::run()
 
 			rc = _pSyn_Site->GetTestResult(TestResult);
 			rc = _pSyn_Site->ExecuteTestStep("PeggedPixelsTest");
-			rc = _pSyn_Site->GetTestResult(TestResult);
 			if (NULL != TestResult)
 				emit send(iSiteNumber, "PeggedPixelsTest", TestResult->_peggedPixelsResults.m_bPass ? "Pass" : "Fail");
 			else
 				emit send(iSiteNumber, "PeggedPixelsTest", "Fail");
 
-			rc = _pSyn_Site->ExecuteTestStep("FlooredPixelsTest");
 			rc = _pSyn_Site->GetTestResult(TestResult);
+			rc = _pSyn_Site->ExecuteTestStep("FlooredPixelsTest");
 			if (NULL != TestResult)
 				emit send(iSiteNumber, "FlooredPixelsTest", TestResult->_flooredPixelsResults.m_bPass ? "Pass" : "Fail");
 			else
 				emit send(iSiteNumber, "FlooredPixelsTest", "Fail");
 
-			rc = _pSyn_Site->ExecuteTestStep("DRdyTest");
 			rc = _pSyn_Site->GetTestResult(TestResult);
+			rc = _pSyn_Site->ExecuteTestStep("DRdyTest");
 			if (NULL != TestResult)
 				emit send(iSiteNumber, "DRdyTest", TestResult->_DRdyResults.m_bPass ? "Pass" : "Fail");
 			else
 				emit send(iSiteNumber, "DRdyTest", "Fail");
 
-			rc = _pSyn_Site->ExecuteTestStep("PixelTest");
 			rc = _pSyn_Site->GetTestResult(TestResult);
+			rc = _pSyn_Site->ExecuteTestStep("PixelTest");
 			if (NULL != TestResult)
 				emit send(iSiteNumber, "PixelTest", TestResult->_pixelResults.bPass ? "Pass" : "Fail");
 			else
 				emit send(iSiteNumber, "PixelTest", "Fail");
 
-			rc = _pSyn_Site->ExecuteTestStep("ConsecutivePixels");
 			rc = _pSyn_Site->GetTestResult(TestResult);
+			rc = _pSyn_Site->ExecuteTestStep("ConsecutivePixels");
 			if (NULL != TestResult)
 				emit send(iSiteNumber, "ConsecutivePixels", TestResult->_consecutivePixelsResults.m_bPass ? "Pass" : "Fail");
 			else
 				emit send(iSiteNumber, "ConsecutivePixels", "Fail");
 
-			rc = _pSyn_Site->ExecuteTestStep("CurrentTest");
 			rc = _pSyn_Site->GetTestResult(TestResult);
+			rc = _pSyn_Site->ExecuteTestStep("CurrentTest");
 			if (NULL != TestResult)
 				emit send(iSiteNumber, "CurrentTest", TestResult->_currentResults.bPass ? "Pass" : "Fail");
 			else
 				emit send(iSiteNumber, "CurrentTest", "Fail");
 
-			rc = _pSyn_Site->ExecuteTestStep("SNRTest");
 			rc = _pSyn_Site->GetTestResult(TestResult);
+			rc = _pSyn_Site->ExecuteTestStep("SNRTest");
 			if (NULL != TestResult)
 				emit send(iSiteNumber, "SNRTest", TestResult->_snrResults.bPass ? "Pass" : "Fail");
 			else
 				emit send(iSiteNumber, "SNRTest", "Fail");
 
-			rc = _pSyn_Site->ExecuteTestStep("SharpnessTest");
 			rc = _pSyn_Site->GetTestResult(TestResult);
+			rc = _pSyn_Site->ExecuteTestStep("SharpnessTest");
 			if (NULL != TestResult)
 				emit send(iSiteNumber, "SharpnessTest", TestResult->_SharpnessResults.bPass ? "Pass" : "Fail");
 			else
 				emit send(iSiteNumber, "SharpnessTest", "Fail");
 
-			rc = _pSyn_Site->ExecuteTestStep("RxStandardDev");
 			rc = _pSyn_Site->GetTestResult(TestResult);
+			rc = _pSyn_Site->ExecuteTestStep("RxStandardDev");
 			if (NULL != TestResult)
 				emit send(iSiteNumber, "RxStandardDev", TestResult->_RxStandardDevResults.m_bPass ? "Pass" : "Fail");
 			else
 				emit send(iSiteNumber, "RxStandardDev", "Fail");
 
-			rc = _pSyn_Site->ExecuteTestStep("Imperfections");
 			rc = _pSyn_Site->GetTestResult(TestResult);
+			rc = _pSyn_Site->ExecuteTestStep("Imperfections");
 			if (NULL != TestResult)
 				emit send(iSiteNumber, "Imperfections", TestResult->_imperfectionsTestResults.m_bPass ? "Pass" : "Fail");
 			else
@@ -175,8 +173,8 @@ void Syn_Thread::run()
 			rc = _pSyn_Site->ExecuteTestStep("OTPWriteMainSector");
 			emit send(iSiteNumber, "OTPWriteMainSector");*/
 
+			rc = _pSyn_Site->GetTestResult(TestResult);
 			rc = _pSyn_Site->ExecuteTestStep("FinalizationStep");
-			//rc = _pSyn_Site->GetTestResult(TestResult);
 			if (NULL != TestResult)
 				emit send(iSiteNumber, "FinalizationStep", "Pass");
 			else
