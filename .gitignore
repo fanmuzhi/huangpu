@@ -1,3 +1,6 @@
+# Ignore LocalSettings
+LocalSettings.xml
+
 # Ignore thumbnails created by windows
 Thumbs.db
 
