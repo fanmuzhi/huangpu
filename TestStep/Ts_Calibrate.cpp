@@ -141,6 +141,8 @@ void Ts_Calibrate::Execute()
 		_pSyn_Dut->_pSyn_DutTestResult = new Syn_DutTestResult();
 	}
 
+	_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_bPass = 1;
+
 	//construct print file
 	//uint8_t* pPrintPatch = new uint8_t[PrintFileInfo._uiArraySize];		//put into CalibrationResult later
 	memcpy(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch, PrintFileInfo._pArrayBuf, PrintFileInfo._uiArraySize);
