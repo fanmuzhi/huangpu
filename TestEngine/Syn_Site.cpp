@@ -19,10 +19,10 @@
 #include <time.h>
 //#include <thread>
 
-#define ELPP_STL_LOGGING
-#define ELPP_THREAD_SAFE
-#include "easylogging++.h"
-INITIALIZE_EASYLOGGINGPP
+//#define ELPP_STL_LOGGING
+//#define ELPP_THREAD_SAFE
+//#include "easylogging++.h"
+//INITIALIZE_EASYLOGGINGPP
 
 Syn_Site::Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath)
 :_pSyn_Dut(NULL)
@@ -92,7 +92,7 @@ uint32_t Syn_Site::Init()
 	{
 		_siteState = Error;
 		_uiErrorFlag = rc;
-		LOG(ERROR) << "Error:Syn_Site::Init() - pConfigOperationInstance is NULL!" << endl;
+		//LOG(ERROR) << "Error:Syn_Site::Init() - pConfigOperationInstance is NULL!" << endl;
 		return rc;
 	}
 
@@ -101,7 +101,7 @@ uint32_t Syn_Site::Init()
 	{
 		_siteState = Error;
 		_uiErrorFlag = rc;
-		LOG(ERROR) << "Error:Syn_Site::Init() - ::GetSysConfig is failed!" << endl;
+		//LOG(ERROR) << "Error:Syn_Site::Init() - ::GetSysConfig is failed!" << endl;
 		return rc;
 	}
 
@@ -119,7 +119,7 @@ uint32_t Syn_Site::Init()
 	else
 	{
 		iDutControllerType = Syn_SPC;
-		LOG(ERROR) << "Error:Syn_Site::Init() - an unknown DutController,construct it to SPC!";
+		//LOG(ERROR) << "Error:Syn_Site::Init() - an unknown DutController,construct it to SPC!";
 	}
 
 	//Create DutCtrl
@@ -128,7 +128,7 @@ uint32_t Syn_Site::Init()
 	{
 		_siteState = Error;
 		_uiErrorFlag = rc;
-		LOG(ERROR) << "Error:Syn_Site::Init() - CreateDutInstance is failed!";
+		//LOG(ERROR) << "Error:Syn_Site::Init() - CreateDutInstance is failed!";
 		return rc;
 	}
 
@@ -175,7 +175,7 @@ uint32_t Syn_Site::Open()
 	else
 	{
 		iProjectType = Viper1;
-		LOG(ERROR) << "Error:Syn_Site::Init() - an unknown ProjectType,construct it to Viper1!";
+		//LOG(ERROR) << "Error:Syn_Site::Init() - an unknown ProjectType,construct it to Viper1!";
 	}
 
 	if (NULL != _pSyn_Dut)
@@ -190,7 +190,7 @@ uint32_t Syn_Site::Open()
 	{
 		_siteState = Error;
 		_uiErrorFlag = Syn_ExceptionCode::Syn_DutNull;
-		LOG(ERROR) << "Error:Syn_Site::Init() - CreateDutInstance is failed!";
+		//LOG(ERROR) << "Error:Syn_Site::Init() - CreateDutInstance is failed!";
 		return _uiErrorFlag;
 	}
 
@@ -466,21 +466,21 @@ uint32_t Syn_Site::ExecuteTestStep(std::string sTestName)
 	return Syn_ExceptionCode::Syn_OK;
 }
 
-bool Syn_Site::RegisterLoggingConfig()
-{
-	el::Configurations defaultConf;
-	//defaultConf.setToDefault();
-	const time_t t = time(NULL);
-	struct tm* current_time = localtime(&t);
-	std::string strMonthValue = to_string(current_time->tm_mon + 1);
-	if (1 == strMonthValue.length())
-		strMonthValue = "0" + strMonthValue;
-	std::string strTimeValue = to_string(current_time->tm_year + 1900) + "_" + strMonthValue + "_" + to_string(current_time->tm_mday);
-	std::string strLogFilePath = std::string(".\\logs\\") + strTimeValue + std::string(".log");
-	el::Configuration confFilenameInfo(el::Level::Global, el::ConfigurationType::Filename, strLogFilePath);
-	defaultConf.set(&confFilenameInfo);
-	defaultConf.parseFromText("*GLOBAL:\n FORMAT = [%datetime] [%thread] [%level] [%func] %msg");
-	el::Loggers::reconfigureLogger("default", defaultConf);
+//bool Syn_Site::RegisterLoggingConfig()
+//{
+//	el::Configurations defaultConf;
+//	//defaultConf.setToDefault();
+//	const time_t t = time(NULL);
+//	struct tm* current_time = localtime(&t);
+//	std::string strMonthValue = to_string(current_time->tm_mon + 1);
+//	if (1 == strMonthValue.length())
+//		strMonthValue = "0" + strMonthValue;
+//	std::string strTimeValue = to_string(current_time->tm_year + 1900) + "_" + strMonthValue + "_" + to_string(current_time->tm_mday);
+//	std::string strLogFilePath = std::string(".\\logs\\") + strTimeValue + std::string(".log");
+//	el::Configuration confFilenameInfo(el::Level::Global, el::ConfigurationType::Filename, strLogFilePath);
+//	defaultConf.set(&confFilenameInfo);
+//	defaultConf.parseFromText("*GLOBAL:\n FORMAT = [%datetime] [%thread] [%level] [%func] %msg");
+//	el::Loggers::reconfigureLogger("default", defaultConf);
 
-	return true;
-}
+//	return true;
+//}

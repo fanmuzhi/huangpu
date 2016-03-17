@@ -23,8 +23,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestEngine", "TestEngine\Te
 		{F7594FD8-6194-49E4-A3DD-8520123F8D56} = {F7594FD8-6194-49E4-A3DD-8520123F8D56}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MTConfigGenerator", "MTConfigGenerator\MTConfigGenerator.vcxproj", "{E651F59C-BBF4-404D-8EBC-2859109965EE}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D3525C97-DF9C-4F76-ACBB-5E884990E8F0}"
 	ProjectSection(SolutionItems) = preProject
 		Readme.txt = Readme.txt
@@ -64,12 +62,6 @@ Global
 		{9E3AC4D9-AE3D-44D5-A514-2DFAA67C641E}.Release|Win32.ActiveCfg = Release|Win32
 		{9E3AC4D9-AE3D-44D5-A514-2DFAA67C641E}.Release|Win32.Build.0 = Release|Win32
 		{9E3AC4D9-AE3D-44D5-A514-2DFAA67C641E}.Release|x64.ActiveCfg = Release|Win32
-		{E651F59C-BBF4-404D-8EBC-2859109965EE}.Debug|Win32.ActiveCfg = Debug|Win32
-		{E651F59C-BBF4-404D-8EBC-2859109965EE}.Debug|Win32.Build.0 = Debug|Win32
-		{E651F59C-BBF4-404D-8EBC-2859109965EE}.Debug|x64.ActiveCfg = Debug|Win32
-		{E651F59C-BBF4-404D-8EBC-2859109965EE}.Release|Win32.ActiveCfg = Release|Win32
-		{E651F59C-BBF4-404D-8EBC-2859109965EE}.Release|Win32.Build.0 = Release|Win32
-		{E651F59C-BBF4-404D-8EBC-2859109965EE}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -3,9 +3,7 @@
 //DutUtls
 #include "Syn_DutCtrl.h"
 
-extern "C" {
-#include "SYN_TestUtils.h"
-}
+#include "Syn_TestUtils.h"
 
 class Syn_Module
 {

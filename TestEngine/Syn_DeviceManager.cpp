@@ -9,7 +9,7 @@
 //#include "MPCErrors.h"
 
 //third-part
-#include "easylogging++.h"
+//#include "easylogging++.h"
 
 Syn_DeviceManager::Syn_DeviceManager()
 :_pDeviceSerNumArray(NULL)
@@ -36,7 +36,7 @@ uint32_t Syn_DeviceManager::Open()
 		error = MPC_Initialize();
 		if (error != MpcApiError::ERR_OK)
 		{
-			LOG(ERROR) << "MPC_Initialize is failed!";
+			//LOG(ERROR) << "MPC_Initialize is failed!";
 			return error;
 		}
 
@@ -46,12 +46,12 @@ uint32_t Syn_DeviceManager::Open()
 	error = MPC_GetNumberOfDevices(&_deviceCount);
 	if (error != MpcApiError::ERR_OK)
 	{
-		LOG(ERROR) << "MPC_GetNumberOfDevice is failed!";
+		//LOG(ERROR) << "MPC_GetNumberOfDevice is failed!";
 		return error;
 	}
 	if (0 == _deviceCount)
 	{
-		LOG(ERROR) << "DeviceCounts is 0!";
+		//LOG(ERROR) << "DeviceCounts is 0!";
 		error = MpcApiError::ERR_DEVICE_NOT_CONNECTED;
 		return error;
 	}
@@ -66,7 +66,7 @@ uint32_t Syn_DeviceManager::Open()
 	error = MPC_GetDeviceSerialNumList(_pDeviceSerNumArray);
 	if (error != MpcApiError::ERR_OK)
 	{
-		LOG(ERROR) << "MPC_GetDeviceSerialNumList is failed!";
+		//LOG(ERROR) << "MPC_GetDeviceSerialNumList is failed!";
 		return error;
 	}
 	return error;

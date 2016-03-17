@@ -1,20 +1,16 @@
-#ifndef SYN_SITE_H
-#define SYN_SITE_H
+#pragma once
 
 //DutUtls
 #include "Syn_Config.h"
 #include "Syn_Dut.h"
 #include "Syn_DutCtrl.h"
 #include "Syn_Exception.h"
+#include "Syn_TestUtils.h"
 
 //TestStep
 #include "Syn_TestStep.h"
 #include "Syn_TestStepFactory.h"
 
-//Reference inc
-extern "C" {
-#include "SYN_TestUtils.h"
-};
 
 enum SiteState
 {
@@ -68,7 +64,7 @@ public:
 		return _uiErrorFlag;
 	};
 
-	static bool RegisterLoggingConfig();
+	//static bool RegisterLoggingConfig();
 
 	inline void SetSiteNumber(unsigned int iSiteNumber){ _iSiteNumber = iSiteNumber; };
 	inline void GetSiteNumber(unsigned int &oSiteNumber){ oSiteNumber = _iSiteNumber; };
@@ -112,6 +108,3 @@ private:
 	
 	bool GetTestScriptInfo(uint8_t scriptID, Syn_TestScript &oTestScriptInfo);
 };
-
-
-#endif // SYN_SITE_H

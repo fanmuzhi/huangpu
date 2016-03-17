@@ -27,14 +27,12 @@
 #include "Syn_Dut.h"
 #include "Syn_DutCtrl.h"
 #include "Syn_Exception.h"
+#include "Syn_TestUtils.h"
 
 //TestEngine
 #include "Syn_Site.h"
 #include "Syn_DeviceManager.h"
 
-extern "C" {
-#include "SYN_TestUtils.h"
-};
 
 //std
 #include <sstream>

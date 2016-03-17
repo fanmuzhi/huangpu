@@ -23,6 +23,7 @@
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>false</UseOfMfc>
+    <CLRSupport>false</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -30,6 +31,7 @@
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
+    <CLRSupport>false</CLRSupport>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -99,7 +101,7 @@
     <ClInclude Include="Syn_Exception.h" />
     <ClInclude Include="Syn_MPC04Ctrl.h" />
     <ClInclude Include="Syn_SPCCtrl.h" />
-    <ClInclude Include="SYN_TestUtils.h" />
+    <ClInclude Include="Syn_TestUtils.h" />
     <ClInclude Include="Syn_Vcsfw.h" />
   </ItemGroup>
   <ItemGroup>
@@ -108,7 +110,7 @@
     <ClCompile Include="Syn_DutCtrl.cpp" />
     <ClCompile Include="Syn_MPC04Ctrl.cpp" />
     <ClCompile Include="Syn_SPCCtrl.cpp" />
-    <ClCompile Include="SYN_TestUtils.c" />
+    <ClCompile Include="Syn_TestUtils.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

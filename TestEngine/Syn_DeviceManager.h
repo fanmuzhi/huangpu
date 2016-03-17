@@ -4,9 +4,7 @@
 #include <vector>
 
 //Reference inc
-extern "C" {
-#include "SYN_TestUtils.h"
-};
+#include "Syn_TestUtils.h"
 
 class Syn_DeviceManager
 {

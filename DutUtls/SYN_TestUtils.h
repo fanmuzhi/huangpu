@@ -1,8 +1,4 @@
-#ifndef __SYN_TestUtils__
-///////////////////////////// ////////////////////////
-//////////////////////////// ////////////////////////
-///////////////////////////	////////////////////////
-#define __SYN_TestUtils__
+#pragma once
 
 #include <stdint.h>
 
@@ -1187,4 +1183,12 @@ void SYN_RetainModeExecute(RetainModeInfo* pInfo, RetainModeResults* pResults);
 void SYN_AFETestExecute(AFETestInfo* pInfo, AFETestResults* pResults);
 
 void SYN_SDKBaselineTest(SdkBaselineTestInfo* pInfo, SdkBaselineTestResults* pResults, AcqImgNoFingerResult* nofingerdata, int nNumRows, int nNumCols, int numFrames);
-#endif //__SYN_TestUtils__
+
+
+//class Syn_TestUtils
+//{
+//public:
+//	Syn_TestUtils();
+//	~Syn_TestUtils();
+//};
+

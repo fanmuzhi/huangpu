@@ -2,8 +2,6 @@
 
 //Local
 #include "Syn_TestStep.h"
-
-//
 #include "Syn_Exception.h"
 
 //std

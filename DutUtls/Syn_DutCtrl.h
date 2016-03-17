@@ -7,9 +7,7 @@
 #include <string>
 using namespace std;
 
-extern "C" {
-#include "SYN_TestUtils.h"
-};
+#include "Syn_TestUtils.h"
 
 
 enum DutController

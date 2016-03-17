@@ -8,15 +8,13 @@
 #include "Syn_DutCtrl.h"
 #include "Syn_Config.h"
 #include "Syn_BinCodes.h"
+#include "Syn_TestUtils.h"
 
 //C++
 #include <string>
 #include <vector>
 using namespace std;
 
-extern "C" {
-#include "SYN_TestUtils.h"
-};
 
 class Syn_TestStep
 {

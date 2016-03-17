@@ -1,4 +1,14 @@
-#include "SYN_TestUtils.h"
+#include "Syn_TestUtils.h"
+
+
+//Syn_TestUtils::Syn_TestUtils()
+//{
+//}
+
+
+//Syn_TestUtils::~Syn_TestUtils()
+//{
+//}
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -7,7 +17,7 @@
 #define CAL_LIMIT_VIPER_MIN 96.0
 #define CAL_LIMIT_VIPER_MAX 160.0
 
-static float m_matrix[144][144];
+//static float m_matrix[144][144];
 
 //sharpness test kernels
 static int m_kernelSharpnessGx[3][3] = {{1, 2, 1},{0,0,0},{-1,-2,-1}};

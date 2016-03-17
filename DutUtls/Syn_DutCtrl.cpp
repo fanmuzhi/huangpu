@@ -8,7 +8,7 @@
 #include <iostream>
 
 //third-party
-#include "easylogging++.h"
+//#include "easylogging++.h"
 
 Syn_DutCtrl::Syn_DutCtrl(uint32_t iSerialNumber)
 :syn_SerialNumber(iSerialNumber)
@@ -56,7 +56,7 @@ uint32_t Syn_DutCtrl::CreateDutCtrlInstance(DutController iType, uint32_t iSeria
 	}
 	else
 	{
-		LOG(ERROR) << "Error:Syn_DutCtrl::CreateDutCtrlInstance() - Can't retrieve the DutController!";
+		//LOG(ERROR) << "Error:Syn_DutCtrl::CreateDutCtrlInstance() - Can't retrieve the DutController!";
 		return false;
 	}
 

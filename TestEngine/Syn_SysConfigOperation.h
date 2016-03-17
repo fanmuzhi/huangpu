@@ -1,5 +1,4 @@
-#ifndef SYN_SYSCONFIGOPRERATION_H
-#define SYN_SYSCONFIGOPRERATION_H
+#pragma once
 
 //local
 #include "Syn_Config.h"
@@ -46,5 +45,3 @@ private:
 	rapidxml::xml_node<> *_rapidxmlrootNode;
 
 };
-
-#endif //SYN_SYSCONFIGOPRERATION_H

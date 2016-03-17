@@ -1,9 +1,7 @@
 #pragma once
 
 //Reference inc
-extern "C" {
-#include "SYN_TestUtils.h"
-};
+#include "Syn_TestUtils.h"
 
 //std C
 #include "stdint.h"

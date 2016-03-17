@@ -4,9 +4,7 @@
 #include "Syn_DutCtrl.h"
 #include "Syn_Config.h"
 
-extern "C" {
-#include "SYN_TestUtils.h"
-}
+#include "Syn_TestUtils.h"
 
 //std
 #include <string>

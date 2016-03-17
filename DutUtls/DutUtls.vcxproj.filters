@@ -39,10 +39,10 @@
     <ClInclude Include="Syn_Vcsfw.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SYN_TestUtils.h">
+    <ClInclude Include="Syn_Config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Syn_Config.h">
+    <ClInclude Include="Syn_TestUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -62,7 +62,7 @@
     <ClCompile Include="Syn_DutCtrl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SYN_TestUtils.c">
+    <ClCompile Include="Syn_TestUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

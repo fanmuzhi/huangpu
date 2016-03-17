@@ -3,6 +3,6 @@
     <SysConfigFile>C:/Users/bqiling/Google Drive/Metallica 57K0/580-005566-02r13(FM-000094-002)_OFilm/580-005566-02r13-Grey1-(FM-000094-002)_OFilm.xml</SysConfigFile>
     <LogFilePath>C:/logfiles</LogFilePath>
     <NumSites>1</NumSites>
-    <Site1 AdcBaseLines="707 708 705 787 707 707 707 823 708 709 717 1106 710 710 710 826 " Voltages="1800 1800 3300 3300">1405853</Site1>
+    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="709 708 706 763 708 708 708 800 708 708 730 1138 711 711 711 811 ">1405853</Site1>
     <AutoController></AutoController>
 </LocalSettings>
