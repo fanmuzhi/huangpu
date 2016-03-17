@@ -151,6 +151,8 @@ typedef struct
 	uint16_t   otpspare1;        /* spare space                         */
 	uint8_t    reserved;         /* reserved byte                       */
 	uint8_t    device_type;      /* device type                         */
+
+	char sSerialNumber[12];
 }GetVerInfo;
 
 ///////////////////////////// ////////////////////////

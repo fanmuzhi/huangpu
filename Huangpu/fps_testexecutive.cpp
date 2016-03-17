@@ -1239,11 +1239,12 @@ void FPS_TestExecutive::ReceiveTest(unsigned int iSiteNumber, const QString strT
 		if (NULL != DutInfo)
 		{
 			QString qsSensorSerialNumber("");
-			for (int i = 0; i < DUT_SER_NUM_SIZE; i++)
+			/*for (int i = 0; i < DUT_SER_NUM_SIZE; i++)
 			{
 				QString qsSensorTempSerialNumber = QString::number(DutInfo->_getVerInfo.serial_number[i], 16).toUpper();
 				qsSensorSerialNumber += qsSensorTempSerialNumber;
-			}
+			}*/
+			qsSensorSerialNumber = QString::fromLatin1(DutInfo->_getVerInfo.sSerialNumber, sizeof(DutInfo->_getVerInfo.sSerialNumber));
 
 			QTableWidgetItem *itemSerialNumber = new QTableWidgetItem(qsSensorSerialNumber);
 			itemSerialNumber->setTextAlignment(Qt::AlignCenter);
@@ -1332,7 +1333,8 @@ void FPS_TestExecutive::GetVersionForDutDump()
 	ui.textBrowser->append(QString("formalrel:") + QString::number(pInfo->_getVerInfo.formalrel));
 	ui.textBrowser->append(QString("platform:") + QString::number(pInfo->_getVerInfo.platform));
 	ui.textBrowser->append(QString("patch:") + QString::number(pInfo->_getVerInfo.patch));
-	ui.textBrowser->append(QString("serial_number:") + QString::number(pInfo->_getVerInfo.serial_number[0],16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[1],16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[2],16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[3],16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[4],16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[5],16));
+	//ui.textBrowser->append(QString("serial_number:") + QString::number(pInfo->_getVerInfo.serial_number[0], 16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[1], 16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[2], 16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[3], 16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[4], 16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[5], 16));
+	ui.textBrowser->append(QString("serial_number:") + QString::fromLatin1(pInfo->_getVerInfo.sSerialNumber,12));
 	ui.textBrowser->append(QString("security:") + QString::number(pInfo->_getVerInfo.security[0]) + QString("|") + QString::number(pInfo->_getVerInfo.security[1]));
 	ui.textBrowser->append(QString("patchsig:") + QString::number(pInfo->_getVerInfo.patchsig));
 	ui.textBrowser->append(QString("iface:") + QString::number(pInfo->_getVerInfo.iface));
@@ -1822,11 +1824,7 @@ void FPS_TestExecutive::WriteLog(std::string strFolderPath, Syn_DutTestInfo * Du
 		return;
 
 	QString qsSensorSerialNumber("");
-	for (int i = 0; i < DUT_SER_NUM_SIZE; i++)
-	{
-		QString qsSensorTempSerialNumber = QString::number(DutResults->_arSerialNum[i],16).toUpper();
-		qsSensorSerialNumber += qsSensorTempSerialNumber;
-	}
+	qsSensorSerialNumber = QString::fromLatin1(DutInfo->_getVerInfo.sSerialNumber,12);
 
 	QString qsSerachContent = qsFolderPath + QString("\\*.csv");
 
@@ -1882,7 +1880,7 @@ void FPS_TestExecutive::WriteLog(std::string strFolderPath, Syn_DutTestInfo * Du
 	fprintf(pFile, "Sensor Serial Number ,%s\n", qsSensorSerialNumber.toStdString().c_str());
 
 	//InitlizationStep
-	fprintf(pFile, "\nInitialization, %s,%lf ms\n", DutResults->_initResults.m_bPass ? "Pass" : "Fail", 0);
+	fprintf(pFile, "\nInitialization, %s,%d ms\n", DutResults->_initResults.m_bPass ? "Pass" : "Fail", 0);
 
 	//Pixel Patch
 	fprintf(pFile, "\nPixel Patch, %s,%lf ms\n", DutResults->_pixelPatchResults.m_bPass ? "Pass" : "Fail", DutResults->_pixelPatchResults.m_elapsedtime);
