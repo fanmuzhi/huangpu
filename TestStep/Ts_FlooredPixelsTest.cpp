@@ -60,10 +60,10 @@ void Ts_FlooredPixelsTest::Execute()
 
 void Ts_FlooredPixelsTest::ProcessData()
 {
-	int nTrimLeft = 0;
-	int nTrimRight = 0;
-	int nTrimTop = 0;
-	int nTrimBottom = 0;
+	int nTrimLeft = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimLeftWithoutStim;
+	int nTrimRight = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimRightWithoutStim;
+	int nTrimTop = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimTopWithoutStim;
+	int nTrimBottom = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimBotWithoutStim;
 	int numRows = _pSyn_Dut->_RowNumber;
 	int numCols = _pSyn_Dut->_ColumnNumber;
 
