@@ -296,6 +296,18 @@ void Ts_SNRTest::ProcessData()
 	}
 
 	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_snrResults.m_elapsedtime);
+
+	//remove baseline
+	for (int i = _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.numMinRows; i<_pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.numMaxRows; i++)
+	{
+		for (int j = _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.numMinCols; j<_pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.numMaxCols - HEADER; j++)
+		{
+			_pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.arr_ImageFPSFrame.arr[i - _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.numMinRows][j - _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.numMinCols] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_snrResults.NORM_AVGS[6].arr[i - _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.numMinRows][j - _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.numMinCols]);
+		}
+	}
+
+	_pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.iRealRowNumber = _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.numMaxRows - _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.numMinRows;
+	_pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.iRealColumnNumber = _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.numMaxCols - _pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.numMinCols - HEADER;
 }
 
 void Ts_SNRTest::CleanUp()

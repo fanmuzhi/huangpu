@@ -777,6 +777,8 @@ typedef struct
 	FPSFrame	arr_nofinger[MAXFRAMES];//CDM
 
 	FPSFrame	arr_ImageFPSFrame;
+	int iRealRowNumber;
+	int iRealColumnNumber;
 }AcqImgNoFingerResult;
 
 typedef struct
@@ -792,6 +794,8 @@ typedef struct
 	FPSFrame	arr_finger[MAXFRAMES];//CDM
 
 	FPSFrame	arr_ImageFPSFrame;
+	int iRealRowNumber;
+	int iRealColumnNumber;
 }AcqImgFingerResult;
 
 ///////////////////////////// ////////////////////////

@@ -148,7 +148,35 @@ void Ts_AcqImgNoFinger::ProcessData()
 			temp=0;
 		}
 	}
-	
+
+	//adjust
+	int	numMaxColsWithStim = numCols - _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimRightWithStim;
+	int	numMinColsWithStim = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimLeftWithStim;
+	int	numMaxRowsWithStim = numRows - _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimBotWithStim;;
+	int	numMinRowsWithStim = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimTopWithStim;
+	int	numMaxColsWOStim = numCols - _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimRightWithoutStim;
+	int	numMinColsWOStim = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimLeftWithoutStim;
+	int	numMaxRowsWOStim = numRows - _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimBotWithoutStim;
+	int	numMinRowsWOStim = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimTopWithoutStim;
+
+	int numMaxCols = (numMaxColsWOStim < numMaxColsWithStim) ? numMaxColsWOStim : numMaxColsWithStim;
+	int numMinCols = (numMinColsWOStim < numMinColsWithStim) ? numMinColsWithStim : numMinColsWOStim;
+	int numMaxRows = (numMaxRowsWOStim < numMaxRowsWithStim) ? numMaxRowsWOStim : numMaxRowsWithStim;
+	int numMinRows = (numMinRowsWOStim < numMinRowsWithStim) ? numMinRowsWithStim : numMinRowsWOStim;
+
+	for (int i = numMinRows; i<numMaxRows; i++)
+	{
+		for (int j = numMinCols + HEADER; j<numMaxCols; j++)
+		{
+			int iTempValue(0);
+			iTempValue = _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.arr_ImageFPSFrame.arr[i][j];
+			_pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.arr_ImageFPSFrame.arr[i - numMinRows][j - numMinCols - HEADER] = iTempValue;
+
+		}
+	}
+
+	_pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealRowNumber = numMaxRows - numMinRows;
+	_pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealColumnNumber = numMaxCols - numMinCols - HEADER;
 }
 
 

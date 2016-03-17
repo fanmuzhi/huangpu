@@ -968,6 +968,7 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 	_FinishedSiteCounts += 1;
 
 	Syn_DutTestResult *pCurrentDutTestResult = NULL;
+	Syn_DutTestInfo *pCurrentDutTestInfo = NULL;
 	Syn_SysConfig CurrentSysConfig;
 	unsigned int iPos(0);
 	for (size_t i = 0; i < _ListOfSitePtr.size(); i++)
@@ -1009,6 +1010,7 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 			}
 			
 			_ListOfSitePtr[i]->GetTestResult(pCurrentDutTestResult);
+			_ListOfSitePtr[i]->GetTestInfo(pCurrentDutTestInfo);
 			_ListOfSitePtr[i]->GetSysConfig(CurrentSysConfig);
 			iPos = i;
 			synFind = true;
@@ -1028,11 +1030,14 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 		vcolorTable.append(qRgb(i, i, i));
 	}
 	QByteArray data;
-	data.resize((rowNumber)*(columnNumber));
-
+	//data.resize((rowNumber)*(columnNumber));
 	unsigned int iRowNumber(0);
 	if (1 == iFlag)
 	{
+		rowNumber = pCurrentDutTestResult->_acqImgNoFingerResult.iRealRowNumber;
+		columnNumber = pCurrentDutTestResult->_acqImgNoFingerResult.iRealColumnNumber;
+		data.resize((rowNumber)*(columnNumber));
+		
 		for (int m = 0; m < rowNumber; m++)
 		{
 			for (int n = 0; n < columnNumber; n++)
@@ -1045,6 +1050,10 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 	}
 	else if (2 == iFlag)
 	{
+		rowNumber = pCurrentDutTestResult->_acqImgFingerResult.iRealRowNumber;
+		columnNumber = pCurrentDutTestResult->_acqImgFingerResult.iRealColumnNumber;
+		data.resize((rowNumber)*(columnNumber));
+
 		for (int m = 0; m < rowNumber; m++)
 		{
 			for (int n = 0; n < columnNumber; n++)
@@ -1110,7 +1119,7 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 	
 	QImage image((uchar*)data.constData(), columnNumber, rowNumber, QImage::Format_Indexed8);
 	image.setColorTable(vcolorTable);
-	image = image.copy(HEADER, 0, columnNumber - HEADER, rowNumber);
+	//image = image.copy(iStartColumn, iStartRow, iEndColumn, iEndRow);
 
 	QLabel *pImageLabel = new QLabel();
 	pImageLabel->setPixmap(QPixmap::fromImage(image));
@@ -1143,24 +1152,6 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 		itemState->setTextAlignment(Qt::AlignCenter);
 		ui.TestTableWidget->setItem(2, iSiteNumber - 1, itemState);
 	}
-
-	/*if (_FinishedSiteCounts == _ListOfSitePtr.size())
-	{
-		if (1 == iFlag)
-		{
-			ui.pushButtonRun->setText(QString("Continue"));
-
-			ui.pushButtonRun->setDisabled(false);
-		}
-		else if (2==iFlag)
-		{
-			ui.pushButtonRun->setText(QString("Run"));
-
-			ui.LocalSettingsPushButton->setDisabled(false);
-
-			ui.pushButtonRun->setDisabled(false);
-		}
-	}*/
 
 	this->ManageButtonStatus(iFlag);
 }
@@ -1231,6 +1222,7 @@ void FPS_TestExecutive::ReceiveTest(unsigned int iSiteNumber, const QString strT
 		QTableWidgetItem *item = new QTableWidgetItem(qsStepAndResult);
 		item->setTextAlignment(Qt::AlignCenter);
 		ui.TestTableWidget->setItem(3, iSiteNumber - 1, item);
+		ui.TestTableWidget->resizeRowToContents(3);
 	}
 
 	//State
@@ -2042,34 +2034,24 @@ void FPS_TestExecutive::WriteLog(std::string strFolderPath, Syn_DutTestInfo * Du
 	fprintf(pFile, "\n");
 
 	//Average No Finger & Average Finger
-	int numFrames = 30;
-	float temp = 0.0;
+	//int numFrames = 30;
+	//float temp = 0.0;
 	fprintf(pFile, "\nAverage No Finger\n");
-	for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithStim + DutInfo->_initInfo.m_nTrimBotWithStim); i++)
+	for (int i = 0; i< DutResults->_acqImgNoFingerResult.iRealRowNumber; i++)
 	{
-		for (int j = 0; j<ColumnNumber - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); j++)
+		for (int j = 0; j< DutResults->_acqImgNoFingerResult.iRealColumnNumber; j++)
 		{
-			for (int k = 0; k<numFrames; k++)
-			{
-				temp += DutResults->_acqImgNoFingerResult.m_arImagesWithoutStimulus[k].arr[i][j];
-			}
-			fprintf(pFile, "%.0f,", temp / numFrames);
-			temp = 0.0;
+			fprintf(pFile, "%d,", (int)DutResults->_acqImgNoFingerResult.arr_ImageFPSFrame.arr[i][j]);
 		}
 		fprintf(pFile, "\n");
 	}
-	temp = 0.0;
-	fprintf(pFile, "\nAverage Finger\n");
-	for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithStim + DutInfo->_initInfo.m_nTrimBotWithStim); i++)
+	//temp = 0.0;
+	fprintf(pFile, "\nNormalized Finger\n");
+	for (int i = 0; i< DutResults->_acqImgFingerResult.iRealRowNumber; i++)
 	{
-		for (int j = 0; j<ColumnNumber - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); j++)
+		for (int j = 0; j< DutResults->_acqImgFingerResult.iRealColumnNumber; j++)
 		{
-			for (int k = 0; k<numFrames; k++)
-			{
-				temp += DutResults->_acqImgFingerResult.m_arImagesWithStimulus[k].arr[i][j];
-			}
-			fprintf(pFile, "%.0f,", temp / numFrames);
-			temp = 0.0;
+			fprintf(pFile, "%d,", (int)DutResults->_acqImgFingerResult.arr_ImageFPSFrame.arr[i][j]);
 		}
 		fprintf(pFile, "\n");
 	}

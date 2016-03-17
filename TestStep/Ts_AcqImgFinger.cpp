@@ -148,6 +148,27 @@ void Ts_AcqImgFinger::ProcessData()
 		}
 	}
 
+	//remove baseline
+	/*for (int i = 0; i<numRows; i++)
+	{
+		for (int j = 0; j<numCols; j++)
+		{
+			uint8_t iCurrentFingerValue = _pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.arr_ImageFPSFrame.arr[i][j];
+			uint8_t iCurrentNoFingerValue = _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.arr_ImageFPSFrame.arr[i][j];
+
+			iCurrentFingerValue = 128 - iCurrentNoFingerValue + iCurrentFingerValue;
+			_pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.arr_ImageFPSFrame.arr[i][j] = iCurrentFingerValue;
+		}
+	}*/
+
+	/*for (i = pInfo->numMinRows; i<pInfo->numMaxRows; i++)
+	{
+		for (j = pInfo->numMinCols; j<pInfo->numMaxCols - HEADER; j++)
+		{
+			finger[i - pInfo->numMinRows][j - pInfo->numMinCols] = pResult->NORM_AVGS[6].arr[i - pInfo->numMinRows][j - pInfo->numMinCols];
+		}
+	}*/
+
 }
 
 void Ts_AcqImgFinger::CleanUp()
