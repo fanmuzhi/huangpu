@@ -183,7 +183,7 @@ void Syn_SPCCtrl::FpGetStatus(uint8_t* pDst, int numBytes)
 
 	this->FpRead(endpoint, cmd, pDst, numBytes);
 
-	LOG(DEBUG) << "0x" << hex << *((uint32_t*)pDst);
+	LOG(INFO) << "0x" << hex << *((uint32_t*)pDst);
 }
 
 void Syn_SPCCtrl::FpWaitForCMDComplete(const uint32_t timeout)
@@ -214,7 +214,7 @@ void Syn_SPCCtrl::FpReadBuff(uint8_t *pDst, int numBytes)
 
 	this->FpRead(1, 0xFF, pDst, numBytes);
 	uint16_t returnValue = *((uint16_t*)pDst);
-	LOG(DEBUG) << "0x" << hex << returnValue;
+	LOG(INFO) << "0x" << hex << returnValue;
 	while (timeout && (*((uint16_t*)pDst) == 0xFFFF))
 	{
 		this->FpRead(1, 0xFF, pDst, numBytes);
