@@ -1,5 +1,5 @@
 # Ignore LocalSettings
-LocalSettings.xml
+Huangpu/LocalSettings.xml
 
 # Ignore thumbnails created by windows
 Thumbs.db
