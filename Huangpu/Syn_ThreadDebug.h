@@ -62,16 +62,16 @@ protected:
 			while (true)
 			{
 				//sleep(200);
-				SiteState oState;
+				Syn_Site::SiteState oState;
 				_pSyn_Site->GetState(oState);
-				if (TestDataReady == oState)
+				if (Syn_Site::TestDataReady == oState)
 				{
 					unsigned int iSiteNumber(0);
 					_pSyn_Site->GetSiteNumber(iSiteNumber);
 					emit send(iSiteNumber);
 					break;
 				}
-				else if (Error == oState)
+				else if (Syn_Site::Error == oState)
 				{
 					unsigned int iSiteNumber(0);
 					_pSyn_Site->GetSiteNumber(iSiteNumber);
@@ -93,16 +93,16 @@ protected:
 				{
 					while (_run)
 					{
-						SiteState oState;
+						Syn_Site::SiteState oState;
 						_pSyn_Site->GetState(oState);
-						if (TestDataReady == oState)
+						if (Syn_Site::TestDataReady == oState)
 						{
 							unsigned int iSiteNumber(0);
 							_pSyn_Site->GetSiteNumber(iSiteNumber);
 							emit send(iSiteNumber);
 							break;
 						}
-						else if (Error == oState)
+						else if (Syn_Site::Error == oState)
 						{
 							unsigned int iSiteNumber(0);
 							_pSyn_Site->GetSiteNumber(iSiteNumber);

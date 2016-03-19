@@ -86,6 +86,37 @@ uint32_t Syn_Site::CreateSiteInstance(uint8_t siteNumber, uint32_t deviceSerNumb
 	return rc;
 }
 
+uint32_t Syn_Site::CreateSiteInstance(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath, const Syn_ADCBaseLineInfo &iADCBaseLineInfo, Syn_Site * &opSiteInstance)
+{
+	opSiteInstance = NULL;
+
+	opSiteInstance = new Syn_Site(siteNumber, deviceSerNumber, strConfigFilePath);
+	uint32_t rc = opSiteInstance->Init();
+	if (Syn_ExceptionCode::Syn_OK != rc)
+	{
+		delete opSiteInstance;
+		opSiteInstance = NULL;
+	}
+	else
+	{
+		opSiteInstance->_ADCInfo.m_bExecuted = true;
+		opSiteInstance->_ADCInfo.m_nVdd = iADCBaseLineInfo._nVdd;
+		opSiteInstance->_ADCInfo.m_nVio = iADCBaseLineInfo._nVio;
+		opSiteInstance->_ADCInfo.m_nVled = iADCBaseLineInfo._nVled;
+		opSiteInstance->_ADCInfo.m_nVddh = iADCBaseLineInfo._nVddh;
+
+		for (int a = 0; a < NUM_CURRENT_VALUES; a++)
+		{
+			for (int b = 0; b < KNUMGAINS; b++)
+			{
+				(opSiteInstance->_ADCInfo.m_arAdcBaseLines)[a][b] = (iADCBaseLineInfo._arAdcBaseLines)[a][b];
+			}
+		}
+	}
+
+	return rc;
+}
+
 uint32_t Syn_Site::Init()
 {
 	//xml config file parse
@@ -426,7 +457,6 @@ uint32_t Syn_Site::ExecuteTestStep(std::string sTestName)
 	{
 		return Syn_ExceptionCode::Syn_SiteStateError;
 	}
-	_siteState = Running;
 
 	Syn_TestStep *pTestStep = NULL;
 	
@@ -436,9 +466,11 @@ uint32_t Syn_Site::ExecuteTestStep(std::string sTestName)
 	bool rc = Syn_TestStepFactory::CreateTestStepInstance(sTestName, strArgsValue, _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
 	if (!rc || NULL == pTestStep)
 	{
+		_siteState = Error;
 		return Syn_ExceptionCode::Syn_TestStepConfigError;
 	}
 
+	_siteState = Running;
 	try
 	{
 		pTestStep->SetUp();
@@ -467,6 +499,457 @@ uint32_t Syn_Site::ExecuteTestStep(std::string sTestName)
 		return _uiErrorFlag;
 	}
 	return Syn_ExceptionCode::Syn_OK;
+}
+
+
+
+
+
+uint32_t Syn_Site::GetResults(Syn_TestResults * &opTestResults)
+{
+	if (_siteState == SiteState::Error)
+	{
+		return _uiErrorFlag;
+	}
+	if (_siteState != TestDataReady)
+	{
+		return Syn_ExceptionCode::Syn_SiteStateError;
+	}
+
+	if (NULL == _pSyn_Dut)
+	{
+		_siteState = Error;
+		return Syn_ExceptionCode::Syn_DutResultNull;
+	}
+
+	if (NULL == _pSyn_Dut->_pSyn_DutTestResult || NULL == _pSyn_Dut->_pSyn_DutTestInfo)
+	{
+		_siteState = Error;
+		return Syn_ExceptionCode::Syn_DutResultNull;
+	}
+
+	if (NULL == opTestResults)
+	{
+		opTestResults = new Syn_TestResults();
+	}
+	
+	//Sensor SerialNumber
+	opTestResults->sSensorSerialNumber.clear();
+	for (int i = 0; i < 12; i++)
+	{
+		opTestResults->sSensorSerialNumber.push_back(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[i]);
+	}
+
+	//SNR
+	for (int i = 0; i < 7; i++)
+	{
+		opTestResults->snrValue[i] = _pSyn_Dut->_pSyn_DutTestResult->_snrResults.SNR[i];
+	}
+
+	//BinCodes
+	opTestResults->listOfBinCodes.clear();
+	for (size_t i = 1; i <= _pSyn_Dut->_pSyn_DutTestResult->_binCodes.size(); i++)
+	{
+		opTestResults->listOfBinCodes.push_back(_pSyn_Dut->_pSyn_DutTestResult->_binCodes[i - 1]);
+	}
+
+	//imageNoFinger
+	for (int i = 0; i <= _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealRowNumber; i++)
+	{
+		for (int j = 0; j <= _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealColumnNumber; j++)
+		{
+			opTestResults->arrImageNoFinger[i][j] = _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.arr_ImageFPSFrame.arr[i][j];
+		}
+	}
+	opTestResults->imageNoFingerRows = _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealRowNumber;
+	opTestResults->imageNoFingerCols = _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealColumnNumber;
+
+	//imageFinger
+	for (int i = 0; i <= _pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.iRealRowNumber; i++)
+	{
+		for (int j = 0; j <= _pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.iRealColumnNumber; j++)
+		{
+			opTestResults->arrImageFinger[i][j] = _pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.arr_ImageFPSFrame.arr[i][j];
+		}
+	}
+	opTestResults->imageFingerRows = _pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.iRealRowNumber;
+	opTestResults->imageFingerCols = _pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.iRealColumnNumber;
+
+	_siteState = Idle;
+	return Syn_ExceptionCode::Syn_OK;
+}
+
+bool Syn_Site::GetPassResult(std::string sTestStepName)
+{
+	bool bResult(false);
+
+	if (NULL == _pSyn_Dut)
+		return false;
+
+	if (NULL == _pSyn_Dut->_pSyn_DutTestResult)
+		return false;
+
+	if (std::string("InitializationStep") == sTestStepName)
+	{
+		bResult = true;
+	}
+	else if (std::string("PixelPatchTest") == sTestStepName)
+	{
+		bResult = _pSyn_Dut->_pSyn_DutTestResult->_pixelPatchResults.m_bPass;
+	}
+	else if (std::string("WoVarTest") == sTestStepName)
+	{
+		bResult = _pSyn_Dut->_pSyn_DutTestResult->_woVarResults.m_bPass;
+	}
+	else if (std::string("Calibrate") == sTestStepName)
+	{
+		bResult = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_bPass;
+	}
+	else if (std::string("AcqImgNoFinger") == sTestStepName)
+	{
+		bResult = true;
+	}
+	else if (std::string("AcqImgFinger") == sTestStepName)
+	{
+		bResult = true;
+	}
+	else if (std::string("PeggedPixelsTest") == sTestStepName)
+	{
+		bResult = _pSyn_Dut->_pSyn_DutTestResult->_peggedPixelsResults.m_bPass;
+	}
+	else if (std::string("FlooredPixelsTest") == sTestStepName)
+	{
+		bResult = _pSyn_Dut->_pSyn_DutTestResult->_flooredPixelsResults.m_bPass;
+	}
+	else if (std::string("DRdyTest") == sTestStepName)
+	{
+		bResult = _pSyn_Dut->_pSyn_DutTestResult->_DRdyResults.m_bPass;
+	}
+	else if (std::string("PixelTest") == sTestStepName)
+	{
+		bResult = _pSyn_Dut->_pSyn_DutTestResult->_pixelResults.bPass;
+	}
+	else if (std::string("ConsecutivePixels") == sTestStepName)
+	{
+		bResult = _pSyn_Dut->_pSyn_DutTestResult->_consecutivePixelsResults.m_bPass;
+	}
+	else if (std::string("CurrentTest") == sTestStepName)
+	{
+		bResult = _pSyn_Dut->_pSyn_DutTestResult->_currentResults.bPass;
+	}
+	else if (std::string("SNRTest") == sTestStepName)
+	{
+		bResult = _pSyn_Dut->_pSyn_DutTestResult->_snrResults.bPass;
+	}
+	else if (std::string("SharpnessTest") == sTestStepName)
+	{
+		bResult = _pSyn_Dut->_pSyn_DutTestResult->_SharpnessResults.bPass;
+	}
+	else if (std::string("RxStandardDev") == sTestStepName)
+	{
+		bResult = _pSyn_Dut->_pSyn_DutTestResult->_RxStandardDevResults.m_bPass;
+	}
+	else if (std::string("Imperfections") == sTestStepName)
+	{
+		bResult = _pSyn_Dut->_pSyn_DutTestResult->_imperfectionsTestResults.m_bPass;
+	}
+	else if (std::string("OTPCheck") == sTestStepName)
+	{
+		bResult = _pSyn_Dut->_pSyn_DutTestResult->_otpCheckResult._bPass;
+	}
+	else if (std::string("FinalizationStep") == sTestStepName)
+	{
+		bResult = true;
+	}
+	else
+	{
+		bResult = false;
+	}
+
+	return bResult;
+}
+
+void Syn_Site::GetSensorSerialNumber(std::string &osSensorSerialNumber)
+{
+	//Sensor SerialNumber
+	osSensorSerialNumber.clear();
+	for (int i = 0; i < 12; i++)
+	{
+		osSensorSerialNumber.push_back(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[i]);
+	}
+}
+
+void Syn_Site::GetTestStepList(std::vector<std::string> &olistOfTestStepName)
+{
+	olistOfTestStepName.clear();
+
+	for (size_t i = 1; i <= _SysConfig._listTestSteps.size(); i++)
+	{
+		olistOfTestStepName.push_back(_SysConfig._listTestSteps[i - 1]._strTestStepName);
+	}
+}
+
+void Syn_Site::Write_Log(std::string sFolderPath)
+{
+	if (-1 == _access(sFolderPath.c_str(), 2))
+	{
+		return;
+	}
+
+	Syn_DutTestInfo * DutInfo = NULL;
+	Syn_DutTestResult * DutResults = NULL;
+
+	DutInfo = _pSyn_Dut->_pSyn_DutTestInfo;
+	DutResults = _pSyn_Dut->_pSyn_DutTestResult;
+
+	if (NULL == DutInfo)
+		return;
+	if (NULL == DutResults)
+		return;
+
+	int RowNumber = _pSyn_Dut->_RowNumber;
+	int ColumnNumber = _pSyn_Dut->_ColumnNumber;
+
+	std::string sSensorSerialNumber("");
+	for (int i = 0; i < 12; i++)
+	{
+		sSensorSerialNumber.push_back(DutInfo->_getVerInfo.sSerialNumber[i]);
+	}
+	std::string strSerachContent = sFolderPath + std::string("\\*.csv");
+
+	std::string strSensorSerialNumber;
+	std::vector<std::string> lsitOfFileName;
+	long handle;
+	struct _finddata_t fileinfo;
+	handle = _findfirst(strSerachContent.c_str(), &fileinfo);
+	if (-1 == handle)
+	{
+		strSensorSerialNumber = sSensorSerialNumber + std::string("_1");
+	}
+	else
+	{
+		int iCounts(1);
+
+		do
+		{
+			std::string sFileName = fileinfo.name;
+			if (std::string::npos != sFileName.find_first_of(sSensorSerialNumber))
+			{
+				iCounts += 1;
+			}
+		} while (_findnext(handle, &fileinfo) == 0);
+
+		strSensorSerialNumber = sSensorSerialNumber + std::string("_") + to_string(iCounts);
+		_findclose(handle);
+	}
+
+	std::string stringFilePath(sFolderPath + "\\" + strSensorSerialNumber + ".csv");
+	FILE *pFile = fopen(stringFilePath.c_str(), "a");
+	if (NULL == pFile)
+	{
+		return;
+	}
+
+	fprintf(pFile, "\n%%%%%%%%%%%%%%%%%%%%%%\n");
+	fprintf(pFile, "MTLog\n");
+
+	//Put in part number.
+	//fprintf(pFile, "Part Number,%s\n", "");//DebugVersion
+
+	//fprintf(pFile, "ConfigFile,%s\n", _pSyn_Dut->_pSyn_DutTestInfo-);
+	fprintf(pFile, "\n%%%%%%%%%%%%%%%%%%%%%%\n");
+
+	fprintf(pFile, "\n---------------------\n");
+	const time_t t = time(NULL);
+	struct tm* current_time = localtime(&t);
+	//fprintf(pFile, "Run %d,%s\n", "", asctime(current_time));
+	fprintf(pFile, "Run ,%s\n", asctime(current_time));
+
+	//Sensor Serial Number
+	fprintf(pFile, "Sensor Serial Number ,%s\n", sSensorSerialNumber.c_str());
+
+	//InitlizationStep
+	fprintf(pFile, "\nInitialization, %s,%d ms\n", DutResults->_initResults.m_bPass ? "Pass" : "Fail", 0);
+
+	//Pixel Patch
+	fprintf(pFile, "\nPixel Patch, %s,%lf ms\n", DutResults->_pixelPatchResults.m_bPass ? "Pass" : "Fail", DutResults->_pixelPatchResults.m_elapsedtime);
+	fprintf(pFile, ",,,");
+	for (int i = 0; i < (DutInfo->_pixelPatchInfo.m_nNumResBytes) / 4; i++)
+		fprintf(pFile, "%d,", *((uint32_t*)&DutResults->_pixelPatchResults.m_pResponse[i * 4]));
+	fprintf(pFile, "\n");
+
+	//Cablication
+	fprintf(pFile, "\nCalibration, %s,%lf ms\n", DutResults->_calibrationResults.m_bPass ? "Pass" : "Fail", DutResults->_calibrationResults.m_elapsedtime);
+	// Stage1 LNA values from print patch
+	fprintf(pFile, ",,,Stage1");
+	for (int i = 0; i < RowNumber; i++)
+	{
+		fprintf(pFile, ",%02X", DutResults->_calibrationResults.m_pPrintPatch[i + DutInfo->_calibrationInfo.m_nLnaIdx]);
+	}
+	if (DutInfo->_calibrationInfo.m_nCalType == 0)
+	{
+		fprintf(pFile, "\n,,,Stage2");
+		for (int i = 0; i < RowNumber; i++)
+		{
+			fprintf(pFile, ",%02X", DutResults->_calibrationResults.m_arPgaOffsets[i]);
+		}
+		fprintf(pFile, "\n");
+	}
+	else if (DutInfo->_calibrationInfo.m_nCalType == 1)
+	{
+		fprintf(pFile, "\n,,,Stage2 Used");
+		for (int i = 0; i<(RowNumber)* (ColumnNumber - 8); i++)
+		{
+			fprintf(pFile, ",%02X", DutResults->_calibrationResults.m_arPgaOffsets[i]);
+		}
+		fprintf(pFile, "\n");
+	}
+	else
+	{
+		fprintf(pFile, ",,,Stage2 Used,N/A\n");
+	}
+	// Stage2 OTP values	
+	if (DutInfo->_calibrationInfo.m_nCalType == 1)
+	{
+		if (DutResults->_calibrationResults.m_nPGA_OOPP_count != 0)
+		{
+			fprintf(pFile, ",,,Stage2 OTP");
+			for (int i = 0; i< (NUM_PGA_OOPP_OTP_ROWS * (ColumnNumber - 8)); i++)
+			{
+				fprintf(pFile, ",%02X", DutResults->_calibrationResults.m_pPGAOtpArray[i]);
+			}
+
+			fprintf(pFile, "\n,,,Stage2 Variance Score,N/A\n");
+		}
+		else
+		{
+			fprintf(pFile, ",,,Stage2 OTP,N/A\n");
+			fprintf(pFile, ",,,Stage2 Variance Score,N/A\n");
+		}
+	}
+	fprintf(pFile, ",,,FlexId,%04X\n", DutInfo->_initInfo.m_nFlexId);
+
+	//Pegged Pixels Test
+	fprintf(pFile, "\nPegged Pixels Test,%s,%lf ms,Rows,", DutResults->_peggedPixelsResults.m_bPass ? "Pass" : "Fail", DutResults->_peggedPixelsResults.m_elapsedtime);
+	for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithoutStim + DutInfo->_initInfo.m_nTrimBotWithoutStim); i++)
+		fprintf(pFile, "%d,", DutResults->_peggedPixelsResults.pegged_pixel_rows[i]);
+
+	fprintf(pFile, "\n,,,Columns,");
+	for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
+		fprintf(pFile, "%d,", DutResults->_peggedPixelsResults.pegged_pixel_cols[i]);
+	fprintf(pFile, "\n");
+
+	//Floored Pixels Test
+	fprintf(pFile, "\nFloored Pixels Test,%s,%lf ms,Rows,", DutResults->_flooredPixelsResults.m_bPass ? "Pass" : "Fail", DutResults->_flooredPixelsResults.m_elapsedtime);
+	for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithoutStim + DutInfo->_initInfo.m_nTrimBotWithoutStim); i++)
+		fprintf(pFile, "%d,", DutResults->_flooredPixelsResults.floored_pixel_rows[i]);
+
+	fprintf(pFile, "\n,,,Columns,");
+	for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
+		fprintf(pFile, "%d,", DutResults->_flooredPixelsResults.floored_pixel_cols[i]);
+	fprintf(pFile, "\n");
+
+	//DRdy Test
+	fprintf(pFile, "\nDRdy Test,%s,%lf ms\n", DutResults->_DRdyResults.m_bPass ? "Pass" : "Fail", DutResults->_DRdyResults.m_elapsedtime);
+
+	//Consecutive Pixels Test
+	fprintf(pFile, "\nConsecutive Pixels Test,%s,%lf ms,Pegged Rows,", DutResults->_consecutivePixelsResults.m_bPass ? "Pass" : "Fail", DutResults->_consecutivePixelsResults.m_elapsedtime);
+	for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithoutStim + DutInfo->_initInfo.m_nTrimBotWithoutStim); i++)
+		fprintf(pFile, "%d,", DutResults->_consecutivePixelsResults.consecutive_pegged_rows[i]);
+
+	fprintf(pFile, "\n,,,Floored Rows,");
+	for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithoutStim + DutInfo->_initInfo.m_nTrimBotWithoutStim); i++)
+		fprintf(pFile, "%d,", DutResults->_consecutivePixelsResults.consecutive_floored_rows[i]);
+
+	fprintf(pFile, "\n,,,Pegged Columns,");
+	for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
+		fprintf(pFile, "%d,", DutResults->_consecutivePixelsResults.consecutive_pegged_cols[i]);
+
+	fprintf(pFile, "\n,,,Floored Columns,");
+	for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
+		fprintf(pFile, "%d,", DutResults->_consecutivePixelsResults.consecutive_floored_cols[i]);
+	fprintf(pFile, "\n");
+
+	//Current Test
+	fprintf(pFile, "\nCurrent Test,%s,%lf ms,", DutResults->_currentResults.bPass ? "Pass" : "Fail", DutResults->_currentResults.m_elapsedtime);
+	//If the test was successful.
+	if (DutResults->_currentResults.bPass != 0)
+	{
+		fprintf(pFile, "Digital image acq current (mA),%.3f\n", (float)(DutResults->_currentResults.m_nImageAcqDigCurrent_uA) / 1000);
+		fprintf(pFile, ",,,Analog image acq current (mA),%.3f\n", (float)(DutResults->_currentResults.m_nImageAcqAnaCurrent_uA) / 1000);
+	}
+	else
+	{
+		fprintf(pFile, "Digital image acq current (mA),%.3f\n", (float)(DutResults->_currentResults.m_nImageAcqDigCurrent_uA) / 1000);
+		fprintf(pFile, ",,,Analog image acq current (mA),%.3f\n", (float)(DutResults->_currentResults.m_nImageAcqAnaCurrent_uA) / 1000);
+	}
+
+	//SNR Test
+	fprintf(pFile, "\nSNR Test,%s,%lf ms,", DutResults->_snrResults.bPass ? "Pass" : "Fail", DutResults->_snrResults.m_elapsedtime);
+	fprintf(pFile, "Signal_Z1,Noise_Z1,SNR_Z1,Signal_Z2,Noise_Z2,SNR_Z2,Signal_Z3,Noise_Z3,SNR_Z3,Signal_Z4,Noise_Z4,SNR_Z4,Signal_Z5,Noise_Z5,SNR_Z5,Signal_Z6,Noise_Z6,SNR_Z6,Signal_OVERALL,Noise_OVERALL,SNR_OVERALL\n");
+	fprintf(pFile, ",,,");
+	for (int i = 0; i<REGIONS; i++)
+		fprintf(pFile, "%d,%f,%f,", DutResults->_snrResults.SIGNAL[i], DutResults->_snrResults.NOISE[i], DutResults->_snrResults.SNR[i]);
+	fprintf(pFile, "\n");
+
+	//Pixel Uniformity Test
+	fprintf(pFile, "\nPixel Uniformity Test,%s,%lf ms,", DutResults->_pixelResults.bPass ? "Pass" : "Fail", DutResults->_pixelResults.m_elapsedtime);
+	fprintf(pFile, "Minimum Pixel,Maximum Pixel,Failing Pixel Count\n");
+	fprintf(pFile, ",,,%d,%d,%d,", DutResults->_pixelResults.nMinPixelValue, DutResults->_pixelResults.nMaxPixelValue, DutResults->_pixelResults.nCountAboveThreshold);
+	fprintf(pFile, "\n");
+
+	//Sharpness Test
+	fprintf(pFile, "\nSharpness Test,%s,%lf ms\n", DutResults->_SharpnessResults.bPass ? "Pass" : "Fail", DutResults->_SharpnessResults.m_elapsedtime);
+	fprintf(pFile, ",,,Variation(%%),Zone1,Zone2,Zone3,Overall\n");
+	fprintf(pFile, ",,,%f,%d,%d,%d,%d", DutResults->_SharpnessResults.percent, (int)DutResults->_SharpnessResults.SHARPNESS[0], (int)DutResults->_SharpnessResults.SHARPNESS[1], (int)DutResults->_SharpnessResults.SHARPNESS[2], (int)DutResults->_SharpnessResults.SHARPNESS[3]);
+	fprintf(pFile, "\n");
+
+	//RxStandardDev Test
+	fprintf(pFile, "\nRxStandardDev Test,%s,%lf ms", DutResults->_RxStandardDevResults.m_bPass ? "Pass" : "Fail", DutResults->_RxStandardDevResults.m_elapsedtime);
+	fprintf(pFile, "\n,,,Percent:,");
+	for (int i = 0; i<(RowNumber - DutInfo->_initInfo.m_nTrimTopWithStim - DutInfo->_initInfo.m_nTrimBotWithStim); i++)
+		fprintf(pFile, "%f,", DutResults->_RxStandardDevResults.percent[i]);
+	fprintf(pFile, "\n");
+
+	//Imperfections Test
+	fprintf(pFile, "\nImperfections Test,%s,%lf ms,Along Rows,", DutResults->_imperfectionsTestResults.m_bPass ? "Pass" : "Fail", DutResults->_imperfectionsTestResults.m_elapsedtime);
+	for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithStim + DutInfo->_initInfo.m_nTrimBotWithStim); i++)
+		fprintf(pFile, "%d,", DutResults->_imperfectionsTestResults.consecutive_pegged_rows[i]);
+	fprintf(pFile, "\n,,,Along Columns,");
+	for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
+		fprintf(pFile, "%d,", DutResults->_imperfectionsTestResults.consecutive_pegged_cols[i]);
+	fprintf(pFile, "\n");
+
+	//Average No Finger & Average Finger
+	//int numFrames = 30;
+	//float temp = 0.0;
+	fprintf(pFile, "\nAverage No Finger\n");
+	for (int i = 0; i< DutResults->_acqImgNoFingerResult.iRealRowNumber; i++)
+	{
+		for (int j = 0; j< DutResults->_acqImgNoFingerResult.iRealColumnNumber; j++)
+		{
+			fprintf(pFile, "%d,", (int)DutResults->_acqImgNoFingerResult.arr_ImageFPSFrame.arr[i][j]);
+		}
+		fprintf(pFile, "\n");
+	}
+	//temp = 0.0;
+	fprintf(pFile, "\nNormalized Finger\n");
+	for (int i = 0; i< DutResults->_acqImgFingerResult.iRealRowNumber; i++)
+	{
+		for (int j = 0; j< DutResults->_acqImgFingerResult.iRealColumnNumber; j++)
+		{
+			fprintf(pFile, "%d,", (int)DutResults->_acqImgFingerResult.arr_ImageFPSFrame.arr[i][j]);
+		}
+		fprintf(pFile, "\n");
+	}
+
+	fprintf(pFile, "\n,Bin Codes");
+	for (size_t i = 1; i <= DutResults->_binCodes.size(); i++)
+	{
+		fprintf(pFile, ",%s", (DutResults->_binCodes[i - 1]).c_str());
+	}
+
+	fclose(pFile);
 }
 
 bool Syn_Site::RegisterLoggingConfig()
