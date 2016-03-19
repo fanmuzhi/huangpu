@@ -532,13 +532,6 @@ uint32_t Syn_Site::GetResults(Syn_TestResults * &opTestResults)
 	{
 		opTestResults = new Syn_TestResults();
 	}
-	
-	//Sensor SerialNumber
-	opTestResults->sSensorSerialNumber.clear();
-	for (int i = 0; i < 12; i++)
-	{
-		opTestResults->sSensorSerialNumber.push_back(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[i]);
-	}
 
 	//SNR
 	for (int i = 0; i < 7; i++)
@@ -574,6 +567,48 @@ uint32_t Syn_Site::GetResults(Syn_TestResults * &opTestResults)
 	}
 	opTestResults->imageFingerRows = _pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.iRealRowNumber;
 	opTestResults->imageFingerCols = _pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.iRealColumnNumber;
+
+	//version info
+	//Sensor SerialNumber
+	opTestResults->sSensorSerialNumber.clear();
+	for (int i = 0; i < 12; i++)
+	{
+		opTestResults->sSensorSerialNumber.push_back(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[i]);
+	}
+	opTestResults->buildtime = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.buildtime;
+	opTestResults->buildnum = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.buildnum;
+	opTestResults->vmajor = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.vmajor;
+	opTestResults->vminor = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.vminor;
+	opTestResults->target = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.target;
+	opTestResults->product = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.product;
+	opTestResults->siliconrev = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.siliconrev;
+	opTestResults->formalrel = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.formalrel;
+	opTestResults->platform = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.platform;
+	opTestResults->patch = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.patch;
+	for (int i = 0; i < 6;i++)
+		opTestResults->serial_number[i] = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number[i];
+	for (int i = 0; i < 2; i++)
+		opTestResults->security[i] = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.security[i];
+	opTestResults->patchsig = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.patchsig;
+	opTestResults->iface = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.iface;
+	for (int i = 0; i < 3; i++)
+		opTestResults->otpsig[i] = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.otpsig[i];
+	opTestResults->otpspare1 = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.otpspare1;
+	opTestResults->reserved = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.reserved;
+	opTestResults->device_type = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.device_type;
+
+	//OTP content
+	for (int i = 0; i < BS0_SIZE; i++)
+		opTestResults->arrBootSector0[i] = _pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._BootSector0Array[i];
+
+	for (int i = 0; i < BS1_SIZE; i++)
+		opTestResults->arrBootSector1[i] = _pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._BootSector1Array[i];
+
+	for (int i = 0; i < MS0_SIZE; i++)
+		opTestResults->arrMainSector0[i] = _pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._MainSector0Array[i];
+
+	for (int i = 0; i < MS1_SIZE; i++)
+		opTestResults->arrMainSector1[i] = _pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._MainSector1Array[i];
 
 	_siteState = Idle;
 	return Syn_ExceptionCode::Syn_OK;
