@@ -156,6 +156,9 @@ private:
 	Syn_ThreadDebug _threadForDebugCalibrate;
 
 	unsigned int _FinishedSiteCounts;
+
+
+	QMenuBar *m_MenuBar;
 };
 
 #endif // FPS_TESTEXECUTIVE_H

@@ -1,6 +1,5 @@
 #include "Ts_InitializationStep.h"
 
-
 Ts_InitializationStep::Ts_InitializationStep(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
 {
@@ -169,7 +168,37 @@ void Ts_InitializationStep::Execute()
 	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.reserved = pTempArray[34];
 	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.device_type = pTempArray[35];
 
+
+	char *cTempValue = new char[3];
+
+	sprintf(cTempValue, "%02X", (_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number)[4]);
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[0] = cTempValue[0];
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[1] = cTempValue[1];
+
+	sprintf(cTempValue, "%02X", (_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number)[5]);
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[2] = cTempValue[0];
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[3] = cTempValue[1];
+
+	sprintf(cTempValue, "%02X", (_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number)[0]);
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[4] = cTempValue[0];
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[5] = cTempValue[1];
+
+	sprintf(cTempValue, "%02X", (_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number)[1]);
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[6] = cTempValue[0];
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[7] = cTempValue[1];
+
+	sprintf(cTempValue, "%02X", (_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number)[2]);
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[8] = cTempValue[0];
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[9] = cTempValue[1];
+
+	sprintf(cTempValue, "%02X", (_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number)[3]);
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[10] = cTempValue[0];
+	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[11] = cTempValue[1];
+
 	_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_bExecuted = true;
+
+	delete[] cTempValue;
+	cTempValue = NULL;
 }
 
 void Ts_InitializationStep::ProcessData()
@@ -185,6 +214,8 @@ void Ts_InitializationStep::ProcessData()
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_arSerialNum[i] = (_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number)[i];
 	}
+
+	//ComputeRunningTime(_pDut)
 }
 
 void Ts_InitializationStep::CleanUp()
