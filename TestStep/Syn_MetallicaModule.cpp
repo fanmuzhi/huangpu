@@ -260,6 +260,9 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 			bStage2AllEqual = false;
 	}
 
+	delete[] arFrames;
+	arFrames = NULL;
+
 	delete[] pTempOffsets;
 	return !bStage2AllEqual;
 }

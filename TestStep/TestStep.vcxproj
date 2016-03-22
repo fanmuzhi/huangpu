@@ -53,7 +53,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;TESTSTEP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;TESTSTEP_EXPORTS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)inc;$(SolutionDir)DutUtls;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -82,6 +82,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Syn_Viper1Module.h" />
+    <ClInclude Include="Syn_Viper2Module.h" />
     <ClInclude Include="Ts_AcqImgFinger.h" />
     <ClInclude Include="Ts_AcqImgNoFinger.h" />
     <ClInclude Include="Ts_Calibrate.h" />
@@ -112,6 +114,8 @@
     <ClInclude Include="Ts_WoVarTest.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Syn_Viper1Module.cpp" />
+    <ClCompile Include="Syn_Viper2Module.cpp" />
     <ClCompile Include="Ts_AcqImgFinger.cpp" />
     <ClCompile Include="Ts_AcqImgNoFinger.cpp" />
     <ClCompile Include="Ts_Calibrate.cpp" />

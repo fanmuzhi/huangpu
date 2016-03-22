@@ -627,15 +627,18 @@ bool Syn_Site::GetPassResult(std::string sTestStepName)
 	}
 	else if (std::string("PixelPatchTest") == sTestStepName)
 	{
-		bResult = _pSyn_Dut->_pSyn_DutTestResult->_pixelPatchResults.m_bPass;
+		if (_pSyn_Dut->_pSyn_DutTestResult->_pixelPatchResults.m_bPass)
+			bResult = true;
 	}
 	else if (std::string("WoVarTest") == sTestStepName)
 	{
-		bResult = _pSyn_Dut->_pSyn_DutTestResult->_woVarResults.m_bPass;
+		if (_pSyn_Dut->_pSyn_DutTestResult->_woVarResults.m_bPass)
+			bResult = true;
 	}
 	else if (std::string("Calibrate") == sTestStepName)
 	{
-		bResult = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_bPass;
+		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_bPass)
+			bResult = true;
 	}
 	else if (std::string("AcqImgNoFinger") == sTestStepName)
 	{
@@ -647,47 +650,58 @@ bool Syn_Site::GetPassResult(std::string sTestStepName)
 	}
 	else if (std::string("PeggedPixelsTest") == sTestStepName)
 	{
-		bResult = _pSyn_Dut->_pSyn_DutTestResult->_peggedPixelsResults.m_bPass;
+		if (_pSyn_Dut->_pSyn_DutTestResult->_peggedPixelsResults.m_bPass)
+			bResult = true;
 	}
 	else if (std::string("FlooredPixelsTest") == sTestStepName)
 	{
-		bResult = _pSyn_Dut->_pSyn_DutTestResult->_flooredPixelsResults.m_bPass;
+		if (_pSyn_Dut->_pSyn_DutTestResult->_flooredPixelsResults.m_bPass)
+			bResult = true;
 	}
 	else if (std::string("DRdyTest") == sTestStepName)
 	{
-		bResult = _pSyn_Dut->_pSyn_DutTestResult->_DRdyResults.m_bPass;
+		if (_pSyn_Dut->_pSyn_DutTestResult->_DRdyResults.m_bPass)
+			bResult = true;
 	}
 	else if (std::string("PixelTest") == sTestStepName)
 	{
-		bResult = _pSyn_Dut->_pSyn_DutTestResult->_pixelResults.bPass;
+		if (_pSyn_Dut->_pSyn_DutTestResult->_pixelResults.bPass)
+			bResult = true;
 	}
 	else if (std::string("ConsecutivePixels") == sTestStepName)
 	{
-		bResult = _pSyn_Dut->_pSyn_DutTestResult->_consecutivePixelsResults.m_bPass;
+		if (_pSyn_Dut->_pSyn_DutTestResult->_consecutivePixelsResults.m_bPass)
+			bResult = true;
 	}
 	else if (std::string("CurrentTest") == sTestStepName)
 	{
-		bResult = _pSyn_Dut->_pSyn_DutTestResult->_currentResults.bPass;
+		if (_pSyn_Dut->_pSyn_DutTestResult->_currentResults.bPass)
+			bResult = true;
 	}
 	else if (std::string("SNRTest") == sTestStepName)
 	{
-		bResult = _pSyn_Dut->_pSyn_DutTestResult->_snrResults.bPass;
+		if (_pSyn_Dut->_pSyn_DutTestResult->_snrResults.bPass)
+			bResult = true;
 	}
 	else if (std::string("SharpnessTest") == sTestStepName)
 	{
-		bResult = _pSyn_Dut->_pSyn_DutTestResult->_SharpnessResults.bPass;
+		if (_pSyn_Dut->_pSyn_DutTestResult->_SharpnessResults.bPass)
+			bResult = true;
 	}
 	else if (std::string("RxStandardDev") == sTestStepName)
 	{
-		bResult = _pSyn_Dut->_pSyn_DutTestResult->_RxStandardDevResults.m_bPass;
+		if (_pSyn_Dut->_pSyn_DutTestResult->_RxStandardDevResults.m_bPass)
+			bResult = true;
 	}
 	else if (std::string("Imperfections") == sTestStepName)
 	{
-		bResult = _pSyn_Dut->_pSyn_DutTestResult->_imperfectionsTestResults.m_bPass;
+		if (_pSyn_Dut->_pSyn_DutTestResult->_imperfectionsTestResults.m_bPass)
+			bResult = true;
 	}
 	else if (std::string("OTPCheck") == sTestStepName)
 	{
-		bResult = _pSyn_Dut->_pSyn_DutTestResult->_otpCheckResult._bPass;
+		if (_pSyn_Dut->_pSyn_DutTestResult->_otpCheckResult._bPass)
+			bResult = true;
 	}
 	else if (std::string("FinalizationStep") == sTestStepName)
 	{

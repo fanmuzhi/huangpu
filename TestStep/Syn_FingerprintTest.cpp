@@ -2,6 +2,8 @@
 #include "Syn_FingerprintTest.h"
 #include "Syn_MetallicaModule.h"
 #include "Syn_ViperModule.h"
+#include "Syn_Viper1Module.h"
+#include "Syn_Viper2Module.h"
 
 //windows
 //#include "windows.h" 
@@ -18,12 +20,12 @@ Syn_FingerprintTest::Syn_FingerprintTest(string &strName, string &strArgs, Syn_D
 			break;
 
 		case Viper1:
-			_pSyn_Module = new Syn_MetallicaModule();
+			_pSyn_Module = new Syn_Viper1Module();
 			_pSyn_Module->SetDutCtrl(_pSyn_DutCtrl);
 			break;
 			
 		case Viper2:
-			_pSyn_Module = new Syn_MetallicaModule();
+			_pSyn_Module = new Syn_Viper2Module();
 			_pSyn_Module->SetDutCtrl(_pSyn_DutCtrl);
 			break;
 

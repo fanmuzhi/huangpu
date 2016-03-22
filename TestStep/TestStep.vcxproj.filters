@@ -82,6 +82,12 @@
     <ClCompile Include="Ts_FinalizationStep.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Syn_Viper1Module.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Syn_Viper2Module.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Syn_FingerprintTest.h">
@@ -166,6 +172,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ts_FinalizationStep.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Syn_Viper1Module.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Syn_Viper2Module.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
