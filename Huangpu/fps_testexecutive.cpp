@@ -19,6 +19,7 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 , _pSyn_BinCodesDlg(NULL)
 , _pSyn_DeviceManager(NULL)
 , _FinishedSiteCounts(0)
+, m_MenuBar(NULL)
 {
 	//ui setting
 	ui.setupUi(this);
@@ -248,23 +249,23 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 		_ListOfSitePtr[t - 1]->GetSiteNumber(iSiteNumber);
 
 		QString strSiteStatus("");
-		SiteState oSiteState;
+		Syn_Site::SiteState oSiteState;
 		_ListOfSitePtr[t - 1]->GetState(oSiteState);
 		switch (oSiteState)
 		{
-			case Idle:
+			case Syn_Site::Idle:
 				strSiteStatus = "Idle";
 				break;
-			case TestDataReady:
+			case Syn_Site::TestDataReady:
 				strSiteStatus = "TestData Ready";
 				break;
-			case Running:
+			case Syn_Site::Running:
 				strSiteStatus = "Running";
 				break;
-			case Error:
+			case Syn_Site::Error:
 				strSiteStatus = "Error";
 				break;
-			case Closed:
+			case Syn_Site::Closed:
 				strSiteStatus = "Closed";
 				break;
 			default:
@@ -938,11 +939,11 @@ void FPS_TestExecutive::Run()
 			//ui.pushButtonRun->setText(QString("Run"));
 		}
 
-		SiteState oState;
+		Syn_Site::SiteState oState;
 		_ListOfSitePtr[i - 1]->GetState(oState);
 		if (iRunFlag == 2)
 		{
-			if (Error == oState)
+			if (Syn_Site::Error == oState)
 			{
 				_FinishedSiteCounts += 1;
 			}
@@ -967,82 +968,63 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 
 	_FinishedSiteCounts += 1;
 
-	Syn_DutTestResult *pCurrentDutTestResult = NULL;
-	Syn_DutTestInfo *pCurrentDutTestInfo = NULL;
-	Syn_SysConfig CurrentSysConfig;
-	unsigned int iPos(0);
-	for (size_t i = 0; i < _ListOfSitePtr.size(); i++)
+
+	//Test for new
+	Syn_TestResults *pTestResult = NULL;
+	
+	Syn_Site::SiteState oTempState;
+	_ListOfSitePtr[iSiteNumber - 1]->GetState(oTempState);
+	if (oTempState == Syn_Site::Error)
 	{
-		unsigned int iTempSiteNumber(0);
-		_ListOfSitePtr[i]->GetSiteNumber(iTempSiteNumber);
-		if (iSiteNumber == iTempSiteNumber)
+		//_FinishedSiteCounts += 1;
+		string errMsg = "";
+		_ListOfSitePtr[iSiteNumber - 1]->GetRunTimeError(errMsg);
+
+		//BinCode
+		_ListOfSitePtr[iSiteNumber - 1]->GetResults(pTestResult);
+		if (NULL != pTestResult)
 		{
-			SiteState oTempState;
-			_ListOfSitePtr[i]->GetState(oTempState);
-			if (oTempState == SiteState::Error)
+			if (0 != pTestResult->listOfBinCodes.size())
 			{
-				//_FinishedSiteCounts += 1;
-				string errMsg = "";
-				_ListOfSitePtr[i]->GetRunTimeError(errMsg);
-				//QMessageBox::information(this, QString("Error"), QString("Error:") + QString::fromStdString(errMsg));
-				//ui.LocalSettingsPushButton->setEnabled(true);
-
-				//BinCode
-				_ListOfSitePtr[i]->GetTestResult(pCurrentDutTestResult);
-				if (NULL != pCurrentDutTestResult)
-				{
-					if (0 != pCurrentDutTestResult->_binCodes.size())
-					{
-						QTableWidgetItem *itemBinCodes = new QTableWidgetItem(QString::fromStdString(pCurrentDutTestResult->_binCodes[0]));
-						itemBinCodes->setTextAlignment(Qt::AlignCenter);
-						ui.TestTableWidget->setItem(4, iSiteNumber - 1, itemBinCodes);
-					}
-				}
-				
-				//State
-				QTableWidgetItem *itemState = new QTableWidgetItem(QString("Error"));
-				itemState->setTextAlignment(Qt::AlignCenter);
-				ui.TestTableWidget->setItem(2, iSiteNumber - 1, itemState);
-
-				this->ManageButtonStatus(iFlag);
-
-				return;
+				QTableWidgetItem *itemBinCodes = new QTableWidgetItem(QString::fromStdString(pTestResult->listOfBinCodes[0]));
+				itemBinCodes->setTextAlignment(Qt::AlignCenter);
+				ui.TestTableWidget->setItem(4, iSiteNumber - 1, itemBinCodes);
 			}
-			
-			_ListOfSitePtr[i]->GetTestResult(pCurrentDutTestResult);
-			_ListOfSitePtr[i]->GetTestInfo(pCurrentDutTestInfo);
-			_ListOfSitePtr[i]->GetSysConfig(CurrentSysConfig);
-			iPos = i;
-			synFind = true;
-			break;
 		}
+
+		//State
+		QTableWidgetItem *itemState = new QTableWidgetItem(QString("Error"));
+		itemState->setTextAlignment(Qt::AlignCenter);
+		ui.TestTableWidget->setItem(2, iSiteNumber - 1, itemState);
+
+		this->ManageButtonStatus(iFlag);
+
+		return;
 	}
 
-	if (!synFind || NULL == pCurrentDutTestResult)
+	_ListOfSitePtr[iSiteNumber - 1]->GetResults(pTestResult);
+	if (NULL == pTestResult)
 		return;
-
-	int rowNumber = CurrentSysConfig._uiNumRows;
-	int columnNumber = CurrentSysConfig._uiNumCols;
-
+	
+	int rowNumber(0), columnNumber(0);
 	QVector<QRgb> vcolorTable;
 	for (int i = 0; i < 256; i++)
 	{
 		vcolorTable.append(qRgb(i, i, i));
 	}
 	QByteArray data;
-	//data.resize((rowNumber)*(columnNumber));
 	unsigned int iRowNumber(0);
 	if (1 == iFlag)
 	{
-		rowNumber = pCurrentDutTestResult->_acqImgNoFingerResult.iRealRowNumber;
-		columnNumber = pCurrentDutTestResult->_acqImgNoFingerResult.iRealColumnNumber;
+		rowNumber = pTestResult->imageNoFingerRows;
+		columnNumber = pTestResult->imageNoFingerCols;
 		data.resize((rowNumber)*(columnNumber));
 		
 		for (int m = 0; m < rowNumber; m++)
 		{
 			for (int n = 0; n < columnNumber; n++)
 			{
-				data[m*(columnNumber)+n] = (pCurrentDutTestResult->_acqImgNoFingerResult).arr_ImageFPSFrame.arr[m][n];
+				data[m*(columnNumber)+n] = (pTestResult->arrImageNoFinger)[m][n];
 			}
 		}
 
@@ -1050,37 +1032,37 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 	}
 	else if (2 == iFlag)
 	{
-		rowNumber = pCurrentDutTestResult->_acqImgFingerResult.iRealRowNumber;
-		columnNumber = pCurrentDutTestResult->_acqImgFingerResult.iRealColumnNumber;
+		rowNumber = pTestResult->imageFingerRows;
+		columnNumber = pTestResult->imageFingerCols;
 		data.resize((rowNumber)*(columnNumber));
 
 		for (int m = 0; m < rowNumber; m++)
 		{
 			for (int n = 0; n < columnNumber; n++)
 			{
-				data[m*(columnNumber)+n] = (pCurrentDutTestResult->_acqImgFingerResult).arr_ImageFPSFrame.arr[m][n];
+				data[m*(columnNumber)+n] = (pTestResult->arrImageFinger)[m][n];
 			}
 		}
 
 		iRowNumber = 8;
 
-		QString strSNRValue = QString::number(pCurrentDutTestResult->_snrResults.SNR[6]);
-		
+		QString strSNRValue = QString::number(pTestResult->snrValue[6]);
+
 		QTableWidgetItem *itemSNR = new QTableWidgetItem(strSNRValue);
 		itemSNR->setTextAlignment(Qt::AlignCenter);
 		ui.TestTableWidget->setItem(5, iSiteNumber - 1, itemSNR);
 
 		//BinCode
 		QString qsBinCodes("");
-		for (size_t i = 1; i <= pCurrentDutTestResult->_binCodes.size(); i++)
+		for (size_t i = 1; i <= pTestResult->listOfBinCodes.size(); i++)
 		{
 			if (1 == i)
 			{
-				qsBinCodes += QString::fromStdString(pCurrentDutTestResult->_binCodes[i - 1]);
+				qsBinCodes += QString::fromStdString(pTestResult->listOfBinCodes[i - 1]);
 			}
 			else
 			{
-				qsBinCodes = qsBinCodes + QString(" , ") + QString::fromStdString(pCurrentDutTestResult->_binCodes[i - 1]);
+				qsBinCodes = qsBinCodes + QString(" , ") + QString::fromStdString(pTestResult->listOfBinCodes[i - 1]);
 			}
 		}
 		QTableWidgetItem *itemBinCode = new QTableWidgetItem(qsBinCodes);
@@ -1089,9 +1071,9 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 
 		//TotalResults
 		QString strTotalResults("");
-		if (1 == pCurrentDutTestResult->_binCodes.size())
+		if (1 == pTestResult->listOfBinCodes.size())
 		{
-			if (Syn_BinCodes::m_sPass == pCurrentDutTestResult->_binCodes[0])
+			if ("1" == pTestResult->listOfBinCodes[0])
 			{
 				strTotalResults = "Pass";
 			}
@@ -1116,29 +1098,32 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 		}
 		ui.TestTableWidget->setItem(6, iSiteNumber - 1, itemTotalResults);
 	}
-	
+
 	QImage image((uchar*)data.constData(), columnNumber, rowNumber, QImage::Format_Indexed8);
 	image.setColorTable(vcolorTable);
-	//image = image.copy(iStartColumn, iStartRow, iEndColumn, iEndRow);
 
 	QLabel *pImageLabel = new QLabel();
 	pImageLabel->setPixmap(QPixmap::fromImage(image));
 	pImageLabel->setAlignment(Qt::AlignCenter);
 	ui.TestTableWidget->setCellWidget(iRowNumber, iSiteNumber - 1, pImageLabel); 
-	//ui.TestTableWidget->cellWidget(iRowNumber, iSiteNumber - 1)->setStyle(QStyleFactory::create("Fusion"));
 
 	ui.TestTableWidget->resizeRowToContents(iRowNumber);
 
-	//_FinishedSiteCounts += 1;
+	//SensorSerialNumber
+	QTableWidgetItem *itemSerialNumber = new QTableWidgetItem(QString::fromStdString(pTestResult->sSensorSerialNumber));
+	itemSerialNumber->setTextAlignment(Qt::AlignCenter);
+	ui.TestTableWidget->setItem(1, iSiteNumber - 1, itemSerialNumber);
+
 	if (2 == iFlag)
 	{
-		//writelog
-		Syn_DutTestInfo *pDutInfo = NULL;
-		_ListOfSitePtr[iSiteNumber - 1]->GetTestInfo(pDutInfo);
-
-		WriteLog(_LocalSettingsInfo._strLogFilePath, pDutInfo, pCurrentDutTestResult, rowNumber, columnNumber);
-
+		_ListOfSitePtr[iSiteNumber - 1]->Write_Log(_LocalSettingsInfo._strLogFilePath);
 		_ListOfSitePtr[iSiteNumber - 1]->Close();
+
+		if (NULL != pTestResult)
+		{
+			delete pTestResult;
+			pTestResult = NULL;
+		}
 
 		//State
 		QTableWidgetItem *itemState = new QTableWidgetItem(QString("Closed"));
@@ -1154,10 +1139,309 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 	}
 
 	this->ManageButtonStatus(iFlag);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//Syn_DutTestResult *pCurrentDutTestResult = NULL;
+	////Syn_DutTestInfo *pCurrentDutTestInfo = NULL;
+	//Syn_SysConfig CurrentSysConfig;
+	//unsigned int iPos(0);
+	//for (size_t i = 0; i < _ListOfSitePtr.size(); i++)
+	//{
+	//	unsigned int iTempSiteNumber(0);
+	//	_ListOfSitePtr[i]->GetSiteNumber(iTempSiteNumber);
+	//	if (iSiteNumber == iTempSiteNumber)
+	//	{
+	//		Syn_Site::SiteState oTempState;
+	//		_ListOfSitePtr[i]->GetState(oTempState);
+	//		if (oTempState == Syn_Site::Error)
+	//		{
+	//			//_FinishedSiteCounts += 1;
+	//			string errMsg = "";
+	//			_ListOfSitePtr[i]->GetRunTimeError(errMsg);
+	//			//QMessageBox::information(this, QString("Error"), QString("Error:") + QString::fromStdString(errMsg));
+	//			//ui.LocalSettingsPushButton->setEnabled(true);
+
+	//			//BinCode
+	//			_ListOfSitePtr[i]->GetTestResult(pCurrentDutTestResult);
+	//			if (NULL != pCurrentDutTestResult)
+	//			{
+	//				if (0 != pCurrentDutTestResult->_binCodes.size())
+	//				{
+	//					QTableWidgetItem *itemBinCodes = new QTableWidgetItem(QString::fromStdString(pCurrentDutTestResult->_binCodes[0]));
+	//					itemBinCodes->setTextAlignment(Qt::AlignCenter);
+	//					ui.TestTableWidget->setItem(4, iSiteNumber - 1, itemBinCodes);
+	//				}
+	//			}
+	//			
+	//			//State
+	//			QTableWidgetItem *itemState = new QTableWidgetItem(QString("Error"));
+	//			itemState->setTextAlignment(Qt::AlignCenter);
+	//			ui.TestTableWidget->setItem(2, iSiteNumber - 1, itemState);
+
+	//			this->ManageButtonStatus(iFlag);
+
+	//			return;
+	//		}
+	//		
+	//		_ListOfSitePtr[i]->GetTestResult(pCurrentDutTestResult);
+	//		//_ListOfSitePtr[i]->GetTestInfo(pCurrentDutTestInfo);
+	//		_ListOfSitePtr[i]->GetSysConfig(CurrentSysConfig);
+	//		iPos = i;
+	//		synFind = true;
+	//		break;
+	//	}
+	//}
+
+	//if (!synFind || NULL == pCurrentDutTestResult)
+	//	return;
+
+	//int rowNumber = CurrentSysConfig._uiNumRows;
+	//int columnNumber = CurrentSysConfig._uiNumCols;
+
+	//QVector<QRgb> vcolorTable;
+	//for (int i = 0; i < 256; i++)
+	//{
+	//	vcolorTable.append(qRgb(i, i, i));
+	//}
+	//QByteArray data;
+	////data.resize((rowNumber)*(columnNumber));
+	//unsigned int iRowNumber(0);
+	//if (1 == iFlag)
+	//{
+	//	rowNumber = pCurrentDutTestResult->_acqImgNoFingerResult.iRealRowNumber;
+	//	columnNumber = pCurrentDutTestResult->_acqImgNoFingerResult.iRealColumnNumber;
+	//	data.resize((rowNumber)*(columnNumber));
+	//	
+	//	for (int m = 0; m < rowNumber; m++)
+	//	{
+	//		for (int n = 0; n < columnNumber; n++)
+	//		{
+	//			data[m*(columnNumber)+n] = (pCurrentDutTestResult->_acqImgNoFingerResult).arr_ImageFPSFrame.arr[m][n];
+	//		}
+	//	}
+
+	//	iRowNumber = 7;
+	//}
+	//else if (2 == iFlag)
+	//{
+	//	rowNumber = pCurrentDutTestResult->_acqImgFingerResult.iRealRowNumber;
+	//	columnNumber = pCurrentDutTestResult->_acqImgFingerResult.iRealColumnNumber;
+	//	data.resize((rowNumber)*(columnNumber));
+
+	//	for (int m = 0; m < rowNumber; m++)
+	//	{
+	//		for (int n = 0; n < columnNumber; n++)
+	//		{
+	//			data[m*(columnNumber)+n] = (pCurrentDutTestResult->_acqImgFingerResult).arr_ImageFPSFrame.arr[m][n];
+	//		}
+	//	}
+
+	//	iRowNumber = 8;
+
+	//	QString strSNRValue = QString::number(pCurrentDutTestResult->_snrResults.SNR[6]);
+	//	
+	//	QTableWidgetItem *itemSNR = new QTableWidgetItem(strSNRValue);
+	//	itemSNR->setTextAlignment(Qt::AlignCenter);
+	//	ui.TestTableWidget->setItem(5, iSiteNumber - 1, itemSNR);
+
+	//	//BinCode
+	//	QString qsBinCodes("");
+	//	for (size_t i = 1; i <= pCurrentDutTestResult->_binCodes.size(); i++)
+	//	{
+	//		if (1 == i)
+	//		{
+	//			qsBinCodes += QString::fromStdString(pCurrentDutTestResult->_binCodes[i - 1]);
+	//		}
+	//		else
+	//		{
+	//			qsBinCodes = qsBinCodes + QString(" , ") + QString::fromStdString(pCurrentDutTestResult->_binCodes[i - 1]);
+	//		}
+	//	}
+	//	QTableWidgetItem *itemBinCode = new QTableWidgetItem(qsBinCodes);
+	//	itemBinCode->setTextAlignment(Qt::AlignCenter);
+	//	ui.TestTableWidget->setItem(4, iSiteNumber - 1, itemBinCode);
+
+	//	//TotalResults
+	//	QString strTotalResults("");
+	//	if (1 == pCurrentDutTestResult->_binCodes.size())
+	//	{
+	//		if (Syn_BinCodes::m_sPass == pCurrentDutTestResult->_binCodes[0])
+	//		{
+	//			strTotalResults = "Pass";
+	//		}
+	//		else
+	//		{
+	//			strTotalResults = "Fail";
+	//		}
+	//	}
+	//	else
+	//	{
+	//		strTotalResults = "Fail";
+	//	}
+	//	QTableWidgetItem *itemTotalResults = new QTableWidgetItem(strTotalResults);
+	//	itemTotalResults->setTextAlignment(Qt::AlignCenter);
+	//	if (QString("Pass") == strTotalResults)
+	//	{
+	//		itemTotalResults->setBackgroundColor(QColor(0, 255, 0));
+	//	}
+	//	else
+	//	{
+	//		itemTotalResults->setBackgroundColor(QColor(255, 0, 0));
+	//	}
+	//	ui.TestTableWidget->setItem(6, iSiteNumber - 1, itemTotalResults);
+	//}
+	//
+	//QImage image((uchar*)data.constData(), columnNumber, rowNumber, QImage::Format_Indexed8);
+	//image.setColorTable(vcolorTable);
+	////image = image.copy(iStartColumn, iStartRow, iEndColumn, iEndRow);
+
+	//QLabel *pImageLabel = new QLabel();
+	//pImageLabel->setPixmap(QPixmap::fromImage(image));
+	//pImageLabel->setAlignment(Qt::AlignCenter);
+	//ui.TestTableWidget->setCellWidget(iRowNumber, iSiteNumber - 1, pImageLabel); 
+	////ui.TestTableWidget->cellWidget(iRowNumber, iSiteNumber - 1)->setStyle(QStyleFactory::create("Fusion"));
+
+	//ui.TestTableWidget->resizeRowToContents(iRowNumber);
+
+	////_FinishedSiteCounts += 1;
+	//if (2 == iFlag)
+	//{
+	//	//writelog
+	//	Syn_DutTestInfo *pDutInfo = NULL;
+	//	_ListOfSitePtr[iSiteNumber - 1]->GetTestInfo(pDutInfo);
+
+	//	WriteLog(_LocalSettingsInfo._strLogFilePath, pDutInfo, pCurrentDutTestResult, rowNumber, columnNumber);
+
+	//	_ListOfSitePtr[iSiteNumber - 1]->Close();
+
+	//	//State
+	//	QTableWidgetItem *itemState = new QTableWidgetItem(QString("Closed"));
+	//	itemState->setTextAlignment(Qt::AlignCenter);
+	//	ui.TestTableWidget->setItem(2, iSiteNumber - 1, itemState);
+	//}
+	//else
+	//{
+	//	//State
+	//	QTableWidgetItem *itemState = new QTableWidgetItem(QString("Idle"));
+	//	itemState->setTextAlignment(Qt::AlignCenter);
+	//	ui.TestTableWidget->setItem(2, iSiteNumber - 1, itemState);
+	//}
+
+	//this->ManageButtonStatus(iFlag);
 }
 
 void FPS_TestExecutive::ReceiveTest(unsigned int iSiteNumber, const QString strTestStepName, const QString strPassResults)
 {
+	//bool synFind(false);
+
+	//unsigned int iFlag(0);
+	//QString qText = ui.pushButtonRun->text();
+	//if (QString("Run") == qText)
+	//{
+	//	iFlag = 1;
+	//}
+	//else if (QString("Continue") == qText)
+	//{
+	//	iFlag = 2;
+	//}
+
+	//Syn_SysConfig CurrentSysConfig;
+	//unsigned int iPos(0);
+	//for (size_t i = 0; i < _ListOfSitePtr.size(); i++)
+	//{
+	//	unsigned int iTempSiteNumber(0);
+	//	_ListOfSitePtr[i]->GetSiteNumber(iTempSiteNumber);
+	//	if (iSiteNumber == iTempSiteNumber)
+	//	{
+	//		//_ListOfSitePtr[i]->GetTestInfo(*CurrentDutTestInfo);
+	//		Syn_Site::SiteState oTempState;
+	//		_ListOfSitePtr[i]->GetState(oTempState);
+	//		if (oTempState == Syn_Site::Error)
+	//		{
+	//			string errMsg = "";
+	//			_ListOfSitePtr[i]->GetRunTimeError(errMsg);
+	//			//QMessageBox::information(this, QString("Error"), QString("Error:") + QString::fromStdString(errMsg));
+
+	//			//State
+	//			QTableWidgetItem *itemState = new QTableWidgetItem(QString("Error"));
+	//			itemState->setTextAlignment(Qt::AlignCenter);
+	//			ui.TestTableWidget->setItem(2, iSiteNumber - 1, itemState);
+
+	//			return;
+	//		}
+
+	//		//_ListOfSitePtr[i]->GetTestResult(pCurrentDutTestResult);
+	//		_ListOfSitePtr[i]->GetSysConfig(CurrentSysConfig);
+	//		iPos = i;
+	//		synFind = true;
+	//		break;
+	//	}
+	//}
+
+	//if (!synFind)// || NULL == pCurrentDutTestResult)
+	//	return;
+
+	//int rowNumber = CurrentSysConfig._uiNumRows;
+	//int columnNumber = CurrentSysConfig._uiNumCols;
+
+	//QString qsStepAndResult = strTestStepName + QString(" : ") + strPassResults;
+	//if (NULL != ui.TestTableWidget->item(3, iSiteNumber - 1))
+	//{
+	//	QString qsTempContent = ui.TestTableWidget->item(3, iSiteNumber - 1)->text();
+	//	ui.TestTableWidget->item(3, iSiteNumber - 1)->setText(qsTempContent + QString("\n") + qsStepAndResult);
+	//	ui.TestTableWidget->resizeRowToContents(3);
+	//}
+	//else
+	//{
+	//	QTableWidgetItem *item = new QTableWidgetItem(qsStepAndResult);
+	//	item->setTextAlignment(Qt::AlignCenter);
+	//	ui.TestTableWidget->setItem(3, iSiteNumber - 1, item);
+	//	ui.TestTableWidget->resizeRowToContents(3);
+	//}
+
+	////State
+	//QTableWidgetItem *itemState = new QTableWidgetItem(QString("Running"));
+	//itemState->setTextAlignment(Qt::AlignCenter);
+	//ui.TestTableWidget->setItem(2, iSiteNumber - 1, itemState);
+
+	////SerialNumber
+	//if (QString("InitializationStep") == strTestStepName)
+	//{
+	//	//Syn_DutTestResult *pCurrentDutTestResult = NULL;
+	//	Syn_DutTestInfo *DutInfo = NULL;
+	//	_ListOfSitePtr[iSiteNumber - 1]->GetTestInfo(DutInfo);
+	//	if (NULL != DutInfo)
+	//	{
+	//		QString qsSensorSerialNumber("");
+	//		qsSensorSerialNumber = QString::fromLatin1(DutInfo->_getVerInfo.sSerialNumber, sizeof(DutInfo->_getVerInfo.sSerialNumber));
+
+	//		QTableWidgetItem *itemSerialNumber = new QTableWidgetItem(qsSensorSerialNumber);
+	//		itemSerialNumber->setTextAlignment(Qt::AlignCenter);
+	//		ui.TestTableWidget->setItem(1, iSiteNumber - 1, itemSerialNumber);
+	//	}
+	//}
+
+
+
 	bool synFind(false);
 
 	unsigned int iFlag(0);
@@ -1171,7 +1455,6 @@ void FPS_TestExecutive::ReceiveTest(unsigned int iSiteNumber, const QString strT
 		iFlag = 2;
 	}
 
-	Syn_SysConfig CurrentSysConfig;
 	unsigned int iPos(0);
 	for (size_t i = 0; i < _ListOfSitePtr.size(); i++)
 	{
@@ -1180,9 +1463,9 @@ void FPS_TestExecutive::ReceiveTest(unsigned int iSiteNumber, const QString strT
 		if (iSiteNumber == iTempSiteNumber)
 		{
 			//_ListOfSitePtr[i]->GetTestInfo(*CurrentDutTestInfo);
-			SiteState oTempState;
+			Syn_Site::SiteState oTempState;
 			_ListOfSitePtr[i]->GetState(oTempState);
-			if (oTempState == SiteState::Error)
+			if (oTempState == Syn_Site::Error)
 			{
 				string errMsg = "";
 				_ListOfSitePtr[i]->GetRunTimeError(errMsg);
@@ -1197,60 +1480,75 @@ void FPS_TestExecutive::ReceiveTest(unsigned int iSiteNumber, const QString strT
 			}
 
 			//_ListOfSitePtr[i]->GetTestResult(pCurrentDutTestResult);
-			_ListOfSitePtr[i]->GetSysConfig(CurrentSysConfig);
 			iPos = i;
 			synFind = true;
 			break;
 		}
 	}
 
-	if (!synFind)// || NULL == pCurrentDutTestResult)
+	if (!synFind)
 		return;
-
-	int rowNumber = CurrentSysConfig._uiNumRows;
-	int columnNumber = CurrentSysConfig._uiNumCols;
-
-	QString qsStepAndResult = strTestStepName + QString(" : ") + strPassResults;
-	if (NULL != ui.TestTableWidget->item(3, iSiteNumber - 1))
-	{
-		QString qsTempContent = ui.TestTableWidget->item(3, iSiteNumber - 1)->text();
-		ui.TestTableWidget->item(3, iSiteNumber - 1)->setText(qsTempContent + QString("\n") + qsStepAndResult);
-		ui.TestTableWidget->resizeRowToContents(3);
-	}
-	else
-	{
-		QTableWidgetItem *item = new QTableWidgetItem(qsStepAndResult);
-		item->setTextAlignment(Qt::AlignCenter);
-		ui.TestTableWidget->setItem(3, iSiteNumber - 1, item);
-		ui.TestTableWidget->resizeRowToContents(3);
-	}
 
 	//State
 	QTableWidgetItem *itemState = new QTableWidgetItem(QString("Running"));
 	itemState->setTextAlignment(Qt::AlignCenter);
 	ui.TestTableWidget->setItem(2, iSiteNumber - 1, itemState);
 
+	uint32_t rc(0);
+
+	QString qsStepAndResult("");
+	if (0 != strPassResults.length())
+	{
+		qsStepAndResult = strTestStepName + QString(" : ") + strPassResults;
+
+		if (NULL != ui.TestTableWidget->item(3, iSiteNumber - 1))
+		{
+			QString qsTempContent = ui.TestTableWidget->item(3, iSiteNumber - 1)->text();
+			ui.TestTableWidget->item(3, iSiteNumber - 1)->setText(qsTempContent + QString("\n") + qsStepAndResult);
+			ui.TestTableWidget->resizeRowToContents(3);
+		}
+		else
+		{
+			QTableWidgetItem *item = new QTableWidgetItem(qsStepAndResult);
+			item->setTextAlignment(Qt::AlignCenter);
+			ui.TestTableWidget->setItem(3, iSiteNumber - 1, item);
+			ui.TestTableWidget->resizeRowToContents(3);
+		}
+
+	}
+	else
+	{
+		qsStepAndResult = strTestStepName + QString(" : ") + strPassResults;
+
+		if (NULL != ui.TestTableWidget->item(3, iSiteNumber - 1))
+		{
+			QString qsTempContent = ui.TestTableWidget->item(3, iSiteNumber - 1)->text();
+			ui.TestTableWidget->item(3, iSiteNumber - 1)->setText(qsTempContent + QString("\n") + qsStepAndResult);
+			ui.TestTableWidget->resizeRowToContents(3);
+		}
+		else
+		{
+			QTableWidgetItem *item = new QTableWidgetItem(qsStepAndResult);
+			item->setTextAlignment(Qt::AlignCenter);
+			ui.TestTableWidget->setItem(3, iSiteNumber - 1, item);
+			ui.TestTableWidget->resizeRowToContents(3);
+		}
+	}
+
+	
 	//SerialNumber
 	if (QString("InitializationStep") == strTestStepName)
 	{
-		//Syn_DutTestResult *pCurrentDutTestResult = NULL;
-		Syn_DutTestInfo *DutInfo = NULL;
-		_ListOfSitePtr[iSiteNumber - 1]->GetTestInfo(DutInfo);
-		if (NULL != DutInfo)
-		{
-			QString qsSensorSerialNumber("");
-			/*for (int i = 0; i < DUT_SER_NUM_SIZE; i++)
-			{
-				QString qsSensorTempSerialNumber = QString::number(DutInfo->_getVerInfo.serial_number[i], 16).toUpper();
-				qsSensorSerialNumber += qsSensorTempSerialNumber;
-			}*/
-			qsSensorSerialNumber = QString::fromLatin1(DutInfo->_getVerInfo.sSerialNumber, sizeof(DutInfo->_getVerInfo.sSerialNumber));
+		std::string sSerialNumber("");
+		_ListOfSitePtr[iPos]->GetSensorSerialNumber(sSerialNumber);
+		QString qsSensorSerialNumber("");
+		qsSensorSerialNumber = QString::fromStdString(sSerialNumber);
 
-			QTableWidgetItem *itemSerialNumber = new QTableWidgetItem(qsSensorSerialNumber);
-			itemSerialNumber->setTextAlignment(Qt::AlignCenter);
-			ui.TestTableWidget->setItem(1, iSiteNumber - 1, itemSerialNumber);
-		}
+		QTableWidgetItem *itemSerialNumber = new QTableWidgetItem(qsSensorSerialNumber);
+		itemSerialNumber->setTextAlignment(Qt::AlignCenter);
+		ui.TestTableWidget->setItem(1, iSiteNumber - 1, itemSerialNumber);
 	}
+	
 }
 
 void FPS_TestExecutive::GetVersionForDutDump()
@@ -1580,9 +1878,9 @@ void FPS_TestExecutive::PushCablicationImageButton()
 
 	ui.CalibrationImageLabel->hide();
 
-	SiteState oTempState;
+	Syn_Site::SiteState oTempState;
 	_ListOfSitePtr[iSiteCurrentIndex]->GetState(oTempState);
-	if (Error == oTempState)
+	if (Syn_Site::Error == oTempState)
 	{
 		QMessageBox::information(this, QString("Error"), QString("Cablication Error:Selected Site's state is Error!"));
 		return;
@@ -1617,9 +1915,9 @@ void FPS_TestExecutive::ImageCalibration(unsigned int iSiteNumber)
 		if (iSiteNumber == iTempSiteNumber)
 		{
 			//_ListOfSitePtr[i]->GetTestInfo(*CurrentDutTestInfo);
-			SiteState oTempState;
+			Syn_Site::SiteState oTempState;
 			_ListOfSitePtr[i]->GetState(oTempState);
-			if (oTempState == SiteState::Error)
+			if (oTempState == Syn_Site::Error)
 			{
 				string errMsg = "";
 				_ListOfSitePtr[i]->GetRunTimeError(errMsg);
@@ -1728,9 +2026,9 @@ void FPS_TestExecutive::FigerprintImage(unsigned int iSiteNumber)
 		if (iSiteNumber == iTempSiteNumber)
 		{
 			//_ListOfSitePtr[i]->GetTestInfo(*CurrentDutTestInfo);
-			SiteState oTempState;
+			Syn_Site::SiteState oTempState;
 			_ListOfSitePtr[i]->GetState(oTempState);
-			if (oTempState == SiteState::Error)
+			if (oTempState == Syn_Site::Error)
 			{
 				string errMsg = "";
 				_ListOfSitePtr[i]->GetRunTimeError(errMsg);
@@ -2093,9 +2391,9 @@ void FPS_TestExecutive::ManageButtonStatus(int iFlag)
 		bool bAllFailed(true);
 		for (size_t i = 1; i <= _ListOfSitePtr.size(); i++)
 		{
-			SiteState oTmpState;
+			Syn_Site::SiteState oTmpState;
 			_ListOfSitePtr[i - 1]->GetState(oTmpState);
-			if (SiteState::Error != oTmpState)
+			if (Syn_Site::Error != oTmpState)
 			{
 				bAllFailed = false;
 				break;
