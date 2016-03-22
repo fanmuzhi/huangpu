@@ -92,14 +92,10 @@ public:
 	~Syn_Site();
 
 	/*site open*/
-	//uint32_t Init();
 	uint32_t Open();
 
 	/*fixed scriptID and scriptName in GUI. */
 	uint32_t ExecuteScript(uint8_t scriptID);                              
-
-	/*get number of test steps finished.*/
-	//uint32_t GetNumSteps(uint16_t numSteps);                               
 
 	uint32_t GetTestInfo(Syn_DutTestInfo * &opTestInfo);
 	

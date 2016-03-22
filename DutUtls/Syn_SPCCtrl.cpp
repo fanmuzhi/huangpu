@@ -183,7 +183,7 @@ void Syn_SPCCtrl::FpGetStatus(uint8_t* pDst, int numBytes)
 
 	this->FpRead(endpoint, cmd, pDst, numBytes);
 
-	LOG(DEBUG) << "0x" << hex << *((uint32_t*)pDst);
+	LOG(INFO) << "0x" << hex << *((uint32_t*)pDst);
 }
 
 void Syn_SPCCtrl::FpWaitForCMDComplete(const uint32_t timeout)
@@ -214,7 +214,7 @@ void Syn_SPCCtrl::FpReadBuff(uint8_t *pDst, int numBytes)
 
 	this->FpRead(1, 0xFF, pDst, numBytes);
 	uint16_t returnValue = *((uint16_t*)pDst);
-	LOG(DEBUG) << "0x" << hex << returnValue;
+	LOG(INFO) << "0x" << hex << returnValue;
 	while (timeout && (*((uint16_t*)pDst) == 0xFFFF))
 	{
 		this->FpRead(1, 0xFF, pDst, numBytes);
@@ -238,7 +238,6 @@ void Syn_SPCCtrl::FpReadAndCheckStatus(uint16_t statusIgnore)
 	
 	//uint16_t returnValue = (pDst[0] << 8) + pDst[1];
 	uint16_t returnValue = *((uint16_t*)pDst);
-	LOG(DEBUG) << "0x" << hex << returnValue;
 
 	if (statusIgnore != returnValue && returnValue != 0)
 	{
@@ -250,7 +249,7 @@ void Syn_SPCCtrl::FpReadAndCheckStatus(uint16_t statusIgnore)
 
 void Syn_SPCCtrl::FpRunPatchTest(uint8_t *pDst, int numBytes)
 {
-	uint32_t timeout = 5000;
+	uint32_t timeout = 1000;
 
 	uint8_t numbytes = 2;
 	uint8_t pSrc[10];
@@ -405,8 +404,6 @@ uint8_t Syn_SPCCtrl::FpOtpRomTagRead(uint32_t nExtTag, uint8_t* pDst, int numByt
 }
 
 
-
-
 void Syn_SPCCtrl::FpOtpRomTagWrite(uint8_t* pDst, int numBytes)
 {
 	LOG(INFO) << "OTPRom Tag Write";
@@ -415,9 +412,6 @@ void Syn_SPCCtrl::FpOtpRomTagWrite(uint8_t* pDst, int numBytes)
 	this->FpWaitForCMDComplete();
 	this->FpReadAndCheckStatus(0);
 }
-
-
-
 
 
 void Syn_SPCCtrl::FpGetVersion(uint8_t *pDst, int numBytes)
@@ -759,6 +753,7 @@ void Syn_SPCCtrl::UpdateMPC04Firmware()
 				throw ex;
 			}
 			LOG(INFO) << "MPC04 Firmware update process: " << nPercent;
+			::Sleep(5);
 		}
 
 		//Wait for the Update command to complete.

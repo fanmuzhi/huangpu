@@ -3,9 +3,6 @@
 #include "Syn_Exception.h"
 #include "Syn_SysConfigOperation.h"
 
-//std
-#include <thread>
-
 //MPC_API
 #include "MpcApiDll.h"
 //#include "MpcApiError.h"

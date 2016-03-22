@@ -35,7 +35,7 @@ public:
 
 	virtual void FpOtpRomTagWrite(uint8_t* pDst, int numBytes);
 
-	virtual void FpWaitForCMDComplete(const uint32_t timeout = 2000);
+	virtual void FpWaitForCMDComplete(const uint32_t timeout = 500);
 
 	virtual void FpReadBuff(uint8_t *pDst, int numBytes);
 
@@ -72,5 +72,5 @@ public:
 protected:
 
 	static bool	_bDLLInitialized;
-	const uint32_t TIMEOUT = 2000;
+	const uint32_t TIMEOUT = 500;
 };

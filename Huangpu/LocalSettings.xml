@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
-    <SysConfigFile>D:/580-005566-02r14-Silver1-(FM-000094-006)_OFilm.xml</SysConfigFile>
-    <LogFilePath>D:/LogFile</LogFilePath>
+    <SysConfigFile>C:/Users/bqiling/Google Drive/Metallica 57K0/580-005566-02r13(FM-000094-002)_OFilm/580-005566-02r13-Grey1-(FM-000094-002)_OFilm.xml</SysConfigFile>
+    <LogFilePath>C:/logfiles</LogFilePath>
     <NumSites>1</NumSites>
+<<<<<<< HEAD
     <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="694 695 697 802 695 695 696 793 694 693 701 1128 696 697 697 791 ">1684806</Site1>
+=======
+    <Site1 AdcBaseLines="707 708 705 787 707 707 707 823 708 709 717 1106 710 710 710 826 " Voltages="1800 1800 3300 3300">1405853</Site1>
+>>>>>>> master
     <AutoController></AutoController>
 </LocalSettings>
