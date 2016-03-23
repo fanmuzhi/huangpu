@@ -151,7 +151,10 @@ void Ts_PeggedPixelsTest::ProcessData()
 	if (!(_pSyn_Dut->_pSyn_DutTestResult->_peggedPixelsResults.m_bPass))
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sPeggedPixFail);
+		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("PeggedPixelsTest", "Fail"));
 	}
+	else
+		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("PeggedPixelsTest", "Pass"));
 	
 	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_peggedPixelsResults.m_elapsedtime);
 

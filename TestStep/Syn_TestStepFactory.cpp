@@ -21,6 +21,8 @@
 #include "Ts_RetainMode.h"
 #include "Ts_InitializationStep.h"
 #include "Ts_FinalizationStep.h"
+#include "Ts_OpensShortsTest.h"
+#include "Ts_RAMTest.h"
 
 Syn_TestStepFactory::Syn_TestStepFactory()
 {
@@ -44,7 +46,12 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	}
 
 	bool rc = true;
-	if (std::string("Calibrate") == strTestStepName)
+
+	if (std::string("InitializationStep") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_InitializationStep(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("Calibrate") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_Calibrate(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
@@ -116,9 +123,13 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	{
 		opTestStepInstance = new Ts_RetainMode(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
-	else if (std::string("InitializationStep") == strTestStepName)
+	else if (std::string("OpensShortsTest") == strTestStepName)
 	{
-		opTestStepInstance = new Ts_InitializationStep(strTestStepName, strTestArgs, pDutCtrl, pDut);
+		opTestStepInstance = new Ts_OpensShortsTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("RAMTest") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_RAMTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else if (std::string("FinalizationStep") == strTestStepName)
 	{

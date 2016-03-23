@@ -83,37 +83,6 @@ uint32_t Syn_Site::CreateSiteInstance(uint8_t siteNumber, uint32_t deviceSerNumb
 	return rc;
 }
 
-uint32_t Syn_Site::CreateSiteInstance(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath, const Syn_ADCBaseLineInfo &iADCBaseLineInfo, Syn_Site * &opSiteInstance)
-{
-	opSiteInstance = NULL;
-
-	opSiteInstance = new Syn_Site(siteNumber, deviceSerNumber, strConfigFilePath);
-	uint32_t rc = opSiteInstance->Init();
-	if (Syn_ExceptionCode::Syn_OK != rc)
-	{
-		delete opSiteInstance;
-		opSiteInstance = NULL;
-	}
-	else
-	{
-		opSiteInstance->_ADCInfo.m_bExecuted = true;
-		opSiteInstance->_ADCInfo.m_nVdd = iADCBaseLineInfo._nVdd;
-		opSiteInstance->_ADCInfo.m_nVio = iADCBaseLineInfo._nVio;
-		opSiteInstance->_ADCInfo.m_nVled = iADCBaseLineInfo._nVled;
-		opSiteInstance->_ADCInfo.m_nVddh = iADCBaseLineInfo._nVddh;
-
-		for (int a = 0; a < NUM_CURRENT_VALUES; a++)
-		{
-			for (int b = 0; b < KNUMGAINS; b++)
-			{
-				(opSiteInstance->_ADCInfo.m_arAdcBaseLines)[a][b] = (iADCBaseLineInfo._arAdcBaseLines)[a][b];
-			}
-		}
-	}
-
-	return rc;
-}
-
 uint32_t Syn_Site::Init()
 {
 	//xml config file parse
@@ -464,6 +433,7 @@ uint32_t Syn_Site::ExecuteTestStep(std::string sTestName)
 	if (!rc || NULL == pTestStep)
 	{
 		_siteState = Error;
+		_uiErrorFlag = Syn_ExceptionCode::Syn_TestStepConfigError;
 		return Syn_ExceptionCode::Syn_TestStepConfigError;
 	}
 
@@ -495,119 +465,6 @@ uint32_t Syn_Site::ExecuteTestStep(std::string sTestName)
 		_uiErrorFlag = ex.GetError();
 		return _uiErrorFlag;
 	}
-	return Syn_ExceptionCode::Syn_OK;
-}
-
-
-
-
-
-uint32_t Syn_Site::GetResults(Syn_TestResults * &opTestResults)
-{
-	if (_siteState == SiteState::Error)
-	{
-		return _uiErrorFlag;
-	}
-	if (_siteState != TestDataReady)
-	{
-		return Syn_ExceptionCode::Syn_SiteStateError;
-	}
-
-	if (NULL == _pSyn_Dut)
-	{
-		_siteState = Error;
-		return Syn_ExceptionCode::Syn_DutResultNull;
-	}
-
-	if (NULL == _pSyn_Dut->_pSyn_DutTestResult || NULL == _pSyn_Dut->_pSyn_DutTestInfo)
-	{
-		_siteState = Error;
-		return Syn_ExceptionCode::Syn_DutResultNull;
-	}
-
-	if (NULL == opTestResults)
-	{
-		opTestResults = new Syn_TestResults();
-	}
-
-	//SNR
-	for (int i = 0; i < 7; i++)
-	{
-		opTestResults->snrValue[i] = _pSyn_Dut->_pSyn_DutTestResult->_snrResults.SNR[i];
-	}
-
-	//BinCodes
-	opTestResults->listOfBinCodes.clear();
-	for (size_t i = 1; i <= _pSyn_Dut->_pSyn_DutTestResult->_binCodes.size(); i++)
-	{
-		opTestResults->listOfBinCodes.push_back(_pSyn_Dut->_pSyn_DutTestResult->_binCodes[i - 1]);
-	}
-
-	//imageNoFinger
-	for (int i = 0; i <= _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealRowNumber; i++)
-	{
-		for (int j = 0; j <= _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealColumnNumber; j++)
-		{
-			opTestResults->arrImageNoFinger[i][j] = _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.arr_ImageFPSFrame.arr[i][j];
-		}
-	}
-	opTestResults->imageNoFingerRows = _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealRowNumber;
-	opTestResults->imageNoFingerCols = _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealColumnNumber;
-
-	//imageFinger
-	for (int i = 0; i <= _pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.iRealRowNumber; i++)
-	{
-		for (int j = 0; j <= _pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.iRealColumnNumber; j++)
-		{
-			opTestResults->arrImageFinger[i][j] = _pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.arr_ImageFPSFrame.arr[i][j];
-		}
-	}
-	opTestResults->imageFingerRows = _pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.iRealRowNumber;
-	opTestResults->imageFingerCols = _pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.iRealColumnNumber;
-
-	//version info
-	//Sensor SerialNumber
-	opTestResults->sSensorSerialNumber.clear();
-	for (int i = 0; i < 12; i++)
-	{
-		opTestResults->sSensorSerialNumber.push_back(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[i]);
-	}
-	opTestResults->buildtime = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.buildtime;
-	opTestResults->buildnum = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.buildnum;
-	opTestResults->vmajor = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.vmajor;
-	opTestResults->vminor = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.vminor;
-	opTestResults->target = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.target;
-	opTestResults->product = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.product;
-	opTestResults->siliconrev = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.siliconrev;
-	opTestResults->formalrel = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.formalrel;
-	opTestResults->platform = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.platform;
-	opTestResults->patch = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.patch;
-	for (int i = 0; i < 6;i++)
-		opTestResults->serial_number[i] = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number[i];
-	for (int i = 0; i < 2; i++)
-		opTestResults->security[i] = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.security[i];
-	opTestResults->patchsig = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.patchsig;
-	opTestResults->iface = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.iface;
-	for (int i = 0; i < 3; i++)
-		opTestResults->otpsig[i] = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.otpsig[i];
-	opTestResults->otpspare1 = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.otpspare1;
-	opTestResults->reserved = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.reserved;
-	opTestResults->device_type = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.device_type;
-
-	//OTP content
-	for (int i = 0; i < BS0_SIZE; i++)
-		opTestResults->arrBootSector0[i] = _pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._BootSector0Array[i];
-
-	for (int i = 0; i < BS1_SIZE; i++)
-		opTestResults->arrBootSector1[i] = _pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._BootSector1Array[i];
-
-	for (int i = 0; i < MS0_SIZE; i++)
-		opTestResults->arrMainSector0[i] = _pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._MainSector0Array[i];
-
-	for (int i = 0; i < MS1_SIZE; i++)
-		opTestResults->arrMainSector1[i] = _pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._MainSector1Array[i];
-
-	_siteState = Idle;
 	return Syn_ExceptionCode::Syn_OK;
 }
 
@@ -703,6 +560,16 @@ bool Syn_Site::GetPassResult(std::string sTestStepName)
 		if (_pSyn_Dut->_pSyn_DutTestResult->_otpCheckResult._bPass)
 			bResult = true;
 	}
+	else if (std::string("OpensShortsTest") == sTestStepName)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestResult->_opensShortsResults.m_bPass)
+			bResult = true;
+	}
+	else if (std::string("RAMTest") == sTestStepName)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestResult->_RAMTestResults.bPass)
+			bResult = true;
+	}
 	else if (std::string("FinalizationStep") == sTestStepName)
 	{
 		bResult = true;
@@ -715,16 +582,6 @@ bool Syn_Site::GetPassResult(std::string sTestStepName)
 	return bResult;
 }
 
-void Syn_Site::GetSensorSerialNumber(std::string &osSensorSerialNumber)
-{
-	//Sensor SerialNumber
-	osSensorSerialNumber.clear();
-	for (int i = 0; i < 12; i++)
-	{
-		osSensorSerialNumber.push_back(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[i]);
-	}
-}
-
 void Syn_Site::GetTestStepList(std::vector<std::string> &olistOfTestStepName)
 {
 	olistOfTestStepName.clear();
@@ -735,11 +592,11 @@ void Syn_Site::GetTestStepList(std::vector<std::string> &olistOfTestStepName)
 	}
 }
 
-void Syn_Site::Write_Log(std::string sFolderPath)
+bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 {
 	if (-1 == _access(sFolderPath.c_str(), 2))
 	{
-		return;
+		return false;
 	}
 
 	Syn_DutTestInfo * DutInfo = NULL;
@@ -749,9 +606,9 @@ void Syn_Site::Write_Log(std::string sFolderPath)
 	DutResults = _pSyn_Dut->_pSyn_DutTestResult;
 
 	if (NULL == DutInfo)
-		return;
+		return false;
 	if (NULL == DutResults)
-		return;
+		return false;
 
 	int RowNumber = _pSyn_Dut->_RowNumber;
 	int ColumnNumber = _pSyn_Dut->_ColumnNumber;
@@ -761,39 +618,56 @@ void Syn_Site::Write_Log(std::string sFolderPath)
 	{
 		sSensorSerialNumber.push_back(DutInfo->_getVerInfo.sSerialNumber[i]);
 	}
-	std::string strSerachContent = sFolderPath + std::string("\\*.csv");
 
-	std::string strSensorSerialNumber;
-	std::vector<std::string> lsitOfFileName;
-	long handle;
-	struct _finddata_t fileinfo;
-	handle = _findfirst(strSerachContent.c_str(), &fileinfo);
-	if (-1 == handle)
+	std::string stringFilePath;
+	if (0 == sFileName.size())
 	{
-		strSensorSerialNumber = sSensorSerialNumber + std::string("_1");
+		std::string strSerachContent = sFolderPath + std::string("\\*.csv");
+		std::string strSensorSerialNumber;
+		std::vector<std::string> lsitOfFileName;
+		long handle;
+		struct _finddata_t fileinfo;
+		handle = _findfirst(strSerachContent.c_str(), &fileinfo);
+		if (-1 == handle)
+		{
+			strSensorSerialNumber = sSensorSerialNumber + std::string("_1");
+		}
+		else
+		{
+			int iCounts(1);
+
+			do
+			{
+				std::string strFileName = fileinfo.name;
+				if (std::string::npos != strFileName.find_first_of(sSensorSerialNumber))
+				{
+					iCounts += 1;
+				}
+			} while (_findnext(handle, &fileinfo) == 0);
+
+			strSensorSerialNumber = sSensorSerialNumber + std::string("_") + to_string(iCounts);
+			_findclose(handle);
+		}
+
+		stringFilePath = sFolderPath + "\\" + strSensorSerialNumber + ".csv";
 	}
 	else
 	{
-		int iCounts(1);
-
-		do
+		if (std::string::npos != sFileName.find_first_of(".csv"))
 		{
-			std::string sFileName = fileinfo.name;
-			if (std::string::npos != sFileName.find_first_of(sSensorSerialNumber))
-			{
-				iCounts += 1;
-			}
-		} while (_findnext(handle, &fileinfo) == 0);
-
-		strSensorSerialNumber = sSensorSerialNumber + std::string("_") + to_string(iCounts);
-		_findclose(handle);
+			stringFilePath = sFolderPath + "\\" + sFileName;
+		}
+		else
+		{
+			stringFilePath = sFolderPath + "\\" + sFileName + ".csv";
+		}
 	}
 
-	std::string stringFilePath(sFolderPath + "\\" + strSensorSerialNumber + ".csv");
+	
 	FILE *pFile = fopen(stringFilePath.c_str(), "a");
 	if (NULL == pFile)
 	{
-		return;
+		return false;
 	}
 
 	fprintf(pFile, "\n%%%%%%%%%%%%%%%%%%%%%%\n");
@@ -996,6 +870,8 @@ void Syn_Site::Write_Log(std::string sFolderPath)
 	}
 
 	fclose(pFile);
+
+	return true;
 }
 
 bool Syn_Site::RegisterLoggingConfig()

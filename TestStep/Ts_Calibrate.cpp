@@ -232,6 +232,15 @@ void Ts_Calibrate::ProcessData()
 {
 	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_elapsedtime);
 
+	if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_bPass)
+	{
+		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("Calibrate", "Pass"));
+	}
+	else
+	{
+		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("Calibrate", "Fail"));
+	}
+
 	if (!_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted)
 	{
 		Syn_Exception ex(Syn_ExceptionCode::Syn_TestStepNotExecuted);

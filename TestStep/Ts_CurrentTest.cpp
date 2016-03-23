@@ -174,7 +174,10 @@ void Ts_CurrentTest::ProcessData()
 	if (!(_pSyn_Dut->_pSyn_DutTestResult->_currentResults.bPass))
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sImagingCurrentFail);
+		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("CurrentTest", "Fail"));
 	}
+	else
+		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("CurrentTest", "Pass"));
 
 	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_currentResults.m_elapsedtime);
 }

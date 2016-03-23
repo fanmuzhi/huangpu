@@ -246,8 +246,11 @@ void Ts_OTPCheck::ProcessData()
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sBootSectorFail);
 		_pSyn_Dut->_pSyn_DutTestResult->_otpCheckResult._bPass = false;
+		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("OTPCheck", "Fail"));
 		return;
 	}
+	else
+		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("OTPCheck", "Pass"));
 
 	//Check 0 (Verify OTP Boot Field)
     //Result Index =, 3  (530,  Si Osc Freq Setting)

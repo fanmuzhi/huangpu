@@ -293,7 +293,10 @@ void Ts_SNRTest::ProcessData()
 	if (!(_pSyn_Dut->_pSyn_DutTestResult->_snrResults.bPass))
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sSnrFail);
+		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("SNRTest", "Fail"));
 	}
+	else
+		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("SNRTest", "Pass"));
 
 	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_snrResults.m_elapsedtime);
 

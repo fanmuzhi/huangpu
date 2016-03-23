@@ -3,6 +3,6 @@
     <SysConfigFile>D:/580-005566-02r14-Silver1-(FM-000094-006)_OFilm.xml</SysConfigFile>
     <LogFilePath>D:/LogFile</LogFilePath>
     <NumSites>1</NumSites>
-    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="697 696 698 810 698 697 697 795 696 696 703 1170 698 698 698 797 ">1684806</Site1>
+    <Site1 AdcBaseLines="696 696 697 816 696 696 695 790 695 695 695 1176 697 697 697 797 " Voltages="1800 1800 3300 3300">1684806</Site1>
     <AutoController></AutoController>
 </LocalSettings>

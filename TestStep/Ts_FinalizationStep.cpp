@@ -37,6 +37,8 @@ void Ts_FinalizationStep::Execute()
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sPass);
 	}
+
+	_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("FinalizationStep", "Pass"));
 }
 
 void Ts_FinalizationStep::ProcessData()

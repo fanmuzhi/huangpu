@@ -11,7 +11,7 @@ extern "C" {
 //std
 #include <string>
 #include <vector>
-//using namespace std;
+#include <map>
 
 enum ProjectType
 {
@@ -67,6 +67,8 @@ struct Syn_DutTestInfo
 struct Syn_DutTestResult
 {
 	vector<string>				_binCodes;
+	map<string, string>			_mapTestPassInfo;
+
 	uint8_t						_arSerialNum[DUT_SER_NUM_SIZE];
 
 	InitializationResults		_initResults;
