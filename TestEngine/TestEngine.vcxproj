@@ -24,7 +24,7 @@
     <CLRSupport>true</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -89,7 +89,6 @@
     <ClCompile Include="Syn_SysConfigOperation.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="importexport.h" />
     <ClInclude Include="Syn_DeviceManager.h" />
     <ClInclude Include="Syn_Site.h" />
     <ClInclude Include="Syn_SysConfigOperation.h" />

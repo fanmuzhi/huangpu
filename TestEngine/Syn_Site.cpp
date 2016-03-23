@@ -24,8 +24,6 @@
 //#include "easylogging++.h"
 //INITIALIZE_EASYLOGGINGPP
 
-namespace TestEngine
-{
 	Syn_Site::Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath)
 		:_pSyn_Dut(NULL)
 		, _pSyn_DutCtrl(NULL)
@@ -1001,4 +999,3 @@ namespace TestEngine
 
 	//	return true;
 	//}
-}
