@@ -33,8 +33,11 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	Initialize();
 
 	//slots
+	//Exit
+	QObject::connect(ui.actionExit, SIGNAL(triggered(bool)), this, SLOT(Exit()));
+
 	//Create LocalSettings Dialog
-	QObject::connect(ui.LocalSettingsPushButton, SIGNAL(clicked()), this, SLOT(CreateLocalSettings()));
+	QObject::connect(ui.actionLocalSetttings, SIGNAL(triggered(bool)), this, SLOT(CreateLocalSettings()));
 
 	//Testing Operation
 	//QObject::connect(ui.pushButtonRun, SIGNAL(clicked()), this, SLOT(RunningTest()));
@@ -48,7 +51,7 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	}
 
 	//BinCodes Dislpay
-	QObject::connect(ui.BinCodesDisplayPushButton, SIGNAL(clicked()), this, SLOT(DisplayBinCodes()));
+	QObject::connect(ui.actionBinCodes, SIGNAL(triggered(bool)), this, SLOT(DisplayBinCodes()));
 	
 	//Debug
 	//OTP Dump
@@ -142,6 +145,11 @@ void FPS_TestExecutive::Initialize()
 		cout << "Error:FPS_TestExecutive::Initialize() - ::ConstructSiteList() is failed!" << endl;
 		return;
 	}
+}
+
+void FPS_TestExecutive::Exit()
+{
+	QCoreApplication::exit();
 }
 
 bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettingsInfo)
@@ -890,7 +898,7 @@ void FPS_TestExecutive::Run()
 	QString qText = ui.pushButtonRun->text();
 	if (QString("Run") == qText)
 	{
-		ui.LocalSettingsPushButton->setDisabled(true);
+		//ui.LocalSettingsPushButton->setDisabled(true);
 
 		iRunFlag = 1;
 
@@ -2101,7 +2109,7 @@ void FPS_TestExecutive::ManageButtonStatus(int iFlag)
 
 		if (bAllFailed)
 		{
-			ui.LocalSettingsPushButton->setDisabled(false);
+			//ui.LocalSettingsPushButton->setDisabled(false);
 			ui.pushButtonRun->setDisabled(false);
 		}
 		else
@@ -2114,7 +2122,7 @@ void FPS_TestExecutive::ManageButtonStatus(int iFlag)
 			else if (2 == iFlag)
 			{
 				ui.pushButtonRun->setText(QString("Run"));
-				ui.LocalSettingsPushButton->setDisabled(false);
+				//ui.LocalSettingsPushButton->setDisabled(false);
 				ui.pushButtonRun->setDisabled(false);
 			}
 		}

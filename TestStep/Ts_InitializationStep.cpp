@@ -210,9 +210,10 @@ void Ts_InitializationStep::ProcessData()
 		throw ex;
 	}
 
+	_pSyn_Dut->_pSyn_DutTestResult->_sSensorSerialNumber.clear();
 	for (int i = 0; i < DUT_SER_NUM_SIZE; i++)
 	{
-		_pSyn_Dut->_pSyn_DutTestResult->_arSerialNum[i] = (_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number)[i];
+		_pSyn_Dut->_pSyn_DutTestResult->_sSensorSerialNumber.push_back(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[i]);
 	}
 
 	_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("InitializationStep", "Pass"));

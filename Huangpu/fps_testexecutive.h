@@ -71,6 +71,9 @@ public:
 
 public Q_SLOTS:
 
+	//exit program
+	void Exit();
+
 	//LocalSettings Dialog slots
 	void CreateLocalSettings();
 	void CloseLocalSettingsDialog();

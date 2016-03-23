@@ -16,29 +16,6 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_4">
     <item row="0" column="0">
-     <widget class="QGroupBox" name="SettingOptionGroupBox">
-      <property name="title">
-       <string>Setting Options</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0">
-        <widget class="QPushButton" name="LocalSettingsPushButton">
-         <property name="text">
-          <string>Local Settings</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QPushButton" name="BinCodesDisplayPushButton">
-         <property name="text">
-          <string>BinCodes Display</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="1" column="0">
      <widget class="QGroupBox" name="TestGroupBox">
       <property name="title">
        <string>Test</string>
@@ -270,6 +247,38 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>658</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuOption">
+    <property name="title">
+     <string>Option</string>
+    </property>
+    <addaction name="actionLocalSetttings"/>
+    <addaction name="actionBinCodes"/>
+   </widget>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>About</string>
+    </property>
+    <addaction name="actionAbout_FPS_Test_Executive"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuOption"/>
+   <addaction name="menuAbout"/>
+  </widget>
   <action name="openAct">
    <property name="text">
     <string>Open...</string>
@@ -283,6 +292,26 @@
   <action name="exitAct">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionLocalSetttings">
+   <property name="text">
+    <string>LocalSetttings</string>
+   </property>
+  </action>
+  <action name="actionBinCodes">
+   <property name="text">
+    <string>BinCodes</string>
+   </property>
+  </action>
+  <action name="actionAbout_FPS_Test_Executive">
+   <property name="text">
+    <string>About FPS Test Executive</string>
    </property>
   </action>
  </widget>

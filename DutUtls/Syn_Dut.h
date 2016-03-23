@@ -69,7 +69,7 @@ struct Syn_DutTestResult
 	vector<string>				_binCodes;
 	map<string, string>			_mapTestPassInfo;
 
-	uint8_t						_arSerialNum[DUT_SER_NUM_SIZE];
+	std::string					_sSensorSerialNumber;
 
 	InitializationResults		_initResults;
 	CalibrationResults			_calibrationResults;

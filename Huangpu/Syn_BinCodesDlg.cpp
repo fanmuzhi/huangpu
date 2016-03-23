@@ -6,6 +6,8 @@ Syn_BinCodesDlg::Syn_BinCodesDlg(QWidget *parent)
 	ui.setupUi(this);
 
 	ui.BinCodesTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+	ui.BinCodesTableWidget->resizeColumnsToContents();
 }
 
 Syn_BinCodesDlg::~Syn_BinCodesDlg()
