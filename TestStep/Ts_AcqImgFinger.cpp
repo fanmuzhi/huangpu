@@ -169,6 +169,8 @@ void Ts_AcqImgFinger::ProcessData()
 		}
 	}*/
 
+
+	_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("AcqImgFinger", "Pass"));
 }
 
 void Ts_AcqImgFinger::CleanUp()

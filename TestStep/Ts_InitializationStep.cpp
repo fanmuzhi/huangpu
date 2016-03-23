@@ -215,6 +215,8 @@ void Ts_InitializationStep::ProcessData()
 		_pSyn_Dut->_pSyn_DutTestResult->_arSerialNum[i] = (_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number)[i];
 	}
 
+	_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("InitializationStep", "Pass"));
+
 	//ComputeRunningTime(_pDut)
 }
 

@@ -105,7 +105,10 @@ void Ts_RxStandardDev::ProcessData()
 	if (!(_pSyn_Dut->_pSyn_DutTestResult->_RxStandardDevResults.m_bPass))
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sStdDevOfRxFail);
+		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("RxStandardDev", "Fail"));
 	}
+	else
+		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("RxStandardDev", "Pass"));
 
 	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_RxStandardDevResults.m_elapsedtime);
 

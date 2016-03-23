@@ -214,7 +214,7 @@ void Syn_Thread::run()
 
 	if (1 == _iFlag)
 	{
-		Syn_TestResults *pTestResult = NULL;
+		Syn_DutTestResult *pTestResult = NULL;
 
 		rc = _pSyn_Site->Open();
 		if (rc == 0)
@@ -237,7 +237,7 @@ void Syn_Thread::run()
 				}
 				else if (t!=imageNoFingerPos)
 				{
-					_pSyn_Site->GetResults(pTestResult);
+					_pSyn_Site->GetTestResult(pTestResult);
 
 					rc = _pSyn_Site->ExecuteTestStep(listOfTestStepName[t]);
 					if (Syn_ExceptionCode::Syn_TestStepConfigError == rc)
@@ -252,21 +252,15 @@ void Syn_Thread::run()
 					}
 					else
 					{
-						emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), _pSyn_Site->GetPassResult(listOfTestStepName[t])?"Pass":"Fail");
+						emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), QString::fromStdString(pTestResult->_mapTestPassInfo[listOfTestStepName[t]]));
 					}
 				}
 				else
 				{
-					_pSyn_Site->GetResults(pTestResult);
+					_pSyn_Site->GetTestResult(pTestResult);
 					rc = _pSyn_Site->ExecuteTestStep(listOfTestStepName[t]);
-					emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), _pSyn_Site->GetPassResult(listOfTestStepName[t]) ? "Pass" : "Fail");
+					emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), QString::fromStdString(pTestResult->_mapTestPassInfo[listOfTestStepName[t]]) );
 				}
-			}
-
-			if (NULL != pTestResult)
-			{
-				delete pTestResult;
-				pTestResult = NULL;
 			}
 
 			emit send(iSiteNumber);
@@ -274,7 +268,7 @@ void Syn_Thread::run()
 	}
 	else if (2 == _iFlag)
 	{
-		Syn_TestResults *pTestResult = NULL;
+		Syn_DutTestResult *pTestResult = NULL;
 		if (rc == 0)
 		{
 			Syn_Site::SiteState oState;
@@ -288,7 +282,7 @@ void Syn_Thread::run()
 			{
 
 				if (t != imageFingerPos)
-					_pSyn_Site->GetResults(pTestResult);
+					_pSyn_Site->GetTestResult(pTestResult);
 					
 				rc = _pSyn_Site->ExecuteTestStep(listOfTestStepName[t]);
 				if (Syn_ExceptionCode::Syn_TestStepConfigError == rc)
@@ -303,7 +297,14 @@ void Syn_Thread::run()
 				}
 				else
 				{
-					emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), _pSyn_Site->GetPassResult(listOfTestStepName[t]) ? "Pass" : "Fail");
+					if (t == imageFingerPos)
+					{
+						emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), "Pass");
+					}
+					else
+					{
+						emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), QString::fromStdString(pTestResult->_mapTestPassInfo[listOfTestStepName[t]]));
+					}
 				}
 
 			}

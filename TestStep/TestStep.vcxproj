@@ -55,7 +55,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;TESTSTEP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;TESTSTEP_EXPORTS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)inc;$(SolutionDir)DutUtls;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -84,6 +84,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Syn_Viper1Module.h" />
+    <ClInclude Include="Syn_Viper2Module.h" />
     <ClInclude Include="Ts_AcqImgFinger.h" />
     <ClInclude Include="Ts_AcqImgNoFinger.h" />
     <ClInclude Include="Ts_Calibrate.h" />
@@ -101,12 +103,14 @@
     <ClInclude Include="Ts_Imperfections.h" />
     <ClInclude Include="Ts_InitializationStep.h" />
     <ClInclude Include="Ts_LaplacianTest.h" />
+    <ClInclude Include="Ts_OpensShortsTest.h" />
     <ClInclude Include="Ts_OTPCheck.h" />
     <ClInclude Include="Ts_OTPWriteBootSector.h" />
     <ClInclude Include="Ts_OTPWriteMainSector.h" />
     <ClInclude Include="Ts_PeggedPixelsTest.h" />
     <ClInclude Include="Ts_PixelPatchTest.h" />
     <ClInclude Include="Ts_PixelTest.h" />
+    <ClInclude Include="Ts_RAMTest.h" />
     <ClInclude Include="Ts_RetainMode.h" />
     <ClInclude Include="Ts_RxStandardDev.h" />
     <ClInclude Include="Ts_SharpnessTest.h" />
@@ -114,6 +118,8 @@
     <ClInclude Include="Ts_WoVarTest.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Syn_Viper1Module.cpp" />
+    <ClCompile Include="Syn_Viper2Module.cpp" />
     <ClCompile Include="Ts_AcqImgFinger.cpp" />
     <ClCompile Include="Ts_AcqImgNoFinger.cpp" />
     <ClCompile Include="Ts_Calibrate.cpp" />
@@ -130,12 +136,14 @@
     <ClCompile Include="Ts_Imperfections.cpp" />
     <ClCompile Include="Ts_InitializationStep.cpp" />
     <ClCompile Include="Ts_LaplacianTest.cpp" />
+    <ClCompile Include="Ts_OpensShortsTest.cpp" />
     <ClCompile Include="Ts_OTPCheck.cpp" />
     <ClCompile Include="Ts_OTPWriteBootSector.cpp" />
     <ClCompile Include="Ts_OTPWriteMainSector.cpp" />
     <ClCompile Include="Ts_PeggedPixelsTest.cpp" />
     <ClCompile Include="Ts_PixelPatchTest.cpp" />
     <ClCompile Include="Ts_PixelTest.cpp" />
+    <ClCompile Include="Ts_RAMTest.cpp" />
     <ClCompile Include="Ts_RetainMode.cpp" />
     <ClCompile Include="Ts_RxStandardDev.cpp" />
     <ClCompile Include="Ts_SharpnessTest.cpp" />
