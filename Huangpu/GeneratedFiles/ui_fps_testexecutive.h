@@ -20,6 +20,8 @@
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
@@ -37,12 +39,12 @@ public:
     QAction *openAct;
     QAction *saveAsAct;
     QAction *exitAct;
+    QAction *actionExit;
+    QAction *actionLocalSetttings;
+    QAction *actionBinCodes;
+    QAction *actionAbout_FPS_Test_Executive;
     QWidget *centralWidget;
     QGridLayout *gridLayout_4;
-    QGroupBox *SettingOptionGroupBox;
-    QGridLayout *gridLayout_2;
-    QPushButton *LocalSettingsPushButton;
-    QPushButton *BinCodesDisplayPushButton;
     QGroupBox *TestGroupBox;
     QGridLayout *gridLayout;
     QTabWidget *tabWidget;
@@ -72,6 +74,10 @@ public:
     QPushButton *FigerprintImagePushButton;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
+    QMenuBar *menuBar;
+    QMenu *menuFile;
+    QMenu *menuOption;
+    QMenu *menuAbout;
 
     void setupUi(QMainWindow *FPS_TestExecutiveClass)
     {
@@ -84,31 +90,20 @@ public:
         saveAsAct->setObjectName(QStringLiteral("saveAsAct"));
         exitAct = new QAction(FPS_TestExecutiveClass);
         exitAct->setObjectName(QStringLiteral("exitAct"));
+        actionExit = new QAction(FPS_TestExecutiveClass);
+        actionExit->setObjectName(QStringLiteral("actionExit"));
+        actionLocalSetttings = new QAction(FPS_TestExecutiveClass);
+        actionLocalSetttings->setObjectName(QStringLiteral("actionLocalSetttings"));
+        actionBinCodes = new QAction(FPS_TestExecutiveClass);
+        actionBinCodes->setObjectName(QStringLiteral("actionBinCodes"));
+        actionAbout_FPS_Test_Executive = new QAction(FPS_TestExecutiveClass);
+        actionAbout_FPS_Test_Executive->setObjectName(QStringLiteral("actionAbout_FPS_Test_Executive"));
         centralWidget = new QWidget(FPS_TestExecutiveClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         gridLayout_4 = new QGridLayout(centralWidget);
         gridLayout_4->setSpacing(6);
         gridLayout_4->setContentsMargins(11, 11, 11, 11);
         gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
-        SettingOptionGroupBox = new QGroupBox(centralWidget);
-        SettingOptionGroupBox->setObjectName(QStringLiteral("SettingOptionGroupBox"));
-        gridLayout_2 = new QGridLayout(SettingOptionGroupBox);
-        gridLayout_2->setSpacing(6);
-        gridLayout_2->setContentsMargins(11, 11, 11, 11);
-        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
-        LocalSettingsPushButton = new QPushButton(SettingOptionGroupBox);
-        LocalSettingsPushButton->setObjectName(QStringLiteral("LocalSettingsPushButton"));
-
-        gridLayout_2->addWidget(LocalSettingsPushButton, 0, 0, 1, 1);
-
-        BinCodesDisplayPushButton = new QPushButton(SettingOptionGroupBox);
-        BinCodesDisplayPushButton->setObjectName(QStringLiteral("BinCodesDisplayPushButton"));
-
-        gridLayout_2->addWidget(BinCodesDisplayPushButton, 0, 1, 1, 1);
-
-
-        gridLayout_4->addWidget(SettingOptionGroupBox, 0, 0, 1, 1);
-
         TestGroupBox = new QGroupBox(centralWidget);
         TestGroupBox->setObjectName(QStringLiteral("TestGroupBox"));
         gridLayout = new QGridLayout(TestGroupBox);
@@ -248,7 +243,7 @@ public:
         gridLayout->addWidget(tabWidget, 0, 0, 1, 1);
 
 
-        gridLayout_4->addWidget(TestGroupBox, 1, 0, 1, 1);
+        gridLayout_4->addWidget(TestGroupBox, 0, 0, 1, 1);
 
         FPS_TestExecutiveClass->setCentralWidget(centralWidget);
         mainToolBar = new QToolBar(FPS_TestExecutiveClass);
@@ -257,6 +252,24 @@ public:
         statusBar = new QStatusBar(FPS_TestExecutiveClass);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         FPS_TestExecutiveClass->setStatusBar(statusBar);
+        menuBar = new QMenuBar(FPS_TestExecutiveClass);
+        menuBar->setObjectName(QStringLiteral("menuBar"));
+        menuBar->setGeometry(QRect(0, 0, 658, 21));
+        menuFile = new QMenu(menuBar);
+        menuFile->setObjectName(QStringLiteral("menuFile"));
+        menuOption = new QMenu(menuBar);
+        menuOption->setObjectName(QStringLiteral("menuOption"));
+        menuAbout = new QMenu(menuBar);
+        menuAbout->setObjectName(QStringLiteral("menuAbout"));
+        FPS_TestExecutiveClass->setMenuBar(menuBar);
+
+        menuBar->addAction(menuFile->menuAction());
+        menuBar->addAction(menuOption->menuAction());
+        menuBar->addAction(menuAbout->menuAction());
+        menuFile->addAction(actionExit);
+        menuOption->addAction(actionLocalSetttings);
+        menuOption->addAction(actionBinCodes);
+        menuAbout->addAction(actionAbout_FPS_Test_Executive);
 
         retranslateUi(FPS_TestExecutiveClass);
 
@@ -272,9 +285,10 @@ public:
         openAct->setText(QApplication::translate("FPS_TestExecutiveClass", "Open...", 0));
         saveAsAct->setText(QApplication::translate("FPS_TestExecutiveClass", "Save As...", 0));
         exitAct->setText(QApplication::translate("FPS_TestExecutiveClass", "Exit", 0));
-        SettingOptionGroupBox->setTitle(QApplication::translate("FPS_TestExecutiveClass", "Setting Options", 0));
-        LocalSettingsPushButton->setText(QApplication::translate("FPS_TestExecutiveClass", "Local Settings", 0));
-        BinCodesDisplayPushButton->setText(QApplication::translate("FPS_TestExecutiveClass", "BinCodes Display", 0));
+        actionExit->setText(QApplication::translate("FPS_TestExecutiveClass", "Exit", 0));
+        actionLocalSetttings->setText(QApplication::translate("FPS_TestExecutiveClass", "LocalSetttings", 0));
+        actionBinCodes->setText(QApplication::translate("FPS_TestExecutiveClass", "BinCodes", 0));
+        actionAbout_FPS_Test_Executive->setText(QApplication::translate("FPS_TestExecutiveClass", "About FPS Test Executive", 0));
         TestGroupBox->setTitle(QApplication::translate("FPS_TestExecutiveClass", "Test", 0));
         QTableWidgetItem *___qtablewidgetitem = TestTableWidget->verticalHeaderItem(0);
         ___qtablewidgetitem->setText(QApplication::translate("FPS_TestExecutiveClass", "Test Site", 0));
@@ -307,6 +321,9 @@ public:
         ImageCalibrationPushButton->setText(QApplication::translate("FPS_TestExecutiveClass", "Calibration", 0));
         FigerprintImagePushButton->setText(QApplication::translate("FPS_TestExecutiveClass", "Get Figerprint Image", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("FPS_TestExecutiveClass", "Image", 0));
+        menuFile->setTitle(QApplication::translate("FPS_TestExecutiveClass", "File", 0));
+        menuOption->setTitle(QApplication::translate("FPS_TestExecutiveClass", "Option", 0));
+        menuAbout->setTitle(QApplication::translate("FPS_TestExecutiveClass", "About", 0));
     } // retranslateUi
 
 };

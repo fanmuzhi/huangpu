@@ -468,7 +468,6 @@ uint32_t Syn_Site::ExecuteTestStep(std::string sTestName)
 	return Syn_ExceptionCode::Syn_OK;
 }
 
-
 void Syn_Site::GetTestStepList(std::vector<std::string> &olistOfTestStepName)
 {
 	olistOfTestStepName.clear();
