@@ -451,8 +451,22 @@ void Syn_SPCCtrl::FpGetImage(uint8_t *pDst, int numBytes)
 {
 	//LOG(INFO) << "Get Image";
 
-	//this->FpWaitDeviceReady();
-	this->FpRead(0x02, 0x00, pDst, numBytes);
+	uint32_t err;
+	//this->FpNoop();
+	err = MPC_FpGetImage(syn_DeviceHandle, pDst, numBytes, TIMEOUT);
+	Syn_Exception ex(err);
+	if (err == MpcApiError::ERR_COMMUNICATION_FAILED)
+	{
+		ex.SetError(err);
+		ex.SetDescription("FpGetImage() Controller communication failure.");
+		throw ex;
+	}
+	else if (err != MpcApiError::ERR_OK)
+	{
+		ex.SetError(err);
+		ex.SetDescription("FpGetImage() DUT communication failure.");
+		throw ex;
+	}
 }
 
 //
