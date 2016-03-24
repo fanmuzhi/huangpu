@@ -138,6 +138,7 @@ void Ts_InitializationStep::Execute()
 	catch (Syn_Exception ex)
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sDutCommFail);
+		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("InitializationStep", "Fail"));
 		//throw ex;
 		return;
 	}

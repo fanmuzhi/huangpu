@@ -323,7 +323,7 @@ public:
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("FPS_TestExecutiveClass", "Image", 0));
         menuFile->setTitle(QApplication::translate("FPS_TestExecutiveClass", "File", 0));
         menuOption->setTitle(QApplication::translate("FPS_TestExecutiveClass", "Option", 0));
-        menuAbout->setTitle(QApplication::translate("FPS_TestExecutiveClass", "About", 0));
+        menuAbout->setTitle(QApplication::translate("FPS_TestExecutiveClass", "Help", 0));
     } // retranslateUi
 
 };
