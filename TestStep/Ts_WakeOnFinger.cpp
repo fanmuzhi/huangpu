@@ -91,7 +91,11 @@ void Ts_WakeOnFinger::SetUp()
 void Ts_WakeOnFinger::Execute()
 {
 	//If the WOF Test reading has not been stored in the OTP.
-	if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofBot_count == 0)
+
+	uint8_t	arMS0[MS0_SIZE] = { 0 };
+
+	//if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofBot_count == 0)
+	if(0 == _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_BOT, arMS0, MS0_SIZE))
 	{
 		if (_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bWithStimulus == 0)
 			_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bExecutedWithoutStimulus = true;
