@@ -143,6 +143,7 @@ void Ts_CurrentTest::ProcessData()
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_currentResults.bPass = 0;
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sVoltageMismatch);
+		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("CurrentTest", "Pass"));
 		return;
 	}
 
