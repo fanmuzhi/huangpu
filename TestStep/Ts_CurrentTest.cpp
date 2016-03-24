@@ -64,7 +64,7 @@ void Ts_CurrentTest::SetUp()
 	_pSyn_DutCtrl->FpUnloadPatch();
 	//load ImgAcqPatch
 	Syn_PatchInfo ImgAcqPatchInfo;
-	if (!_pSyn_Dut->FindPatch("ImageAcqPatch", ImgAcqPatchInfo))
+	if (!_pSyn_Dut->FindPatch("ImageAcqPatch", ImgAcqPatchInfo) || NULL == ImgAcqPatchInfo._pArrayBuf)
 	{
 		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
 		ex.SetDescription("ImageAcqPatch Patch is NULL!");

@@ -6,6 +6,7 @@
 
 //std
 #include <time.h>
+#include <sys/timeb.h>
 
 class Syn_FingerprintTest :public Syn_TestStep
 {
@@ -28,7 +29,6 @@ public:
 
 	void GetFingerprintImageForCurrentTest(CalibrationResults& pCalResults, FPSFrame* pFrame, int nNumRows, int nNumCols, uint32_t* pCurrentDrawVals, int nGain);
 
-
 	void CalculateLnaOffsetsBinarySearch(FPSFrame* pFrame, uint8_t* pLnaValues, int nNumRows, int nNumCols, CalibrationInfo &CalInfo, CalibrationResults &CalResults);
 
 	void GetRowAverages(FPSFrame* pFrame, int nColBegin, int nColEnd, uint8_t* pAverages, int nNumRows);
@@ -49,6 +49,5 @@ protected:
 
 	//clock_t _starttime, _finishtime;
 	time_t _starttime, _finishtime;
-
 };
 

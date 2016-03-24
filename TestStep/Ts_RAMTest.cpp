@@ -136,7 +136,7 @@ void Ts_RAMTest::LoadRAMPatch(std::string sPatchName, uint8_t* pPatchResults, ui
 	_pSyn_DutCtrl->FpUnloadPatch();
 
 	Syn_PatchInfo RamPatchInfo;
-	if (!_pSyn_Dut->FindPatch(sPatchName, RamPatchInfo))
+	if (!_pSyn_Dut->FindPatch(sPatchName, RamPatchInfo) || NULL == RamPatchInfo._pArrayBuf)
 	{
 		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
 		ex.SetDescription(sPatchName+" Patch is NULL!");

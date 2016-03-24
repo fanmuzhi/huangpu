@@ -84,10 +84,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Syn_Viper1Module.h" />
     <ClInclude Include="Syn_Viper2Module.h" />
     <ClInclude Include="Ts_AcqImgFinger.h" />
     <ClInclude Include="Ts_AcqImgNoFinger.h" />
+    <ClInclude Include="Ts_AFETest.h" />
     <ClInclude Include="Ts_Calibrate.h" />
     <ClInclude Include="Syn_FingerprintTest.h" />
     <ClInclude Include="Syn_MetallicaModule.h" />
@@ -115,6 +117,7 @@
     <ClInclude Include="Ts_RxStandardDev.h" />
     <ClInclude Include="Ts_SharpnessTest.h" />
     <ClInclude Include="Ts_SNRTest.h" />
+    <ClInclude Include="Ts_WakeOnFinger.h" />
     <ClInclude Include="Ts_WoVarTest.h" />
   </ItemGroup>
   <ItemGroup>
@@ -122,6 +125,7 @@
     <ClCompile Include="Syn_Viper2Module.cpp" />
     <ClCompile Include="Ts_AcqImgFinger.cpp" />
     <ClCompile Include="Ts_AcqImgNoFinger.cpp" />
+    <ClCompile Include="Ts_AFETest.cpp" />
     <ClCompile Include="Ts_Calibrate.cpp" />
     <ClCompile Include="Syn_FingerprintTest.cpp" />
     <ClCompile Include="Syn_MetallicaModule.cpp" />
@@ -148,6 +152,7 @@
     <ClCompile Include="Ts_RxStandardDev.cpp" />
     <ClCompile Include="Ts_SharpnessTest.cpp" />
     <ClCompile Include="Ts_SNRTest.cpp" />
+    <ClCompile Include="Ts_WakeOnFinger.cpp" />
     <ClCompile Include="Ts_WoVarTest.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

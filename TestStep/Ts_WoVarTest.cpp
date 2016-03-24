@@ -53,7 +53,7 @@ void Ts_WoVarTest::SetUp()
 
 	//load OTPReadWritePatch
 	Syn_PatchInfo WovarPatchInfo;
-	if (!_pSyn_Dut->FindPatch("WovarPatch", WovarPatchInfo))
+	if (!_pSyn_Dut->FindPatch("WovarPatch", WovarPatchInfo) || NULL == WovarPatchInfo._pArrayBuf)
 	{
 		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
 		ex.SetDescription("WovarPatchInfo Patch is NULL!");
