@@ -626,7 +626,7 @@ void FPS_TestExecutive::ConfirmSite()
 		{
 			for (int b = 0; b < KNUMGAINS; b++)
 			{
-				(CurrentAdcBaseLineInfo.m_arAdcBaseLines)[a][b] = strListOfAdcBaseLinesValue[(NUM_CURRENT_VALUES)*a + b].toInt();
+				(CurrentAdcBaseLineInfo.m_arAdcBaseLines)[a][b] = strListOfAdcBaseLinesValue[(NUM_CURRENT_VALUES)*b + a].toInt();
 			}
 		}
 
@@ -859,6 +859,7 @@ void FPS_TestExecutive::UpdateADCOffsets()
 					for (int b = 0; b < KNUMGAINS; b++)
 					{
 						strAdcBaseLinesValue += QString::number(arAdcBaseLines[a][b]) + QString(" ");
+						//strAdcBaseLinesValue += QString::number(arAdcBaseLines[b][a]) + QString(" ");
 					}
 				}
 

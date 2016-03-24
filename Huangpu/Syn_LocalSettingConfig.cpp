@@ -149,7 +149,7 @@ bool Syn_LocalSettingConfig::GetLocalSettings(Syn_LocalSettings &oSyn_LocalSetti
 				{
 					for (int b = 0; b < KNUMGAINS; b++)
 					{
-						uint32_t iTempValue = strListOfAdcBaseLinesValue[(NUM_CURRENT_VALUES)*a + b ].toInt();
+						uint32_t iTempValue = strListOfAdcBaseLinesValue[(NUM_CURRENT_VALUES)*b + a].toInt();
 						(CurrentAdcBaseLineInfo.m_arAdcBaseLines)[a][b] = iTempValue;
 					}
 				}
