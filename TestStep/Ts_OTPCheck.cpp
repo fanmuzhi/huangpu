@@ -242,6 +242,69 @@ void Ts_OTPCheck::ProcessData()
 		}
 	}
 
+	//check count
+	int count_threshold = 1;
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PRODUCT_ID)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nProductId_count < count_threshold)
+			bPass = false;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_LNA)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nLNA_count < count_threshold)
+			bPass = false;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SNR)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nSNR_count < count_threshold)
+			bPass = false;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PGA_OOPR)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPGA_OOPR_count < count_threshold)
+			bPass = false;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_FlexId)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nFlexId_count < count_threshold)
+			bPass = false;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_BOT)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofBot_count < count_threshold)
+			bPass = false;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_DutTempAdc)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nDutTempAdc_count < count_threshold)
+			bPass = false;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_TOP)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofTop_count < count_threshold)
+			bPass = false;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PGA_OOPP)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPGA_OOPP_count < count_threshold)
+			bPass = false;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_BOT)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nScmWofBot_count < count_threshold)
+			bPass = false;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_TOP)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nScmWofTop_count < count_threshold)
+			bPass = false;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PART_NUMBERS)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPartNumberId_count < count_threshold)
+			bPass = false;
+	}
+
 	if (!bPass)
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sBootSectorFail);
