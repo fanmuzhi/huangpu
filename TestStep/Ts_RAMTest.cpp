@@ -64,7 +64,7 @@ void Ts_RAMTest::Execute()
 
 	this->LoadRAMPatch("ScmAndMainRam", _pSyn_Dut->_pSyn_DutTestResult->_RAMTestResults.m_pResponseScmAndMainRam, 14);
 
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+	//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 }
 
 void Ts_RAMTest::ProcessData()
@@ -143,8 +143,8 @@ void Ts_RAMTest::LoadRAMPatch(std::string sPatchName, uint8_t* pPatchResults, ui
 		throw ex;
 		return;
 	}
-	_pSyn_DutCtrl->FpLoadPatch(RamPatchInfo._pArrayBuf, RamPatchInfo._uiArraySize);
+	//_pSyn_DutCtrl->FpLoadPatch(RamPatchInfo._pArrayBuf, RamPatchInfo._uiArraySize);
+	//_pSyn_DutCtrl->FpRead(1, 0xFF, pPatchResults, nSize);
 
-	_pSyn_DutCtrl->FpRunPatchTest(pPatchResults, nSize);
-
+	_pSyn_DutCtrl->FpLoadRamPatch(RamPatchInfo._pArrayBuf, RamPatchInfo._uiArraySize, pPatchResults, nSize);
 }

@@ -58,6 +58,8 @@ public:
 
 	virtual void FpRunPatchTest(uint8_t *pDst, int numBytes) = 0;
 
+	virtual void FpLoadRamPatch(uint8_t* pPatch, int patchSize, uint8_t* pDst, int numBytes) = 0;
+
 	virtual void FpWaitDeviceReady() = 0;
 
 	virtual void FpDisableSleep() = 0;

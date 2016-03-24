@@ -322,6 +322,15 @@ void Syn_SPCCtrl::FpNoop()
 	this->FpReadAndCheckStatus(0);
 }
 
+void Syn_SPCCtrl::FpLoadRamPatch(uint8_t* pPatch, int patchSize, uint8_t* pDst, int numBytes)
+{
+	//LOG(INFO) << "Load RAM Patch";
+
+	this->FpWrite(1, VCSFW_CMD::PATCH, pPatch, patchSize);
+	this->FpWaitForCMDComplete();
+	this->FpRead(1, 0xFF, pDst, numBytes);
+}
+
 void Syn_SPCCtrl::FpLoadPatch(uint8_t* pPatch, int numBytes)
 {
 	//LOG(INFO) << "Load Patch";
