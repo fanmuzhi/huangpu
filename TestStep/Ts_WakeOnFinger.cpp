@@ -86,6 +86,20 @@ void Ts_WakeOnFinger::SetUp()
 		ex.SetDescription("WofPatch or WofCmd1 or WofCmd2 Patch is NULL!");
 		throw ex;
 	}
+
+	Syn_PatchInfo OTPRWPatchInfo;
+	if (!_pSyn_Dut->FindPatch("OtpReadWritePatch", OTPRWPatchInfo) || NULL == OTPRWPatchInfo._pArrayBuf)
+	{
+		Syn_Exception ex(0);
+		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+		ex.SetDescription("Wof:OtpReadWritePatch Patch is NULL!");
+		throw ex;
+		return;
+	}
+
+	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+	_pSyn_DutCtrl->FpUnloadPatch();
+	_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
 }
 
 void Ts_WakeOnFinger::Execute()
@@ -418,7 +432,7 @@ void Ts_WakeOnFinger::GetOtpWofData()
 	{
 		Syn_Exception ex(0);
 		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-		ex.SetDescription("Wof:OtpReadWritePatch Patch is NULL!");
+		ex.SetDescription("Wof:OtpReadWritePatch Patch is null!");
 		throw ex;
 		return;
 	}
