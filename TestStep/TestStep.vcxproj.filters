@@ -94,6 +94,12 @@
     <ClCompile Include="Ts_RAMTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Ts_WakeOnFinger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_AFETest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Syn_FingerprintTest.h">
@@ -190,6 +196,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ts_RAMTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_WakeOnFinger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_AFETest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

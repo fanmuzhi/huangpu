@@ -64,7 +64,7 @@ void Ts_CurrentTest::SetUp()
 	_pSyn_DutCtrl->FpUnloadPatch();
 	//load ImgAcqPatch
 	Syn_PatchInfo ImgAcqPatchInfo;
-	if (!_pSyn_Dut->FindPatch("ImageAcqPatch", ImgAcqPatchInfo))
+	if (!_pSyn_Dut->FindPatch("ImageAcqPatch", ImgAcqPatchInfo) || NULL == ImgAcqPatchInfo._pArrayBuf)
 	{
 		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
 		ex.SetDescription("ImageAcqPatch Patch is NULL!");
@@ -143,7 +143,7 @@ void Ts_CurrentTest::ProcessData()
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_currentResults.bPass = 0;
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sVoltageMismatch);
-		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("CurrentTest", "Pass"));
+		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("CurrentTest", "Fail"));
 		return;
 	}
 

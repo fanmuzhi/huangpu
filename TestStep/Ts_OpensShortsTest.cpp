@@ -54,7 +54,7 @@ void Ts_OpensShortsTest::SetUp()
 
 	//load ImgAcqPatch
 	Syn_PatchInfo OpensShortsPatchInfo;
-	if (!_pSyn_Dut->FindPatch("OpensShortsPatch", OpensShortsPatchInfo))
+	if (!_pSyn_Dut->FindPatch("OpensShortsPatch", OpensShortsPatchInfo) || NULL == OpensShortsPatchInfo._pArrayBuf)
 	{
 		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
 		ex.SetDescription("OpensShortsPatch Patch is NULL!");

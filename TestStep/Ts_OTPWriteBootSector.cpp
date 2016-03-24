@@ -34,7 +34,7 @@ void Ts_OTPWriteBootSector::SetUp()
 
 	//load OTPReadWritePatch
 	Syn_PatchInfo OTPRWPatchInfo;
-	if (!_pSyn_Dut->FindPatch("OtpReadWritePatch", OTPRWPatchInfo))
+	if (!_pSyn_Dut->FindPatch("OtpReadWritePatch", OTPRWPatchInfo) || NULL == OTPRWPatchInfo._pArrayBuf)
 	{
 		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
 		ex.SetDescription("OtpReadWritePatch Patch is NULL!");

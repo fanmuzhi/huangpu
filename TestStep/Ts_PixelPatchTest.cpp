@@ -55,7 +55,7 @@ void Ts_PixelPatchTest::SetUp()
 
 	//load OTPReadWritePatch
 	Syn_PatchInfo PixelPatchInfo;
-	if (!_pSyn_Dut->FindPatch("PixelPatch", PixelPatchInfo))
+	if (!_pSyn_Dut->FindPatch("PixelPatch", PixelPatchInfo) || NULL == PixelPatchInfo._pArrayBuf)
 	{
 		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
 		ex.SetDescription("PixelPatchInfo Patch is NULL!");
