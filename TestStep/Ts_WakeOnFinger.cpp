@@ -104,6 +104,9 @@ void Ts_WakeOnFinger::SetUp()
 
 void Ts_WakeOnFinger::Execute()
 {
+	//Init Excute Result
+	_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_bPass = 0;
+
 	//If the WOF Test reading has not been stored in the OTP.
 
 	uint8_t	arMS0[MS0_SIZE] = { 0 };

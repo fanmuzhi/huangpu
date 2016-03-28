@@ -91,15 +91,18 @@ void Ts_Calibrate::SetUp()
 	_pSyn_DutCtrl->FpUnloadPatch();
 
 	//load ImgAcqPatch
-	Syn_PatchInfo ImgAcqPatchInfo;
-	if (!_pSyn_Dut->FindPatch("ImageAcqPatch", ImgAcqPatchInfo) || NULL == ImgAcqPatchInfo._pArrayBuf)
+	if (Viper2 != _pSyn_Dut->_eProjectType)
 	{
-		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-		ex.SetDescription("ImageAcqPatch Patch is NULL!");
-		throw ex;
-		return;
+		Syn_PatchInfo ImgAcqPatchInfo;
+		if (!_pSyn_Dut->FindPatch("ImageAcqPatch", ImgAcqPatchInfo) || NULL == ImgAcqPatchInfo._pArrayBuf)
+		{
+			ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+			ex.SetDescription("ImageAcqPatch Patch is NULL!");
+			throw ex;
+			return;
+		}
+		_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);
 	}
-	_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);
 }
 
 

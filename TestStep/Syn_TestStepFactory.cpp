@@ -23,6 +23,8 @@
 #include "Ts_FinalizationStep.h"
 #include "Ts_OpensShortsTest.h"
 #include "Ts_RAMTest.h"
+#include "Ts_AFETest.h"
+#include "Ts_WakeOnFinger.h"
 
 Syn_TestStepFactory::Syn_TestStepFactory()
 {
@@ -130,6 +132,14 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	else if (std::string("RAMTest") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_RAMTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("AFETest") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_AFETest(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("WakeOnFinger") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_WakeOnFinger(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else if (std::string("FinalizationStep") == strTestStepName)
 	{

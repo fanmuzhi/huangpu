@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
-    <SysConfigFile>C:/Metallica_77A0_OFilm_Gold.xml</SysConfigFile>
-    <LogFilePath>C:/logfiles/Huangpu</LogFilePath>
+    <SysConfigFile>D:/ConfigFile(xml)/580-005935-01r1 (FM-000166-003) Huangpu.xml</SysConfigFile>
+    <LogFilePath>D:/LogFile</LogFilePath>
     <NumSites>1</NumSites>
-    <Site1 AdcBaseLines="710 708 709 712 709 708 709 712 706 708 715 711 668 708 795 711 " Voltages="1800 1800 3300 3300">1405853</Site1>
+    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="696 697 696 699 697 697 696 699 700 697 690 698 716 697 622 698 ">1684806</Site1>
     <AutoController></AutoController>
 </LocalSettings>

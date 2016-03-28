@@ -508,7 +508,7 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 	std::string stringFilePath;
 	if (0 == sFileName.size())
 	{
-		std::string strSerachContent = sFolderPath + std::string("\\*.csv");
+		std::string strSerachContent = sFolderPath + std::string("\\")+sSensorSerialNumber + std::string("*.csv");
 		std::string strSensorSerialNumber;
 		std::vector<std::string> lsitOfFileName;
 		long handle;
