@@ -118,6 +118,7 @@
     <ClInclude Include="Ts_SharpnessTest.h" />
     <ClInclude Include="Ts_SNRTest.h" />
     <ClInclude Include="Ts_WakeOnFinger.h" />
+    <ClInclude Include="Ts_WOFLowPower.h" />
     <ClInclude Include="Ts_WoVarTest.h" />
   </ItemGroup>
   <ItemGroup>
@@ -153,6 +154,7 @@
     <ClCompile Include="Ts_SharpnessTest.cpp" />
     <ClCompile Include="Ts_SNRTest.cpp" />
     <ClCompile Include="Ts_WakeOnFinger.cpp" />
+    <ClCompile Include="Ts_WOFLowPower.cpp" />
     <ClCompile Include="Ts_WoVarTest.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
