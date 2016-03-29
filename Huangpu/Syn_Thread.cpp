@@ -249,6 +249,9 @@ void Syn_Thread::run()
 					else if (Syn_ExceptionCode::Syn_OK != rc)
 					{
 						emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), "Fail");
+						//continue;
+						emit send(iSiteNumber);
+						return;
 					}
 					else
 					{
@@ -294,6 +297,9 @@ void Syn_Thread::run()
 				else if (Syn_ExceptionCode::Syn_OK != rc)
 				{
 					emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), "Fail");
+					//continue;
+					emit send(iSiteNumber);
+					return;
 				}
 				else
 				{

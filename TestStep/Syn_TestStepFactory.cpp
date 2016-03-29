@@ -27,6 +27,7 @@
 #include "Ts_WakeOnFinger.h"
 #include "Ts_WOFLowPower.h"
 #include "Ts_SCM_WOFWithoutStimulus.h"
+#include "Ts_SCM_WOFWithStimulus.h"
 
 Syn_TestStepFactory::Syn_TestStepFactory()
 {
@@ -123,7 +124,7 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	{
 		opTestStepInstance = new Ts_CurrentTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
-	else if (std::string("RetainMode") == strTestStepName)
+	else if (std::string("RetainModeCurrentTest") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_RetainMode(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
@@ -150,6 +151,10 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	else if (std::string("SCM_WOFWithoutStimulus") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_SCM_WOFWithoutStimulus(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("SCM_WOFWithStimulus") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_SCM_WOFWithStimulus(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else if (std::string("FinalizationStep") == strTestStepName)
 	{

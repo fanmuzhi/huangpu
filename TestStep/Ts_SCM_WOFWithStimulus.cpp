@@ -27,6 +27,7 @@ void Ts_SCM_WOFWithStimulus::SetUp()
 		return;
 	}
 
+	_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_bExecutedWithStimulus = false;
 	_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_bWithStimulus = 0;
 	_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_nDelta_100 = 13;
 	_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_nMinTriggerThreshold = 0;
@@ -71,19 +72,99 @@ void Ts_SCM_WOFWithStimulus::SetUp()
 		_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_nDelta_200_3p7 = atoi(listOfArgValue[9].c_str());
 	if (0 != listOfArgValue[10].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_nVCC = std::stof(listOfArgValue[10]);
+
+	//Power On
+	PowerOff();
+	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+	_pSyn_DutCtrl->FpUnloadPatch();
+
+	//load OTPReadWritePatch
+	Syn_PatchInfo OTPRWPatchInfo;
+	if (!_pSyn_Dut->FindPatch("OtpReadWritePatch", OTPRWPatchInfo) || NULL == OTPRWPatchInfo._pArrayBuf)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+		ex.SetDescription("OtpReadWritePatch Patch is NULL!");
+		throw ex;
+		return;
+	}
+	_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
+
+	Syn_PatchInfo ScmWofPatchInfo, Cmd1ScmWofPlotInfo, Cmd2ScmWofBinInfo, Cmd3SweepTagInfo;
+	if (!_pSyn_Dut->FindPatch("ScmWofPatch", ScmWofPatchInfo) || NULL == ScmWofPatchInfo._pArrayBuf
+		|| !_pSyn_Dut->FindPatch("Cmd1ScmWofPlot", Cmd1ScmWofPlotInfo) || NULL == Cmd1ScmWofPlotInfo._pArrayBuf
+		|| !_pSyn_Dut->FindPatch("Cmd2ScmWofBin", Cmd2ScmWofBinInfo) || NULL == Cmd2ScmWofBinInfo._pArrayBuf
+		|| !_pSyn_Dut->FindPatch("Cmd3SweepTag", Cmd3SweepTagInfo) || NULL == Cmd3SweepTagInfo._pArrayBuf)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+		ex.SetDescription("ScmWofPatch or Cmd1ScmWofPlot or Cmd2ScmWofBin or Cmd3SweepTag Patch is NULL!");
+		throw ex;
+	}
 }
 
 void Ts_SCM_WOFWithStimulus::Execute()
 {
+	_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_bExecutedWithStimulus = true;
 
+	uint8_t pOtpData[MS0_SIZE] = { 0 };
+	int SCM_WOF_BOTCount = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_BOT, pOtpData, MS0_SIZE);//EXT_TAG_WOF_BOT
+
+	//If the WOF Test reading has not been stored in the OTP.
+	//if (GetSite().m_calibrationResults.m_nScmWofBot_count == 0)
+	uint8_t pDst[MS0_SIZE] = { 0 };
+	int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_BOT, pDst, MS0_SIZE);
+	if (count == 0)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_bWithStimulus == 0)
+			_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_bExecutedWithoutStimulus = true;
+		else
+			_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_bExecutedWithStimulus = true;
+
+		if (_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_bWithStimulus == 0)  // If NO Stimulus
+		{
+			_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_nWithStimCount = 0;
+			SCM_WofTestExecute();
+			SCM_WofTestProcessData();
+		}
+		else  // With Stimulus
+		{
+			// run WOF test with stimulus at normal voltage
+			SCM_WofTestExecute();
+			SCM_WofTestProcessData();
+
+			// If not PASS, run WOF test with stimulus at high voltage
+			if (_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_bPass == 0)
+			{
+				SCM_WofTestExecute();
+				SCM_WofTestProcessData();
+			}
+		}
+	}
+	else
+	{
+		// Read one time from OTP.
+		if (_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_bWithStimulus == 1)
+		{
+			GetOtpScmWofData(pOtpData, SCM_WOF_BOTCount);
+			_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_bPass = 1;
+			// To save Log file.
+			_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_bExecutedWithoutStimulus = 1;
+			_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_bExecutedWithStimulus = 1;
+		}
+	}
 }
 
 void Ts_SCM_WOFWithStimulus::ProcessData()
 {
-
+	if (_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_bPass == 0)
+	{
+		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
+		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("SCM_WOFWithStimulus", "Fail"));
+	}
+	else
+		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("SCM_WOFWithStimulus", "Pass"));
 }
 
 void Ts_SCM_WOFWithStimulus::CleanUp()
 {
-
+	PowerOff();
 }

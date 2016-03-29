@@ -291,3 +291,4 @@ int8_t Syn_Module::CalcPgaOffset(uint8_t nPixelValue, float nRatio, float nConfi
 
 	return (int8_t)nOffset;
 }
+

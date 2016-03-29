@@ -15,11 +15,5 @@ public:
 	virtual void ProcessData();
 
 	virtual void CleanUp();
-
-	void SCM_WofTestExecute();
-
-	void SCM_WofTestProcessData();
-
-	void GetOtpScmWofData(uint8_t pOtpData[MS0_SIZE], int OtpScmWofDataCount);
 };
 
