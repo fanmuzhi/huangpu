@@ -54,6 +54,7 @@ void Ts_RetainMode::SetUp()
 		_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nDelay = atoi(listOfArgValue[3].c_str());
 
 
+	//Power on
 	PowerOff();
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 
@@ -163,6 +164,6 @@ void Ts_RetainMode::ProcessData()
 
 void Ts_RetainMode::CleanUp()
 {
-	_pSyn_DutCtrl->FpUnloadPatch();
+	//_pSyn_DutCtrl->FpUnloadPatch();
 	PowerOff();
 }

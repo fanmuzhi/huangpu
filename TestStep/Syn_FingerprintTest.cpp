@@ -193,7 +193,7 @@ bool Syn_FingerprintTest::ParseTestStepArgs(const std::string &strArgsValue, std
 void Syn_FingerprintTest::BurnToOTP(long nRecType, uint8_t* pSrc, int numBytes)
 {
 	int		timeout(2000), nSize(0);
-	uint8_t arOutBuf[MS0_SIZE] = { 0 };
+	uint8_t arOutBuf[MS0_SIZE + MS1_SIZE] = { 0 };
 
 	arOutBuf[4] = 0x11;
 	arOutBuf[12] = (uint8_t)(nRecType & 0xFF);
