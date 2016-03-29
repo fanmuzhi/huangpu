@@ -84,7 +84,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="Syn_Viper1Module.h" />
     <ClInclude Include="Syn_Viper2Module.h" />
     <ClInclude Include="Ts_AcqImgFinger.h" />
@@ -115,6 +114,8 @@
     <ClInclude Include="Ts_RAMTest.h" />
     <ClInclude Include="Ts_RetainMode.h" />
     <ClInclude Include="Ts_RxStandardDev.h" />
+    <ClInclude Include="Ts_SCM_WOFWithoutStimulus.h" />
+    <ClInclude Include="Ts_SCM_WOFWithStimulus.h" />
     <ClInclude Include="Ts_SharpnessTest.h" />
     <ClInclude Include="Ts_SNRTest.h" />
     <ClInclude Include="Ts_WakeOnFinger.h" />
@@ -151,11 +152,16 @@
     <ClCompile Include="Ts_RAMTest.cpp" />
     <ClCompile Include="Ts_RetainMode.cpp" />
     <ClCompile Include="Ts_RxStandardDev.cpp" />
+    <ClCompile Include="Ts_SCM_WOFWithoutStimulus.cpp" />
+    <ClCompile Include="Ts_SCM_WOFWithStimulus.cpp" />
     <ClCompile Include="Ts_SharpnessTest.cpp" />
     <ClCompile Include="Ts_SNRTest.cpp" />
     <ClCompile Include="Ts_WakeOnFinger.cpp" />
     <ClCompile Include="Ts_WOFLowPower.cpp" />
     <ClCompile Include="Ts_WoVarTest.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="TestStep.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

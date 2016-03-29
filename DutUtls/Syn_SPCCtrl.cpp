@@ -422,6 +422,46 @@ void Syn_SPCCtrl::FpOtpRomTagWrite(uint8_t* pDst, int numBytes)
 }
 
 
+
+void Syn_SPCCtrl::FpPokeRegister(uint32_t nHwRegAddr, uint32_t nData)
+{
+	uint8_t pDst[10];
+	//set up data to write:
+	uint32_t nAddrHi_Lo = (((nHwRegAddr >> 16) & 0xFFFF)) & 0xFF;
+	uint32_t nAddrHi_Hi = ((((nHwRegAddr >> 16) & 0xFFFF)) >> 8) & 0xFF;
+	uint32_t nAddrLo_Lo = ((nHwRegAddr & 0xFFFFF)) & 0xFF;
+	uint32_t nAddrLo_Hi = ((nHwRegAddr & 0xFFFFF) >> 8) & 0xFF;    
+	uint32_t nDataHi_Lo = (((nData >> 16) & 0xFFFF)) & 0xFF;
+	uint32_t nDataHi_Hi = ((((nData >> 16) & 0xFFFF)) >> 8) & 0xFF;
+	uint32_t nDataLo_Lo = ((nData & 0xFFFFF)) & 0xFF;
+	uint32_t nDataLo_Hi = ((nData & 0xFFFFF) >> 8) & 0xFF;
+	uint8_t pDataWrite[9] = {nAddrLo_Lo, nAddrLo_Hi, nAddrHi_Lo, nAddrHi_Hi, nDataLo_Lo, nDataLo_Hi, nDataHi_Lo, nDataHi_Hi, 8};
+
+	//poke the register
+	this->FpWrite(1,VCSFW_CMD::POKE,pDataWrite,9);
+	this->FpRead(1, 0xFF, pDst, 2);
+}
+
+void Syn_SPCCtrl::FpPeekRegister(uint32_t nHwRegAddr, uint32_t& nData)
+{
+	uint8_t pDst[10];
+	//set up data to write:
+	uint32_t nAddrHi_Lo = (((nHwRegAddr >> 16) & 0xFFFF)) & 0xFF;
+	uint32_t nAddrHi_Hi = ((((nHwRegAddr >> 16) & 0xFFFF)) >> 8) & 0xFF;
+	uint32_t nAddrLo_Lo = ((nHwRegAddr & 0xFFFFF)) & 0xFF;
+	uint32_t nAddrLo_Hi = ((nHwRegAddr & 0xFFFFF) >> 8) & 0xFF;    
+	uint8_t pDataWrite[9] = {nAddrLo_Lo, nAddrLo_Hi, nAddrHi_Lo, nAddrHi_Hi, 4};
+
+	//poke the register
+	this->FpWrite(1,VCSFW_CMD::PEEK,pDataWrite,5);
+	this->FpRead(1, 0xFF, pDst, 6);
+
+	nData = *((uint32_t*)pDst);
+}
+
+
+
+
 void Syn_SPCCtrl::FpGetVersion(uint8_t *pDst, int numBytes)
 {
 	//LOG(INFO) << "Get Version";

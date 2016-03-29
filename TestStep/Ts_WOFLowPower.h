@@ -15,8 +15,5 @@ public:
 	virtual void ProcessData();
 
 	virtual void CleanUp();
-
-	void FpPokeCmd(uint32_t nHwRegAddr, uint32_t nData);
-
 };
 

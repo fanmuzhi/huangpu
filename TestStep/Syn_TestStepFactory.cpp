@@ -26,6 +26,7 @@
 #include "Ts_AFETest.h"
 #include "Ts_WakeOnFinger.h"
 #include "Ts_WOFLowPower.h"
+#include "Ts_SCM_WOFWithoutStimulus.h"
 
 Syn_TestStepFactory::Syn_TestStepFactory()
 {
@@ -145,6 +146,10 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	else if (std::string("WOF-LowPower") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_WOFLowPower(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("SCM_WOFWithoutStimulus") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_SCM_WOFWithoutStimulus(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else if (std::string("FinalizationStep") == strTestStepName)
 	{

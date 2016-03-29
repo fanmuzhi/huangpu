@@ -21,6 +21,6 @@ public:
 
 	void WofTestProcessData();
 
-	void GetOtpWofData();
+	void GetOtpWofData(uint8_t pOtpData[MS0_SIZE],int OtpWofDataCount);
 };
 

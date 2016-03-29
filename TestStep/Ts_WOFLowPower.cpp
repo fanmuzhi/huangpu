@@ -82,8 +82,10 @@ void Ts_WOFLowPower::Execute()
 	uint32_t	nAdcSum = 0, nAdcAve;
 
 	//Poke appropriate registers.
-	FpPokeCmd(0x80000374, 0x00000012);
-	FpPokeCmd(0x800003A0, 0x00FFFFFF);
+	//FpPokeCmd(0x80000374, 0x00000012);
+	//FpPokeCmd(0x800003A0, 0x00FFFFFF);
+	_pSyn_DutCtrl->FpPokeRegister(0x80000374, 0x00000012);
+	_pSyn_DutCtrl->FpPokeRegister(0x800003A0, 0x00FFFFFF);
 
 	//Load and execute the patch. The bin file is prefixed with a command ID. Do not load this ID in data block.
 	Syn_PatchInfo WofLowPowerBinPatchInfo;
@@ -135,24 +137,4 @@ void Ts_WOFLowPower::ProcessData()
 void Ts_WOFLowPower::CleanUp()
 {
 	PowerOff();
-}
-
-void Ts_WOFLowPower::FpPokeCmd(uint32_t nHwRegAddr, uint32_t nData)
-{
-	uint8_t pDst[10];
-	//set up data to write:
-	uint32_t nAddrHi_Lo = (((nHwRegAddr >> 16) & 0xFFFF)) & 0xFF;
-	uint32_t nAddrHi_Hi = ((((nHwRegAddr >> 16) & 0xFFFF)) >> 8) & 0xFF;
-	uint32_t nAddrLo_Lo = ((nHwRegAddr & 0xFFFFF)) & 0xFF;
-	uint32_t nAddrLo_Hi = ((nHwRegAddr & 0xFFFFF) >> 8) & 0xFF;
-	uint32_t nDataHi_Lo = (((nData >> 16) & 0xFFFF)) & 0xFF;
-	uint32_t nDataHi_Hi = ((((nData >> 16) & 0xFFFF)) >> 8) & 0xFF;
-	uint32_t nDataLo_Lo = ((nData & 0xFFFFF)) & 0xFF;
-	uint32_t nDataLo_Hi = ((nData & 0xFFFFF) >> 8) & 0xFF;
-	uint8_t pDataWrite[9] = { nAddrLo_Lo, nAddrLo_Hi, nAddrHi_Lo, nAddrHi_Hi, nDataLo_Lo, nDataLo_Hi, nDataHi_Lo, nDataHi_Hi, 8 };
-
-	//poke the register
-	_pSyn_DutCtrl->FpWrite(1, 0x0008, pDataWrite, 9);
-	_pSyn_DutCtrl->FpRead(1, 0xFF, pDst, 2);
-	//GetDutCtrl().FpWaitForCommandCompleteAndCheckErrorCode(2);
 }

@@ -46,6 +46,10 @@ public:
 
 	virtual void FpOtpRomWrite(int section, int sector, uint8_t* pDst, int numBytes) = 0;
 
+	virtual void FpPokeRegister(uint32_t nHwRegAddr, uint32_t nData) = 0;
+
+	virtual void FpPeekRegister(uint32_t nHwRegAddr, uint32_t& nData) = 0;
+
 	virtual uint8_t FpOtpRomTagRead(uint32_t nExtTag, uint8_t* pDst, int numBytes) = 0;
 
 	virtual void FpOtpRomTagWrite(uint8_t* pDst, int numBytes) = 0;

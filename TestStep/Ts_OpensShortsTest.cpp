@@ -52,7 +52,26 @@ void Ts_OpensShortsTest::SetUp()
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 	_pSyn_DutCtrl->FpUnloadPatch();
 
-	//load ImgAcqPatch
+}
+
+void Ts_OpensShortsTest::Execute()
+{
+	Syn_Exception ex(0);
+	if (NULL == _pSyn_DutCtrl)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutCtrlNull);
+		ex.SetDescription("_pSyn_DutCtrl is NULL!");
+		throw ex;
+		return;
+	}
+	if (NULL == _pSyn_Dut)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutNull);
+		ex.SetDescription("_pSyn_Dut is NULL!");
+		throw ex;
+		return;
+	}
+	//load OpenShortPatch
 	Syn_PatchInfo OpensShortsPatchInfo;
 	if (!_pSyn_Dut->FindPatch("OpensShortsPatch", OpensShortsPatchInfo) || NULL == OpensShortsPatchInfo._pArrayBuf)
 	{
@@ -62,14 +81,11 @@ void Ts_OpensShortsTest::SetUp()
 		return;
 	}
 	_pSyn_DutCtrl->FpLoadPatch(OpensShortsPatchInfo._pArrayBuf, OpensShortsPatchInfo._uiArraySize);
-}
-
-void Ts_OpensShortsTest::Execute()
-{
-	_pSyn_Dut->_pSyn_DutTestInfo->_opensShortsInfo.m_bExecuted = true;
 
 	//Get the response.
 	_pSyn_DutCtrl->FpRunPatchTest(_pSyn_Dut->_pSyn_DutTestResult->_opensShortsResults.m_pResponse, _pSyn_Dut->_pSyn_DutTestInfo->_opensShortsInfo.m_nNumResBytes);
+
+	_pSyn_Dut->_pSyn_DutTestInfo->_opensShortsInfo.m_bExecuted = true;
 }
 
 void Ts_OpensShortsTest::ProcessData()
