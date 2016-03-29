@@ -122,7 +122,8 @@ void Ts_WOFLowPower::ProcessData()
 {
 	_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_bPass = 1;
 
-	if ((_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_nCurrent_uA > _pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMaxCurrent_uA)|| (_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_nCurrent_uA < _pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMinCurrent_uA))
+	if ((_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_nCurrent_uA > _pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMaxCurrent_uA)|| 
+		(_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_nCurrent_uA < _pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMinCurrent_uA))
 		_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_bPass = 0;
 
 	if (!_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_bPass)

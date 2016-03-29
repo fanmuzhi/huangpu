@@ -68,7 +68,6 @@ void Ts_AFETest::Execute()
 
 	//Get the response.
 	_pSyn_DutCtrl->FpRunPatchTest(_pSyn_Dut->_pSyn_DutTestResult->_AFETestResults.m_pResponse, _pSyn_Dut->_pSyn_DutTestInfo->_AFETestInfo.m_nNumResBytes);
-
 }
 
 void Ts_AFETest::ProcessData()
@@ -87,6 +86,9 @@ void Ts_AFETest::ProcessData()
 	}
 	else
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("AFETest", "Pass"));
+
+
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_AFETestResults.m_elapsedtime);
 }
 
 void Ts_AFETest::CleanUp()

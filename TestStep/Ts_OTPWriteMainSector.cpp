@@ -194,7 +194,7 @@ void Ts_OTPWriteMainSector::Execute()
 }
 void Ts_OTPWriteMainSector::ProcessData()
 {
-
+	_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("OTPWriteMainSector", "Pass"));
 }
 
 void Ts_OTPWriteMainSector::CleanUp()

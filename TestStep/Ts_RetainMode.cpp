@@ -33,7 +33,7 @@ void Ts_RetainMode::SetUp()
 	std::vector<std::string> listOfArgValue;
 	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_bExecuted = false;
 	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nGain = 2;
-	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMaxCurrent = 1;
+	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMaxCurrent = (float)1;
 	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMinCurrent = (float)0.1;
 	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nDelay = 0;
 	
@@ -47,9 +47,9 @@ void Ts_RetainMode::SetUp()
 	if (0 != listOfArgValue[0].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nGain = atoi(listOfArgValue[0].c_str());
 	if (0 != listOfArgValue[1].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMaxCurrent = atof(listOfArgValue[1].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMaxCurrent = (float)atof(listOfArgValue[1].c_str());
 	if (0 != listOfArgValue[2].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMinCurrent = atof(listOfArgValue[2].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMinCurrent = (float)atof(listOfArgValue[2].c_str());
 	if (0 != listOfArgValue[2].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nDelay = atoi(listOfArgValue[3].c_str());
 
@@ -152,6 +152,7 @@ void Ts_RetainMode::ProcessData()
 		_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_nRetainModeCurrent < _pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMinCurrent)
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_bPass = false;
+		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofWovarCurrentFail);
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("RetainModeCurrentTest", "Fail"));
 	}
 	else
@@ -159,6 +160,7 @@ void Ts_RetainMode::ProcessData()
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("RetainModeCurrentTest", "Pass"));
 	}
 
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_elapsedtime);
 }
 
 

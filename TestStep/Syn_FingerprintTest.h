@@ -41,6 +41,10 @@ public:
 
 	void BurnToOTP(long nRecType, uint8_t* pSrc, int numBytes);
 
+	virtual void SCM_WofTestExecute();//for SCM_WOF
+	virtual void SCM_WofTestProcessData();//for SCM_WOF
+	virtual void GetOtpScmWofData(uint8_t pOtpData[MS0_SIZE], int OtpScmWofDataCount);//for SCM_WOF
+
 	void ComputeRunningTime(double &ioRunningTime);
 
 protected:
