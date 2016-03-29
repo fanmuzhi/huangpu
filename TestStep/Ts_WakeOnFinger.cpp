@@ -104,8 +104,14 @@ void Ts_WakeOnFinger::SetUp()
 
 void Ts_WakeOnFinger::Execute()
 {
-	//If the WOF Test reading has not been stored in the OTP.
+	//Init Excute Result
+	_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_bPass = 0;
 
+	//
+	uint8_t     pOtpData[MS0_SIZE];
+	int OtpWofDataCount = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_BOT, pOtpData, MS0_SIZE);
+
+	//If the WOF Test reading has not been stored in the OTP.
 	uint8_t	arMS0[MS0_SIZE] = { 0 };
 
 	//if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofBot_count == 0)
@@ -141,7 +147,7 @@ void Ts_WakeOnFinger::Execute()
 		// Read one time from OTP.
 		if (_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bWithStimulus == 1)
 		{
-			GetOtpWofData();
+			GetOtpWofData(pOtpData,OtpWofDataCount);
 			// To save Log file.
 			_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bExecutedWithoutStimulus = 1;
 			_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bExecutedWithStimulus = 1;
@@ -410,9 +416,9 @@ void Ts_WakeOnFinger::WofTestProcessData()
 	}
 }
 
-void Ts_WakeOnFinger::GetOtpWofData()
+void Ts_WakeOnFinger::GetOtpWofData(uint8_t pOtpData[MS0_SIZE],int OtpWofDataCount)
 {
-	uint8_t     pOtpData[MS0_SIZE];
+	//uint8_t     pOtpData[MS0_SIZE];
 	uint32_t    extTagData = 0;
 
 	_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_bPass = 0;
@@ -427,7 +433,7 @@ void Ts_WakeOnFinger::GetOtpWofData()
 	_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_nTriggerIdxWithStim_200_3p7 = 0;
 	_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_nRecIdxWithoutStim = 0;
 
-	Syn_PatchInfo OTPRWPatchInfo;
+	/*Syn_PatchInfo OTPRWPatchInfo;
 	if (!_pSyn_Dut->FindPatch("OtpReadWritePatch", OTPRWPatchInfo) || NULL == OTPRWPatchInfo._pArrayBuf)
 	{
 		Syn_Exception ex(0);
@@ -439,13 +445,14 @@ void Ts_WakeOnFinger::GetOtpWofData()
 
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 	_pSyn_DutCtrl->FpUnloadPatch();
-	_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
+	_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);*/
 
 	//_pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_BOT, pOtpData, MS0_SIZE);
 	//GetMS0RecordData(TAG_CAL, EXT_TAG_WOF_BOT, pOtpData, MS0_SIZE, site)
 	
 
-	if (_pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_BOT, pOtpData, MS0_SIZE) != 0)
+	//if (_pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_BOT, pOtpData, MS0_SIZE) != 0)
+	if (0!=OtpWofDataCount)
 	{
 		extTagData = *((uint32_t*)pOtpData);
 		_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_nRecIdxWithoutStim = (uint8_t)((extTagData & 0x00FF0000) >> 16);

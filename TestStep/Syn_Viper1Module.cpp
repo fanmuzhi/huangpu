@@ -18,7 +18,8 @@ bool Syn_Viper1Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 	int	nPgaIdx = calInfo.m_nPgaIdx;
 	FPSFrame calFrameZeroOffsets;
 	FPSFrame calFrameNonZeroOffsets;
-	int8_t *pOffsetArr = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx + 4];
+	//int8_t *pOffsetArr = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx + 4];
+	int8_t *pOffsetArr = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx];
 	float nRatio;
 	float nConfigRatio = calInfo.m_nPgaOffsetRatio;
 	int	nNumFrames = calInfo.m_nNumPgaSamples;
@@ -104,7 +105,8 @@ bool Syn_Viper1Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 
 	//Check if Stage 2 array is all the same.
 	bool bStage2AllEqual = true;
-	pOffsetArr = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx + 4];
+	//pOffsetArr = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx + 4];
+	pOffsetArr = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx];
 	for (int i = 1; i<(nNumRows * (nNumCols - 8)); i++)
 	{
 		if (pOffsetArr[i - 1] != pOffsetArr[i])

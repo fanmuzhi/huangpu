@@ -75,7 +75,8 @@ bool Syn_Viper2Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 	int	nPgaIdx = calInfo.m_nPgaIdx;
 	FPSFrame calFrameZeroOffsets;
 	FPSFrame calFrameNonZeroOffsets;
-	int8_t * pOffsetArr = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx + 4];
+	//int8_t * pOffsetArr = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx + 4];
+	int8_t * pOffsetArr = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx];
 	float nSetRatio = calInfo.m_nPgaOffsetRatio;
 	float nConfigRatio = calInfo.m_nPgaOffsetRatio;
 	int nNumFrames = calInfo.m_nNumPgaSamples;
@@ -129,7 +130,8 @@ bool Syn_Viper2Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 	}
 
 	//Put the PGA offsets into the print file. The ordering is a bit strange.
-	pPrtFileOffsets = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx + 4];
+	//pPrtFileOffsets = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx + 4];
+	pPrtFileOffsets = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx];
 	for (int nRow = 0; nRow<nNumRows; nRow++)
 	{
 		for (int nCol = 0; nCol<4; nCol++)
@@ -192,7 +194,8 @@ bool Syn_Viper2Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 		}
 
 		//Put the PGA offsets into the print file. The ordering is a bit strange.
-		pPrtFileOffsets = (int8_t*)calResult.m_pPrintPatch[nPgaIdx + 4];
+		//pPrtFileOffsets = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx + 4];
+		pPrtFileOffsets = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx];
 		for (int nRow = 0; nRow<nNumRows; nRow++)
 		{
 			for (int nCol = 0; nCol<4; nCol++)
@@ -223,7 +226,8 @@ bool Syn_Viper2Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 
 	//Check if Stage 2 array is all the same.
 	bool bStage2AllEqual = true;
-	pOffsetArr = (int8_t*)calResult.m_pPrintPatch[nPgaIdx + 4];
+	//pOffsetArr = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx + 4];
+	pOffsetArr = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx];
 	for (int i = 1; i<(nNumRows * (nNumCols - 8)); i++)
 	{
 		if (pOffsetArr[i - 1] != pOffsetArr[i])

@@ -1053,6 +1053,7 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 			for (int n = 0; n < columnNumber; n++)
 			{
 				data[m*(columnNumber)+n] = (pCurrentDutTestResult->_acqImgNoFingerResult).arr_ImageFPSFrame.arr[m][n];
+				//data[m*(columnNumber)+n] = (pCurrentDutTestResult->_acqImgNoFingerResult.arr_nofinger[0]).arr[m][n];
 			}
 		}
 
@@ -1068,6 +1069,7 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 		{
 			for (int n = 0; n < columnNumber; n++)
 			{
+				//data.push_back((uchar)(pCurrentDutTestResult->_acqImgFingerResult).arr_ImageFPSFrame.arr[m][n]);
 				data[m*(columnNumber)+n] = (pCurrentDutTestResult->_acqImgFingerResult).arr_ImageFPSFrame.arr[m][n];
 			}
 		}
@@ -1127,7 +1129,7 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 		ui.TestTableWidget->setItem(6, iSiteNumber - 1, itemTotalResults);
 	}
 	
-	QImage image((uchar*)data.constData(), columnNumber, rowNumber, QImage::Format_Indexed8);
+	QImage image((const uchar*)data.constData(), columnNumber, rowNumber, columnNumber, QImage::Format_Indexed8);
 	image.setColorTable(vcolorTable);
 	//image = image.copy(iStartColumn, iStartRow, iEndColumn, iEndRow);
 
