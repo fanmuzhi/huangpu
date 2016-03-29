@@ -3,6 +3,6 @@
     <SysConfigFile>C:/Metallica_77A0_OFilm_Gold.xml</SysConfigFile>
     <LogFilePath>C:/logfiles/Huangpu</LogFilePath>
     <NumSites>1</NumSites>
-    <Site1 AdcBaseLines="710 708 709 712 709 708 709 712 706 708 715 711 668 708 795 711 " Voltages="1800 1800 3300 3300">1405853</Site1>
+    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="710 709 704 667 708 708 707 707 712 734 941 2999 712 711 711 711 ">1405853</Site1>
     <AutoController></AutoController>
 </LocalSettings>
