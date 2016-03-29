@@ -23,6 +23,7 @@
 #include "Ts_FinalizationStep.h"
 #include "Ts_OpensShortsTest.h"
 #include "Ts_RAMTest.h"
+#include "Ts_AFETest.h"
 
 Syn_TestStepFactory::Syn_TestStepFactory()
 {
@@ -119,7 +120,7 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	{
 		opTestStepInstance = new Ts_CurrentTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
-	else if (std::string("RetainMode") == strTestStepName)
+	else if (std::string("RetainModeCurrentTest") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_RetainMode(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
@@ -130,6 +131,10 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	else if (std::string("RAMTest") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_RAMTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("AFETest") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_AFETest(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else if (std::string("FinalizationStep") == strTestStepName)
 	{

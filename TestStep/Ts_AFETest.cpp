@@ -68,8 +68,6 @@ void Ts_AFETest::Execute()
 	//Get the response.
 	_pSyn_DutCtrl->FpRunPatchTest(_pSyn_Dut->_pSyn_DutTestResult->_AFETestResults.m_pResponse, _pSyn_Dut->_pSyn_DutTestInfo->_AFETestInfo.m_nNumResBytes);
 
-	//Reset as work around for bug in Patch.
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 }
 
 void Ts_AFETest::ProcessData()
