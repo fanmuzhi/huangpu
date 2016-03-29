@@ -111,7 +111,7 @@ void Ts_WOFLowPower::Execute()
 	_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_nCurrent_uA = (10 * ((float)nAdcAve - (float)nADCBaseline) * 3) / 4096;
 
 	//Clear the registers; bring them back to their default state.		
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+	//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 
 }
 
@@ -152,7 +152,7 @@ void Ts_WOFLowPower::FpPokeCmd(uint32_t nHwRegAddr, uint32_t nData)
 	uint8_t pDataWrite[9] = { nAddrLo_Lo, nAddrLo_Hi, nAddrHi_Lo, nAddrHi_Hi, nDataLo_Lo, nDataLo_Hi, nDataHi_Lo, nDataHi_Hi, 8 };
 
 	//poke the register
-	GetDutCtrl().FpWrite(1, 0x0008, pDataWrite, 9);
-	GetDutCtrl().FpRead(1, 0xFF, pDst, 2);
+	_pSyn_DutCtrl->FpWrite(1, 0x0008, pDataWrite, 9);
+	_pSyn_DutCtrl->FpRead(1, 0xFF, pDst, 2);
 	//GetDutCtrl().FpWaitForCommandCompleteAndCheckErrorCode(2);
 }
