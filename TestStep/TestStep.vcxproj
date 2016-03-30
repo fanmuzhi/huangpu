@@ -115,11 +115,10 @@
     <ClInclude Include="Ts_ReadDutAdc.h" />
     <ClInclude Include="Ts_RetainMode.h" />
     <ClInclude Include="Ts_RxStandardDev.h" />
-    <ClInclude Include="Ts_SCM_WOFWithoutStimulus.h" />
-    <ClInclude Include="Ts_SCM_WOFWithStimulus.h" />
+    <ClInclude Include="Ts_SCM_WOF.h" />
     <ClInclude Include="Ts_SharpnessTest.h" />
     <ClInclude Include="Ts_SNRTest.h" />
-    <ClInclude Include="Ts_WakeOnFinger.h" />
+    <ClInclude Include="Ts_WOF.h" />
     <ClInclude Include="Ts_WOFLowPower.h" />
     <ClInclude Include="Ts_WoVarTest.h" />
   </ItemGroup>
@@ -154,11 +153,10 @@
     <ClCompile Include="Ts_ReadDutAdc.cpp" />
     <ClCompile Include="Ts_RetainMode.cpp" />
     <ClCompile Include="Ts_RxStandardDev.cpp" />
-    <ClCompile Include="Ts_SCM_WOFWithoutStimulus.cpp" />
-    <ClCompile Include="Ts_SCM_WOFWithStimulus.cpp" />
+    <ClCompile Include="Ts_SCM_WOF.cpp" />
     <ClCompile Include="Ts_SharpnessTest.cpp" />
     <ClCompile Include="Ts_SNRTest.cpp" />
-    <ClCompile Include="Ts_WakeOnFinger.cpp" />
+    <ClCompile Include="Ts_WOF.cpp" />
     <ClCompile Include="Ts_WOFLowPower.cpp" />
     <ClCompile Include="Ts_WoVarTest.cpp" />
   </ItemGroup>

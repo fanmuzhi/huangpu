@@ -46,7 +46,7 @@ void Ts_OTPWriteMainSector::SetUp()
 
 void Ts_OTPWriteMainSector::Execute()
 {
-	uint8_t	arMS0[MS0_SIZE] = {0};
+	uint8_t	arMS0[MS0_SIZE + MS1_SIZE] = {0};
 	bool	bSuccess = true;
 	int		nNumCols = _pSyn_Dut->_ColumnNumber;
 	int		nLNA_count, nPGA_count, nSNR_count;
@@ -194,7 +194,7 @@ void Ts_OTPWriteMainSector::Execute()
 }
 void Ts_OTPWriteMainSector::ProcessData()
 {
-
+	_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("OTPWriteMainSector", "Pass"));
 }
 
 void Ts_OTPWriteMainSector::CleanUp()

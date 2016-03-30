@@ -94,22 +94,19 @@
     <ClCompile Include="Ts_RAMTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Ts_WakeOnFinger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Ts_AFETest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Ts_WOFLowPower.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Ts_SCM_WOFWithoutStimulus.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Ts_SCM_WOFWithStimulus.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Ts_ReadDutAdc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_WOF.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_SCM_WOF.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -210,22 +207,19 @@
     <ClInclude Include="Ts_RAMTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Ts_WakeOnFinger.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Ts_AFETest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ts_WOFLowPower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Ts_SCM_WOFWithoutStimulus.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Ts_SCM_WOFWithStimulus.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Ts_ReadDutAdc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_WOF.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_SCM_WOF.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -379,6 +379,8 @@ typedef struct
 {
 	int			m_bPass;	
 	uint8_t		m_pResponse[MAX_AFE_TEST_RES];
+
+	double      m_elapsedtime;
 }AFETestResults;
 
 ///////////////////////////	////////////////////////
@@ -1025,6 +1027,8 @@ typedef struct
 {
 	int			m_bPass;
 	float		m_nRetainModeCurrent;
+
+	double      m_elapsedtime;
 }RetainModeResults;
 
 //////////////////////////////////////////////////////////////////////////
@@ -1042,6 +1046,8 @@ typedef struct
 {
 	int			m_bPass;
 	float		m_nCurrent_uA;
+
+	double      m_elapsedtime;
 }WofLowPowerResults;
 
 //////////////////////////////////////////////////////////////////////////

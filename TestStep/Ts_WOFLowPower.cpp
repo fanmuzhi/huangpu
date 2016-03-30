@@ -53,6 +53,7 @@ void Ts_WOFLowPower::SetUp()
 		_pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nDelay_ms = atoi(listOfArgValue[3].c_str());
 
 	//power on
+	PowerOff();
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 	_pSyn_DutCtrl->FpUnloadPatch();
 	//load Patch
@@ -121,7 +122,8 @@ void Ts_WOFLowPower::ProcessData()
 {
 	_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_bPass = 1;
 
-	if ((_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_nCurrent_uA > _pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMaxCurrent_uA)|| (_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_nCurrent_uA < _pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMinCurrent_uA))
+	if ((_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_nCurrent_uA > _pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMaxCurrent_uA)|| 
+		(_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_nCurrent_uA < _pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMinCurrent_uA))
 		_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_bPass = 0;
 
 	if (!_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_bPass)

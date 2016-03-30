@@ -65,13 +65,10 @@ void Ts_WoVarTest::SetUp()
 
 void Ts_WoVarTest::Execute()
 {
-	_pSyn_Dut->_pSyn_DutTestInfo->_woVarInfo.m_bExecuted = true;
-
 	//Get the response.
 	_pSyn_DutCtrl->FpRunPatchTest(_pSyn_Dut->_pSyn_DutTestResult->_woVarResults.m_pResponse, _pSyn_Dut->_pSyn_DutTestInfo->_woVarInfo.m_nNumResBytes);
 
-	//Reset as work around for bug in Pixel Patch.
-	//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+	_pSyn_Dut->_pSyn_DutTestInfo->_woVarInfo.m_bExecuted = true;
 }
 
 void Ts_WoVarTest::ProcessData()

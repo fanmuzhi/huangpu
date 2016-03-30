@@ -24,11 +24,10 @@
 #include "Ts_OpensShortsTest.h"
 #include "Ts_RAMTest.h"
 #include "Ts_AFETest.h"
-#include "Ts_WakeOnFinger.h"
+#include "Ts_WOF.h"
 #include "Ts_WOFLowPower.h"
-#include "Ts_SCM_WOFWithoutStimulus.h"
-#include "Ts_SCM_WOFWithStimulus.h"
 #include "Ts_ReadDutAdc.h"
+#include "Ts_SCM_WOF.h"
 
 Syn_TestStepFactory::Syn_TestStepFactory()
 {
@@ -141,9 +140,9 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	{
 		opTestStepInstance = new Ts_AFETest(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
-	else if (std::string("WakeOnFinger") == strTestStepName)
+	else if (std::string("WOFWithoutStimulus") == strTestStepName || std::string("WOFWithStimulus") == strTestStepName)
 	{
-		opTestStepInstance = new Ts_WakeOnFinger(strTestStepName, strTestArgs, pDutCtrl, pDut);
+		opTestStepInstance = new Ts_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else if (std::string("WOF-LowPower") == strTestStepName)
 	{
@@ -151,11 +150,11 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	}
 	else if (std::string("SCM_WOFWithoutStimulus") == strTestStepName)
 	{
-		opTestStepInstance = new Ts_SCM_WOFWithoutStimulus(strTestStepName, strTestArgs, pDutCtrl, pDut);
+		opTestStepInstance = new Ts_SCM_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else if (std::string("SCM_WOFWithStimulus") == strTestStepName)
 	{
-		opTestStepInstance = new Ts_SCM_WOFWithStimulus(strTestStepName, strTestArgs, pDutCtrl, pDut);
+		opTestStepInstance = new Ts_SCM_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else if (std::string("ReadDutAdc") == strTestStepName)
 	{

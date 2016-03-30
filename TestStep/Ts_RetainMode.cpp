@@ -33,7 +33,7 @@ void Ts_RetainMode::SetUp()
 	std::vector<std::string> listOfArgValue;
 	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_bExecuted = false;
 	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nGain = 2;
-	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMaxCurrent = 1;
+	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMaxCurrent = (float)1;
 	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMinCurrent = (float)0.1;
 	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nDelay = 0;
 	
@@ -54,6 +54,7 @@ void Ts_RetainMode::SetUp()
 		_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nDelay = atoi(listOfArgValue[3].c_str());
 
 
+	//Power on
 	PowerOff();
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 
@@ -152,6 +153,7 @@ void Ts_RetainMode::ProcessData()
 		_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_nRetainModeCurrent < _pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMinCurrent)
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_bPass = false;
+		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofWovarCurrentFail);
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("RetainModeCurrentTest", "Fail"));
 	}
 	else
@@ -159,6 +161,7 @@ void Ts_RetainMode::ProcessData()
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("RetainModeCurrentTest", "Pass"));
 	}
 
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_elapsedtime);
 }
 
 

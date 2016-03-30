@@ -47,6 +47,7 @@ void Ts_AFETest::SetUp()
 		_pSyn_Dut->_pSyn_DutTestInfo->_AFETestInfo.m_nDelay_ms = atoi(listOfArgValue[1].c_str());
 
 	//power on
+	PowerOff();
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 	_pSyn_DutCtrl->FpUnloadPatch();
 	//load Patch
@@ -67,9 +68,6 @@ void Ts_AFETest::Execute()
 
 	//Get the response.
 	_pSyn_DutCtrl->FpRunPatchTest(_pSyn_Dut->_pSyn_DutTestResult->_AFETestResults.m_pResponse, _pSyn_Dut->_pSyn_DutTestInfo->_AFETestInfo.m_nNumResBytes);
-
-	//Reset as work around for bug in Patch.
-	//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 }
 
 void Ts_AFETest::ProcessData()
@@ -88,6 +86,9 @@ void Ts_AFETest::ProcessData()
 	}
 	else
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("AFETest", "Pass"));
+
+
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_AFETestResults.m_elapsedtime);
 }
 
 void Ts_AFETest::CleanUp()
