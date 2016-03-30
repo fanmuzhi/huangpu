@@ -2,6 +2,9 @@
 
 #include "Syn_FingerprintTest.h"
 
+#define kSetupCmdLength 9
+#define kSetupPeekCmdLength 5
+
 class Ts_ReadDutAdc : public Syn_FingerprintTest
 {
 public:
@@ -15,6 +18,10 @@ public:
 	virtual void ProcessData();
 
 	virtual void CleanUp();
+
+	void ReadDutAdcSetup();
+
+	int ReadDutAdc();
 
 };
 

@@ -443,9 +443,10 @@ void Syn_SPCCtrl::FpPokeRegister(uint32_t nHwRegAddr, uint32_t nData)
 	//this->FpWaitDeviceReady();
 }
 
-void Syn_SPCCtrl::FpPeekRegister(uint32_t nHwRegAddr, uint32_t& nData)
+//void Syn_SPCCtrl::FpPeekRegister(uint32_t nHwRegAddr, uint32_t& nData)
+void Syn_SPCCtrl::FpPeekRegister(uint32_t nHwRegAddr, uint8_t pDst[])
 {
-	uint8_t pDst[10];
+	//uint8_t pDst[10];
 	//set up data to write:
 	uint32_t nAddrHi_Lo = (((nHwRegAddr >> 16) & 0xFFFF)) & 0xFF;
 	uint32_t nAddrHi_Hi = ((((nHwRegAddr >> 16) & 0xFFFF)) >> 8) & 0xFF;
@@ -458,10 +459,8 @@ void Syn_SPCCtrl::FpPeekRegister(uint32_t nHwRegAddr, uint32_t& nData)
 	this->FpRead(1, 0xFF, pDst, 6);
 	//this->FpWaitDeviceReady();
 
-	nData = *((uint32_t*)pDst);
+	//nData = *((uint32_t*)pDst);
 }
-
-
 
 
 void Syn_SPCCtrl::FpGetVersion(uint8_t *pDst, int numBytes)
