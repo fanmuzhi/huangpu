@@ -1,4 +1,5 @@
 #include "Ts_WOF.h"
+#include "windows.h"
 
 Ts_WOF::Ts_WOF(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
@@ -77,86 +78,70 @@ void Ts_WOF::SetUp()
 	if (0 != listOfArgValue[11].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_nVCC = stof(listOfArgValue[11]);
 
-	Syn_PatchInfo WofPatchInfo, WofCmd1PathInfo, WofCmd2PathInfo;
-	if (!_pSyn_Dut->FindPatch("WofPatch", WofPatchInfo) || NULL == WofPatchInfo._pArrayBuf
-		|| !_pSyn_Dut->FindPatch("WofCmd1", WofCmd1PathInfo) || NULL == WofCmd1PathInfo._pArrayBuf
-		|| !_pSyn_Dut->FindPatch("WofCmd2", WofCmd2PathInfo) || NULL == WofCmd2PathInfo._pArrayBuf)
-	{
-		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-		ex.SetDescription("WofPatch or WofCmd1 or WofCmd2 Patch is NULL!");
-		throw ex;
-	}
 
-	Syn_PatchInfo OTPRWPatchInfo;
-	if (!_pSyn_Dut->FindPatch("OtpReadWritePatch", OTPRWPatchInfo) || NULL == OTPRWPatchInfo._pArrayBuf)
-	{
-		Syn_Exception ex(0);
-		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-		ex.SetDescription("Wof:OtpReadWritePatch Patch is NULL!");
-		throw ex;
-		return;
-	}
-
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-	_pSyn_DutCtrl->FpUnloadPatch();
-	_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
 }
 
 void Ts_WOF::Execute()
 {
-	//Init Excute Result
-	_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_bPass = 0;
-
-	//
-	uint8_t     pOtpData[MS0_SIZE];
-	int OtpWofDataCount = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_BOT, pOtpData, MS0_SIZE);
-
-	//If the WOF Test reading has not been stored in the OTP.
-	uint8_t	arMS0[MS0_SIZE] = { 0 };
-
-	//if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofBot_count == 0)
-	if(0 == _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_BOT, arMS0, MS0_SIZE))
+	Syn_Exception ex(0);
+	if (NULL == _pSyn_DutCtrl)
 	{
-		if (_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bWithStimulus == 0)
-			_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bExecutedWithoutStimulus = true;
-		else
-			_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bExecutedWithStimulus = true;
-
-		if (_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bWithStimulus == 0)  // If NO Stimulus
-		{
-			_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_nWithStimCount = 0;
-			ExecuteWofTest();
-			WofTestProcessData();
-		}
-		else  // With Stimulus
-		{
-			// run WOF test with stimulus at normal voltage
-			ExecuteWofTest();
-			WofTestProcessData();
-
-			// If not PASS, run WOF test with stimulus at high voltage
-			if (_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_bPass == 0)
-			{
-				ExecuteWofTest();
-				WofTestProcessData();
-			}
-		}
+		ex.SetError(Syn_ExceptionCode::Syn_DutCtrlNull);
+		ex.SetDescription("_pSyn_DutCtrl is NULL!");
+		throw ex;
+		return;
 	}
-	else // If WOF Test exists in OTP
+	if (NULL == _pSyn_Dut)
 	{
-		// Read one time from OTP.
-		if (_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bWithStimulus == 1)
+		ex.SetError(Syn_ExceptionCode::Syn_DutNull);
+		ex.SetDescription("_pSyn_Dut is NULL!");
+		throw ex;
+		return;
+	}
+
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bWithStimulus)
+	{
+		//3.3V
+		_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_nWithStimCount = 0;
+		ExecuteWofTest();
+		WofTestProcessData();
+
+		if (_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_bPass == 0)
 		{
-			GetOtpWofData(pOtpData,OtpWofDataCount);
-			// To save Log file.
-			_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bExecutedWithoutStimulus = 1;
-			_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bExecutedWithStimulus = 1;
+			//3.7V
+			ExecuteWofTest();
+			WofTestProcessData();
 		}
+		_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bExecutedWithStimulus = true;
+
+	}
+	else
+	{
+		//3.3V
+		ExecuteWofTest();
+		WofTestProcessData();
+		_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bExecutedWithoutStimulus = true;
 	}
 }
 
 void Ts_WOF::ProcessData()
 {
+	Syn_Exception ex(0);
+	if (NULL == _pSyn_DutCtrl)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutCtrlNull);
+		ex.SetDescription("_pSyn_DutCtrl is NULL!");
+		throw ex;
+		return;
+	}
+	if (NULL == _pSyn_Dut)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutNull);
+		ex.SetDescription("_pSyn_Dut is NULL!");
+		throw ex;
+		return;
+	}
+
 	if (!_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_bPass)
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
@@ -164,7 +149,6 @@ void Ts_WOF::ProcessData()
 	}
 	else
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WakeOnFinger", "Pass"));
-
 }
 
 void Ts_WOF::CleanUp()
@@ -174,13 +158,19 @@ void Ts_WOF::CleanUp()
 
 void Ts_WOF::ExecuteWofTest()
 {
+	Syn_Exception ex(0);
 	Syn_PatchInfo WofPatchInfo, WofCmd1PathInfo, WofCmd2PathInfo;
 	_pSyn_Dut->FindPatch("WofPatch", WofPatchInfo);
 	_pSyn_Dut->FindPatch("WofCmd1", WofCmd1PathInfo);
 	_pSyn_Dut->FindPatch("WofCmd2", WofCmd2PathInfo);
 
 	if (NULL == WofPatchInfo._pArrayBuf || NULL == WofCmd1PathInfo._pArrayBuf || NULL == WofCmd2PathInfo._pArrayBuf)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+		ex.SetDescription("WOF Patch is NULL!");
+		throw ex;
 		return;
+	}
 
 	int			timeout, timeout2;
 	uint8_t		pStatus[4] = {0};
@@ -189,7 +179,7 @@ void Ts_WOF::ExecuteWofTest()
 	int			nCmd1Size = WofCmd1PathInfo._uiArraySize;
 	uint8_t*	pWofCmd2 = WofCmd2PathInfo._pArrayBuf;
 	int			nCmd2Size = WofCmd2PathInfo._uiArraySize;
-	int			nVCC = (int)_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_nVCC * 1000;
+	int			nVCC = (int)(_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_nVCC * 1000);
 
 	if (_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_nWithStimCount == 0)
 		PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
@@ -201,15 +191,10 @@ void Ts_WOF::ExecuteWofTest()
 
 	//Write cmd1.
 	_pSyn_DutCtrl->FpWrite(1, pWofCmd1[0], &pWofCmd1[1], nCmd1Size - 1);
+	_pSyn_DutCtrl->FpWaitForCMDComplete();
+	_pSyn_DutCtrl->FpReadAndCheckStatus(0);
 
-	//Wait for cmd1 to complete.
-	timeout = 1000;
-	_pSyn_DutCtrl->FpWaitForCMDComplete(timeout);
-	
-	//timeout = 1000;
-	_pSyn_DutCtrl->FpReadBuff(pResult, sizeof(pResult));
-
-	//Write cmd2. 
+	//Write cmd2.
 	uint8_t* pTempBuf = new uint8_t[nCmd2Size];
 	memcpy(pTempBuf, pWofCmd2, nCmd2Size);
 	pTempBuf[12] = 100;
@@ -222,85 +207,32 @@ void Ts_WOF::ExecuteWofTest()
 	delete[] pTempBuf;
 	pTempBuf = NULL;
 
-	//Wait for cmd2 to complete.
-	timeout = 1000;
-	_pSyn_DutCtrl->FpWaitForCMDComplete(timeout);
+	_pSyn_DutCtrl->FpWaitForCMDComplete();
+	_pSyn_DutCtrl->FpReadAndCheckStatus(0);
 
-	//timeout = 1000;
-	_pSyn_DutCtrl->FpReadBuff(pResult, sizeof(pResult));
-
-	//Execute command to read WOF data.
+	//Write cmd3 (Execute command to read WOF data).
 	_pSyn_DutCtrl->FpWrite(1, 0xF9, (uint8_t*)0, 0);
-
-	//Wait for command complete
-	timeout = 1000;
-	_pSyn_DutCtrl->FpGetStatus(pStatus, sizeof(pStatus));
-	while (timeout && !((pStatus[0] == 0x03) && (pStatus[1] == 0x00) && (pStatus[2] == 0x00) && (pStatus[3] == 0x30)))
-	{
-		_pSyn_DutCtrl->FpGetStatus(pStatus, sizeof(pStatus));
-		timeout--;
-
-		if (timeout % 10 == 0)
-			_pSyn_DutCtrl->FpWrite(1, 0xF9, (uint8_t*)0, 0);
-	}
-	if (timeout == 0)
-	{
-		Syn_Exception ex(0);
-		ex.SetDescription("WOF: 8th status never complete.");
-		throw(ex);
-	}
+	_pSyn_DutCtrl->FpWaitForCMDComplete();
+	::Sleep(15);
 
 	//Get response data.
 	timeout2 = 1000;
 	_pSyn_DutCtrl->FpRead(1, 0xFF, _pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_arWofData, _pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_nNumResponseBytes);
-	while (timeout2 && !((_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_arWofData[0] == 0x00) && (_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_arWofData[1] == 0x00)))
+	while (timeout2 && !(_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_arWofData[0] == 0x00 && _pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_arWofData[1] == 0x00))
 	{
-		//Try retrieving response data again.
+		//Write cmd3 (Execute command to read WOF data).
 		_pSyn_DutCtrl->FpWrite(1, 0xF9, (uint8_t*)0, 0);
-
-		//Wait for response to be ready.
-		timeout = 1000;
-		_pSyn_DutCtrl->FpGetStatus(pStatus, sizeof(pStatus));
-		while (timeout && !((pStatus[0] == 0x03) && (pStatus[1] == 0x00) && (pStatus[2] == 0x00) && (pStatus[3] == 0x30)))
-		{
-			_pSyn_DutCtrl->FpGetStatus(pStatus, sizeof(pStatus));
-			timeout--;
-
-			if (timeout % 10 == 0)
-				_pSyn_DutCtrl->FpWrite(1, 0xF9, (uint8_t*)0, 0);
-		}
-		if (timeout == 0)
-		{
-			Syn_Exception ex(0);
-			ex.SetDescription("WOF: 9th status never complete.");
-			throw(ex);
-		}
-
-		//Check error code.
-		timeout = 1000;
+		_pSyn_DutCtrl->FpWaitForCMDComplete();
+		::Sleep(15);
 		_pSyn_DutCtrl->FpRead(1, 0xFF, _pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_arWofData, _pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_nNumResponseBytes);
-		while (timeout && !((_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_arWofData[0] == 0x02) || ((_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_arWofData[0] == 0x00) && (_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_arWofData[1] == 0x00))))
-		{
-			_pSyn_DutCtrl->FpRead(1, 0xFF, _pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_arWofData, _pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_nNumResponseBytes);
-			timeout--;
-		}
-		if (timeout == 0)
-		{
-			Syn_Exception ex(0);
-			ex.SetDescription("WOF: Command 1, 7th never complete.");
-			throw(ex);
-		}
 		timeout2--;
 	}
 	if (timeout2 == 0)
 	{
 		Syn_Exception ex(0);
-		ex.SetDescription("WOF: Cannot get plot.");
+		ex.SetDescription("WOF: cannot get plot");
 		throw(ex);
 	}
-
-	//Clear registers.
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 }
 
 void Ts_WOF::WofTestProcessData()

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
-    <SysConfigFile>C:/Users/bqiling/Google Drive/Viper 86C/580-005935-01r1 (FM-000166-003) Huangpu.xml</SysConfigFile>
+    <SysConfigFile>C:/Users/bqiling/Google Drive/Viper 86C/580-005935-01r1 (FM-000166-003) Huangpu Temp.xml</SysConfigFile>
     <LogFilePath>C:/logfiles/Huangpu</LogFilePath>
     <NumSites>1</NumSites>
-    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="706 706 707 710 706 706 705 709 704 706 690 710 753 794 1074 794 ">1405853</Site1>
+    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ">1405853</Site1>
     <AutoController></AutoController>
 </LocalSettings>
