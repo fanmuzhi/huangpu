@@ -1,15 +1,15 @@
-#include "Ts_WakeOnFinger.h"
+#include "Ts_WOF.h"
 
-Ts_WakeOnFinger::Ts_WakeOnFinger(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
+Ts_WOF::Ts_WOF(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
 {
 }
 
-Ts_WakeOnFinger::~Ts_WakeOnFinger()
+Ts_WOF::~Ts_WOF()
 {
 }
 
-void Ts_WakeOnFinger::SetUp()
+void Ts_WOF::SetUp()
 {
 	Syn_Exception ex(0);
 	if (NULL == _pSyn_DutCtrl)
@@ -102,7 +102,7 @@ void Ts_WakeOnFinger::SetUp()
 	_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
 }
 
-void Ts_WakeOnFinger::Execute()
+void Ts_WOF::Execute()
 {
 	//Init Excute Result
 	_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_bPass = 0;
@@ -155,7 +155,7 @@ void Ts_WakeOnFinger::Execute()
 	}
 }
 
-void Ts_WakeOnFinger::ProcessData()
+void Ts_WOF::ProcessData()
 {
 	if (!_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_bPass)
 	{
@@ -167,12 +167,12 @@ void Ts_WakeOnFinger::ProcessData()
 
 }
 
-void Ts_WakeOnFinger::CleanUp()
+void Ts_WOF::CleanUp()
 {
 	PowerOff();
 }
 
-void Ts_WakeOnFinger::ExecuteWofTest()
+void Ts_WOF::ExecuteWofTest()
 {
 	Syn_PatchInfo WofPatchInfo, WofCmd1PathInfo, WofCmd2PathInfo;
 	_pSyn_Dut->FindPatch("WofPatch", WofPatchInfo);
@@ -303,7 +303,7 @@ void Ts_WakeOnFinger::ExecuteWofTest()
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 }
 
-void Ts_WakeOnFinger::WofTestProcessData()
+void Ts_WOF::WofTestProcessData()
 {
 	int			i;
 	int			nTgrIdx;
@@ -416,7 +416,7 @@ void Ts_WakeOnFinger::WofTestProcessData()
 	}
 }
 
-void Ts_WakeOnFinger::GetOtpWofData(uint8_t pOtpData[MS0_SIZE],int OtpWofDataCount)
+void Ts_WOF::GetOtpWofData(uint8_t pOtpData[MS0_SIZE],int OtpWofDataCount)
 {
 	//uint8_t     pOtpData[MS0_SIZE];
 	uint32_t    extTagData = 0;

@@ -2,12 +2,12 @@
 
 #include "Syn_FingerprintTest.h"
 
-class Ts_WakeOnFinger : public Syn_FingerprintTest
+class Ts_WOF : public Syn_FingerprintTest
 {
 public:
 
-	Ts_WakeOnFinger(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
-	virtual ~Ts_WakeOnFinger();
+	Ts_WOF(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
+	virtual ~Ts_WOF();
 
 	virtual void	SetUp();
 

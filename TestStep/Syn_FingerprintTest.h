@@ -31,7 +31,7 @@ public:
 
 	void CalculateLnaOffsetsBinarySearch(FPSFrame* pFrame, uint8_t* pLnaValues, int nNumRows, int nNumCols, CalibrationInfo &CalInfo, CalibrationResults &CalResults);
 
-	void GetRowAverages(FPSFrame* pFrame, int nColBegin, int nColEnd, uint8_t* pAverages, int nNumRows);
+	/*void GetRowAverages(FPSFrame* pFrame, int nColBegin, int nColEnd, uint8_t* pAverages, int nNumRows);*/
 
 	bool CheckDUTexists();
 
@@ -40,10 +40,6 @@ public:
 	void ImageDecode(FPSFrame *pDecodeFrame, FPSFrame *pEncodeFrame, int nNumRow, int nNumCol, int nNumFrames);
 
 	void BurnToOTP(long nRecType, uint8_t* pSrc, int numBytes);
-
-	virtual void SCM_WofTestExecute();//for SCM_WOF
-	virtual void SCM_WofTestProcessData();//for SCM_WOF
-	virtual void GetOtpScmWofData(uint8_t pOtpData[MS0_SIZE], int OtpScmWofDataCount);//for SCM_WOF
 
 	void ComputeRunningTime(double &ioRunningTime);
 
@@ -54,4 +50,3 @@ protected:
 	//clock_t _starttime, _finishtime;
 	time_t _starttime, _finishtime;
 };
-
