@@ -48,7 +48,9 @@ class Syn_LocalSettingConfig
 {
 public:
 
-	static bool CreateLSConfigInstance(Syn_LocalSettingConfig * &opLSConfigInstance, QString strXMLFilePath = QString("LocalSettings.xml"));
+	enum OperateType{Read,Write};
+
+	static bool CreateLSConfigInstance(OperateType eType, Syn_LocalSettingConfig * &opLSConfigInstance, QString strXMLFilePath = QString("LocalSettings.xml"));
 	
 	//Syn_LocalSettingConfig(QString strConfigFilePath);
 	~Syn_LocalSettingConfig();
@@ -61,7 +63,7 @@ private:
 
 	Syn_LocalSettingConfig(QString strConfigFilePath);
 
-	bool Initialize();
+	bool Initialize(OperateType eType);
 
 private:
 

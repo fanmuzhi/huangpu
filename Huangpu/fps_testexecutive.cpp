@@ -10,7 +10,7 @@
 
 FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 : QMainWindow(parent)
-, _bStopTag(true)
+//, _bStopTag(true)
 , _iRealDeviceCounts(0)
 //, _logfile("sys.log")
 , _pSyn_LocalSettingsDlg(NULL)
@@ -19,7 +19,6 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 , _pSyn_BinCodesDlg(NULL)
 , _pSyn_DeviceManager(NULL)
 , _FinishedSiteCounts(0)
-, m_MenuBar(NULL)
 {
 	//ui setting
 	ui.setupUi(this);
@@ -57,16 +56,6 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	//OTP Dump
 	QObject::connect(ui.pushButtonGetVer, SIGNAL(clicked()), this, SLOT(GetVersionForDutDump()));
 	QObject::connect(ui.pushButtonReadOTP, SIGNAL(clicked()), this, SLOT(ReadOTPForDutDump()));
-
-	//Calibration,Fingerprint
-	QObject::connect(ui.ImageCalibrationPushButton, SIGNAL(clicked()), this, SLOT(PushCablicationImageButton()));
-	QObject::connect(ui.FigerprintImagePushButton, SIGNAL(clicked()), this, SLOT(PushFigerprintImageButton())); 
-
-	_threadForDebug._dbgType = getImageType;
-	QObject::connect(&(_threadForDebug), SIGNAL(send(unsigned int)), this, SLOT(FigerprintImage(unsigned int)));
-	_threadForDebugCalibrate._dbgType = calibrateType;
-	QObject::connect(&(_threadForDebugCalibrate), SIGNAL(send(unsigned int)), this, SLOT(ImageCalibration(unsigned int)));
-	
 }
 
 FPS_TestExecutive::~FPS_TestExecutive()
@@ -118,7 +107,7 @@ void FPS_TestExecutive::Initialize()
 
 	//LocalSettings
 	Syn_LocalSettingConfig *pSyn_LocalSettingConfig = NULL;
-	rc = Syn_LocalSettingConfig::CreateLSConfigInstance(pSyn_LocalSettingConfig);
+	rc = Syn_LocalSettingConfig::CreateLSConfigInstance(Syn_LocalSettingConfig::Read,pSyn_LocalSettingConfig);
 	if (!rc || NULL == pSyn_LocalSettingConfig)
 	{
 		cout << "Error:FPS_TestExecutive::Initialize() - pSyn_LocalSettingConfig is NULL!" << endl;
@@ -308,15 +297,7 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 		_ListOfSitePtr[i - 1]->GetSiteNumber(iSiteNumber);
 		ui.comboBox->addItem(QString("#") + QString::number(iSiteNumber));
 	}
-
-	//Calibration,Fingerprint
-	ui.ImageSiteComboBox->clear();
-	for (size_t i = 1; i <= _ListOfSitePtr.size(); i++)
-	{
-		unsigned int iSiteNumber(0);
-		_ListOfSitePtr[i - 1]->GetSiteNumber(iSiteNumber);
-		ui.ImageSiteComboBox->addItem(QString("#") + QString::number(iSiteNumber));
-	}
+	ui.OTPResultLabel->setText("");
 
 	//_pSyn_DeviceManager->UpdateFirmware(_ListOfSitePtr);
 
@@ -642,7 +623,7 @@ void FPS_TestExecutive::ConfirmSite()
 
 	//save
 	Syn_LocalSettingConfig *pLocalSettingsInstance = NULL;
-	rc = Syn_LocalSettingConfig::CreateLSConfigInstance(pLocalSettingsInstance);
+	rc = Syn_LocalSettingConfig::CreateLSConfigInstance(Syn_LocalSettingConfig::Write,pLocalSettingsInstance);
 	if (rc&&NULL != pLocalSettingsInstance)
 	{
 		pLocalSettingsInstance->SetLocalSettings(_LocalSettingsInfo);
@@ -1503,9 +1484,12 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 	ui.textBrowser->append(QString("SiteNumber:") + QString::number(oSiteNumber));
 	ui.textBrowser->append(QString("SerialNumber:") + QString::number(oSerialNumber));
 
+	QPalette pa;
 	if (oDutTestResult->_binCodes.size() == 0)
 	{
 		ui.textBrowser->append(QString("Result: PASS"));
+		ui.OTPResultLabel->setText("Result: PASS");
+		pa.setColor(QPalette::WindowText, Qt::green);
 	}
 	else
 	{
@@ -1516,7 +1500,13 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 		}
 
 		ui.textBrowser->append(QString("Result: FAIL ") + sBinCodes);
+		ui.OTPResultLabel->setText(QString("Result: FAIL,Bicode: ") + sBinCodes);
+		pa.setColor(QPalette::WindowText, Qt::red);
 	}
+	QFont ft;
+	ft.setPointSize(10);
+	ui.OTPResultLabel->setFont(ft);
+	ui.OTPResultLabel->setPalette(pa);
 
 	//ui.textBrowser->append(QString("Sysconfig Boot Sector 0:"));
 	//for (int i = 1; i <= BS0_SIZE / 8; i++)
@@ -1573,226 +1563,6 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 	pSelectedSite->Close();
 }
 
-void FPS_TestExecutive::PushCablicationImageButton()
-{
-	int iSiteCurrentIndex = ui.ImageSiteComboBox->currentIndex();
-	if (iSiteCurrentIndex < 0)
-		return;
-
-	size_t iSiteCounts = _ListOfSitePtr.size();
-	if (0 == iSiteCounts)
-		return;
-
-	if (iSiteCounts < iSiteCurrentIndex)
-		return;
-
-	ui.CalibrationImageLabel->hide();
-
-	Syn_Site::SiteState oTempState;
-	_ListOfSitePtr[iSiteCurrentIndex]->GetState(oTempState);
-	if (Syn_Site::Error == oTempState)
-	{
-		QMessageBox::information(this, QString("Error"), QString("Cablication Error:Selected Site's state is Error!"));
-		return;
-	}
-
-	if (_threadForDebugCalibrate.isRunning())
-	{
-		//_threadForDebugCalibrate.SetRunTag(false);
-		//_ListOfSitePtr[iSiteCurrentIndex]->Close();
-		//ui.FigerprintImagePushButton->setText(QString("Get Figerprint Image"));
-
-	}
-	else
-	{
-		_ListOfSitePtr[iSiteCurrentIndex]->Open();
-		_threadForDebugCalibrate.SetSite(_ListOfSitePtr[iSiteCurrentIndex]);
-		//_threadForDebugCalibrate.SetRunTag(true);
-		_threadForDebugCalibrate.start();
-	}
-}
-
-void FPS_TestExecutive::ImageCalibration(unsigned int iSiteNumber)
-{
-	//retrieve current site with sitenumber from sitelist
-	bool synFind(false);
-	Syn_DutTestResult *pCurrentDutTestResult = NULL;
-	Syn_SysConfig CurrentSysConfig;
-	for (size_t i = 0; i < _ListOfSitePtr.size(); i++)
-	{
-		unsigned int iTempSiteNumber(0);
-		_ListOfSitePtr[i]->GetSiteNumber(iTempSiteNumber);
-		if (iSiteNumber == iTempSiteNumber)
-		{
-			//_ListOfSitePtr[i]->GetTestInfo(*CurrentDutTestInfo);
-			Syn_Site::SiteState oTempState;
-			_ListOfSitePtr[i]->GetState(oTempState);
-			if (oTempState == Syn_Site::Error)
-			{
-				string errMsg = "";
-				_ListOfSitePtr[i]->GetRunTimeError(errMsg);
-				QMessageBox::information(this, QString("Error"), QString("Calibrate Error:") + QString::fromStdString(errMsg));
-				return;
-			}
-			_ListOfSitePtr[i]->GetTestResult(pCurrentDutTestResult);
-			_ListOfSitePtr[i]->GetSysConfig(CurrentSysConfig);
-			synFind = true;
-			break;
-		}
-	}
-
-	if (!synFind || NULL == pCurrentDutTestResult)
-		return;
-
-	ui.CalibrationImageLabel->clear();
-
-	ui.CalibrationImageLabel->show();
-
-	int rowNumber = CurrentSysConfig._uiNumRows;
-	int columnNumber = CurrentSysConfig._uiNumCols;
-	
-	QVector<QRgb> vcolorTable;
-	for (int i = 0; i < 256; i++)
-	{
-		vcolorTable.append(qRgb(i, i, i));
-	}
-	QByteArray data;
-	data.resize((rowNumber)*(columnNumber));
-	for (int m = 0; m < rowNumber; m++)
-	{
-		for (int n = 0; n < columnNumber; n++)
-		{
-			data[m*(columnNumber)+n] = (pCurrentDutTestResult->_calibrationResults).arr_ImageFPSFrame.arr[m][n];
-		}
-	}
-	QImage image((uchar*)data.constData(), columnNumber, rowNumber,QImage::Format_Indexed8);
-	image.setColorTable(vcolorTable);
-	image = image.copy(HEADER,0, columnNumber - HEADER, rowNumber);
-
-	//scale
-	image = image.scaled((columnNumber - HEADER) * 2, rowNumber * 2, Qt::KeepAspectRatio);
-
-	ui.CalibrationImageLabel->setPixmap(QPixmap::fromImage(image));
-	ui.CalibrationImageLabel->adjustSize();
-	ui.CalibtrationGroupBox->adjustSize();
-
-	for (size_t i = 0; i < _ListOfSitePtr.size(); i++)
-	{
-		unsigned int iTempSiteNumber(0);
-		_ListOfSitePtr[i]->GetSiteNumber(iTempSiteNumber);
-		if (iSiteNumber == iTempSiteNumber)
-		{
-			_ListOfSitePtr[i]->Close();
-		}
-	}
-}
-
-void FPS_TestExecutive::PushFigerprintImageButton()
-{
-	int iSiteCurrentIndex = ui.ImageSiteComboBox->currentIndex();
-	if (iSiteCurrentIndex < 0)
-		return;
-
-	size_t iSiteCounts = _ListOfSitePtr.size();
-	if (0 == iSiteCounts)
-		return;
-
-	if (iSiteCounts < iSiteCurrentIndex)
-		return;
-
-	if (_threadForDebug.isRunning())
-	{
-		_threadForDebug.SetRunTag(false);
-
-		//_ListOfSitePtr[iSiteCurrentIndex]->Close();
-
-		//ui.FigerprintImagePushButton->setText(QString("Get Figerprint Image"));
-
-	}
-	else
-	{
-		_threadForDebug.SetSite(_ListOfSitePtr[iSiteCurrentIndex]);
-		_threadForDebug.SetRunTag(true);
-		_threadForDebug.start();
-
-		//ui.FigerprintImagePushButton->setText(QString("Stop"));
-
-	}
-}
-
-void FPS_TestExecutive::FigerprintImage(unsigned int iSiteNumber)
-{
-	//debug  must delete at end
-
-	//retrieve current site with sitenumber from sitelist
-	bool synFind(false);
-	Syn_DutTestResult *pCurrentDutTestResult = NULL;
-	Syn_SysConfig CurrentSysConfig;
-	unsigned int iPos(0);
-	for (size_t i = 0; i < _ListOfSitePtr.size(); i++)
-	{
-		unsigned int iTempSiteNumber(0);
-		_ListOfSitePtr[i]->GetSiteNumber(iTempSiteNumber);
-		if (iSiteNumber == iTempSiteNumber)
-		{
-			//_ListOfSitePtr[i]->GetTestInfo(*CurrentDutTestInfo);
-			Syn_Site::SiteState oTempState;
-			_ListOfSitePtr[i]->GetState(oTempState);
-			if (oTempState == Syn_Site::Error)
-			{
-				string errMsg = "";
-				_ListOfSitePtr[i]->GetRunTimeError(errMsg);
-				QMessageBox::information(this, QString("Error"), QString("Calibrate Error:") + QString::fromStdString(errMsg));
-				return;
-			}
-			_ListOfSitePtr[i]->GetTestResult(pCurrentDutTestResult);
-			_ListOfSitePtr[i]->GetSysConfig(CurrentSysConfig);
-			iPos = i;
-			synFind = true;
-			break;
-		}
-	}
-
-	if (!synFind || NULL == pCurrentDutTestResult)
-		return;
-
-
-
-	ui.FingerprintImageLabel->clear();
-
-	ui.FingerprintImageLabel->show();
-
-	int rowNumber = CurrentSysConfig._uiNumRows;
-	int columnNumber = CurrentSysConfig._uiNumCols;
-
-	QVector<QRgb> vcolorTable;
-	for (int i = 0; i < 256; i++)
-	{
-		vcolorTable.append(qRgb(i, i, i));
-	}
-	QByteArray data;
-	data.resize((rowNumber)*(columnNumber));
-	for (int m = 0; m < rowNumber; m++)
-	{
-		for (int n = 0; n < columnNumber; n++)
-		{
-			data[m*(columnNumber)+n] = (pCurrentDutTestResult->_acqImgNoFingerResult).arr_ImageFPSFrame.arr[m][n];
-		}
-	}
-	QImage image((uchar*)data.constData(), columnNumber, rowNumber, QImage::Format_Indexed8);
-	image.setColorTable(vcolorTable);
-	image = image.copy(HEADER, 0, columnNumber - HEADER, rowNumber);
-
-	//scale
-	image = image.scaled((columnNumber - HEADER) * 2, rowNumber * 2, Qt::KeepAspectRatio);
-
-	ui.FingerprintImageLabel->setPixmap(QPixmap::fromImage(image));
-	ui.FingerprintImageLabel->adjustSize();
-	ui.FingerprintImageGroupBox->adjustSize();
-
-	_ListOfSitePtr[iPos]->Close();
-}
-
 void FPS_TestExecutive::Display(uint8_t* pDst, int DstSize)
 {
 	QString s = "";
@@ -1816,259 +1586,6 @@ void FPS_TestExecutive::Display(uint8_t* pDst, unsigned int StartPos, unsigned i
 		s += (QString::number(pDst[i], 16)).toUpper() + ",";
 	}
 	ui.textBrowser->append(s);
-}
-
-void FPS_TestExecutive::WriteLog(std::string strFolderPath, Syn_DutTestInfo * DutInfo, Syn_DutTestResult * DutResults, int RowNumber, int ColumnNumber)
-{
-	if (NULL == DutInfo)
-		return;
-
-	if (NULL == DutResults)
-		return;
-
-	QString qsFolderPath = QString::fromStdString(strFolderPath);
-	QFile qfile(qsFolderPath);
-	if (!qfile.exists())
-		return;
-
-	QString qsSensorSerialNumber("");
-	qsSensorSerialNumber = QString::fromLatin1(DutInfo->_getVerInfo.sSerialNumber,12);
-
-	QString qsSerachContent = qsFolderPath + QString("\\*.csv");
-
-	std::string strSensorSerialNumber;
-	std::vector<std::string> lsitOfFileName;
-	long handle;
-	struct _finddata_t fileinfo;
-	handle = _findfirst(qsSerachContent.toStdString().c_str(), &fileinfo);
-	if (-1 == handle)
-	{
-		strSensorSerialNumber = (qsSensorSerialNumber + QString("_1")).toStdString();
-	}
-	else
-	{
-		int iCounts(0);
-
-		do
-		{
-			QString qsCSVFileName = fileinfo.name;
-			int iResults = qsCSVFileName.indexOf(qsSensorSerialNumber);
-			if (0 == iResults)
-			{
-				iCounts += 1;
-			}
-		} while (_findnext(handle, &fileinfo) == 0);
-
-		strSensorSerialNumber = (qsSensorSerialNumber + QString("_") + QString::number(iCounts+1)).toStdString();
-		_findclose(handle);
-	}
-
-	std::string stringFilePath(qsFolderPath.toStdString()+"\\"+strSensorSerialNumber + ".csv");
-	FILE *pFile = fopen(stringFilePath.c_str(), "a");
-	if (NULL == pFile)
-	{
-		return;
-	}
-
-	fprintf(pFile, "\n%%%%%%%%%%%%%%%%%%%%%%\n");
-	fprintf(pFile, "MTLog\n");
-
-	//Put in part number.
-	//fprintf(pFile, "Part Number,%s\n", "");//DebugVersion
-
-	//fprintf(pFile, "ConfigFile,%s\n", _pSyn_Dut->_pSyn_DutTestInfo-);
-	fprintf(pFile, "\n%%%%%%%%%%%%%%%%%%%%%%\n");
-
-	fprintf(pFile, "\n---------------------\n");
-	const time_t t = time(NULL);
-	struct tm* current_time = localtime(&t);
-	fprintf(pFile, "Run %d,%s\n", "", asctime(current_time));
-
-	//Sensor Serial Number
-	fprintf(pFile, "Sensor Serial Number ,%s\n", qsSensorSerialNumber.toStdString().c_str());
-
-	//InitlizationStep
-	fprintf(pFile, "\nInitialization, %s,%d ms\n", DutResults->_initResults.m_bPass ? "Pass" : "Fail", 0);
-
-	//Pixel Patch
-	fprintf(pFile, "\nPixel Patch, %s,%lf ms\n", DutResults->_pixelPatchResults.m_bPass ? "Pass" : "Fail", DutResults->_pixelPatchResults.m_elapsedtime);
-	fprintf(pFile, ",,,");
-	for (int i = 0; i < (DutInfo->_pixelPatchInfo.m_nNumResBytes) / 4; i++)
-		fprintf(pFile, "%d,", *((uint32_t*)&DutResults->_pixelPatchResults.m_pResponse[i * 4]));
-	fprintf(pFile, "\n");
-
-	//Cablication
-	fprintf(pFile, "\nCalibration, %s,%lf ms\n", DutResults->_calibrationResults.m_bPass ? "Pass" : "Fail", DutResults->_calibrationResults.m_elapsedtime);
-	// Stage1 LNA values from print patch
-	fprintf(pFile, ",,,Stage1");
-	for (int i = 0; i < RowNumber; i++)
-	{
-		fprintf(pFile, ",%02X", DutResults->_calibrationResults.m_pPrintPatch[i + DutInfo->_calibrationInfo.m_nLnaIdx]);
-	}
-	if (DutInfo->_calibrationInfo.m_nCalType == 0)
-	{
-		fprintf(pFile, "\n,,,Stage2");
-		for (int i = 0; i < RowNumber; i++)
-		{
-			fprintf(pFile, ",%02X", DutResults->_calibrationResults.m_arPgaOffsets[i]);
-		}
-		fprintf(pFile, "\n");
-	}
-	else if (DutInfo->_calibrationInfo.m_nCalType == 1)
-	{
-		fprintf(pFile, "\n,,,Stage2 Used");
-		for (int i = 0; i<(RowNumber) * (ColumnNumber - 8); i++)
-		{
-			fprintf(pFile, ",%02X", DutResults->_calibrationResults.m_arPgaOffsets[i]);
-		}
-		fprintf(pFile, "\n");
-	}
-	else
-	{
-		fprintf(pFile, ",,,Stage2 Used,N/A\n");
-	}
-	// Stage2 OTP values	
-	if (DutInfo->_calibrationInfo.m_nCalType == 1)
-	{
-		if (DutResults->_calibrationResults.m_nPGA_OOPP_count != 0)
-		{
-			fprintf(pFile, ",,,Stage2 OTP");
-			for (int i = 0; i< (NUM_PGA_OOPP_OTP_ROWS * (ColumnNumber - 8)); i++)
-			{
-				fprintf(pFile, ",%02X", DutResults->_calibrationResults.m_pPGAOtpArray[i]);
-			}
-
-			fprintf(pFile, "\n,,,Stage2 Variance Score,N/A\n");
-		}
-		else
-		{
-			fprintf(pFile, ",,,Stage2 OTP,N/A\n");
-			fprintf(pFile, ",,,Stage2 Variance Score,N/A\n");
-		}
-	}
-	fprintf(pFile, ",,,FlexId,%04X\n", DutInfo->_initInfo.m_nFlexId);
-
-	//Pegged Pixels Test
-	fprintf(pFile, "\nPegged Pixels Test,%s,%lf ms,Rows,", DutResults->_peggedPixelsResults.m_bPass ? "Pass" : "Fail", DutResults->_peggedPixelsResults.m_elapsedtime);
-	for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithoutStim + DutInfo->_initInfo.m_nTrimBotWithoutStim); i++)
-		fprintf(pFile, "%d,", DutResults->_peggedPixelsResults.pegged_pixel_rows[i]);
-
-	fprintf(pFile, "\n,,,Columns,");
-	for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
-		fprintf(pFile, "%d,", DutResults->_peggedPixelsResults.pegged_pixel_cols[i]);
-	fprintf(pFile, "\n");
-
-	//Floored Pixels Test
-	fprintf(pFile, "\nFloored Pixels Test,%s,%lf ms,Rows,", DutResults->_flooredPixelsResults.m_bPass ? "Pass" : "Fail", DutResults->_flooredPixelsResults.m_elapsedtime);
-	for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithoutStim + DutInfo->_initInfo.m_nTrimBotWithoutStim); i++)
-		fprintf(pFile, "%d,", DutResults->_flooredPixelsResults.floored_pixel_rows[i]);
-
-	fprintf(pFile, "\n,,,Columns,");
-	for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
-		fprintf(pFile, "%d,", DutResults->_flooredPixelsResults.floored_pixel_cols[i]);
-	fprintf(pFile, "\n");
-
-	//DRdy Test
-	fprintf(pFile, "\nDRdy Test,%s,%lf ms\n", DutResults->_DRdyResults.m_bPass ? "Pass" : "Fail", DutResults->_DRdyResults.m_elapsedtime);
-
-	//Consecutive Pixels Test
-	fprintf(pFile, "\nConsecutive Pixels Test,%s,%lf ms,Pegged Rows,", DutResults->_consecutivePixelsResults.m_bPass ? "Pass" : "Fail", DutResults->_consecutivePixelsResults.m_elapsedtime);
-	for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithoutStim + DutInfo->_initInfo.m_nTrimBotWithoutStim); i++)
-		fprintf(pFile, "%d,", DutResults->_consecutivePixelsResults.consecutive_pegged_rows[i]);
-
-	fprintf(pFile, "\n,,,Floored Rows,");
-	for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithoutStim + DutInfo->_initInfo.m_nTrimBotWithoutStim); i++)
-		fprintf(pFile, "%d,", DutResults->_consecutivePixelsResults.consecutive_floored_rows[i]);
-
-	fprintf(pFile, "\n,,,Pegged Columns,");
-	for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
-		fprintf(pFile, "%d,", DutResults->_consecutivePixelsResults.consecutive_pegged_cols[i]);
-
-	fprintf(pFile, "\n,,,Floored Columns,");
-	for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
-		fprintf(pFile, "%d,", DutResults->_consecutivePixelsResults.consecutive_floored_cols[i]);
-	fprintf(pFile, "\n");
-
-	//Current Test
-	fprintf(pFile, "\nCurrent Test,%s,%lf ms,", DutResults->_currentResults.bPass ? "Pass" : "Fail", DutResults->_currentResults.m_elapsedtime);
-	//If the test was successful.
-	if (DutResults->_currentResults.bPass != 0)
-	{
-		fprintf(pFile, "Digital image acq current (mA),%.3f\n", (float)(DutResults->_currentResults.m_nImageAcqDigCurrent_uA) / 1000);
-		fprintf(pFile, ",,,Analog image acq current (mA),%.3f\n", (float)(DutResults->_currentResults.m_nImageAcqAnaCurrent_uA) / 1000);
-	}
-	else
-	{
-		fprintf(pFile, "Digital image acq current (mA),%.3f\n", (float)(DutResults->_currentResults.m_nImageAcqDigCurrent_uA) / 1000);
-		fprintf(pFile, ",,,Analog image acq current (mA),%.3f\n", (float)(DutResults->_currentResults.m_nImageAcqAnaCurrent_uA) / 1000);
-	}
-
-	//SNR Test
-	fprintf(pFile, "\nSNR Test,%s,%lf ms,", DutResults->_snrResults.bPass ? "Pass" : "Fail", DutResults->_snrResults.m_elapsedtime);
-	fprintf(pFile, "Signal_Z1,Noise_Z1,SNR_Z1,Signal_Z2,Noise_Z2,SNR_Z2,Signal_Z3,Noise_Z3,SNR_Z3,Signal_Z4,Noise_Z4,SNR_Z4,Signal_Z5,Noise_Z5,SNR_Z5,Signal_Z6,Noise_Z6,SNR_Z6,Signal_OVERALL,Noise_OVERALL,SNR_OVERALL\n");
-	fprintf(pFile, ",,,");
-	for (int i = 0; i<REGIONS; i++)
-		fprintf(pFile, "%d,%f,%f,", DutResults->_snrResults.SIGNAL[i], DutResults->_snrResults.NOISE[i], DutResults->_snrResults.SNR[i]);
-	fprintf(pFile, "\n");
-
-	//Pixel Uniformity Test
-	fprintf(pFile, "\nPixel Uniformity Test,%s,%lf ms,", DutResults->_pixelResults.bPass ? "Pass" : "Fail", DutResults->_pixelResults.m_elapsedtime);
-	fprintf(pFile, "Minimum Pixel,Maximum Pixel,Failing Pixel Count\n");
-	fprintf(pFile, ",,,%d,%d,%d,", DutResults->_pixelResults.nMinPixelValue, DutResults->_pixelResults.nMaxPixelValue, DutResults->_pixelResults.nCountAboveThreshold);
-	fprintf(pFile, "\n");
-
-	//Sharpness Test
-	fprintf(pFile, "\nSharpness Test,%s,%lf ms\n", DutResults->_SharpnessResults.bPass ? "Pass" : "Fail", DutResults->_SharpnessResults.m_elapsedtime);
-	fprintf(pFile, ",,,Variation(%%),Zone1,Zone2,Zone3,Overall\n");
-	fprintf(pFile, ",,,%f,%d,%d,%d,%d", DutResults->_SharpnessResults.percent, (int)DutResults->_SharpnessResults.SHARPNESS[0], (int)DutResults->_SharpnessResults.SHARPNESS[1], (int)DutResults->_SharpnessResults.SHARPNESS[2], (int)DutResults->_SharpnessResults.SHARPNESS[3]);
-	fprintf(pFile, "\n");
-
-	//RxStandardDev Test
-	fprintf(pFile, "\nRxStandardDev Test,%s,%lf ms", DutResults->_RxStandardDevResults.m_bPass ? "Pass" : "Fail", DutResults->_RxStandardDevResults.m_elapsedtime);
-	fprintf(pFile, "\n,,,Percent:,");
-	for (int i = 0; i<(RowNumber - DutInfo->_initInfo.m_nTrimTopWithStim - DutInfo->_initInfo.m_nTrimBotWithStim); i++)
-		fprintf(pFile, "%f,", DutResults->_RxStandardDevResults.percent[i]);
-	fprintf(pFile, "\n");
-
-	//Imperfections Test
-	fprintf(pFile, "\nImperfections Test,%s,%lf ms,Along Rows,", DutResults->_imperfectionsTestResults.m_bPass ? "Pass" : "Fail", DutResults->_imperfectionsTestResults.m_elapsedtime);
-	for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithStim + DutInfo->_initInfo.m_nTrimBotWithStim); i++)
-		fprintf(pFile, "%d,", DutResults->_imperfectionsTestResults.consecutive_pegged_rows[i]);
-	fprintf(pFile, "\n,,,Along Columns,");
-	for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
-		fprintf(pFile, "%d,", DutResults->_imperfectionsTestResults.consecutive_pegged_cols[i]);
-	fprintf(pFile, "\n");
-
-	//Average No Finger & Average Finger
-	//int numFrames = 30;
-	//float temp = 0.0;
-	fprintf(pFile, "\nAverage No Finger\n");
-	for (int i = 0; i< DutResults->_acqImgNoFingerResult.iRealRowNumber; i++)
-	{
-		for (int j = 0; j< DutResults->_acqImgNoFingerResult.iRealColumnNumber; j++)
-		{
-			fprintf(pFile, "%d,", (int)DutResults->_acqImgNoFingerResult.arr_ImageFPSFrame.arr[i][j]);
-		}
-		fprintf(pFile, "\n");
-	}
-	//temp = 0.0;
-	fprintf(pFile, "\nNormalized Finger\n");
-	for (int i = 0; i< DutResults->_acqImgFingerResult.iRealRowNumber; i++)
-	{
-		for (int j = 0; j< DutResults->_acqImgFingerResult.iRealColumnNumber; j++)
-		{
-			fprintf(pFile, "%d,", (int)DutResults->_acqImgFingerResult.arr_ImageFPSFrame.arr[i][j]);
-		}
-		fprintf(pFile, "\n");
-	}
-
-	fprintf(pFile, "\n,Bin Codes");
-	for (size_t i = 1; i <= DutResults->_binCodes.size(); i++)
-	{
-		fprintf(pFile, ",%s", (DutResults->_binCodes[i - 1]).c_str());
-	}
-
-	fclose(pFile);
 }
 
 void FPS_TestExecutive::DisplayBinCodes()
