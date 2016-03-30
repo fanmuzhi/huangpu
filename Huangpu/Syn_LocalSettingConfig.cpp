@@ -18,7 +18,7 @@ Syn_LocalSettingConfig::~Syn_LocalSettingConfig()
 {
 }
 
-bool Syn_LocalSettingConfig::CreateLSConfigInstance(Syn_LocalSettingConfig * &opLSConfigInstance, QString strXMLFilePath)
+bool Syn_LocalSettingConfig::CreateLSConfigInstance(OperateType eType, Syn_LocalSettingConfig * &opLSConfigInstance, QString strXMLFilePath)
 {
 	opLSConfigInstance = NULL;
 
@@ -29,7 +29,7 @@ bool Syn_LocalSettingConfig::CreateLSConfigInstance(Syn_LocalSettingConfig * &op
 	}
 
 	opLSConfigInstance = new Syn_LocalSettingConfig(strXMLFilePath);
-	bool rc = opLSConfigInstance->Initialize();
+	bool rc = opLSConfigInstance->Initialize(eType);
 	if (!rc)
 	{
 		delete opLSConfigInstance;
@@ -39,40 +39,49 @@ bool Syn_LocalSettingConfig::CreateLSConfigInstance(Syn_LocalSettingConfig * &op
 	return rc;
 }
 
-bool Syn_LocalSettingConfig::Initialize()
+bool Syn_LocalSettingConfig::Initialize(OperateType eType)
 {
 	QFile xmlFile(_strFilePath);
-	//q_File.
-	if (xmlFile.exists())
+
+	if (Syn_LocalSettingConfig::Read == eType)
 	{
-		if (!xmlFile.open(QFile::ReadOnly | QFile::Text))
+		//q_File.
+		if (xmlFile.exists())
 		{
-			cout << "Syn_LocalSettingConfig::Initialize() - xmlFile.open is failed!" << endl;
-			return false;
-		}
+			if (!xmlFile.open(QFile::ReadOnly | QFile::Text))
+			{
+				cout << "Syn_LocalSettingConfig::Initialize() - xmlFile.open is failed!" << endl;
+				return false;
+			}
 
-		QString error;
-		int row = 0, column = 0;
-		if (!q_DomDocument.setContent(&xmlFile, false, &error, &row, &column))
+			QString error;
+			int row = 0, column = 0;
+			if (!q_DomDocument.setContent(&xmlFile, false, &error, &row, &column))
+			{
+				cout << "Syn_LocalSettingConfig::Initialize() - q_DomDocument.setContent is failed!" << endl;
+				return false;
+			}
+
+			if (q_DomDocument.isNull())
+			{
+				cout << "Syn_LocalSettingConfig::Initialize() - q_DomDocument is null!" << endl;
+				return false;
+			}
+
+			QDomElement root = q_DomDocument.documentElement();
+			q_DomRootNode = root;
+
+			xmlFile.close();
+		}
+		else
 		{
-			cout << "Syn_LocalSettingConfig::Initialize() - q_DomDocument.setContent is failed!" << endl;
-			return false;
+			QDomProcessingInstruction instruction = q_DomDocument.createProcessingInstruction(QString("xml"), QString("version = \"1.0\" encoding = \"UTF-8\""));
+			q_DomDocument.appendChild(instruction);
 		}
-
-		if (q_DomDocument.isNull())
-		{
-			cout << "Syn_LocalSettingConfig::Initialize() - q_DomDocument is null!" << endl;
-			return false;
-		}
-
-		QDomElement root = q_DomDocument.documentElement();
-		q_DomRootNode = root;
-
-		xmlFile.close();
 	}
 	else
 	{
-		QDomProcessingInstruction instruction = q_DomDocument.createProcessingInstruction(QString("xml"),QString("version = \"1.0\" encoding = \"UTF-8\""));
+		QDomProcessingInstruction instruction = q_DomDocument.createProcessingInstruction(QString("xml"), QString("version = \"1.0\" encoding = \"UTF-8\""));
 		q_DomDocument.appendChild(instruction);
 	}
 

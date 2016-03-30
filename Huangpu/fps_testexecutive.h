@@ -21,7 +21,6 @@
 #include "Syn_UpdateADCOffsetsDlg.h"
 #include "Ui_Syn_UpdateADCOffsetsDlg.h"
 #include "Syn_BinCodesDlg.h"
-#include "Syn_ThreadDebug.h"//for debug
 
 //DutUtls
 #include "Syn_Dut.h"
@@ -100,17 +99,7 @@ public Q_SLOTS:
 	//Debug
 	//Dut dump
 	void GetVersionForDutDump();
-
 	void ReadOTPForDutDump();
-
-	//Calibration,Fingerprint
-	void PushCablicationImageButton();
-	void ImageCalibration(unsigned int iSiteNumber);
-	void PushFigerprintImageButton();
-	void FigerprintImage(unsigned int iSiteNumber);
-
-	//write log
-	void WriteLog(std::string strFolderPath, Syn_DutTestInfo * DutInfo, Syn_DutTestResult * DutResults,int RowNumber,int ColumnNumber);
 
 	//bincode display
 	void DisplayBinCodes();
@@ -149,17 +138,10 @@ private:
 	//Temp Voltages,save VoltagesValue from user define or configfile
 	Syn_VoltagesValue _TempVoltagesValue;
 
-	bool _bStopTag;
+	//bool _bStopTag;
 
-	//debug
-	Syn_ThreadDebug _threadForDebug;
-
-	Syn_ThreadDebug _threadForDebugCalibrate;
-
+	//
 	unsigned int _FinishedSiteCounts;
-
-
-	QMenuBar *m_MenuBar;
 };
 
 #endif // FPS_TESTEXECUTIVE_H
