@@ -100,18 +100,19 @@ void Ts_RetainMode::Execute()
 	//uint8_t pDst[NUM_CURRENT_DRAW_READINGS];
 
 	//1st poke
-	uint32_t nData;
-	_pSyn_DutCtrl->FpPeekRegister(0x80002808, nData);
-	_pSyn_DutCtrl->FpPeekRegister(0x80002814, nData);
+	//uint32_t nData;
+	uint8_t pDst[6];
+	_pSyn_DutCtrl->FpPeekRegister(0x80002808, pDst);
+	_pSyn_DutCtrl->FpPeekRegister(0x80002814, pDst);
 	_pSyn_DutCtrl->FpPokeRegister(0x80002808, 0x3);
-	_pSyn_DutCtrl->FpPeekRegister(0x80002814, nData);
+	_pSyn_DutCtrl->FpPeekRegister(0x80002814, pDst);
 	_pSyn_DutCtrl->FpPokeRegister(0x80002814, 0x20);
 	_pSyn_DutCtrl->FpPokeRegister(0x80002814, 0x20);
-	_pSyn_DutCtrl->FpPeekRegister(0x80002814, nData);
+	_pSyn_DutCtrl->FpPeekRegister(0x80002814, pDst);
 	_pSyn_DutCtrl->FpPokeRegister(0x80002814, 0x21);
 	_pSyn_DutCtrl->FpPokeRegister(0x80002064, 0x10000000);
 	_pSyn_DutCtrl->FpPokeRegister(0x80002064, 0x6F20000); 
-	_pSyn_DutCtrl->FpPeekRegister(0x80002064, nData);
+	_pSyn_DutCtrl->FpPeekRegister(0x80002064, pDst);
 	_pSyn_DutCtrl->FpPokeRegister(0x80002064, 0x20000007);
 
 	//2nd poke

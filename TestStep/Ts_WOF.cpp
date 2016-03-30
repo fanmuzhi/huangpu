@@ -145,10 +145,25 @@ void Ts_WOF::ProcessData()
 	if (!_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_bPass)
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
-		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WakeOnFinger", "Fail"));
+		if (_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bWithStimulus)
+		{
+			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOFWithStimulus", "Fail"));
+		}
+		else
+		{
+			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOFWithoutStimulus", "Fail"));
+		}
+
 	}
 	else
-		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WakeOnFinger", "Pass"));
+		if (_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bWithStimulus)
+		{
+			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOFWithStimulus", "Pass"));
+		}
+		else
+		{
+			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOFWithoutStimulus", "Pass"));
+		}
 }
 
 void Ts_WOF::CleanUp()
