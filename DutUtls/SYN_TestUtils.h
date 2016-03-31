@@ -423,6 +423,8 @@ typedef struct
 	int         m_nTriggerIdxWithStim_200_3p7;
 	int			m_nWithStimCount;
 	int			m_arWofBottom[MAX_WOF_LINES];
+
+	double      m_elapsedtime;
 }WofTestResults;
 
 ///////////////////////////	////////////////////////
@@ -465,6 +467,8 @@ typedef struct
 	int			m_nTriggerIdxWithStim_200_3p7;		
 	int			m_nWithStimCount;
 	int			m_arWofBottom[MAX_WOF_LINES];
+
+	double      m_elapsedtime;
 }SCM_WofTestResults;
 
 //////////////////////////// ////////////////////////
@@ -745,6 +749,8 @@ typedef struct
 {
 	int			m_bPass;
 	uint8_t		m_pResponse[MAX_OPENS_SHORTS_RES];
+
+	double      m_elapsedtime;
 }OpensShortsResults;
 
 //CDM16 Structs
@@ -915,6 +921,8 @@ typedef struct
 	uint8_t	m_pResponseCachInstTagRam[MAXROW];
 	int bPassScmAndMainRam;
 	uint8_t	m_pResponseScmAndMainRam[MAXROW];
+
+	double      m_elapsedtime;
 }RAMTestResults;
 
 //Structs for ProductIDTest

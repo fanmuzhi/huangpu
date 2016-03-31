@@ -35,8 +35,8 @@ Syn_FingerprintTest::Syn_FingerprintTest(string &strName, string &strArgs, Syn_D
 			break;		
 	}
 
-	_starttime = time(NULL);
-	//_starttime = clock();
+	//_starttime = time(NULL);
+	_starttime = GetTickCount();
 }
 
 
@@ -230,9 +230,9 @@ void Syn_FingerprintTest::BurnToOTP(long nRecType, uint8_t* pSrc, int numBytes)
 
 void Syn_FingerprintTest::ComputeRunningTime(double &ioRunningTime)
 {
-	_finishtime = time(NULL);
-	ioRunningTime = difftime(_finishtime, _starttime)*1000;
+	//_finishtime = time(NULL);
+	//ioRunningTime = difftime(_finishtime, _starttime)*1000;
 
-	//_finishtime = clock();
-	//ioRunningTime = (double)(_finishtime - _starttime) / CLOCKS_PER_SEC;
+	_finishtime = GetTickCount();
+	ioRunningTime = (double)(_finishtime - _starttime);
 }

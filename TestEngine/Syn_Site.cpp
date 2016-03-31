@@ -577,154 +577,342 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 	//InitlizationStep
 	fprintf(pFile, "\nInitialization, %s,%d ms\n", DutResults->_initResults.m_bPass ? "Pass" : "Fail", 0);
 
+	//RAMTest
+	if (DutInfo->_RAMTestInfo.m_bExecuted)
+	{
+		uint32_t fp1 = (DutResults->_RAMTestResults.m_pResponseCacheDataRam[5] & 0XFF) | ((DutResults->_RAMTestResults.m_pResponseCacheDataRam[4] & 0XFF) << 8) | ((DutResults->_RAMTestResults.m_pResponseCacheDataRam[3] & 0XFF) << 16) | ((DutResults->_RAMTestResults.m_pResponseCacheDataRam[2] & 0XFF) << 24);
+		uint32_t fp2 = (DutResults->_RAMTestResults.m_pResponseCacheTagRam[5] & 0XFF) | ((DutResults->_RAMTestResults.m_pResponseCacheTagRam[4] & 0XFF) << 8) | ((DutResults->_RAMTestResults.m_pResponseCacheTagRam[3] & 0XFF) << 16) | ((DutResults->_RAMTestResults.m_pResponseCacheTagRam[2] & 0XFF) << 24);
+		uint32_t fp3 = (DutResults->_RAMTestResults.m_pResponseCachInstDataRam[5] & 0XFF) | ((DutResults->_RAMTestResults.m_pResponseCachInstDataRam[4] & 0XFF) << 8) | ((DutResults->_RAMTestResults.m_pResponseCachInstDataRam[3] & 0XFF) << 16) | ((DutResults->_RAMTestResults.m_pResponseCachInstDataRam[2] & 0XFF) << 24);
+		uint32_t fp4 = (DutResults->_RAMTestResults.m_pResponseCachInstTagRam[5] & 0XFF) | ((DutResults->_RAMTestResults.m_pResponseCachInstTagRam[4] & 0XFF) << 8) | ((DutResults->_RAMTestResults.m_pResponseCachInstTagRam[3] & 0XFF) << 16) | ((DutResults->_RAMTestResults.m_pResponseCachInstTagRam[2] & 0XFF) << 24);
+		uint32_t fp5 = (DutResults->_RAMTestResults.m_pResponseScmAndMainRam[5] & 0XFF) | ((DutResults->_RAMTestResults.m_pResponseScmAndMainRam[4] & 0XFF) << 8) | ((DutResults->_RAMTestResults.m_pResponseScmAndMainRam[3] & 0XFF) << 16) | ((DutResults->_RAMTestResults.m_pResponseScmAndMainRam[2] & 0XFF) << 24);
+
+		fprintf(pFile, "\nRAMTest,%s,%.0f ms,Data cache data RAM,Data cache tag RAM,Instruction cache data RAM,Instruction cache tag RAM,SCM RAM and main RAM\n", (DutResults->_RAMTestResults.bPass) ? "Pass" : "Fail", DutResults->_RAMTestResults.m_elapsedtime);
+		fprintf(pFile, ",,,%s,%s,%s,%s,%s", (DutResults->_RAMTestResults.bPassCacheDataRam) ? "Pass" : "Fail", (DutResults->_RAMTestResults.bPassCacheTagRam) ? "Pass" : "Fail", (DutResults->_RAMTestResults.bPassCachInstDataRam) ? "Pass" : "Fail", (DutResults->_RAMTestResults.bPassCachInstTagRam) ? "Pass" : "Fail", (DutResults->_RAMTestResults.bPassScmAndMainRam) ? "Pass" : "Fail");
+
+		fprintf(pFile, "\nAddresses:,,,%X,%X,%X,%X,%X",
+			(DutResults->_RAMTestResults.bPassCacheDataRam) ? 0 : fp1,
+			(DutResults->_RAMTestResults.bPassCacheTagRam) ? 0 : fp2,
+			(DutResults->_RAMTestResults.bPassCachInstDataRam) ? 0 : fp3,
+			(DutResults->_RAMTestResults.bPassCachInstTagRam) ? 0 : fp4,
+			(DutResults->_RAMTestResults.bPassScmAndMainRam) ? 0 : fp5);
+
+		fprintf(pFile, "\n");
+	}
+
+	//Opens/Shorts Test
+	if (DutInfo->_opensShortsInfo.m_bExecuted)
+	{
+		fprintf(pFile, "\nOpens/Shorts Test,%s,%.0f ms", DutResults->_opensShortsResults.m_bPass ? "Pass" : "Fail", DutResults->_opensShortsResults.m_elapsedtime);
+
+		for (int i = 0; i<25; i++)
+			fprintf(pFile, ",%d", *((uint32_t*)(&DutResults->_opensShortsResults.m_pResponse[(i + 1) * 4])));
+		fprintf(pFile, "\n");
+	}
+
 	//Pixel Patch
-	fprintf(pFile, "\nPixel Patch, %s,%lf ms\n", DutResults->_pixelPatchResults.m_bPass ? "Pass" : "Fail", DutResults->_pixelPatchResults.m_elapsedtime);
-	fprintf(pFile, ",,,");
-	for (int i = 0; i < (DutInfo->_pixelPatchInfo.m_nNumResBytes) / 4; i++)
-		fprintf(pFile, "%d,", *((uint32_t*)&DutResults->_pixelPatchResults.m_pResponse[i * 4]));
-	fprintf(pFile, "\n");
+	if (DutInfo->_pixelPatchInfo.m_bExecuted)
+	{
+		fprintf(pFile, "\nPixel Patch, %s,%.0f ms\n", DutResults->_pixelPatchResults.m_bPass ? "Pass" : "Fail", DutResults->_pixelPatchResults.m_elapsedtime);
+		fprintf(pFile, ",,,");
+		for (int i = 0; i < (DutInfo->_pixelPatchInfo.m_nNumResBytes) / 4; i++)
+			fprintf(pFile, "%d,", *((uint32_t*)&DutResults->_pixelPatchResults.m_pResponse[i * 4]));
+		fprintf(pFile, "\n");
+	}
+
+	//WoVarTest
+	if (DutInfo->_woVarInfo.m_bExecuted)
+	{
+		fprintf(pFile, "\nWoVarTest,%s,%.0f ms\n", (DutResults->_woVarResults.m_bPass != 0) ? "Pass" : "Fail", DutResults->_woVarResults.m_elapsedtime);
+
+		fprintf(pFile, ",,,");
+		for (int i = 0; i<(DutInfo->_woVarInfo.m_nNumResBytes / 4); i++)
+			fprintf(pFile, "%d,", *((uint32_t*)&DutResults->_woVarResults.m_pResponse[i * 4]));
+		fprintf(pFile, "\n");
+	}
+
+	//AFE Test
+	if (DutInfo->_AFETestInfo.m_bExecuted)
+	{
+		fprintf(pFile, "\nAFE Test,%s,%.0f ms,", (DutResults->_AFETestResults.m_bPass) ? "Pass" : "Fail", DutResults->_AFETestResults.m_elapsedtime);
+
+		for (int i = 0; i<13; i++)
+		{
+			if (i == 0)
+				fprintf(pFile, "%d,", DutResults->_AFETestResults.m_pResponse[4]);
+			else
+				fprintf(pFile, "0,");
+		}
+		fprintf(pFile, "\n,,,");
+
+		uint32_t temp = 0x00000000;
+		for (int i = 0; i<13; i++)
+		{
+			temp = 0x00000000;
+			temp |= int(DutResults->_AFETestResults.m_pResponse[(4 * i) + 11]) << 24;
+			temp |= int(DutResults->_AFETestResults.m_pResponse[(4 * i) + 10]) << 16;
+			temp |= int(DutResults->_AFETestResults.m_pResponse[(4 * i) + 9]) << 8;
+			temp |= int(DutResults->_AFETestResults.m_pResponse[(4 * i) + 8]);
+			fprintf(pFile, "%d,", temp);
+		}
+
+		fprintf(pFile, "\n");
+	}
+
+	//WOF-Lowpower
+	if (DutInfo->_wofLowPowerInfo.m_bExecuted)
+	{
+		if (DutResults->_wofLowPowerResults.m_bPass == 0)
+		{
+			fprintf(pFile, "\nWOF-Low Power,Fail,%.0f ms,Current (uA),%.3f\n", DutResults->_wofLowPowerResults.m_elapsedtime, DutResults->_wofLowPowerResults.m_nCurrent_uA);
+		}
+		else //Pass
+		{
+			fprintf(pFile, "\nWOF-Low Power,Pass,%.0f ms,Current (uA),%.3f\n", DutResults->_wofLowPowerResults.m_elapsedtime, DutResults->_wofLowPowerResults.m_nCurrent_uA);
+		}
+	}
 
 	//Cablication
-	fprintf(pFile, "\nCalibration, %s,%lf ms\n", DutResults->_calibrationResults.m_bPass ? "Pass" : "Fail", DutResults->_calibrationResults.m_elapsedtime);
-	// Stage1 LNA values from print patch
-	fprintf(pFile, ",,,Stage1");
-	for (int i = 0; i < RowNumber; i++)
+	if (DutInfo->_calibrationInfo.m_bExecuted)
 	{
-		fprintf(pFile, ",%02X", DutResults->_calibrationResults.m_pPrintPatch[i + DutInfo->_calibrationInfo.m_nLnaIdx]);
-	}
-	if (DutInfo->_calibrationInfo.m_nCalType == 0)
-	{
-		fprintf(pFile, "\n,,,Stage2");
+		fprintf(pFile, "\nCalibration, %s,%.0f ms\n", DutResults->_calibrationResults.m_bPass ? "Pass" : "Fail", DutResults->_calibrationResults.m_elapsedtime);
+		// Stage1 LNA values from print patch
+		fprintf(pFile, ",,,Stage1");
 		for (int i = 0; i < RowNumber; i++)
 		{
-			fprintf(pFile, ",%02X", DutResults->_calibrationResults.m_arPgaOffsets[i]);
+			fprintf(pFile, ",%02X", DutResults->_calibrationResults.m_pPrintPatch[i + DutInfo->_calibrationInfo.m_nLnaIdx]);
 		}
-		fprintf(pFile, "\n");
-	}
-	else if (DutInfo->_calibrationInfo.m_nCalType == 1)
-	{
-		fprintf(pFile, "\n,,,Stage2 Used");
-		for (int i = 0; i<(RowNumber)* (ColumnNumber - 8); i++)
+		if (DutInfo->_calibrationInfo.m_nCalType == 0)
 		{
-			fprintf(pFile, ",%02X", DutResults->_calibrationResults.m_arPgaOffsets[i]);
-		}
-		fprintf(pFile, "\n");
-	}
-	else
-	{
-		fprintf(pFile, ",,,Stage2 Used,N/A\n");
-	}
-	// Stage2 OTP values	
-	if (DutInfo->_calibrationInfo.m_nCalType == 1)
-	{
-		if (DutResults->_calibrationResults.m_nPGA_OOPP_count != 0)
-		{
-			fprintf(pFile, ",,,Stage2 OTP");
-			for (int i = 0; i< (NUM_PGA_OOPP_OTP_ROWS * (ColumnNumber - 8)); i++)
+			fprintf(pFile, "\n,,,Stage2");
+			for (int i = 0; i < RowNumber; i++)
 			{
-				fprintf(pFile, ",%02X", DutResults->_calibrationResults.m_pPGAOtpArray[i]);
+				fprintf(pFile, ",%02X", DutResults->_calibrationResults.m_arPgaOffsets[i]);
 			}
-
-			fprintf(pFile, "\n,,,Stage2 Variance Score,N/A\n");
+			fprintf(pFile, "\n");
+		}
+		else if (DutInfo->_calibrationInfo.m_nCalType == 1)
+		{
+			fprintf(pFile, "\n,,,Stage2 Used");
+			for (int i = 0; i<(RowNumber)* (ColumnNumber - 8); i++)
+			{
+				fprintf(pFile, ",%02X", DutResults->_calibrationResults.m_arPgaOffsets[i]);
+			}
+			fprintf(pFile, "\n");
 		}
 		else
 		{
-			fprintf(pFile, ",,,Stage2 OTP,N/A\n");
-			fprintf(pFile, ",,,Stage2 Variance Score,N/A\n");
+			fprintf(pFile, ",,,Stage2 Used,N/A\n");
 		}
+		// Stage2 OTP values	
+		if (DutInfo->_calibrationInfo.m_nCalType == 1)
+		{
+			if (DutResults->_calibrationResults.m_nPGA_OOPP_count != 0)
+			{
+				fprintf(pFile, ",,,Stage2 OTP");
+				for (int i = 0; i< (NUM_PGA_OOPP_OTP_ROWS * (ColumnNumber - 8)); i++)
+				{
+					fprintf(pFile, ",%02X", DutResults->_calibrationResults.m_pPGAOtpArray[i]);
+				}
+
+				fprintf(pFile, "\n,,,Stage2 Variance Score,N/A\n");
+			}
+			else
+			{
+				fprintf(pFile, ",,,Stage2 OTP,N/A\n");
+				fprintf(pFile, ",,,Stage2 Variance Score,N/A\n");
+			}
+		}
+		fprintf(pFile, ",,,FlexId,%04X\n", DutInfo->_initInfo.m_nFlexId);
 	}
-	fprintf(pFile, ",,,FlexId,%04X\n", DutInfo->_initInfo.m_nFlexId);
+
+	//WakeOnFinger Test
+	if ((DutInfo->_wofInfo.m_bExecutedWithoutStimulus == 1) || (DutInfo->_wofInfo.m_bExecutedWithStimulus == 1))
+	{
+		fprintf(pFile, "\nWakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta,WithFinger_3.7v,Delta_3.7v,Limit_Delta_100,Limit_Delta_200,Limit_Delta_200_3p7",DutResults->_wofResults.m_bPass ? "Pass" : "Fail", DutResults->_wofResults.m_elapsedtime);
+
+		if (DutResults->_wofResults.m_bPassAtGain100)
+		{
+			fprintf(pFile, "\n,,,%d,%d,%d,%d,%s,%s,%d,%d,%d\n",
+				DutResults->_wofResults.m_nTriggerIdxWithoutStim_100, DutResults->_wofResults.m_nTriggerIdxWithStim_100, 100,
+				DutResults->_wofResults.m_nTriggerIdxWithoutStim_100 - DutResults->_wofResults.m_nTriggerIdxWithStim_100, "None", "None",
+				DutInfo->_wofInfo.m_nDelta_100, DutInfo->_wofInfo.m_nDelta_200, DutInfo->_wofInfo.m_nDelta_200_3p7);
+		}
+		else if (DutResults->_wofResults.m_bPassAtGain200)
+		{
+			fprintf(pFile, "\n,,,%d,%d,%d,%d,%s,%s,%d,%d,%d\n",
+				DutResults->_wofResults.m_nTriggerIdxWithoutStim_200, DutResults->_wofResults.m_nTriggerIdxWithStim_200, 200,
+				DutResults->_wofResults.m_nTriggerIdxWithoutStim_200 - DutResults->_wofResults.m_nTriggerIdxWithStim_200, "None", "None",
+				DutInfo->_wofInfo.m_nDelta_100, DutInfo->_wofInfo.m_nDelta_200, DutInfo->_wofInfo.m_nDelta_200_3p7);
+		}
+		else
+		{
+			fprintf(pFile, "\n,,,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
+				DutResults->_wofResults.m_nTriggerIdxWithoutStim_200, DutResults->_wofResults.m_nTriggerIdxWithStim_200, 200,
+				DutResults->_wofResults.m_nTriggerIdxWithoutStim_200 - DutResults->_wofResults.m_nTriggerIdxWithStim_200, DutResults->_wofResults.m_nTriggerIdxWithStim_200_3p7,
+				DutResults->_wofResults.m_nTriggerIdxWithoutStim_200 - DutResults->_wofResults.m_nTriggerIdxWithStim_200_3p7,
+				DutInfo->_wofInfo.m_nDelta_100, DutInfo->_wofInfo.m_nDelta_200, DutInfo->_wofInfo.m_nDelta_200_3p7);
+		}
+		fprintf(pFile, "\n");
+	}
+	
+	//SCM WakeOnFinger Test
+	if ((DutInfo->_SCM_wofInfo.m_bExecutedWithoutStimulus == 1) || (DutInfo->_SCM_wofInfo.m_bExecutedWithStimulus == 1))
+	{
+		fprintf(pFile, "\nSCM WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta,WithFinger_3.7v,Delta_3.7v,Limit_Delta_100,Limit Delta_200,Limit_Delta_200_3p7", DutResults->_SCM_wofResults.m_bPass ? "Pass" : "Fail", DutResults->_SCM_wofResults.m_elapsedtime);
+
+		if (DutResults->_SCM_wofResults.m_bPassAtGain100)
+		{
+			fprintf(pFile, "\n,,,%d,%d,%d,%d,%s,%s,%d,%d,%d\n",
+				DutResults->_SCM_wofResults.m_nTriggerIdxWithoutStim_100, DutResults->_SCM_wofResults.m_nTriggerIdxWithStim_100, 100,
+				DutResults->_SCM_wofResults.m_nTriggerIdxWithoutStim_100 - DutResults->_SCM_wofResults.m_nTriggerIdxWithStim_100, "None", "None",
+				DutInfo->_SCM_wofInfo.m_nDelta_100, DutInfo->_SCM_wofInfo.m_nDelta_200, DutInfo->_SCM_wofInfo.m_nDelta_200_3p7);
+		}
+		else if (DutResults->_SCM_wofResults.m_bPassAtGain200)
+		{
+			fprintf(pFile, "\n,,,%d,%d,%d,%d,%s,%s,%d,%d,%d\n",
+				DutResults->_SCM_wofResults.m_nTriggerIdxWithoutStim_200, DutResults->_SCM_wofResults.m_nTriggerIdxWithStim_200, 200,
+				DutResults->_SCM_wofResults.m_nTriggerIdxWithoutStim_200 - DutResults->_SCM_wofResults.m_nTriggerIdxWithStim_200, "None", "None",
+				DutInfo->_SCM_wofInfo.m_nDelta_100, DutInfo->_SCM_wofInfo.m_nDelta_200, DutInfo->_SCM_wofInfo.m_nDelta_200_3p7);
+		}
+		else
+		{
+			fprintf(pFile, "\n,,,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
+				DutResults->_SCM_wofResults.m_nTriggerIdxWithoutStim_200, DutResults->_SCM_wofResults.m_nTriggerIdxWithStim_200, 200,
+				DutResults->_SCM_wofResults.m_nTriggerIdxWithoutStim_200 - DutResults->_SCM_wofResults.m_nTriggerIdxWithStim_200, DutResults->_SCM_wofResults.m_nTriggerIdxWithStim_200_3p7,
+				DutResults->_SCM_wofResults.m_nTriggerIdxWithoutStim_200 - DutResults->_SCM_wofResults.m_nTriggerIdxWithStim_200_3p7,
+				DutInfo->_SCM_wofInfo.m_nDelta_100, DutInfo->_SCM_wofInfo.m_nDelta_200, DutInfo->_SCM_wofInfo.m_nDelta_200_3p7);
+		}
+		fprintf(pFile, "\n");
+	}
 
 	//Pegged Pixels Test
-	fprintf(pFile, "\nPegged Pixels Test,%s,%lf ms,Rows,", DutResults->_peggedPixelsResults.m_bPass ? "Pass" : "Fail", DutResults->_peggedPixelsResults.m_elapsedtime);
-	for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithoutStim + DutInfo->_initInfo.m_nTrimBotWithoutStim); i++)
-		fprintf(pFile, "%d,", DutResults->_peggedPixelsResults.pegged_pixel_rows[i]);
+	if (DutInfo->_peggedPixelsInfo.m_bExecuted)
+	{
+		fprintf(pFile, "\nPegged Pixels Test,%s,%.0f ms,Rows,", DutResults->_peggedPixelsResults.m_bPass ? "Pass" : "Fail", DutResults->_peggedPixelsResults.m_elapsedtime);
+		for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithoutStim + DutInfo->_initInfo.m_nTrimBotWithoutStim); i++)
+			fprintf(pFile, "%d,", DutResults->_peggedPixelsResults.pegged_pixel_rows[i]);
 
-	fprintf(pFile, "\n,,,Columns,");
-	for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
-		fprintf(pFile, "%d,", DutResults->_peggedPixelsResults.pegged_pixel_cols[i]);
-	fprintf(pFile, "\n");
+		fprintf(pFile, "\n,,,Columns,");
+		for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
+			fprintf(pFile, "%d,", DutResults->_peggedPixelsResults.pegged_pixel_cols[i]);
+		fprintf(pFile, "\n");
+	}
 
 	//Floored Pixels Test
-	fprintf(pFile, "\nFloored Pixels Test,%s,%lf ms,Rows,", DutResults->_flooredPixelsResults.m_bPass ? "Pass" : "Fail", DutResults->_flooredPixelsResults.m_elapsedtime);
-	for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithoutStim + DutInfo->_initInfo.m_nTrimBotWithoutStim); i++)
-		fprintf(pFile, "%d,", DutResults->_flooredPixelsResults.floored_pixel_rows[i]);
+	if (DutInfo->_flooredPixelsInfo.m_bExecuted)
+	{
+		fprintf(pFile, "\nFloored Pixels Test,%s,%.0f ms,Rows,", DutResults->_flooredPixelsResults.m_bPass ? "Pass" : "Fail", DutResults->_flooredPixelsResults.m_elapsedtime);
+		for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithoutStim + DutInfo->_initInfo.m_nTrimBotWithoutStim); i++)
+			fprintf(pFile, "%d,", DutResults->_flooredPixelsResults.floored_pixel_rows[i]);
 
-	fprintf(pFile, "\n,,,Columns,");
-	for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
-		fprintf(pFile, "%d,", DutResults->_flooredPixelsResults.floored_pixel_cols[i]);
-	fprintf(pFile, "\n");
+		fprintf(pFile, "\n,,,Columns,");
+		for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
+			fprintf(pFile, "%d,", DutResults->_flooredPixelsResults.floored_pixel_cols[i]);
+		fprintf(pFile, "\n");
+	}
 
 	//DRdy Test
-	fprintf(pFile, "\nDRdy Test,%s,%lf ms\n", DutResults->_DRdyResults.m_bPass ? "Pass" : "Fail", DutResults->_DRdyResults.m_elapsedtime);
+	if (DutInfo->_DRdyInfo.m_bExecuted)
+	{
+		fprintf(pFile, "\nDRdy Test,%s,%.0f ms\n", DutResults->_DRdyResults.m_bPass ? "Pass" : "Fail", DutResults->_DRdyResults.m_elapsedtime);
+	}
 
 	//Consecutive Pixels Test
-	fprintf(pFile, "\nConsecutive Pixels Test,%s,%lf ms,Pegged Rows,", DutResults->_consecutivePixelsResults.m_bPass ? "Pass" : "Fail", DutResults->_consecutivePixelsResults.m_elapsedtime);
-	for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithoutStim + DutInfo->_initInfo.m_nTrimBotWithoutStim); i++)
-		fprintf(pFile, "%d,", DutResults->_consecutivePixelsResults.consecutive_pegged_rows[i]);
+	if (DutInfo->_consecutivePixelsInfo.m_bExecuted)
+	{
+		fprintf(pFile, "\nConsecutive Pixels Test,%s,%.0f ms,Pegged Rows,", DutResults->_consecutivePixelsResults.m_bPass ? "Pass" : "Fail", DutResults->_consecutivePixelsResults.m_elapsedtime);
+		for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithoutStim + DutInfo->_initInfo.m_nTrimBotWithoutStim); i++)
+			fprintf(pFile, "%d,", DutResults->_consecutivePixelsResults.consecutive_pegged_rows[i]);
 
-	fprintf(pFile, "\n,,,Floored Rows,");
-	for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithoutStim + DutInfo->_initInfo.m_nTrimBotWithoutStim); i++)
-		fprintf(pFile, "%d,", DutResults->_consecutivePixelsResults.consecutive_floored_rows[i]);
+		fprintf(pFile, "\n,,,Floored Rows,");
+		for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithoutStim + DutInfo->_initInfo.m_nTrimBotWithoutStim); i++)
+			fprintf(pFile, "%d,", DutResults->_consecutivePixelsResults.consecutive_floored_rows[i]);
 
-	fprintf(pFile, "\n,,,Pegged Columns,");
-	for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
-		fprintf(pFile, "%d,", DutResults->_consecutivePixelsResults.consecutive_pegged_cols[i]);
+		fprintf(pFile, "\n,,,Pegged Columns,");
+		for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
+			fprintf(pFile, "%d,", DutResults->_consecutivePixelsResults.consecutive_pegged_cols[i]);
 
-	fprintf(pFile, "\n,,,Floored Columns,");
-	for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
-		fprintf(pFile, "%d,", DutResults->_consecutivePixelsResults.consecutive_floored_cols[i]);
-	fprintf(pFile, "\n");
+		fprintf(pFile, "\n,,,Floored Columns,");
+		for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
+			fprintf(pFile, "%d,", DutResults->_consecutivePixelsResults.consecutive_floored_cols[i]);
+		fprintf(pFile, "\n");
+	}
 
 	//Current Test
-	fprintf(pFile, "\nCurrent Test,%s,%lf ms,", DutResults->_currentResults.bPass ? "Pass" : "Fail", DutResults->_currentResults.m_elapsedtime);
-	//If the test was successful.
-	if (DutResults->_currentResults.bPass != 0)
+	if (DutInfo->_currentInfo.m_bExecuted)
 	{
-		fprintf(pFile, "Digital image acq current (mA),%.3f\n", (float)(DutResults->_currentResults.m_nImageAcqDigCurrent_uA) / 1000);
-		fprintf(pFile, ",,,Analog image acq current (mA),%.3f\n", (float)(DutResults->_currentResults.m_nImageAcqAnaCurrent_uA) / 1000);
+		fprintf(pFile, "\nCurrent Test,%s,%.0f ms,", DutResults->_currentResults.bPass ? "Pass" : "Fail", DutResults->_currentResults.m_elapsedtime);
+		//If the test was successful.
+		if (DutResults->_currentResults.bPass != 0)
+		{
+			fprintf(pFile, "Digital image acq current (mA),%.3f\n", (float)(DutResults->_currentResults.m_nImageAcqDigCurrent_uA) / 1000);
+			fprintf(pFile, ",,,Analog image acq current (mA),%.3f\n", (float)(DutResults->_currentResults.m_nImageAcqAnaCurrent_uA) / 1000);
+		}
+		else
+		{
+			fprintf(pFile, "Digital image acq current (mA),%.3f\n", (float)(DutResults->_currentResults.m_nImageAcqDigCurrent_uA) / 1000);
+			fprintf(pFile, ",,,Analog image acq current (mA),%.3f\n", (float)(DutResults->_currentResults.m_nImageAcqAnaCurrent_uA) / 1000);
+		}
 	}
-	else
+
+	//Retain Mode Test
+	if (DutInfo->_retainModeInfo.m_bExecuted)
 	{
-		fprintf(pFile, "Digital image acq current (mA),%.3f\n", (float)(DutResults->_currentResults.m_nImageAcqDigCurrent_uA) / 1000);
-		fprintf(pFile, ",,,Analog image acq current (mA),%.3f\n", (float)(DutResults->_currentResults.m_nImageAcqAnaCurrent_uA) / 1000);
+		fprintf(pFile, "\nRetain Mode Test,%s,%0.f ms,ADC Value,", DutResults->_retainModeResults.m_bPass ? "Pass" : "Fail", DutResults->_retainModeResults.m_elapsedtime);
+		fprintf(pFile, "\n,,,%.3f", DutResults->_retainModeResults.m_nRetainModeCurrent);
+		fprintf(pFile, "\n");
 	}
 
 	//SNR Test
-	fprintf(pFile, "\nSNR Test,%s,%lf ms,", DutResults->_snrResults.bPass ? "Pass" : "Fail", DutResults->_snrResults.m_elapsedtime);
-	fprintf(pFile, "Signal_Z1,Noise_Z1,SNR_Z1,Signal_Z2,Noise_Z2,SNR_Z2,Signal_Z3,Noise_Z3,SNR_Z3,Signal_Z4,Noise_Z4,SNR_Z4,Signal_Z5,Noise_Z5,SNR_Z5,Signal_Z6,Noise_Z6,SNR_Z6,Signal_OVERALL,Noise_OVERALL,SNR_OVERALL\n");
-	fprintf(pFile, ",,,");
-	for (int i = 0; i<REGIONS; i++)
-		fprintf(pFile, "%d,%f,%f,", DutResults->_snrResults.SIGNAL[i], DutResults->_snrResults.NOISE[i], DutResults->_snrResults.SNR[i]);
-	fprintf(pFile, "\n");
+	if (DutInfo->_snrInfo.m_bExecuted)
+	{
+		fprintf(pFile, "\nSNR Test,%s,%.0f ms,", DutResults->_snrResults.bPass ? "Pass" : "Fail", DutResults->_snrResults.m_elapsedtime);
+		fprintf(pFile, "Signal_Z1,Noise_Z1,SNR_Z1,Signal_Z2,Noise_Z2,SNR_Z2,Signal_Z3,Noise_Z3,SNR_Z3,Signal_Z4,Noise_Z4,SNR_Z4,Signal_Z5,Noise_Z5,SNR_Z5,Signal_Z6,Noise_Z6,SNR_Z6,Signal_OVERALL,Noise_OVERALL,SNR_OVERALL\n");
+		fprintf(pFile, ",,,");
+		for (int i = 0; i<REGIONS; i++)
+			fprintf(pFile, "%d,%f,%f,", DutResults->_snrResults.SIGNAL[i], DutResults->_snrResults.NOISE[i], DutResults->_snrResults.SNR[i]);
+		fprintf(pFile, "\n");
+	}
 
 	//Pixel Uniformity Test
-	fprintf(pFile, "\nPixel Uniformity Test,%s,%lf ms,", DutResults->_pixelResults.bPass ? "Pass" : "Fail", DutResults->_pixelResults.m_elapsedtime);
-	fprintf(pFile, "Minimum Pixel,Maximum Pixel,Failing Pixel Count\n");
-	fprintf(pFile, ",,,%d,%d,%d,", DutResults->_pixelResults.nMinPixelValue, DutResults->_pixelResults.nMaxPixelValue, DutResults->_pixelResults.nCountAboveThreshold);
-	fprintf(pFile, "\n");
+	if (DutInfo->_pixelInfo.m_bExecuted)
+	{
+		fprintf(pFile, "\nPixel Uniformity Test,%s,%.0f ms,", DutResults->_pixelResults.bPass ? "Pass" : "Fail", DutResults->_pixelResults.m_elapsedtime);
+		fprintf(pFile, "Minimum Pixel,Maximum Pixel,Failing Pixel Count\n");
+		fprintf(pFile, ",,,%d,%d,%d,", DutResults->_pixelResults.nMinPixelValue, DutResults->_pixelResults.nMaxPixelValue, DutResults->_pixelResults.nCountAboveThreshold);
+		fprintf(pFile, "\n");
+	}
 
 	//Sharpness Test
-	fprintf(pFile, "\nSharpness Test,%s,%lf ms\n", DutResults->_SharpnessResults.bPass ? "Pass" : "Fail", DutResults->_SharpnessResults.m_elapsedtime);
-	fprintf(pFile, ",,,Variation(%%),Zone1,Zone2,Zone3,Overall\n");
-	fprintf(pFile, ",,,%f,%d,%d,%d,%d", DutResults->_SharpnessResults.percent, (int)DutResults->_SharpnessResults.SHARPNESS[0], (int)DutResults->_SharpnessResults.SHARPNESS[1], (int)DutResults->_SharpnessResults.SHARPNESS[2], (int)DutResults->_SharpnessResults.SHARPNESS[3]);
-	fprintf(pFile, "\n");
+	if (DutInfo->_SharpnessInfo.m_bExecuted)
+	{
+		fprintf(pFile, "\nSharpness Test,%s,%.0f ms\n", DutResults->_SharpnessResults.bPass ? "Pass" : "Fail", DutResults->_SharpnessResults.m_elapsedtime);
+		fprintf(pFile, ",,,Variation(%%),Zone1,Zone2,Zone3,Overall\n");
+		fprintf(pFile, ",,,%f,%d,%d,%d,%d", DutResults->_SharpnessResults.percent, (int)DutResults->_SharpnessResults.SHARPNESS[0], (int)DutResults->_SharpnessResults.SHARPNESS[1], (int)DutResults->_SharpnessResults.SHARPNESS[2], (int)DutResults->_SharpnessResults.SHARPNESS[3]);
+		fprintf(pFile, "\n");
+	}
 
 	//RxStandardDev Test
-	fprintf(pFile, "\nRxStandardDev Test,%s,%lf ms", DutResults->_RxStandardDevResults.m_bPass ? "Pass" : "Fail", DutResults->_RxStandardDevResults.m_elapsedtime);
-	fprintf(pFile, "\n,,,Percent:,");
-	for (int i = 0; i<(RowNumber - DutInfo->_initInfo.m_nTrimTopWithStim - DutInfo->_initInfo.m_nTrimBotWithStim); i++)
-		fprintf(pFile, "%f,", DutResults->_RxStandardDevResults.percent[i]);
-	fprintf(pFile, "\n");
+	if (DutInfo->_RxStandardDevInfo.m_bExecuted)
+	{
+		fprintf(pFile, "\nRxStandardDev Test,%s,%.0f ms", DutResults->_RxStandardDevResults.m_bPass ? "Pass" : "Fail", DutResults->_RxStandardDevResults.m_elapsedtime);
+		fprintf(pFile, "\n,,,Percent:,");
+		for (int i = 0; i<(RowNumber - DutInfo->_initInfo.m_nTrimTopWithStim - DutInfo->_initInfo.m_nTrimBotWithStim); i++)
+			fprintf(pFile, "%f,", DutResults->_RxStandardDevResults.percent[i]);
+		fprintf(pFile, "\n");
+	}
 
 	//Imperfections Test
-	fprintf(pFile, "\nImperfections Test,%s,%lf ms,Along Rows,", DutResults->_imperfectionsTestResults.m_bPass ? "Pass" : "Fail", DutResults->_imperfectionsTestResults.m_elapsedtime);
-	for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithStim + DutInfo->_initInfo.m_nTrimBotWithStim); i++)
-		fprintf(pFile, "%d,", DutResults->_imperfectionsTestResults.consecutive_pegged_rows[i]);
-	fprintf(pFile, "\n,,,Along Columns,");
-	for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
-		fprintf(pFile, "%d,", DutResults->_imperfectionsTestResults.consecutive_pegged_cols[i]);
-	fprintf(pFile, "\n");
+	if (DutInfo->_imperfectionsTestInfo.m_bExecuted)
+	{
+		fprintf(pFile, "\nImperfections Test,%s,%.0f ms,Along Rows,", DutResults->_imperfectionsTestResults.m_bPass ? "Pass" : "Fail", DutResults->_imperfectionsTestResults.m_elapsedtime);
+		for (int i = 0; i<RowNumber - (DutInfo->_initInfo.m_nTrimTopWithStim + DutInfo->_initInfo.m_nTrimBotWithStim); i++)
+			fprintf(pFile, "%d,", DutResults->_imperfectionsTestResults.consecutive_pegged_rows[i]);
+		fprintf(pFile, "\n,,,Along Columns,");
+		for (int i = 0; i<ColumnNumber - HEADER - (DutInfo->_initInfo.m_nTrimLeftWithoutStim + DutInfo->_initInfo.m_nTrimRightWithoutStim); i++)
+			fprintf(pFile, "%d,", DutResults->_imperfectionsTestResults.consecutive_pegged_cols[i]);
+		fprintf(pFile, "\n");
+	}
 
 	//Average No Finger & Average Finger
 	//int numFrames = 30;

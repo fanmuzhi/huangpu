@@ -67,6 +67,7 @@ void Ts_ReadDutAdc::Execute()
 	uint8_t pDst[MS0_SIZE] = { 0 };
 	int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_DutTempAdc, pDst, MS0_SIZE);
 	if (0 == count)
+	//if (count)
 	{
 		int nTotal = 0;
 		int nNumAdcReadings = 3;

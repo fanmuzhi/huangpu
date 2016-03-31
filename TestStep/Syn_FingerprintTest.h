@@ -6,7 +6,9 @@
 
 //std
 #include <time.h>
-#include <sys/timeb.h>
+
+//windows
+#include <windows.h>
 
 class Syn_FingerprintTest :public Syn_TestStep
 {
@@ -47,6 +49,6 @@ protected:
 
 	Syn_Module *_pSyn_Module;
 
-	//clock_t _starttime, _finishtime;
-	time_t _starttime, _finishtime;
+	DWORD _starttime, _finishtime;
+	//time_t _starttime, _finishtime;
 };

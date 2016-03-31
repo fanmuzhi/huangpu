@@ -161,6 +161,7 @@ void Ts_SCM_WOF::Execute()
 
 void Ts_SCM_WOF::ProcessData()
 {
+
 	Syn_Exception ex(0);
 	if (NULL == _pSyn_DutCtrl)
 	{
@@ -176,6 +177,11 @@ void Ts_SCM_WOF::ProcessData()
 		throw ex;
 		return;
 	}
+
+	//
+	double dCurrentElapsedTime(0);
+	ComputeRunningTime(dCurrentElapsedTime);
+	_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_elapsedtime += dCurrentElapsedTime;
 
 	if (_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_bPass == 0)
 	{
