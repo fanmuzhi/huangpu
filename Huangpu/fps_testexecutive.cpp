@@ -1560,6 +1560,14 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 		Display(oDutTestInfo->_otpCheckInfo._MainSector1Array, StartPos, EndPos);
 	}
 
+	//tag value
+	ui.textBrowser->append(QString("\nTAG Value:\n"));
+	for (std::map<std::string, std::string>::iterator iter = oDutTestResult->_mapMainSectorInfo.begin(); iter != oDutTestResult->_mapMainSectorInfo.end(); iter++)
+	{
+		QString qsTempValue = QString::fromStdString(iter->first) + ":" + QString::fromStdString(iter->second)+"\n";
+		ui.textBrowser->append(qsTempValue);
+	}
+
 	pSelectedSite->Close();
 }
 

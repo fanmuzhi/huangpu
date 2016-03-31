@@ -14,4 +14,6 @@ public:
 	virtual void ProcessData();
 
 	virtual void CleanUp();
+
+	string HexToString(uint8_t arrValue[], int arrSize);
 };
