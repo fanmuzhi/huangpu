@@ -75,88 +75,129 @@ void Ts_SCM_WOF::SetUp()
 	if (0 != listOfArgValue[11].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_nVCC = std::stof(listOfArgValue[11]);
 
-	//Power On
-	PowerOff();
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-	_pSyn_DutCtrl->FpUnloadPatch();
+	////load OTPReadWritePatch
+	//Syn_PatchInfo OTPRWPatchInfo;
+	//if (!_pSyn_Dut->FindPatch("OtpReadWritePatch", OTPRWPatchInfo) || NULL == OTPRWPatchInfo._pArrayBuf)
+	//{
+	//	ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+	//	ex.SetDescription("OtpReadWritePatch Patch is NULL!");
+	//	throw ex;
+	//	return;
+	//}
+	//_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
 
-	//load OTPReadWritePatch
-	Syn_PatchInfo OTPRWPatchInfo;
-	if (!_pSyn_Dut->FindPatch("OtpReadWritePatch", OTPRWPatchInfo) || NULL == OTPRWPatchInfo._pArrayBuf)
-	{
-		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-		ex.SetDescription("OtpReadWritePatch Patch is NULL!");
-		throw ex;
-		return;
-	}
-	_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
-
-	Syn_PatchInfo ScmWofPatchInfo, Cmd1ScmWofPlotInfo, Cmd2ScmWofBinInfo, Cmd3SweepTagInfo;
-	if (!_pSyn_Dut->FindPatch("ScmWofPatch", ScmWofPatchInfo) || NULL == ScmWofPatchInfo._pArrayBuf
-		|| !_pSyn_Dut->FindPatch("Cmd1ScmWofPlot", Cmd1ScmWofPlotInfo) || NULL == Cmd1ScmWofPlotInfo._pArrayBuf
-		|| !_pSyn_Dut->FindPatch("Cmd2ScmWofBin", Cmd2ScmWofBinInfo) || NULL == Cmd2ScmWofBinInfo._pArrayBuf
-		|| !_pSyn_Dut->FindPatch("Cmd3SweepTag", Cmd3SweepTagInfo) || NULL == Cmd3SweepTagInfo._pArrayBuf)
-	{
-		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-		ex.SetDescription("ScmWofPatch or Cmd1ScmWofPlot or Cmd2ScmWofBin or Cmd3SweepTag Patch is NULL!");
-		throw ex;
-	}
+	//Syn_PatchInfo ScmWofPatchInfo, Cmd1ScmWofPlotInfo, Cmd2ScmWofBinInfo, Cmd3SweepTagInfo;
+	//if (!_pSyn_Dut->FindPatch("ScmWofPatch", ScmWofPatchInfo) || NULL == ScmWofPatchInfo._pArrayBuf
+	//	|| !_pSyn_Dut->FindPatch("Cmd1ScmWofPlot", Cmd1ScmWofPlotInfo) || NULL == Cmd1ScmWofPlotInfo._pArrayBuf
+	//	|| !_pSyn_Dut->FindPatch("Cmd2ScmWofBin", Cmd2ScmWofBinInfo) || NULL == Cmd2ScmWofBinInfo._pArrayBuf
+	//	|| !_pSyn_Dut->FindPatch("Cmd3SweepTag", Cmd3SweepTagInfo) || NULL == Cmd3SweepTagInfo._pArrayBuf)
+	//{
+	//	ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+	//	ex.SetDescription("ScmWofPatch or Cmd1ScmWofPlot or Cmd2ScmWofBin or Cmd3SweepTag Patch is NULL!");
+	//	throw ex;
+	//}
 
 }
 
 void Ts_SCM_WOF::Execute()
 {
-	_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_bExecutedWithoutStimulus = true;
+	Syn_Exception ex(0);
+	if (NULL == _pSyn_DutCtrl)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutCtrlNull);
+		ex.SetDescription("_pSyn_DutCtrl is NULL!");
+		throw ex;
+		return;
+	}
+	if (NULL == _pSyn_Dut)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutNull);
+		ex.SetDescription("_pSyn_Dut is NULL!");
+		throw ex;
+		return;
+	}
 
-	uint8_t pOtpData[MS0_SIZE] = { 0 };
-	int SCM_WOF_BOTCount = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_BOT, pOtpData, MS0_SIZE);//EXT_TAG_WOF_BOT
+	//uint8_t pOtpData[MS0_SIZE] = { 0 };
+	//int SCM_WOF_BOTCount = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_BOT, pOtpData, MS0_SIZE);//EXT_TAG_WOF_BOT
 
 	//if (GetSite().m_calibrationResults.m_nScmWofBot_count == 0)
-	uint8_t pDst[MS0_SIZE] = { 0 };
-	int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_BOT, pDst, MS0_SIZE);
-	if (0 == count)
-	{
-		if (_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_bWithStimulus == 0)
-			_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_bExecutedWithoutStimulus = true;
-		else
-			_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_bExecutedWithStimulus = true;
+	//uint8_t pDst[MS0_SIZE] = { 0 };
+	//int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_BOT, pDst, MS0_SIZE);
+	//if (0 == count)
+	//{
 
-		if (_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_bWithStimulus == 0)  // If NO Stimulus
-		{
-			_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_nWithStimCount = 0;
-			SCM_WofTestExecute();
-			SCM_WofTestProcessData();
-		}
-		else  // With Stimulus
+		if (_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_bWithStimulus)  // WithStimulus
 		{
 			// run WOF test with stimulus at normal voltage
+			_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_nWithStimCount = 0;
+			//3.3V
 			SCM_WofTestExecute();
 			SCM_WofTestProcessData();
 
 			// If not PASS, run WOF test with stimulus at high voltage
 			if (_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_bPass == 0)
 			{
+				//3.7V
 				SCM_WofTestExecute();
 				SCM_WofTestProcessData();
 			}
+			_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_bExecutedWithStimulus = true;
 		}
-	}
-	else //Use the SCM WOF values stored in OTP.
-	{
-		GetOtpScmWofData(pOtpData, SCM_WOF_BOTCount);
-		_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_bPass = 1;
-	}
+		else  // Without Stimulus
+		{
+			//3.3V
+			_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_nWithStimCount = 0;
+			SCM_WofTestExecute();
+			SCM_WofTestProcessData();
+			_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_bExecutedWithoutStimulus = true;
+		}
+	//}
+	//else //Use the SCM WOF values stored in OTP.
+	//{
+	//	GetOtpScmWofData(pOtpData, SCM_WOF_BOTCount);
+	//	_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_bPass = 1;
+	//}
 }
 
 void Ts_SCM_WOF::ProcessData()
 {
+	Syn_Exception ex(0);
+	if (NULL == _pSyn_DutCtrl)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutCtrlNull);
+		ex.SetDescription("_pSyn_DutCtrl is NULL!");
+		throw ex;
+		return;
+	}
+	if (NULL == _pSyn_Dut)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutNull);
+		ex.SetDescription("_pSyn_Dut is NULL!");
+		throw ex;
+		return;
+	}
+
 	if (_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_bPass == 0)
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
-		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("SCM_WOFWithoutStimulus", "Fail"));
+		if (_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_bWithStimulus)  // WithStimulus
+		{
+			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("SCM_WOFWithStimulus", "Fail"));
+		}
+		else
+		{
+			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("SCM_WOFWithoutStimulus", "Fail"));
+		}
 	}
 	else
-		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("SCM_WOFWithoutStimulus", "Pass"));
+		if (_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_bWithStimulus)  // WithStimulus
+		{
+			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("SCM_WOFWithStimulus", "Pass"));
+		}
+		else
+		{
+			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("SCM_WOFWithoutStimulus", "Pass"));
+		}
 }
 
 void Ts_SCM_WOF::CleanUp()
@@ -167,7 +208,9 @@ void Ts_SCM_WOF::CleanUp()
 
 void Ts_SCM_WOF::SCM_WofTestExecute()
 {
-	int			timeout, timeout2;
+	Syn_Exception ex(0);
+
+	int			timeout;
 	uint8_t		pStatus[4];
 	uint8_t		pResult[2];
 	Syn_PatchInfo ScmWofPatchInfo, Cmd1ScmWofPlotInfo, Cmd2ScmWofBinInfo, Cmd3SweepTagInfo, WofCmd2Info;
@@ -178,7 +221,12 @@ void Ts_SCM_WOF::SCM_WofTestExecute()
 	_pSyn_Dut->FindPatch("WofCmd2", WofCmd2Info);
 
 	if (NULL == ScmWofPatchInfo._pArrayBuf || NULL == Cmd1ScmWofPlotInfo._pArrayBuf || NULL == Cmd2ScmWofBinInfo._pArrayBuf || NULL == Cmd3SweepTagInfo._pArrayBuf || NULL == WofCmd2Info._pArrayBuf)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+		ex.SetDescription("SCMWOF Patch is NULL!");
+		throw ex;
 		return;
+	}
 
 	uint8_t*    pWofCmd2Gains = WofCmd2Info._pArrayBuf;
 	uint8_t*	pWofCmd1 = Cmd1ScmWofPlotInfo._pArrayBuf;
@@ -189,8 +237,7 @@ void Ts_SCM_WOF::SCM_WofTestExecute()
 	int			nCmd3Size = Cmd3SweepTagInfo._uiArraySize;
 	uint8_t		pGetPrintMerged[3000] = { 0 };
 	int			nGetPrintMergedSize = nCmd2Size + nCmd3Size;
-
-	int			nVCC = (int)_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_nVCC * 1000;
+	int			nVCC = (int)(_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_nVCC * 1000);
 
 	if (_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_nWithStimCount == 0)
 		PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
@@ -231,146 +278,40 @@ void Ts_SCM_WOF::SCM_WofTestExecute()
 
 	delete[] pTempBuf;
 
-	_pSyn_DutCtrl->FpUnloadPatch();
 	//Download patch.
+	_pSyn_DutCtrl->FpUnloadPatch();
 	_pSyn_DutCtrl->FpLoadPatch(ScmWofPatchInfo._pArrayBuf, ScmWofPatchInfo._uiArraySize);
-	//GetDutCtrl().FpLoadPatch(GetSysConfig().GetPtr("ScmWofPatch"), GetSysConfig().GetSize("ScmWofPatch"));
 
 	//Write cmd1.
 	_pSyn_DutCtrl->FpWrite(1, pWofCmd1[0], &pWofCmd1[1], nCmd1Size - 1);
-
-	//Wait for cmd1 to complete.
-	timeout = 1000;
-	_pSyn_DutCtrl->FpGetStatus(pStatus, sizeof(pStatus));
-	while (timeout && !((pStatus[0] == 0x03) && (pStatus[1] == 0x00) && (pStatus[2] == 0x00) && (pStatus[3] == 0x30)))
-	{
-		_pSyn_DutCtrl->FpGetStatus(pStatus, sizeof(pStatus));
-		timeout--;
-	}
-	if (timeout == 0)
-	{
-		Syn_Exception ex(0);
-		ex.SetDescription("SCM WOF status never complete.");
-		throw(ex);
-	}
-	//Check error code returned by cmd1.
-	timeout = 1000;
-	_pSyn_DutCtrl->FpRead(1, 0xFF, pResult, sizeof(pResult));
-	while (timeout && !((pResult[0] != 0xFF) || (pResult[1] != 0xFF)))
-	{
-		_pSyn_DutCtrl->FpRead(1, 0x01, pResult, sizeof(pResult));
-		timeout--;
-	}
-	if (timeout == 0)
-	{
-		Syn_Exception ex(0);
-		ex.SetDescription("SCM WOF: Command 1 never complete.");
-		throw(ex);
-	}
+	_pSyn_DutCtrl->FpWaitForCMDComplete();
+	_pSyn_DutCtrl->FpReadAndCheckStatus(0);
 
 	//write cmd2 with GetPrintMerged
 	_pSyn_DutCtrl->FpWrite(1, 0x02, pGetPrintMerged, nGetPrintMergedSize + 4);
-
-	//Wait for cmd2 to complete.
-	timeout = 1000;
-	_pSyn_DutCtrl->FpGetStatus(pStatus, sizeof(pStatus));
-	while (timeout && !((pStatus[0] == 0x03) && (pStatus[1] == 0x00) && (pStatus[2] == 0x00) && (pStatus[3] == 0x30)))
-	{
-		_pSyn_DutCtrl->FpGetStatus(pStatus, sizeof(pStatus));
-		timeout--;
-	}
-	if (timeout == 0)
-	{
-		Syn_Exception ex(0);
-		ex.SetDescription("SCM WOF status never complete.");
-		throw(ex);
-	}
-	//Check error code returned by cmd2.
-	timeout = 1000;
-	_pSyn_DutCtrl->FpRead(1, 0xFF, pResult, sizeof(pResult));
-	while (timeout && !((pResult[0] != 0xFF) || (pResult[1] != 0xFF)))
-	{
-		_pSyn_DutCtrl->FpRead(1, 0x01, pResult, sizeof(pResult));
-		timeout--;
-	}
-	if (timeout == 0)
-	{
-		Syn_Exception ex(0);
-		ex.SetDescription("SCM WOF: Command 2 never complete.");
-		throw(ex);
-	}
+	_pSyn_DutCtrl->FpWaitForCMDComplete();
+	_pSyn_DutCtrl->FpReadAndCheckStatus(0);
 
 	//Execute command to read SCM WOF data.
 	_pSyn_DutCtrl->FpWrite(1, 0xFA, (uint8_t*)0, 0);
-
-	//Wait for command complete
-	timeout = 1000;
-	_pSyn_DutCtrl->FpGetStatus(pStatus, sizeof(pStatus));
-	while (timeout && !((pStatus[0] == 0x03) && (pStatus[1] == 0x00) && (pStatus[2] == 0x00) && (pStatus[3] == 0x30)))
-	{
-		_pSyn_DutCtrl->FpGetStatus(pStatus, sizeof(pStatus));
-		timeout--;
-
-		if (timeout % 44 == 0)
-			_pSyn_DutCtrl->FpWrite(1, 0xFA, (uint8_t*)0, 0);
-	}
-
-	_pSyn_DutCtrl->FpRead(1, 0xFF, _pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_arWofData, _pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_nNumResponseBytes);
-
-	//	if (timeout == 0)
-	//	{
-	//		ExTestStep ex(0);
-	//		ex.SetDescription("SCM WOF: Status never complete.");
-	//		throw(ex);
-	//	}
+	_pSyn_DutCtrl->FpWaitForCMDComplete();
 
 	//Get response data.
-	timeout2 = 1000;
 	_pSyn_DutCtrl->FpRead(1, 0xFF, _pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_arWofData, _pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_nNumResponseBytes);
-	while (timeout2 && !((_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_arWofData[0] == 0x00) && (_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_arWofData[1] == 0x00)))
+	timeout = 1000;
+	while (timeout && !((_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_arWofData[0] == 0x00) && (_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_arWofData[1] == 0x00)))
 	{
 		//Try retrieving response data again.
+		//Execute command to read SCM WOF data.
 		_pSyn_DutCtrl->FpWrite(1, 0xFA, (uint8_t*)0, 0);
-
-		//Wait for response to be ready.
-		timeout = 1000;
-		_pSyn_DutCtrl->FpGetStatus(pStatus, sizeof(pStatus));
-		while (timeout && !((pStatus[0] == 0x03) && (pStatus[1] == 0x00) && (pStatus[2] == 0x00) && (pStatus[3] == 0x30)))
-		{
-			_pSyn_DutCtrl->FpGetStatus(pStatus, sizeof(pStatus));
-			timeout--;
-
-			if (timeout % 10 == 0)
-				_pSyn_DutCtrl->FpWrite(1, 0xFA, (uint8_t*)0, 0);
-		}
-
-		//		if (timeout == 0)
-		//		{
-		//			ExTestStep ex(0);
-		//			ex.SetDescription("SCM WOF status never complete.");
-		//			throw(ex);
-		//		}
-
-		//Check error code.
-		timeout = 1000;
+		_pSyn_DutCtrl->FpWaitForCMDComplete();
 		_pSyn_DutCtrl->FpRead(1, 0xFF, _pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_arWofData, _pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_nNumResponseBytes);
-		while (timeout && !((_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_arWofData[0] == 0x02) || ((_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_arWofData[0] == 0x00) && (_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_arWofData[1] == 0x00))))
-		{
-			_pSyn_DutCtrl->FpRead(1, 0xFF, _pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_arWofData, _pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_nNumResponseBytes);
-			timeout--;
-		}
-		if (timeout == 0)
-		{
-			Syn_Exception ex(0);
-			ex.SetDescription("SCM WOF: Command 1 never complete.");
-			throw(ex);
-		}
-		timeout2--;
+		timeout--;
 	}
-	if (timeout2 == 0)
+	if (timeout == 0)
 	{
 		Syn_Exception ex(0);
-		ex.SetDescription("SCM WOF: Cannot get plot.");
+		ex.SetDescription("SCMWOF: cannot get plot");
 		throw(ex);
 	}
 
@@ -421,7 +362,10 @@ void Ts_SCM_WOF::SCM_WofTestProcessData()
 
 		//If invalid threshold from gain of 100.
 		if ((nTgrIdx < _pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_nMinTriggerThreshold) || (nTgrIdx >= _pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_nMaxTriggerThreshold))
+		{
 			_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_nRecIdxWithoutStim = 1;
+			_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_bPass = 0;
+		}
 	}
 	else if (_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_nWithStimCount == 0)	//With stimulus at 3.3V.
 	{
