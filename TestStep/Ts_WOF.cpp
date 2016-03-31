@@ -142,28 +142,29 @@ void Ts_WOF::ProcessData()
 		return;
 	}
 
-	if (_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bWithStimulus)
+	if (!_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_bPass)
 	{
-		if (!_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_bPass)
+		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
+		if (_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bWithStimulus)
 		{
-			_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
 			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOFWithStimulus", "Fail"));
 		}
 		else
-			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOFWithStimulus", "Pass"));
+		{
+			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOFWithoutStimulus", "Fail"));
+		}
 	}
 	else
 	{
-		if (!_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_bPass)
+		if (_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bWithStimulus)
 		{
-			_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
-			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOFWithoutStimulus", "Fail"));
+			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOFWithStimulus", "Pass"));
 		}
 		else
+		{
 			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOFWithoutStimulus", "Pass"));
+		}
 	}
-
-	
 }
 
 void Ts_WOF::CleanUp()
@@ -187,8 +188,7 @@ void Ts_WOF::ExecuteWofTest()
 		return;
 	}
 
-	//int			timeout, timeout2;
-	int			timeout2;
+	int			timeout, timeout2;
 	uint8_t		pStatus[4] = {0};
 	uint8_t		pResult[2] = {0};
 	uint8_t*	pWofCmd1 = WofCmd1PathInfo._pArrayBuf;

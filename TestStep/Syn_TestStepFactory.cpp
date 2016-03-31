@@ -26,8 +26,8 @@
 #include "Ts_AFETest.h"
 #include "Ts_WOF.h"
 #include "Ts_WOFLowPower.h"
-#include "Ts_ReadDutAdc.h"
 #include "Ts_SCM_WOF.h"
+#include "Ts_ReadDutAdc.h"
 
 Syn_TestStepFactory::Syn_TestStepFactory()
 {
@@ -140,7 +140,11 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	{
 		opTestStepInstance = new Ts_AFETest(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
-	else if (std::string("WOFWithoutStimulus") == strTestStepName || std::string("WOFWithStimulus") == strTestStepName)
+	else if (std::string("WOFWithoutStimulus") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("WOFWithStimulus") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
