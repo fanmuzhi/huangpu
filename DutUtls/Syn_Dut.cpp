@@ -160,6 +160,10 @@ void Syn_Dut::InitData(Syn_SysConfig &sysConfig, AdcBaseLineInfo &iAdcBaseLineIn
 	_pSyn_DutTestResult->_SpiOwnershipResults.m_bPass = 1;
 	_pSyn_DutTestResult->_otpCheckResult._bPass = 1;
 
+	//time ms
+	_pSyn_DutTestResult->_wofResults.m_elapsedtime = 0;
+	_pSyn_DutTestResult->_SCM_wofResults.m_elapsedtime = 0;
+
 	//std::string strArgsValue("");
 	//std::vector<std::string> listOfArgValue;
 

@@ -107,7 +107,7 @@ void Ts_OpensShortsTest::ProcessData()
 	else
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("OpensShortsTest", "Pass"));
 
-	//ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_opensShortsResults.m_elapsedtime);
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_opensShortsResults.m_elapsedtime);
 }
 
 void Ts_OpensShortsTest::CleanUp()

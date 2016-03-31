@@ -586,7 +586,7 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 		uint32_t fp4 = (DutResults->_RAMTestResults.m_pResponseCachInstTagRam[5] & 0XFF) | ((DutResults->_RAMTestResults.m_pResponseCachInstTagRam[4] & 0XFF) << 8) | ((DutResults->_RAMTestResults.m_pResponseCachInstTagRam[3] & 0XFF) << 16) | ((DutResults->_RAMTestResults.m_pResponseCachInstTagRam[2] & 0XFF) << 24);
 		uint32_t fp5 = (DutResults->_RAMTestResults.m_pResponseScmAndMainRam[5] & 0XFF) | ((DutResults->_RAMTestResults.m_pResponseScmAndMainRam[4] & 0XFF) << 8) | ((DutResults->_RAMTestResults.m_pResponseScmAndMainRam[3] & 0XFF) << 16) | ((DutResults->_RAMTestResults.m_pResponseScmAndMainRam[2] & 0XFF) << 24);
 
-		fprintf(pFile, "\nRAMTest,%s,%d ms,Data cache data RAM,Data cache tag RAM,Instruction cache data RAM,Instruction cache tag RAM,SCM RAM and main RAM\n", (DutResults->_RAMTestResults.bPass) ? "Pass" : "Fail", 0);
+		fprintf(pFile, "\nRAMTest,%s,%.0f ms,Data cache data RAM,Data cache tag RAM,Instruction cache data RAM,Instruction cache tag RAM,SCM RAM and main RAM\n", (DutResults->_RAMTestResults.bPass) ? "Pass" : "Fail", DutResults->_RAMTestResults.m_elapsedtime);
 		fprintf(pFile, ",,,%s,%s,%s,%s,%s", (DutResults->_RAMTestResults.bPassCacheDataRam) ? "Pass" : "Fail", (DutResults->_RAMTestResults.bPassCacheTagRam) ? "Pass" : "Fail", (DutResults->_RAMTestResults.bPassCachInstDataRam) ? "Pass" : "Fail", (DutResults->_RAMTestResults.bPassCachInstTagRam) ? "Pass" : "Fail", (DutResults->_RAMTestResults.bPassScmAndMainRam) ? "Pass" : "Fail");
 
 		fprintf(pFile, "\nAddresses:,,,%X,%X,%X,%X,%X",
@@ -602,7 +602,7 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 	//Opens/Shorts Test
 	if (DutInfo->_opensShortsInfo.m_bExecuted)
 	{
-		fprintf(pFile, "\nOpens/Shorts Test,%s,%d ms", DutResults->_opensShortsResults.m_bPass ? "Pass" : "Fail", 0);
+		fprintf(pFile, "\nOpens/Shorts Test,%s,%.0f ms", DutResults->_opensShortsResults.m_bPass ? "Pass" : "Fail", DutResults->_opensShortsResults.m_elapsedtime);
 
 		for (int i = 0; i<25; i++)
 			fprintf(pFile, ",%d", *((uint32_t*)(&DutResults->_opensShortsResults.m_pResponse[(i + 1) * 4])));
@@ -622,7 +622,7 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 	//WoVarTest
 	if (DutInfo->_woVarInfo.m_bExecuted)
 	{
-		fprintf(pFile, "\nWoVarTest,%s,%d ms\n", (DutResults->_woVarResults.m_bPass != 0) ? "Pass" : "Fail", 0);
+		fprintf(pFile, "\nWoVarTest,%s,%.0f ms\n", (DutResults->_woVarResults.m_bPass != 0) ? "Pass" : "Fail", DutResults->_woVarResults.m_elapsedtime);
 
 		fprintf(pFile, ",,,");
 		for (int i = 0; i<(DutInfo->_woVarInfo.m_nNumResBytes / 4); i++)
@@ -633,7 +633,7 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 	//AFE Test
 	if (DutInfo->_AFETestInfo.m_bExecuted)
 	{
-		fprintf(pFile, "\nAFE Test,%s,%d ms,", (DutResults->_AFETestResults.m_bPass) ? "Pass" : "Fail", 0);
+		fprintf(pFile, "\nAFE Test,%s,%.0f ms,", (DutResults->_AFETestResults.m_bPass) ? "Pass" : "Fail", DutResults->_AFETestResults.m_elapsedtime);
 
 		for (int i = 0; i<13; i++)
 		{
@@ -663,11 +663,11 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 	{
 		if (DutResults->_wofLowPowerResults.m_bPass == 0)
 		{
-			fprintf(pFile, "\nWOF-Low Power,Fail,%d ms,Current (uA),%.3f\n", 0, DutResults->_wofLowPowerResults.m_nCurrent_uA);
+			fprintf(pFile, "\nWOF-Low Power,Fail,%.0f ms,Current (uA),%.3f\n", DutResults->_wofLowPowerResults.m_elapsedtime, DutResults->_wofLowPowerResults.m_nCurrent_uA);
 		}
 		else //Pass
 		{
-			fprintf(pFile, "\nWOF-Low Power,Pass,%d ms,Current (uA),%.3f\n", 0, DutResults->_wofLowPowerResults.m_nCurrent_uA);
+			fprintf(pFile, "\nWOF-Low Power,Pass,%.0f ms,Current (uA),%.3f\n", DutResults->_wofLowPowerResults.m_elapsedtime, DutResults->_wofLowPowerResults.m_nCurrent_uA);
 		}
 	}
 
@@ -728,8 +728,7 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 	//WakeOnFinger Test
 	if ((DutInfo->_wofInfo.m_bExecutedWithoutStimulus == 1) || (DutInfo->_wofInfo.m_bExecutedWithStimulus == 1))
 	{
-		fprintf(pFile, "\nWakeOnFinger Test,%s,%d ms,NoFinger,WithFinger,Gain,Delta,WithFinger_3.7v,Delta_3.7v,Limit_Delta_100,Limit_Delta_200,Limit_Delta_200_3p7",
-			DutResults->_wofResults.m_bPass ? "Pass" : "Fail", 0);
+		fprintf(pFile, "\nWakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta,WithFinger_3.7v,Delta_3.7v,Limit_Delta_100,Limit_Delta_200,Limit_Delta_200_3p7",DutResults->_wofResults.m_bPass ? "Pass" : "Fail", DutResults->_wofResults.m_elapsedtime);
 
 		if (DutResults->_wofResults.m_bPassAtGain100)
 		{
@@ -759,8 +758,7 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 	//SCM WakeOnFinger Test
 	if ((DutInfo->_SCM_wofInfo.m_bExecutedWithoutStimulus == 1) || (DutInfo->_SCM_wofInfo.m_bExecutedWithStimulus == 1))
 	{
-		fprintf(pFile, "\nSCM WakeOnFinger Test,%s,%d ms,NoFinger,WithFinger,Gain,Delta,WithFinger_3.7v,Delta_3.7v,Limit_Delta_100,Limit Delta_200,Limit_Delta_200_3p7", 
-												DutResults->_SCM_wofResults.m_bPass ? "Pass" : "Fail", 0);
+		fprintf(pFile, "\nSCM WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta,WithFinger_3.7v,Delta_3.7v,Limit_Delta_100,Limit Delta_200,Limit_Delta_200_3p7", DutResults->_SCM_wofResults.m_bPass ? "Pass" : "Fail", DutResults->_SCM_wofResults.m_elapsedtime);
 
 		if (DutResults->_SCM_wofResults.m_bPassAtGain100)
 		{
@@ -860,7 +858,7 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 	//Retain Mode Test
 	if (DutInfo->_retainModeInfo.m_bExecuted)
 	{
-		fprintf(pFile, "\nRetain Mode Test,%s,%d ms,ADC Value,", DutResults->_retainModeResults.m_bPass ? "Pass" : "Fail", 0);
+		fprintf(pFile, "\nRetain Mode Test,%s,%0.f ms,ADC Value,", DutResults->_retainModeResults.m_bPass ? "Pass" : "Fail", DutResults->_retainModeResults.m_elapsedtime);
 		fprintf(pFile, "\n,,,%.3f", DutResults->_retainModeResults.m_nRetainModeCurrent);
 		fprintf(pFile, "\n");
 	}

@@ -134,6 +134,7 @@ void Ts_WOFLowPower::ProcessData()
 	else
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOF-LowPower", "Pass"));
 
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_elapsedtime);
 }
 
 void Ts_WOFLowPower::CleanUp()

@@ -1,5 +1,4 @@
 #include "Ts_WOF.h"
-#include "windows.h"
 
 Ts_WOF::Ts_WOF(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
@@ -117,6 +116,7 @@ void Ts_WOF::Execute()
 	}
 	else
 	{
+		_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_nWithStimCount = 0;
 		//3.3V
 		ExecuteWofTest();
 		WofTestProcessData();
@@ -141,6 +141,10 @@ void Ts_WOF::ProcessData()
 		throw ex;
 		return;
 	}
+
+	double dCurrentElapsedTime(0);
+	ComputeRunningTime(dCurrentElapsedTime);
+	_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_elapsedtime += dCurrentElapsedTime;
 
 	if (!_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_bPass)
 	{
@@ -188,7 +192,7 @@ void Ts_WOF::ExecuteWofTest()
 		return;
 	}
 
-	int			timeout, timeout2;
+	int			timeout;
 	uint8_t		pStatus[4] = {0};
 	uint8_t		pResult[2] = {0};
 	uint8_t*	pWofCmd1 = WofCmd1PathInfo._pArrayBuf;
@@ -229,21 +233,19 @@ void Ts_WOF::ExecuteWofTest()
 	//Write cmd3 (Execute command to read WOF data).
 	_pSyn_DutCtrl->FpWrite(1, 0xF9, (uint8_t*)0, 0);
 	_pSyn_DutCtrl->FpWaitForCMDComplete();
-	::Sleep(15);
 
 	//Get response data.
-	timeout2 = 1000;
+	timeout = 1000;
 	_pSyn_DutCtrl->FpRead(1, 0xFF, _pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_arWofData, _pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_nNumResponseBytes);
-	while (timeout2 && !(_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_arWofData[0] == 0x00 && _pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_arWofData[1] == 0x00))
+	while (timeout && !(_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_arWofData[0] == 0x00 && _pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_arWofData[1] == 0x00))
 	{
 		//Write cmd3 (Execute command to read WOF data).
 		_pSyn_DutCtrl->FpWrite(1, 0xF9, (uint8_t*)0, 0);
 		_pSyn_DutCtrl->FpWaitForCMDComplete();
-		::Sleep(15);
 		_pSyn_DutCtrl->FpRead(1, 0xFF, _pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_arWofData, _pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_nNumResponseBytes);
-		timeout2--;
+		timeout--;
 	}
-	if (timeout2 == 0)
+	if (timeout == 0)
 	{
 		Syn_Exception ex(0);
 		ex.SetDescription("WOF: cannot get plot");
