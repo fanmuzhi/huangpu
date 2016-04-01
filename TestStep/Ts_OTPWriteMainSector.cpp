@@ -46,6 +46,12 @@ void Ts_OTPWriteMainSector::SetUp()
 
 void Ts_OTPWriteMainSector::Execute()
 {
+	if (0 != _pSyn_Dut->_pSyn_DutTestResult->_binCodes.size())
+	{
+		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("OTPWriteMainSector", "Fail"));
+		return;
+	}
+
 	uint8_t	arMS0[MS0_SIZE + MS1_SIZE] = {0};
 	bool	bSuccess = true;
 	int		nNumCols = _pSyn_Dut->_ColumnNumber;
@@ -194,6 +200,12 @@ void Ts_OTPWriteMainSector::Execute()
 }
 void Ts_OTPWriteMainSector::ProcessData()
 {
+	if (0 != _pSyn_Dut->_pSyn_DutTestResult->_binCodes.size())
+	{
+		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("OTPWriteMainSector", "Fail"));
+		return;
+	}
+
 	_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("OTPWriteMainSector", "Pass"));
 }
 
