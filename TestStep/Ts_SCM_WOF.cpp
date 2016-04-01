@@ -217,8 +217,6 @@ void Ts_SCM_WOF::SCM_WofTestExecute()
 	Syn_Exception ex(0);
 
 	int			timeout;
-	uint8_t		pStatus[4];
-	uint8_t		pResult[2];
 	Syn_PatchInfo ScmWofPatchInfo, Cmd1ScmWofPlotInfo, Cmd2ScmWofBinInfo, Cmd3SweepTagInfo, WofCmd2Info;
 	_pSyn_Dut->FindPatch("ScmWofPatch", ScmWofPatchInfo);
 	_pSyn_Dut->FindPatch("Cmd1ScmWofPlot", Cmd1ScmWofPlotInfo);
