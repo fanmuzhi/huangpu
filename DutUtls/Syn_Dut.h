@@ -67,6 +67,8 @@ struct Syn_DutTestResult
 	vector<string>				_binCodes;
 	map<string, string>			_mapTestPassInfo;
 
+	map<string, string>			_mapMainSectorInfo;
+
 	std::string					_sSensorSerialNumber;
 
 	InitializationResults		_initResults;
