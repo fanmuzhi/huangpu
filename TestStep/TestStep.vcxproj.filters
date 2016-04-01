@@ -109,6 +109,9 @@
     <ClCompile Include="Ts_SCM_WOF.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Ts_HuaweiImageQualityTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Syn_FingerprintTest.h">
@@ -220,6 +223,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ts_SCM_WOF.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_HuaweiImageQualityTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
