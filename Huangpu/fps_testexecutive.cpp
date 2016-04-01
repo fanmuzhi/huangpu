@@ -1517,7 +1517,8 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 	//	Display(oDutTestInfo->_otpCheckInfo._UserSpecifiedBS0, StartPos, EndPos);
 	//}
 
-	ui.textBrowser->append(QString("Boot Sector 0:"));
+	ui.textBrowser->append(QString("\nBoot Sector 0:"));
+	ui.textBrowser->append(QString("=============="));
 	for (int i = 1; i <= BS0_SIZE / 8; i++)
 	{
 		int StartPos = (i - 1) * 8;
@@ -1535,7 +1536,8 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 	//	Display(oDutTestInfo->_otpCheckInfo._UserSpecifiedBS1, StartPos, EndPos);
 	//}
 
-	ui.textBrowser->append(QString("Boot Sector 1:"));
+	ui.textBrowser->append(QString("\nBoot Sector 1:"));
+	ui.textBrowser->append(QString("=============="));
 	for (int i = 1; i <= BS1_SIZE / 8; i++)
 	{
 		int StartPos = (i - 1) * 8;
@@ -1544,7 +1546,8 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 		Display(oDutTestInfo->_otpCheckInfo._BootSector1Array, StartPos, EndPos);
 	}
 
-	ui.textBrowser->append(QString("Main Sector 0:"));
+	ui.textBrowser->append(QString("\nMain Sector 0:"));
+	ui.textBrowser->append(QString("=============="));
 	for (int i = 1; i <= MS0_SIZE / 8; i++)
 	{
 		int StartPos = (i - 1) * 8;
@@ -1552,7 +1555,8 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 		Display(oDutTestInfo->_otpCheckInfo._MainSector0Array, StartPos, EndPos);
 	}
 
-	ui.textBrowser->append(QString("Main Sector 1:"));
+	ui.textBrowser->append(QString("\nMain Sector 1:"));
+	ui.textBrowser->append(QString("=============="));
 	for (int i = 1; i <= MS1_SIZE / 8; i++)
 	{
 		int StartPos = (i - 1) * 8;
@@ -1561,7 +1565,8 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 	}
 
 	//tag value
-	ui.textBrowser->append(QString("\nTAG Value:\n"));
+	ui.textBrowser->append(QString("\nTAG Value:"));
+	ui.textBrowser->append(QString("=============="));
 	for (std::map<std::string, std::string>::iterator iter = oDutTestResult->_mapMainSectorInfo.begin(); iter != oDutTestResult->_mapMainSectorInfo.end(); iter++)
 	{
 		QString qsTempValue = QString::fromStdString(iter->first) + ":" + QString::fromStdString(iter->second)+"\n";

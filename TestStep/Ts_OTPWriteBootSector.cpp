@@ -80,7 +80,7 @@ void Ts_OTPWriteBootSector::Execute()
 	else
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sOtpReadWriteFail);
-		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("OTPWriteMainSector", "Fail"));
+		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("OTPWriteBootSector", "Fail"));
 	}
 
 	//FW secure
@@ -99,13 +99,13 @@ void Ts_OTPWriteBootSector::Execute()
 		otpBs0[index] |= 0x2;
 	}
 
-	_pSyn_DutCtrl->FpOtpRomWrite(0, 1, otpBs0, MS0_SIZE);
+	_pSyn_DutCtrl->FpOtpRomWrite(1, 0, otpBs0, BS0_SIZE);
 
 }
 
 void Ts_OTPWriteBootSector::ProcessData()
 {
-	_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("OTPWriteMainSector", "Pass"));
+	_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("OTPWriteBootSector", "Pass"));
 }
 
 void Ts_OTPWriteBootSector::CleanUp()
