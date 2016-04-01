@@ -373,6 +373,11 @@ void Syn_SPCCtrl::FpOtpRomRead(int section, int sector, uint8_t* pDst, int numBy
 
 void Syn_SPCCtrl::FpOtpRomWrite(int section, int sector, uint8_t* pDst, int numBytes)
 {
+	//section =  0 boot/main section 0 || 1 boot/main section 1 
+	//sector  =  1 for boot sector ||  0 for main sector
+	//e.g. [0, 1] for boot sector 0, [1, 1] for boot sector 1 
+	//     [0, 0] for main sector 0, [1, 0] for main sector 1
+
 	//LOG(INFO) << "OTPRom Write";
 
 	uint32_t err;

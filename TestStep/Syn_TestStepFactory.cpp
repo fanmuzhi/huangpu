@@ -28,6 +28,7 @@
 #include "Ts_WOFLowPower.h"
 #include "Ts_SCM_WOF.h"
 #include "Ts_ReadDutAdc.h"
+#include "Ts_OTPWriteBootSector.h"
 
 Syn_TestStepFactory::Syn_TestStepFactory()
 {
@@ -59,6 +60,10 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	else if (std::string("Calibrate") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_Calibrate(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("OTPWriteBootSector") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_OTPWriteBootSector(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else if (std::string("OTPCheck") == strTestStepName)
 	{
