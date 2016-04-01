@@ -63,6 +63,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(SolutionDir)$(Platform)\$(Configuration)\DutUtls.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Lib>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -101,6 +105,7 @@
     <ClInclude Include="Ts_ConsecutivePixels.h" />
     <ClInclude Include="Ts_FinalizationStep.h" />
     <ClInclude Include="Ts_FlooredPixelsTest.h" />
+    <ClInclude Include="Ts_HuaweiImageQualityTest.h" />
     <ClInclude Include="Ts_Imperfections.h" />
     <ClInclude Include="Ts_InitializationStep.h" />
     <ClInclude Include="Ts_LaplacianTest.h" />
@@ -139,6 +144,7 @@
     <ClCompile Include="Ts_ConsecutivePixels.cpp" />
     <ClCompile Include="Ts_FinalizationStep.cpp" />
     <ClCompile Include="Ts_FlooredPixelsTest.cpp" />
+    <ClCompile Include="Ts_HuaweiImageQualityTest.cpp" />
     <ClCompile Include="Ts_Imperfections.cpp" />
     <ClCompile Include="Ts_InitializationStep.cpp" />
     <ClCompile Include="Ts_LaplacianTest.cpp" />

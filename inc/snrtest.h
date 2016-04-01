@@ -1,0 +1,1 @@
+extern "C" __declspec(dllimport) float __stdcall testSNR(unsigned char* pImagewhite30, unsigned char* pImagespoof30, int width, int height, int iNumofimg);

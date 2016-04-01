@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
-    <SysConfigFile>D:/ConfigFile(xml)/580-005935-01r1 (FM-000166-003) Huangpu.xml</SysConfigFile>
+    <SysConfigFile>D:/ConfigFile(xml)/580-005566-02r14-Silver1-(FM-000094-006)_OFilm.xml</SysConfigFile>
     <LogFilePath>D:/LogFile</LogFilePath>
     <NumSites>1</NumSites>
-    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="696 698 697 698 697 698 697 699 698 698 715 699 793 792 998 803 ">1684806</Site1>
+    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="692 693 692 695 694 694 693 695 696 694 686 695 714 694 618 695 ">1684806</Site1>
     <AutoController></AutoController>
 </LocalSettings>

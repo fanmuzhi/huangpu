@@ -28,6 +28,7 @@
 #include "Ts_WOFLowPower.h"
 #include "Ts_SCM_WOF.h"
 #include "Ts_ReadDutAdc.h"
+#include "Ts_HuaweiImageQualityTest.h"
 
 Syn_TestStepFactory::Syn_TestStepFactory()
 {
@@ -163,6 +164,10 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	else if (std::string("ReadDutAdc") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_ReadDutAdc(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("HuaweiImageQualityTest") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_HuaweiImageQualityTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else if (std::string("FinalizationStep") == strTestStepName)
 	{
