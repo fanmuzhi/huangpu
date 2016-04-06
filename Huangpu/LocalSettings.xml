@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
-    <SysConfigFile>D:/ConfigFile(xml)/580-005935-01r1 (FM-000166-003) Huangpu.xml</SysConfigFile>
+    <SysConfigFile>C:/Users/jezhang/Desktop/580-005935-01r1 (FM-000166-003) Huangpu.xml</SysConfigFile>
     <LogFilePath>D:/LogFile</LogFilePath>
     <NumSites>1</NumSites>
-    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="697 698 697 699 697 698 696 699 699 698 690 699 718 698 622 699 ">1684806</Site1>
+    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="695 696 696 698 697 697 697 698 698 697 694 698 782 771 1007 795 ">1684806</Site1>
     <AutoController></AutoController>
 </LocalSettings>

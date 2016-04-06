@@ -243,6 +243,7 @@ void Ts_SCM_WOF::SCM_WofTestExecute()
 	int			nGetPrintMergedSize = nCmd2Size + nCmd3Size;
 	int			nVCC = (int)(_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_nVCC * 1000);
 
+	PowerOff();
 	if (_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_nWithStimCount == 0)
 		PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 	else
