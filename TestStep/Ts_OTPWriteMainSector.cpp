@@ -203,6 +203,7 @@ void Ts_OTPWriteMainSector::ProcessData()
 	if (0 != _pSyn_Dut->_pSyn_DutTestResult->_binCodes.size())
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("OTPWriteMainSector", "Fail"));
+		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sMainSectorFail);
 		return;
 	}
 

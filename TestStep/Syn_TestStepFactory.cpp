@@ -170,10 +170,10 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	{
 		opTestStepInstance = new Ts_ReadDutAdc(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
-	else if (std::string("HuaweiImageQualityTest") == strTestStepName)
+	/*else if (std::string("HuaweiImageQualityTest") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_HuaweiImageQualityTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
-	}
+	}*/
 	else if (std::string("FinalizationStep") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_FinalizationStep(strTestStepName, strTestArgs, pDutCtrl, pDut);
