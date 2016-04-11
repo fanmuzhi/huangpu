@@ -55,48 +55,26 @@ void Syn_Thread::run()
 		{
 			for (size_t t = 0; t <= imageNoFingerPos; t++)
 			{
-				if (0 == t)
-				{
-					rc = _pSyn_Site->ExecuteTestStep(listOfTestStepName[t]);
-					if (Syn_ExceptionCode::Syn_OK != rc)
-					{
-						emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), "Fail");
-						emit send(iSiteNumber);
-						return;
-					}
-					else
-					{
-						emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), "Pass");
-					}
-				}
-				else if (t!=imageNoFingerPos)
-				{
+				if (0!=t)
 					_pSyn_Site->GetTestResult(pTestResult);
 
-					rc = _pSyn_Site->ExecuteTestStep(listOfTestStepName[t]);
-					if (Syn_ExceptionCode::Syn_TestStepConfigError == rc)
+				rc = _pSyn_Site->ExecuteTestStep(listOfTestStepName[t]);
+				if (Syn_ExceptionCode::Syn_OK != rc)
+				{
+					emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), "Failed");
+					emit send(iSiteNumber);
+					return;
+				}
+				else
+				{
+					if (0==t)
 					{
-						emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), "NULL");
-						emit send(iSiteNumber);
-						return;
-					}
-					else if (Syn_ExceptionCode::Syn_OK != rc)
-					{
-						emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), "Fail");
-						//continue;
-						emit send(iSiteNumber);
-						return;
+						emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), "Pass");
 					}
 					else
 					{
 						emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), QString::fromStdString(pTestResult->_mapTestPassInfo[listOfTestStepName[t]]));
 					}
-				}
-				else
-				{
-					_pSyn_Site->GetTestResult(pTestResult);
-					rc = _pSyn_Site->ExecuteTestStep(listOfTestStepName[t]);
-					emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), QString::fromStdString(pTestResult->_mapTestPassInfo[listOfTestStepName[t]]) );
 				}
 			}
 
@@ -122,16 +100,9 @@ void Syn_Thread::run()
 					_pSyn_Site->GetTestResult(pTestResult);
 					
 				rc = _pSyn_Site->ExecuteTestStep(listOfTestStepName[t]);
-				if (Syn_ExceptionCode::Syn_TestStepConfigError == rc)
+				if (Syn_ExceptionCode::Syn_OK != rc)
 				{
-					emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), "NULL");
-					emit send(iSiteNumber);
-					return;
-				}
-				else if (Syn_ExceptionCode::Syn_OK != rc)
-				{
-					emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), "Fail");
-					//continue;
+					emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), "Failed");
 					emit send(iSiteNumber);
 					return;
 				}
@@ -152,10 +123,6 @@ void Syn_Thread::run()
 			emit send(iSiteNumber);
 
 		}
-	}
-	else
-	{
-		//rc = _pSyn_Site->ExecuteTestStep("Calibrate");
 	}
 
 	_stopped = true;

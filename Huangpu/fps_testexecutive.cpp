@@ -1165,71 +1165,50 @@ void FPS_TestExecutive::ReceiveTest(unsigned int iSiteNumber, const QString strT
 		iFlag = 2;
 	}
 
-	Syn_SysConfig CurrentSysConfig;
-	unsigned int iPos(0);
-	for (size_t i = 0; i < _ListOfSitePtr.size(); i++)
-	{
-		unsigned int iTempSiteNumber(0);
-		_ListOfSitePtr[i]->GetSiteNumber(iTempSiteNumber);
-		if (iSiteNumber == iTempSiteNumber)
-		{
-			//_ListOfSitePtr[i]->GetTestInfo(*CurrentDutTestInfo);
-			Syn_Site::SiteState oTempState;
-			_ListOfSitePtr[i]->GetState(oTempState);
-			if (oTempState == Syn_Site::Error)
-			{
-				string errMsg = "";
-				_ListOfSitePtr[i]->GetRunTimeError(errMsg);
-				//QMessageBox::information(this, QString("Error"), QString("Error:") + QString::fromStdString(errMsg));
+	unsigned int iPos = iSiteNumber - 1;
 
-				//State
-				QTableWidgetItem *itemState = new QTableWidgetItem(QString("Error"));
-				itemState->setTextAlignment(Qt::AlignCenter);
-				ui.TestTableWidget->setItem(2, iSiteNumber - 1, itemState);
-
-				return;
-			}
-
-			//_ListOfSitePtr[i]->GetTestResult(pCurrentDutTestResult);
-			_ListOfSitePtr[i]->GetSysConfig(CurrentSysConfig);
-			iPos = i;
-			synFind = true;
-			break;
-		}
-	}
-
-	if (!synFind)
-		return;
-
-	int rowNumber = CurrentSysConfig._uiNumRows;
-	int columnNumber = CurrentSysConfig._uiNumCols;
-
+	//Display Results first
 	QString qsStepAndResult = strTestStepName + QString(" : ") + strPassResults;
-	if (NULL != ui.TestTableWidget->item(3, iSiteNumber - 1))
+	if (NULL != ui.TestTableWidget->item(3, iPos))
 	{
-		QString qsTempContent = ui.TestTableWidget->item(3, iSiteNumber - 1)->text();
-		ui.TestTableWidget->item(3, iSiteNumber - 1)->setText(qsTempContent + QString("\n") + qsStepAndResult);
+		QString qsTempContent = ui.TestTableWidget->item(3, iPos)->text();
+		ui.TestTableWidget->item(3, iPos)->setText(qsTempContent + QString("\n") + qsStepAndResult);
 		ui.TestTableWidget->resizeRowToContents(3);
 	}
 	else
 	{
 		QTableWidgetItem *item = new QTableWidgetItem(qsStepAndResult);
 		item->setTextAlignment(Qt::AlignCenter);
-		ui.TestTableWidget->setItem(3, iSiteNumber - 1, item);
+		ui.TestTableWidget->setItem(3, iPos, item);
 		ui.TestTableWidget->resizeRowToContents(3);
+	}
+
+	Syn_Site::SiteState oTempState;
+	_ListOfSitePtr[iPos]->GetState(oTempState);
+	if (oTempState == Syn_Site::Error)
+	{
+		string errMsg = "";
+		_ListOfSitePtr[iPos]->GetRunTimeError(errMsg);
+		//QMessageBox::information(this, QString("Error"), QString("Error:") + QString::fromStdString(errMsg));
+
+		//State
+		QTableWidgetItem *itemState = new QTableWidgetItem(QString("Error"));
+		itemState->setTextAlignment(Qt::AlignCenter);
+		ui.TestTableWidget->setItem(2, iPos, itemState);
+		return;
 	}
 
 	//State
 	QTableWidgetItem *itemState = new QTableWidgetItem(QString("Running"));
 	itemState->setTextAlignment(Qt::AlignCenter);
-	ui.TestTableWidget->setItem(2, iSiteNumber - 1, itemState);
+	ui.TestTableWidget->setItem(2, iPos, itemState);
 
 	//SerialNumber
 	if (QString("InitializationStep") == strTestStepName)
 	{
 		//Syn_DutTestResult *pCurrentDutTestResult = NULL;
 		Syn_DutTestInfo *DutInfo = NULL;
-		_ListOfSitePtr[iSiteNumber - 1]->GetTestInfo(DutInfo);
+		_ListOfSitePtr[iPos]->GetTestInfo(DutInfo);
 		if (NULL != DutInfo)
 		{
 			QString qsSensorSerialNumber("");
@@ -1237,7 +1216,7 @@ void FPS_TestExecutive::ReceiveTest(unsigned int iSiteNumber, const QString strT
 
 			QTableWidgetItem *itemSerialNumber = new QTableWidgetItem(qsSensorSerialNumber);
 			itemSerialNumber->setTextAlignment(Qt::AlignCenter);
-			ui.TestTableWidget->setItem(1, iSiteNumber - 1, itemSerialNumber);
+			ui.TestTableWidget->setItem(1, iPos, itemSerialNumber);
 		}
 	}
 }
@@ -1274,7 +1253,7 @@ void FPS_TestExecutive::GetVersionForDutDump()
 	uint32_t rc = pSelectedSite->Open();
 	if (rc != 0)
 	{
-		QMessageBox::information(this, QString("Error"), QString::number(rc));
+		QMessageBox::information(this, QString("Error"), QString::number(rc,16).toUpper());
 		return;
 	}
 
@@ -1282,13 +1261,14 @@ void FPS_TestExecutive::GetVersionForDutDump()
 	rc = pSelectedSite->ExecuteTestStep("InitializationStep");
 	if (rc != 0)
 	{
-		QMessageBox::information(this, QString("Error"), QString::number(rc));
+		QMessageBox::information(this, QString("Error"), QString::number(rc, 16).toUpper());
 		return;
 	}
+
 	rc = pSelectedSite->GetTestResult(oDutTestResult);
 	if (rc != 0)
 	{
-		QMessageBox::information(this, QString("Error"), QString::number(rc));
+		QMessageBox::information(this, QString("Error"), QString::number(rc, 16).toUpper());
 		return;
 	}
 
@@ -1296,7 +1276,7 @@ void FPS_TestExecutive::GetVersionForDutDump()
 	rc = pSelectedSite->GetTestInfo(pInfo);
 	if (rc != 0)
 	{
-		QMessageBox::information(this, QString("Error"), QString::number(rc));
+		QMessageBox::information(this, QString("Error"), QString::number(rc, 16).toUpper());
 		return;
 	}
 
@@ -1333,86 +1313,6 @@ void FPS_TestExecutive::GetVersionForDutDump()
 	ui.textBrowser->append(QString("device_type:") + QString::number(pInfo->_getVerInfo.device_type));
 
 	pSelectedSite->Close();
-
-	/*Syn_DutTestResult *oDutTestResult = NULL;
-	rc = pSelectedSite->ExecuteTestStep("Calibrate");
-	if (rc != 0)
-	{
-		QMessageBox::information(this, QString("Error"), QString::number(rc));
-		return;
-	}
-	rc = pSelectedSite->GetTestResult(oDutTestResult);
-	if (rc != 0)
-	{
-		QMessageBox::information(this, QString("Error"), QString::number(rc));
-		return;
-	}
-	rc = pSelectedSite->ExecuteTestStep("CurrentTest");
-	if (rc != 0)
-	{
-		QMessageBox::information(this, QString("Error"), QString::number(rc));
-		return;
-	}
-	Syn_DutTestInfo *oDutTestInfo = NULL;
-	rc = pSelectedSite->GetTestInfo(oDutTestInfo);
-	if (rc != 0)
-	{
-		QMessageBox::information(this, QString("Error"), QString::number(rc));
-		return;
-	}
-	rc = pSelectedSite->GetTestResult(oDutTestResult);
-	if (rc != 0)
-	{
-		QMessageBox::information(this, QString("Error"), QString::number(rc));
-		return;
-	}*/
-//	int iSiteCurrentIndex = ui.comboBox->currentIndex();
-//	if (iSiteCurrentIndex<0)
-//	{
-//		cout << "Error:FPS_TestExecutive::GetVersionForDutDump() - iSiteCurrentIndex is less than 0!" << endl;
-//		return;
-//	}
-
-//	size_t iSiteCounts = _ListOfSitePtr.size();
-//	if (0 == iSiteCounts)
-//	{
-//		cout << "Error:FPS_TestExecutive::GetVersionForDutDump() - iSiteCounts is 0!" << endl;
-//		return;
-//	}
-
-//	if (iSiteCurrentIndex > iSiteCounts)
-//	{
-//		cout << "Error:FPS_TestExecutive::GetVersionForDutDump() - iSiteCounts is less than iSiteCurrentIndex!" << endl;
-//		return;
-//	}
-
-//	Syn_Site *pSelectedSite = _ListOfSitePtr[iSiteCurrentIndex];
-//	if (NULL == pSelectedSite)
-//	{
-//		cout << "Error:FPS_TestExecutive::GetVersionForDutDump() - pSelectedSite is NULL!" << endl;
-//		return;
-//	}
-
-//	pSelectedSite->GetVersion();
-
-//	Syn_SiteInfo oSiteInfo;
-//	pSelectedSite->GetSiteInfo(oSiteInfo);
-//	Syn_DutTestInfo *pDutTestInfo = NULL;
-//	pSelectedSite->GetTestInfo(pDutTestInfo);
-
-//	ui.textBrowser->clear();
-//	ui.textBrowser->append(QString("SiteNumber:") + QString::number(oSiteInfo._uiSiteNumber));
-//	ui.textBrowser->append(QString("SerialNumber:") + QString::number(oSiteInfo._uiSerialNumber));
-//	ui.textBrowser->append(QString("Version:"));
-//	for (int i = 1; i <= VERSION_SIZE / 4; i++)
-//	{
-//		int StartPos = (i - 1) * 4;
-//		int EndPos = i * 4 - 1;
-
-//		Display(pDutTestInfo->_getVerInfo._GerVerArray, StartPos, EndPos);
-//	}
-
-
 }
 
 void FPS_TestExecutive::ReadOTPForDutDump()
@@ -1447,28 +1347,28 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 	uint32_t rc = pSelectedSite->Open();
 	if (rc != 0)
 	{
-		QMessageBox::information(this, QString("Error"), QString("OTPDump Error:") + QString::number(rc));
+		QMessageBox::information(this, QString("Error"), QString("OTPDump Error:") + QString::number(rc, 16).toUpper());
 		return;
 	}
 
 	rc = pSelectedSite->ExecuteTestStep("OTPCheck");
 	if (rc != 0)
 	{
-		QMessageBox::information(this, QString("Error"), QString("OTPDump Error:") + QString::number(rc));
+		QMessageBox::information(this, QString("Error"), QString("OTPDump Error:") + QString::number(rc, 16).toUpper());
 		return;
 	}
 	Syn_DutTestInfo *oDutTestInfo = NULL;
 	rc = pSelectedSite->GetTestInfo(oDutTestInfo);
 	if (rc != 0)
 	{
-		QMessageBox::information(this, QString("Error"), QString("OTPDump Error:") + QString::number(rc));
+		QMessageBox::information(this, QString("Error"), QString("OTPDump Error:") + QString::number(rc, 16).toUpper());
 		return;
 	}
 	Syn_DutTestResult *oDutTestResult = NULL;
 	rc = pSelectedSite->GetTestResult(oDutTestResult);
 	if (rc != 0)
 	{
-		QMessageBox::information(this, QString("Error"), QString("OTPDump Error:") + QString::number(rc));
+		QMessageBox::information(this, QString("Error"), QString("OTPDump Error:") + QString::number(rc, 16).toUpper());
 		return;
 	}
 
