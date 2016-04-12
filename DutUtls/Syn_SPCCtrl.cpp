@@ -422,6 +422,7 @@ void Syn_SPCCtrl::FpOtpRomTagWrite(uint8_t* pDst, int numBytes)
 	//LOG(INFO) << "OTPRom Tag Write";
 
 	this->FpWrite(1, VCSFW_CMD::TEST_OTPROM_TAG_WRITE, pDst,numBytes);
+	::Sleep(50);
 	this->FpWaitForCMDComplete();
 	this->FpReadAndCheckStatus(0);
 }

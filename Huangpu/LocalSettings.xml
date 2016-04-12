@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
-    <SysConfigFile>C:/Users/jezhang/Desktop/580-005935-01r1 (FM-000166-003) Huangpu.xml</SysConfigFile>
-    <LogFilePath>D:/LogFile</LogFilePath>
+    <SysConfigFile>C:/Users/bqiling/Google Drive/Metallica 57K0/Primax/580-005965-01r1(FM-000094-009)_PRIMAX_Grey1_Temp.xml</SysConfigFile>
+    <LogFilePath>C:/logfiles</LogFilePath>
     <NumSites>1</NumSites>
     <Site1 AdcBaseLines="695 696 695 697 696 696 695 697 697 696 701 697 795 804 1070 800 " Voltages="1800 1800 3300 3300">1684806</Site1>
     <AutoController></AutoController>
