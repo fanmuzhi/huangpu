@@ -30,7 +30,11 @@ void Ts_OTPWriteMainSector::SetUp()
 	//Power On
 	PowerOff();
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-	_pSyn_DutCtrl->FpUnloadPatch();
+}
+
+void Ts_OTPWriteMainSector::Execute()
+{
+	Syn_Exception ex(0);
 
 	//load OTPReadWritePatch
 	Syn_PatchInfo OTPRWPatchInfo;
@@ -41,11 +45,9 @@ void Ts_OTPWriteMainSector::SetUp()
 		throw ex;
 		return;
 	}
+	_pSyn_DutCtrl->FpUnloadPatch();
 	_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
-}
 
-void Ts_OTPWriteMainSector::Execute()
-{
 	if (0 != _pSyn_Dut->_pSyn_DutTestResult->_binCodes.size())
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("OTPWriteMainSector", "Fail"));
@@ -75,14 +77,26 @@ void Ts_OTPWriteMainSector::Execute()
 		//If LNA values have not been stored in the OTP.
 		nLNA_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, arMS0, MS0_SIZE);
 		if (nLNA_count == 0)
+		{
 			BurnToOTP(EXT_TAG_LNA, &(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults).m_pPrintPatch[(_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nLnaIdx], _pSyn_Dut->_RowNumber);
+			PowerOff();
+			PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+			_pSyn_DutCtrl->FpUnloadPatch();
+			_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
+		}
 
 		//If PGA values (one offset per pixel) have not been stored in the OTP.
 		if ((_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nCalType == 1)//kPgaCalTypeOneOffsetPerPixel
 		{
 			nPGA_OOPP_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPP, arMS0, MS0_SIZE);
 			if (nPGA_OOPP_count == 0)
+			{
 				BurnToOTP(EXT_TAG_PGA_OOPP, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_arPgaOffsets, NUM_PGA_OOPP_OTP_ROWS * (nNumCols - 8));
+				PowerOff();
+				PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+				_pSyn_DutCtrl->FpUnloadPatch();
+				_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
+			}
 		}
 
 		//If PGA (one offset per row) values have not been stored in the OTP.
@@ -90,7 +104,13 @@ void Ts_OTPWriteMainSector::Execute()
 		{
 			nPGA_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPR, arMS0, MS0_SIZE);
 			if (nPGA_count == 0)
+			{
 				BurnToOTP(EXT_TAG_PGA_OOPR, &(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults).m_pPrintPatch[(_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nPgaIdx], _pSyn_Dut->_RowNumber);
+				PowerOff();
+				PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+				_pSyn_DutCtrl->FpUnloadPatch();
+				_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
+			}
 		}
 	}
 	
@@ -105,6 +125,10 @@ void Ts_OTPWriteMainSector::Execute()
 			arMS0[2] = (uint8_t)((_pSyn_Dut->_pSyn_DutTestResult->_snrResults).OTPVal_Noise);
 			arMS0[3] = 0;
 			BurnToOTP(EXT_TAG_SNR, arMS0, 4);
+			PowerOff();
+			PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+			_pSyn_DutCtrl->FpUnloadPatch();
+			_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
 		}
 	}
 	
@@ -119,6 +143,10 @@ void Ts_OTPWriteMainSector::Execute()
 			arMS0[0] = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nFlexId;
 			arMS0[1] = (uint8_t)((_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nFlexId) >> 8);
 			BurnToOTP(EXT_TAG_FlexId, arMS0, 8);
+			PowerOff();
+			PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+			_pSyn_DutCtrl->FpUnloadPatch();
+			_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
 		}
 	}
 
@@ -144,6 +172,10 @@ void Ts_OTPWriteMainSector::Execute()
 				arMS0[3] = 0;
 			}
 			BurnToOTP(EXT_TAG_WOF_BOT, arMS0, 4);
+			PowerOff();
+			PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+			_pSyn_DutCtrl->FpUnloadPatch();
+			_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
 		}
 	}
 
@@ -169,6 +201,10 @@ void Ts_OTPWriteMainSector::Execute()
 				arMS0[3] = 0;
 			}
 			BurnToOTP(EXT_TAG_SCM_WOF_BOT, arMS0, 4);
+			PowerOff();
+			PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+			_pSyn_DutCtrl->FpUnloadPatch();
+			_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
 		}
 	}
 
@@ -182,6 +218,10 @@ void Ts_OTPWriteMainSector::Execute()
 			arMS0[0] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_ReadDutAdcResults.m_nDutAdc;
 			arMS0[1] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_ReadDutAdcResults.m_nDutAdc >> 8);
 			BurnToOTP(EXT_TAG_DutTempAdc, arMS0, 4);
+			PowerOff();
+			PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+			_pSyn_DutCtrl->FpUnloadPatch();
+			_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
 		}
 	}
 
@@ -194,10 +234,14 @@ void Ts_OTPWriteMainSector::Execute()
 			memset(arMS0, 0, sizeof(arMS0));
 			*((uint32_t*)(&arMS0[4])) = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nProductId;
 			BurnToOTP(EXT_TAG_PRODUCT_ID, arMS0, 8);
+			PowerOff();
+			PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+			_pSyn_DutCtrl->FpUnloadPatch();
+			_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
 		}
 	}
-	
 }
+
 void Ts_OTPWriteMainSector::ProcessData()
 {
 	if (0 != _pSyn_Dut->_pSyn_DutTestResult->_binCodes.size())
@@ -212,6 +256,5 @@ void Ts_OTPWriteMainSector::ProcessData()
 
 void Ts_OTPWriteMainSector::CleanUp()
 {
-	_pSyn_DutCtrl->FpUnloadPatch();
 	PowerOff();
 }
