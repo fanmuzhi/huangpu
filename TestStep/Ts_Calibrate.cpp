@@ -213,6 +213,17 @@ void Ts_Calibrate::Execute()
 					_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_bPass = 0;
 				}
 			}
+
+			//If no error detected yet.
+			//if ((site.m_calibrationResults.m_bPass != 0) && (site.m_calibrationInfo.m_bPgaFineTuning != 0))
+			//{
+			//	//If any of the pixels are out of range.
+			//	if ((!VerifyPixelRanges(site, site.m_initInfo, site.m_calibrationInfo, site.m_calibrationResults)))
+			//	{
+			//		site.PushBinCodes(BinCodes::m_sStages1Or2CalFail);
+			//		(site.m_calibrationResults).m_bPass = 0;
+			//	}
+			//}
 		}
 	}
 
