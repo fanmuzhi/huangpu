@@ -220,7 +220,7 @@ void Ts_Calibrate::Execute()
 				//If any of the pixels are out of range.
 				if ((!VerifyPixelRanges()))
 				{
-					_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sStage2VarianceFail);
+					_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sStages1Or2CalFail);
 					_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_bPass = 0;
 				}
 			}
@@ -235,8 +235,6 @@ void Ts_Calibrate::Execute()
 	//Calibration is done. If the High Pass Filter (HPF) was disabled during calibration, re-enable it.
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nHpfOffset)
 		(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch)[_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nHpfOffset] |= 0x01;
-
-	GetFingerprintImage(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults, &(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.arr_ImageFPSFrame), numRows, numCols);
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted = true;
 
@@ -274,19 +272,27 @@ bool Ts_Calibrate::VerifyPixelRanges()
 	bool		bSuccess = true;
 	int			nNumRows = _pSyn_Dut->_RowNumber - _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimBotWithoutStim;
 	int			nNumCols = _pSyn_Dut->_ColumnNumber - _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimRightWithoutStim;
+
 	int			nLastRow = nNumRows - _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimBotWithoutStim;
 	int			nLastCol = nNumCols - _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimRightWithoutStim;
-	FPSFrame*	arFrames = _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.m_arImagesWithoutStimulus;
 
-	GetFingerprintImage(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults, &arFrames[0], nNumRows, nNumCols);
+	int			nFirstRow = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimTopWithoutStim;
+	int			nFirstCol = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimLeftWithoutStim;
+
+	FPSFrame	arFrame = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.arr_ImageFPSFrame;
+
+	GetFingerprintImage(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults, &arFrame, _pSyn_Dut->_RowNumber, _pSyn_Dut->_ColumnNumber);
 
 	//Scan through all rows and columns. Apply trim values specified in Initialization step.
-	for (int nRow = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimTopWithoutStim; nRow < nLastRow; nRow++)
+	for (int nRow = nFirstRow; nRow < nLastRow; nRow++)
 	{
-		for (int nCol = (_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimLeftWithoutStim + HEADER); nCol < nLastCol; nCol++)
+		for (int nCol = (nFirstCol + HEADER); nCol < nLastCol; nCol++)
 		{
-			if ((arFrames[0].arr[nRow][nCol] < _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nPgaLimitLow) || (arFrames[0].arr[nRow][nCol] > _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nPgaLimitHigh))
+			if ((arFrame.arr[nRow][nCol] < _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nPgaLimitLow) || (arFrame.arr[nRow][nCol] > _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nPgaLimitHigh))
+			{
+				int failPixel = arFrame.arr[nRow][nCol];
 				bSuccess = false;
+			}
 		}
 	}
 
