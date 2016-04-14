@@ -213,6 +213,17 @@ void Ts_Calibrate::Execute()
 					_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_bPass = 0;
 				}
 			}
+
+			//If no error detected yet.
+			if ((_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_bPass != 0) && (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bPgaFineTuning != 0))
+			{
+				//If any of the pixels are out of range.
+				if ((!VerifyPixelRanges()))
+				{
+					_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sStage2VarianceFail);
+					_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_bPass = 0;
+				}
+			}
 		}
 	}
 
@@ -256,4 +267,28 @@ void Ts_Calibrate::CleanUp()
 {
 	_pSyn_DutCtrl->FpUnloadPatch();
 	PowerOff();
+}
+
+bool Ts_Calibrate::VerifyPixelRanges()
+{
+	bool		bSuccess = true;
+	int			nNumRows = _pSyn_Dut->_RowNumber - _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimBotWithoutStim;
+	int			nNumCols = _pSyn_Dut->_ColumnNumber - _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimRightWithoutStim;
+	int			nLastRow = nNumRows - _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimBotWithoutStim;
+	int			nLastCol = nNumCols - _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimRightWithoutStim;
+	FPSFrame*	arFrames = _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.m_arImagesWithoutStimulus;
+
+	GetFingerprintImage(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults, &arFrames[0], nNumRows, nNumCols);
+
+	//Scan through all rows and columns. Apply trim values specified in Initialization step.
+	for (int nRow = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimTopWithoutStim; nRow < nLastRow; nRow++)
+	{
+		for (int nCol = (_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimLeftWithoutStim + HEADER); nCol < nLastCol; nCol++)
+		{
+			if ((arFrames[0].arr[nRow][nCol] < _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nPgaLimitLow) || (arFrames[0].arr[nRow][nCol] > _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nPgaLimitHigh))
+				bSuccess = false;
+		}
+	}
+
+	return bSuccess;
 }

@@ -20,5 +20,7 @@ public:
 	virtual void	ProcessData();
 
 	virtual void	CleanUp();
+
+	bool VerifyPixelRanges();
 };
 

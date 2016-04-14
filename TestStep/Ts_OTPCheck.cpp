@@ -30,6 +30,19 @@ void Ts_OTPCheck::SetUp()
 	}
 
 	//Parse Args
+	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PRODUCT_ID = 1;
+	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_LNA = 1;
+	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SNR = 1;
+	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PGA_OOPR = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_FlexId = 1;
+	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_BOT = 1;
+	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_DutTempAdc = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_TOP = 1;
+	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PGA_OOPP = 1;
+	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_BOT = 1;
+	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_TOP = 1;
+	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PART_NUMBERS = 0;
+
 	std::vector<std::string> listOfArgValue;
 	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bExecuted = false;
 	ParseTestStepArgs(_strArgs, listOfArgValue);
