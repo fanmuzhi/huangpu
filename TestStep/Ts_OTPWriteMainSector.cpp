@@ -258,3 +258,38 @@ void Ts_OTPWriteMainSector::CleanUp()
 {
 	PowerOff();
 }
+
+void Ts_OTPWriteMainSector::BurnToOTP(long nRecType, uint8_t* pSrc, int numBytes)
+{
+	int		timeout(2000), nSize(0);
+	uint8_t arOutBuf[MS0_SIZE + MS1_SIZE] = { 0 };
+
+	arOutBuf[4] = 0x11;
+	arOutBuf[12] = (uint8_t)(nRecType & 0xFF);
+	arOutBuf[15] = (uint8_t)((nRecType >> 24) & 0xFF);
+	arOutBuf[18] = 0x0E;
+
+	if ((nRecType == EXT_TAG_PGA_OOPR) || (nRecType == EXT_TAG_PGA_OOPP) ||(nRecType == EXT_TAG_LNA) || (nRecType == EXT_TAG_WOF_BOT) || (nRecType == EXT_TAG_SCM_WOF_BOT))
+	{
+		//PGA and LNA records have an extra 4 bytes (0x00000007).
+		arOutBuf[24] = 0x07;
+		arOutBuf[16] = numBytes + 4;
+		arOutBuf[17] = (numBytes + 4) >> 8;
+		memcpy(&arOutBuf[28], pSrc, numBytes);
+		nSize = numBytes + 28;
+	}
+	else //All other records.
+	{
+		arOutBuf[16] = numBytes;
+		arOutBuf[17] = numBytes >> 8;
+		memcpy(&arOutBuf[24], pSrc, numBytes);
+		nSize = numBytes + 24;
+	}
+
+	uint8_t pStatus[4] = { 0 };
+	uint8_t arExtendedTag[2] = { 0 };
+	uint8_t arNumBytes[2] = { 0 };
+
+	_pSyn_DutCtrl->FpOtpRomTagWrite(arOutBuf, nSize);
+
+}

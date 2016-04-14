@@ -33,15 +33,11 @@ public:
 
 	void CalculateLnaOffsetsBinarySearch(FPSFrame* pFrame, uint8_t* pLnaValues, int nNumRows, int nNumCols, CalibrationInfo &CalInfo, CalibrationResults &CalResults);
 
-	/*void GetRowAverages(FPSFrame* pFrame, int nColBegin, int nColEnd, uint8_t* pAverages, int nNumRows);*/
-
 	bool CheckDUTexists();
 
 	bool ParseTestStepArgs(const std::string &strArgsValue, std::vector<std::string> &olistOfArgValue, std::string strSymbol = std::string(" "));
 
 	void ImageDecode(FPSFrame *pDecodeFrame, FPSFrame *pEncodeFrame, int nNumRow, int nNumCol, int nNumFrames);
-
-	void BurnToOTP(long nRecType, uint8_t* pSrc, int numBytes);
 
 	void ComputeRunningTime(double &ioRunningTime);
 

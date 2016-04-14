@@ -14,5 +14,7 @@ public:
 	virtual void	ProcessData();
 
 	virtual void	CleanUp();
+
+	void BurnToOTP(long nRecType, uint8_t* pSrc, int numBytes);
 };
 
