@@ -3,6 +3,7 @@
 
 Ts_OTPCheck::Ts_OTPCheck(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
+, bPass(true)
 {
 }
 
@@ -144,6 +145,11 @@ void Ts_OTPCheck::Execute()
 		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PRODUCT_ID, pDst, MS0_SIZE);
 		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nProductId_count = count;
 
+		uint32_t projID = *((uint32_t*)&pDst[4]);
+		if (_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nProductId != projID)
+		{
+			bPass = false;
+		}
 		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_PRODUCT_ID", HexToString(pDst, 4, 7)));
 	}
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_LNA)
@@ -237,8 +243,6 @@ void Ts_OTPCheck::ProcessData()
 		throw ex;
 	}
 	_pSyn_Dut->_pSyn_DutTestResult->_otpCheckResult._bPass = true;
-
-	bool bPass = true;
 
 	// check first 4 bytes in bootsector0
 	for (auto i = 0; i < 4; i++)
@@ -353,84 +357,6 @@ void Ts_OTPCheck::ProcessData()
 	else
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("OTPCheck", "Pass"));
 
-	//Check 0 (Verify OTP Boot Field)
-    //Result Index =, 3  (530,  Si Osc Freq Setting)
-    //Check Data Size =, 8
-    //Boot Sector =, 0
-    //Address =, 4
-    //Left Shift Bits =, 0
-    //And Mask =, 0x000003ff
-	
-
-	//Check 1 (Verify OTP Boot Field)
-    //Result Index =, 4  (540,  Si Osc Temp Comp)
-    //Check Data Size =, 8
-    //Boot Sector =, 0
-    //Address =, 4
-    //Left Shift Bits =, 12
-    //And Mask =, 0x0000003f
-
-	//Check 2 (Verify OTP Boot Field)
-    //Result Index =, 5  (550,  HV Osc Bias)
-    //Check Data Size =, 8
-    //Boot Sector =, 0
-    //Address =, 4
-    //Left Shift Bits =, 20
-    //And Mask =, 0x00000007
-
-	//Check 3 (Verify OTP Boot Field)
-    //Result Index =, 6  (560,  HV Osc Freq)
-    //Check Data Size =, 8
-    //Boot Sector =, 0
-    //Address =, 4
-    //Left Shift Bits =, 23
-    //And Mask =, 0x0000001f
-
-	//Check 4 (Verify OTP Boot Field)
-    //Result Index =, 7  (570,  Boot 0 Check Trim Valid Bits)
-    //Check Data Size =, 8
-    //Boot Sector =, 0
-    //Address =, 4
-    //Left Shift Bits =, 28
-    //And Mask =, 0x0000000f
-
-	//Check 5 (Verify OTP SN Non-Zero)
-    //Result Index =, 8  (580,  SN non-zero (0=No)(1=Yes))
-
-	//Check 6 (Verify OTP Tag Header)
-    //Result Index =, 9  (590,  LNA Offset Cal Tag (1=Found))
-    //Search Flags =, 0x03
-    //Check Data Size =, 8
-    //Tag Type =, 14
-    //Flags =, 0x06
-    //Check Tag Valid =, Yes
-    //Check Extended Tag =, 0x80000003
-
-	//Check 7 (Verify OTP Tag Header)
-    //Result Index =, 10  (600,  PGA Offset Cal Tag(1=Found))
-    //Search Flags =, 0x03
-    //Check Data Size =, 8
-    //Tag Type =, 14
-    //Flags =, 0x06
-    //Check Tag Valid =, Yes
-    //Check Extended Tag =, 0x80000007
-
-	//Check 8 (Read SNR From OTP Tag)
-    //Result Index =, 11  (610,  SNR Tag Found (1=Found))
-    //Search Flags =, 0x03
-
-	//Check 9 (Read Cal Revision from OTP Tag)
-    //Result Index =, 15  (650,  Cal Rev Tag Found)
-    //Search Flags =, 0x03
-    //PatchId =, 31
-    //  Entry =, 0 (xe)
-    //    Label =, MT_Patch_6_07_164 xe
-    //    Length =, 10260
-    //    CRC =, 0x867f
-    //  Entry =, 1 (xp)
-    //    Label =, MT_Patch_6_07_164 xp
-    //    Length =, 10260
-    //    CRC =, 0x641c
 }
 
 void Ts_OTPCheck::CleanUp()

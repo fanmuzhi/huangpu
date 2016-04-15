@@ -2,6 +2,7 @@
 
 Ts_OTPWriteMainSector::Ts_OTPWriteMainSector(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
+, bBurnPGA_OOPP(false)
 {
 }
 
@@ -79,10 +80,10 @@ void Ts_OTPWriteMainSector::Execute()
 		if (nLNA_count == 0)
 		{
 			BurnToOTP(EXT_TAG_LNA, &(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults).m_pPrintPatch[(_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nLnaIdx], _pSyn_Dut->_RowNumber);
-			PowerOff();
-			PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-			_pSyn_DutCtrl->FpUnloadPatch();
-			_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
+			//PowerOff();
+			//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+			//_pSyn_DutCtrl->FpUnloadPatch();
+			//_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
 		}
 
 		//If PGA values (one offset per pixel) have not been stored in the OTP.
@@ -92,10 +93,11 @@ void Ts_OTPWriteMainSector::Execute()
 			if (nPGA_OOPP_count == 0)
 			{
 				BurnToOTP(EXT_TAG_PGA_OOPP, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_arPgaOffsets, NUM_PGA_OOPP_OTP_ROWS * (nNumCols - 8));
-				PowerOff();
-				PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-				_pSyn_DutCtrl->FpUnloadPatch();
-				_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
+				bBurnPGA_OOPP = true;
+				//PowerOff();
+				//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+				//_pSyn_DutCtrl->FpUnloadPatch();
+				//_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
 			}
 		}
 
@@ -106,10 +108,10 @@ void Ts_OTPWriteMainSector::Execute()
 			if (nPGA_count == 0)
 			{
 				BurnToOTP(EXT_TAG_PGA_OOPR, &(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults).m_pPrintPatch[(_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nPgaIdx], _pSyn_Dut->_RowNumber);
-				PowerOff();
-				PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-				_pSyn_DutCtrl->FpUnloadPatch();
-				_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
+				//PowerOff();
+				//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+				//_pSyn_DutCtrl->FpUnloadPatch();
+				//_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
 			}
 		}
 	}
@@ -125,10 +127,10 @@ void Ts_OTPWriteMainSector::Execute()
 			arMS0[2] = (uint8_t)((_pSyn_Dut->_pSyn_DutTestResult->_snrResults).OTPVal_Noise);
 			arMS0[3] = 0;
 			BurnToOTP(EXT_TAG_SNR, arMS0, 4);
-			PowerOff();
-			PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-			_pSyn_DutCtrl->FpUnloadPatch();
-			_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
+			//PowerOff();
+			//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+			//_pSyn_DutCtrl->FpUnloadPatch();
+			//_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
 		}
 	}
 	
@@ -143,10 +145,10 @@ void Ts_OTPWriteMainSector::Execute()
 			arMS0[0] = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nFlexId;
 			arMS0[1] = (uint8_t)((_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nFlexId) >> 8);
 			BurnToOTP(EXT_TAG_FlexId, arMS0, 8);
-			PowerOff();
-			PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-			_pSyn_DutCtrl->FpUnloadPatch();
-			_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
+			//PowerOff();
+			//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+			//_pSyn_DutCtrl->FpUnloadPatch();
+			//_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
 		}
 	}
 
@@ -172,10 +174,10 @@ void Ts_OTPWriteMainSector::Execute()
 				arMS0[3] = 0;
 			}
 			BurnToOTP(EXT_TAG_WOF_BOT, arMS0, 4);
-			PowerOff();
-			PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-			_pSyn_DutCtrl->FpUnloadPatch();
-			_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
+			//PowerOff();
+			//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+			//_pSyn_DutCtrl->FpUnloadPatch();
+			//_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
 		}
 	}
 
@@ -201,10 +203,10 @@ void Ts_OTPWriteMainSector::Execute()
 				arMS0[3] = 0;
 			}
 			BurnToOTP(EXT_TAG_SCM_WOF_BOT, arMS0, 4);
-			PowerOff();
-			PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-			_pSyn_DutCtrl->FpUnloadPatch();
-			_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
+			//PowerOff();
+			//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+			//_pSyn_DutCtrl->FpUnloadPatch();
+			//_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
 		}
 	}
 
@@ -218,10 +220,10 @@ void Ts_OTPWriteMainSector::Execute()
 			arMS0[0] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_ReadDutAdcResults.m_nDutAdc;
 			arMS0[1] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_ReadDutAdcResults.m_nDutAdc >> 8);
 			BurnToOTP(EXT_TAG_DutTempAdc, arMS0, 4);
-			PowerOff();
-			PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-			_pSyn_DutCtrl->FpUnloadPatch();
-			_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
+			//PowerOff();
+			//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+			//_pSyn_DutCtrl->FpUnloadPatch();
+			//_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
 		}
 	}
 
@@ -234,17 +236,97 @@ void Ts_OTPWriteMainSector::Execute()
 			memset(arMS0, 0, sizeof(arMS0));
 			*((uint32_t*)(&arMS0[4])) = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nProductId;
 			BurnToOTP(EXT_TAG_PRODUCT_ID, arMS0, 8);
-			PowerOff();
-			PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-			_pSyn_DutCtrl->FpUnloadPatch();
-			_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
+			//PowerOff();
+			//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+			//_pSyn_DutCtrl->FpUnloadPatch();
+			//_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
 		}
 	}
 }
 
 void Ts_OTPWriteMainSector::ProcessData()
 {
-	if (0 != _pSyn_Dut->_pSyn_DutTestResult->_binCodes.size())
+	Syn_Exception ex(0);
+	Syn_PatchInfo OTPRWPatchInfo;
+	if (!_pSyn_Dut->FindPatch("OtpReadWritePatch", OTPRWPatchInfo) || NULL == OTPRWPatchInfo._pArrayBuf)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+		ex.SetDescription("OtpReadWritePatch Patch is NULL!");
+		throw ex;
+		return;
+	}
+	PowerOff();
+	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+	_pSyn_DutCtrl->FpUnloadPatch();
+	_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
+
+	int count = 0;
+	int result = 1;		//0 for match
+	bool bPass = true;
+	uint8_t pDst[MS0_SIZE];
+
+	//check projID match
+	count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PRODUCT_ID, pDst, MS0_SIZE);
+	if (count > 0)
+	{
+		//result = memcmp(&pDst[4], &_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nProductId, 4);
+		uint32_t projID = *((uint32_t*)&pDst[4]);
+		if (_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nProductId != projID)
+		{
+			bPass = false;
+		}
+	}
+	else
+	{
+		bPass = false;
+	}
+
+	//check LNA match
+	count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, pDst, MS0_SIZE);
+	if (count > 0)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted)
+		{
+			result = memcmp(&pDst[4], &_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch[_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nLnaIdx], _pSyn_Dut->_RowNumber);
+			if (result != 0)
+			{
+				bPass = false;
+			}
+		}
+	}
+	else
+	{
+		bPass = false;
+	}
+
+	//check PGA OOPP match
+	count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPP, pDst, MS0_SIZE);
+	if (count > 0)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted)
+		{
+			if (bBurnPGA_OOPP)
+			{
+				//compare result in real time calibration
+				result = memcmp(&pDst[4], &_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_arPgaOffsets, (_pSyn_Dut->_ColumnNumber - 8) * NUM_PGA_OOPP_OTP_ROWS);
+			}
+			else
+			{
+				//compare result in OTP
+				result = memcmp(&pDst[4], &_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPGAOtpArray, (_pSyn_Dut->_ColumnNumber - 8)* NUM_PGA_OOPP_OTP_ROWS);
+			}
+			if (result != 0)
+			{
+				bPass = false;
+			}
+		}
+	}
+	else
+	{
+		bPass = false;
+	}
+
+	if (0 != _pSyn_Dut->_pSyn_DutTestResult->_binCodes.size() || !bPass)
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("OTPWriteMainSector", "Fail"));
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sMainSectorFail);

@@ -419,7 +419,7 @@ uint32_t Syn_Site::ExecuteTestStep(std::string sTestName)
 	{
 		return _uiErrorFlag;
 	}
-	if (_siteState != Idle)
+	if (_siteState != Idle && _siteState != TestDataReady)
 	{
 		return Syn_ExceptionCode::Syn_SiteStateError;
 	}

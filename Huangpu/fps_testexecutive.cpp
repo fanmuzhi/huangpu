@@ -1313,7 +1313,9 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 		return;
 	}
 
+	rc = pSelectedSite->ExecuteTestStep("InitializationStep");
 	rc = pSelectedSite->ExecuteTestStep("OTPCheck");
+	rc = pSelectedSite->ExecuteTestStep("FinalizationStep");
 	if (rc != 0)
 	{
 		QMessageBox::information(this, QString("Error"), QString("OTPDump Error:") + QString::number(rc, 16).toUpper());
@@ -1347,7 +1349,7 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 	ui.textBrowser->append(QString("SerialNumber:") + QString::number(oSerialNumber));
 
 	QPalette pa;
-	if (oDutTestResult->_binCodes.size() == 0)
+	if (oDutTestResult->_binCodes[0] == "1")
 	{
 		ui.textBrowser->append(QString("Result: PASS"));
 		ui.OTPResultLabel->setText("Result: PASS");

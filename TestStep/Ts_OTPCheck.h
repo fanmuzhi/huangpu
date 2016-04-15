@@ -16,4 +16,7 @@ public:
 	virtual void CleanUp();
 
 	string HexToString(uint8_t arrValue[], int stratPos, int endPos);
+
+private:
+	bool bPass;
 };

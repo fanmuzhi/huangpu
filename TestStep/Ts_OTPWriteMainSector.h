@@ -16,5 +16,8 @@ public:
 	virtual void	CleanUp();
 
 	void BurnToOTP(long nRecType, uint8_t* pSrc, int numBytes);
+
+private:
+	bool bBurnPGA_OOPP;
 };
 
