@@ -63,16 +63,9 @@ void Ts_AcqImgFinger::SetUp()
 	}
 	_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);*/
 
-	if (Viper2 != _pSyn_Dut->_eProjectType)
+	Syn_PatchInfo ImgAcqPatchInfo;
+	if (_pSyn_Dut->FindPatch("IamgeAcqPatch", ImgAcqPatchInfo) && NULL != ImgAcqPatchInfo._pArrayBuf)
 	{
-		Syn_PatchInfo ImgAcqPatchInfo;
-		if (!_pSyn_Dut->FindPatch("ImageAcqPatch", ImgAcqPatchInfo))
-		{
-			ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-			ex.SetDescription("ImageAcqPatch Patch is NULL!");
-			throw ex;
-			return;
-		}
 		_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);
 	}
 }

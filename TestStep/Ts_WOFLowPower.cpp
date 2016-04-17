@@ -56,17 +56,6 @@ void Ts_WOFLowPower::SetUp()
 	PowerOff();
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 	_pSyn_DutCtrl->FpUnloadPatch();
-	//load Patch
-	Syn_PatchInfo WofLowPowerPatchInfo;
-	if (!_pSyn_Dut->FindPatch("WofLowPowerPatch", WofLowPowerPatchInfo) || NULL == WofLowPowerPatchInfo._pArrayBuf)
-	{
-		Syn_Exception ex(0);
-		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-		ex.SetDescription("WofLowPowerPatch Patch is NULL!");
-		throw ex;
-		return;
-	}
-	_pSyn_DutCtrl->FpLoadPatch(WofLowPowerPatchInfo._pArrayBuf, WofLowPowerPatchInfo._uiArraySize);
 }
 
 void Ts_WOFLowPower::Execute()
@@ -81,6 +70,13 @@ void Ts_WOFLowPower::Execute()
 	//uint16_t	nADCBaseline = site.GetLocalSettingsPtr()->GetAdcBaseLine(site.GetSiteNum(), nAdcId, info.m_nGain);
 	uint32_t	arTemp[NUM_ADC_BASE_READINGS] = { 0, 0, 0, 0 };
 	uint32_t	nAdcSum = 0, nAdcAve;
+
+	//load Patch
+	Syn_PatchInfo WofLowPowerPatchInfo;
+	if (_pSyn_Dut->FindPatch("WofLowPowerPatch", WofLowPowerPatchInfo) && NULL != WofLowPowerPatchInfo._pArrayBuf)
+	{
+		_pSyn_DutCtrl->FpLoadPatch(WofLowPowerPatchInfo._pArrayBuf, WofLowPowerPatchInfo._uiArraySize);
+	}
 
 	//Poke appropriate registers.
 	//FpPokeCmd(0x80000374, 0x00000012);
