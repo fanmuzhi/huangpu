@@ -35,7 +35,8 @@ struct Syn_DutTestInfo
 	PixelPatchInfo				_pixelPatchInfo;
 	SNRInfo						_snrInfo;
 	WofTestInfo					_wofInfo;
-	SCM_WofTestInfo				_SCM_wofInfo;//two SCM_WofTestInfo;with f and without f
+	SCM_WofTestInfo				_BottomSCM_wofInfo;
+	SCM_WofTestInfo				_TopSCM_wofInfo;
 	WoVarInfo					_woVarInfo;
 	DRdyInfo					_DRdyInfo;
 	UsbCommInfo					_usbCommInfo;
@@ -85,7 +86,8 @@ struct Syn_DutTestResult
 	PixelPatchResults			_pixelPatchResults;
 	SNRResults					_snrResults;
 	WofTestResults				_wofResults;
-	SCM_WofTestResults			_SCM_wofResults;
+	SCM_WofTestResults			_BottomSCM_wofResults;
+	SCM_WofTestResults			_TopSCM_wofResults;
 	WoVarResults				_woVarResults;
 	DRdyResults					_DRdyResults;
 	UsbCommResults				_usbCommResults;

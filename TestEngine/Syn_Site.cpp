@@ -755,35 +755,35 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 		fprintf(pFile, "\n");
 	}
 	
-	//SCM WakeOnFinger Test
-	if ((DutInfo->_SCM_wofInfo.m_bExecutedWithoutStimulus == 1) || (DutInfo->_SCM_wofInfo.m_bExecutedWithStimulus == 1))
-	{
-		fprintf(pFile, "\nSCM WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta,WithFinger_3.7v,Delta_3.7v,Limit_Delta_100,Limit Delta_200,Limit_Delta_200_3p7", DutResults->_SCM_wofResults.m_bPass ? "Pass" : "Fail", DutResults->_SCM_wofResults.m_elapsedtime);
+	////SCM WakeOnFinger Test
+	//if ((DutInfo->_SCM_wofInfo.m_bExecutedWithoutStimulus == 1) || (DutInfo->_SCM_wofInfo.m_bExecutedWithStimulus == 1))
+	//{
+	//	fprintf(pFile, "\nSCM WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta,WithFinger_3.7v,Delta_3.7v,Limit_Delta_100,Limit Delta_200,Limit_Delta_200_3p7", DutResults->_SCM_wofResults.m_bPass ? "Pass" : "Fail", DutResults->_SCM_wofResults.m_elapsedtime);
 
-		if (DutResults->_SCM_wofResults.m_bPassAtGain100)
-		{
-			fprintf(pFile, "\n,,,%d,%d,%d,%d,%s,%s,%d,%d,%d\n",
-				DutResults->_SCM_wofResults.m_nTriggerIdxWithoutStim_100, DutResults->_SCM_wofResults.m_nTriggerIdxWithStim_100, 100,
-				DutResults->_SCM_wofResults.m_nTriggerIdxWithoutStim_100 - DutResults->_SCM_wofResults.m_nTriggerIdxWithStim_100, "None", "None",
-				DutInfo->_SCM_wofInfo.m_nDelta_100, DutInfo->_SCM_wofInfo.m_nDelta_200, DutInfo->_SCM_wofInfo.m_nDelta_200_3p7);
-		}
-		else if (DutResults->_SCM_wofResults.m_bPassAtGain200)
-		{
-			fprintf(pFile, "\n,,,%d,%d,%d,%d,%s,%s,%d,%d,%d\n",
-				DutResults->_SCM_wofResults.m_nTriggerIdxWithoutStim_200, DutResults->_SCM_wofResults.m_nTriggerIdxWithStim_200, 200,
-				DutResults->_SCM_wofResults.m_nTriggerIdxWithoutStim_200 - DutResults->_SCM_wofResults.m_nTriggerIdxWithStim_200, "None", "None",
-				DutInfo->_SCM_wofInfo.m_nDelta_100, DutInfo->_SCM_wofInfo.m_nDelta_200, DutInfo->_SCM_wofInfo.m_nDelta_200_3p7);
-		}
-		else
-		{
-			fprintf(pFile, "\n,,,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
-				DutResults->_SCM_wofResults.m_nTriggerIdxWithoutStim_200, DutResults->_SCM_wofResults.m_nTriggerIdxWithStim_200, 200,
-				DutResults->_SCM_wofResults.m_nTriggerIdxWithoutStim_200 - DutResults->_SCM_wofResults.m_nTriggerIdxWithStim_200, DutResults->_SCM_wofResults.m_nTriggerIdxWithStim_200_3p7,
-				DutResults->_SCM_wofResults.m_nTriggerIdxWithoutStim_200 - DutResults->_SCM_wofResults.m_nTriggerIdxWithStim_200_3p7,
-				DutInfo->_SCM_wofInfo.m_nDelta_100, DutInfo->_SCM_wofInfo.m_nDelta_200, DutInfo->_SCM_wofInfo.m_nDelta_200_3p7);
-		}
-		fprintf(pFile, "\n");
-	}
+	//	if (DutResults->_SCM_wofResults.m_bPassAtGain100)
+	//	{
+	//		fprintf(pFile, "\n,,,%d,%d,%d,%d,%s,%s,%d,%d,%d\n",
+	//			DutResults->_SCM_wofResults.m_nTriggerIdxWithoutStim_100, DutResults->_SCM_wofResults.m_nTriggerIdxWithStim_100, 100,
+	//			DutResults->_SCM_wofResults.m_nTriggerIdxWithoutStim_100 - DutResults->_SCM_wofResults.m_nTriggerIdxWithStim_100, "None", "None",
+	//			DutInfo->_SCM_wofInfo.m_nDelta_100, DutInfo->_SCM_wofInfo.m_nDelta_200, DutInfo->_SCM_wofInfo.m_nDelta_200_3p7);
+	//	}
+	//	else if (DutResults->_SCM_wofResults.m_bPassAtGain200)
+	//	{
+	//		fprintf(pFile, "\n,,,%d,%d,%d,%d,%s,%s,%d,%d,%d\n",
+	//			DutResults->_SCM_wofResults.m_nTriggerIdxWithoutStim_200, DutResults->_SCM_wofResults.m_nTriggerIdxWithStim_200, 200,
+	//			DutResults->_SCM_wofResults.m_nTriggerIdxWithoutStim_200 - DutResults->_SCM_wofResults.m_nTriggerIdxWithStim_200, "None", "None",
+	//			DutInfo->_SCM_wofInfo.m_nDelta_100, DutInfo->_SCM_wofInfo.m_nDelta_200, DutInfo->_SCM_wofInfo.m_nDelta_200_3p7);
+	//	}
+	//	else
+	//	{
+	//		fprintf(pFile, "\n,,,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
+	//			DutResults->_SCM_wofResults.m_nTriggerIdxWithoutStim_200, DutResults->_SCM_wofResults.m_nTriggerIdxWithStim_200, 200,
+	//			DutResults->_SCM_wofResults.m_nTriggerIdxWithoutStim_200 - DutResults->_SCM_wofResults.m_nTriggerIdxWithStim_200, DutResults->_SCM_wofResults.m_nTriggerIdxWithStim_200_3p7,
+	//			DutResults->_SCM_wofResults.m_nTriggerIdxWithoutStim_200 - DutResults->_SCM_wofResults.m_nTriggerIdxWithStim_200_3p7,
+	//			DutInfo->_SCM_wofInfo.m_nDelta_100, DutInfo->_SCM_wofInfo.m_nDelta_200, DutInfo->_SCM_wofInfo.m_nDelta_200_3p7);
+	//	}
+	//	fprintf(pFile, "\n");
+	//}
 
 	//Pegged Pixels Test
 	if (DutInfo->_peggedPixelsInfo.m_bExecuted)

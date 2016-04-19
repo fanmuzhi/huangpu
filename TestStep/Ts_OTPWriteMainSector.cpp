@@ -55,11 +55,11 @@ void Ts_OTPWriteMainSector::Execute()
 		return;
 	}
 
-	uint8_t	arMS0[MS0_SIZE + MS1_SIZE] = {0};
+	uint8_t	arMS0[MS0_SIZE] = { 0 };
 	bool	bSuccess = true;
 	int		nNumCols = _pSyn_Dut->_ColumnNumber;
 	int		nLNA_count, nPGA_count, nSNR_count;
-	int		nFlexId_count, nWofBot_count, nWofTop_count, nDutTempAdc_count, nPGA_OOPP_count, nScmWofBot_count, nProductId_count;
+	int		nFlexId_count, nWofBot_count, nWofTop_count, nDutTempAdc_count, nPGA_OOPP_count, nScmWofTop_count, nScmWofBot_count, nProductId_count;
 
 	//nLNA_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nLNA_count;
 	//nPGA_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPGA_OOPR_count;
@@ -122,6 +122,7 @@ void Ts_OTPWriteMainSector::Execute()
 		nSNR_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SNR, arMS0, MS0_SIZE);
 		if (nSNR_count == 0)
 		{
+			memset(arMS0, 0, sizeof(arMS0));
 			arMS0[0] = (uint8_t)((_pSyn_Dut->_pSyn_DutTestResult->_snrResults).OTPVal_SNR);
 			arMS0[1] = (uint8_t)((_pSyn_Dut->_pSyn_DutTestResult->_snrResults).OTPVal_Signal);
 			arMS0[2] = (uint8_t)((_pSyn_Dut->_pSyn_DutTestResult->_snrResults).OTPVal_Noise);
@@ -159,6 +160,7 @@ void Ts_OTPWriteMainSector::Execute()
 		nWofBot_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_BOT, arMS0, MS0_SIZE);
 		if (nWofBot_count == 0)
 		{
+			memset(arMS0, 0, sizeof(arMS0));
 			if (_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_bPassAtGain100)
 			{
 				arMS0[0] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_nTriggerIdxWithoutStim_100;
@@ -181,27 +183,36 @@ void Ts_OTPWriteMainSector::Execute()
 		}
 	}
 
-	//if (//SCM_WOF)
-	//If SCM WOF(bottom) values have not been stored in the OTP.
-	if (_pSyn_Dut->_pSyn_DutTestInfo->_SCM_wofInfo.m_bExecutedWithStimulus)
+	//SCM WOF(zone1 top) 
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo.m_bExecutedWithStimulus)
+	{
+		nScmWofTop_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_TOP, arMS0, MS0_SIZE);
+		if (nScmWofTop_count == 0)
+		{	
+			memset(arMS0, 0, sizeof(arMS0));
+			arMS0[0] = _pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults.m_nTriggerWithoutStim;
+			arMS0[1] = _pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults.m_nTriggerWithStim;
+            arMS0[2] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults.m_nGain & 0xFF);
+            arMS0[3] = 0;
+			BurnToOTP(EXT_TAG_SCM_WOF_TOP, arMS0, 4);
+			//PowerOff();
+			//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+			//_pSyn_DutCtrl->FpUnloadPatch();
+			//_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
+		}
+	}
+
+	//SCM WOF(zone0 bottom)
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_bExecutedWithStimulus)
 	{
 		nScmWofBot_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_BOT, arMS0, MS0_SIZE);
 		if (nScmWofBot_count == 0)
-		{
-			if (_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_bPassAtGain100)
-			{
-				arMS0[0] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_nTriggerIdxWithoutStim_100;
-				arMS0[1] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_nTriggerIdxWithStim_100;
-				arMS0[2] = 100;
-				arMS0[3] = 0;
-			}
-			else
-			{
-				arMS0[0] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_nTriggerIdxWithoutStim_200;
-				arMS0[1] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_nTriggerIdxWithStim_200;
-				arMS0[2] = 200;
-				arMS0[3] = 0;
-			}
+		{	
+			memset(arMS0, 0, sizeof(arMS0));
+			arMS0[0] = _pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_nTriggerWithoutStim;
+			arMS0[1] = _pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_nTriggerWithStim;
+            arMS0[2] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_nGain & 0xFF);
+            arMS0[3] = 0;
 			BurnToOTP(EXT_TAG_SCM_WOF_BOT, arMS0, 4);
 			//PowerOff();
 			//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);

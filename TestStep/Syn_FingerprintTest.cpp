@@ -146,6 +146,16 @@ void Syn_FingerprintTest::ImageDecode(FPSFrame *pDecodeFrame, FPSFrame *pEncodeF
 	return _pSyn_Module->ImageDecode(pDecodeFrame, pEncodeFrame, nNumRow, nNumCol, nNumFrames);
 }
 
+void Syn_FingerprintTest::ModifySweepCmdData(uint8_t* pSweepCmd)
+{
+	if (NULL == _pSyn_Module)
+	{
+		return;
+	}
+
+	return _pSyn_Module->ModifySweepCmdData(pSweepCmd);
+
+}
 
 bool Syn_FingerprintTest::ParseTestStepArgs(const std::string &strArgsValue, std::vector<std::string> &olistOfArgValue, std::string strSymbol)
 {
