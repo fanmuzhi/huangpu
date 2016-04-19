@@ -121,6 +121,7 @@ void Ts_InitializationStep::Execute()
 	}
 
 	//poweron
+	PowerOff();
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 
 	if (VERSION_SIZE < 36)
