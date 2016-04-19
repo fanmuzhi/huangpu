@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
-    <SysConfigFile>C:/Users/bqiling/Google Drive/Viper 86C/580-006016-01r1 (FM-000166-009) IQA Huangpu.xml</SysConfigFile>
+    <SysConfigFile>C:/Users/bqiling/Google Drive/Viper 86C/FM-000166-009/huangpu/580-006016-01r1 (FM-000166-009) Huangpu.xml</SysConfigFile>
     <LogFilePath>C:/logfiles/Huangpu</LogFilePath>
     <NumSites>1</NumSites>
-    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="707 706 707 709 707 707 709 710 704 707 701 710 783 830 1179 843 ">1199441</Site1>
+    <Site1 AdcBaseLines="707 707 704 783 706 707 707 830 707 709 701 1179 709 710 710 843 " Voltages="1800 1800 3300 3300">1684806</Site1>
     <AutoController></AutoController>
 </LocalSettings>
