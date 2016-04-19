@@ -899,11 +899,11 @@ void FPS_TestExecutive::Run()
 			if (NULL != ui.TestTableWidget->item(5, i - 1))
 				ui.TestTableWidget->takeItem(5, i - 1);
 			if (NULL != ui.TestTableWidget->item(6, i - 1))
-				ui.TestTableWidget->takeItem(6, i - 1);
+				ui.TestTableWidget->removeCellWidget(6, i - 1);
 			if (NULL != ui.TestTableWidget->cellWidget(7, i - 1))
 				ui.TestTableWidget->removeCellWidget(7, i - 1);
 			if (NULL != ui.TestTableWidget->cellWidget(8, i - 1))
-				ui.TestTableWidget->removeCellWidget(8, i - 1);
+				ui.TestTableWidget->takeItem(8, i - 1);
 		}
 
 		ui.pushButtonRun->setDisabled(true);
@@ -1009,7 +1009,7 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 			}
 		}
 
-		iRowNumber = 7;
+		iRowNumber = 6;
 	}
 	else if (2 == iFlag)
 	{
@@ -1025,13 +1025,14 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 			}
 		}
 
-		iRowNumber = 8;
+		iRowNumber = 7;
 
 		QString strSNRValue = QString::number(pCurrentDutTestResult->_snrResults.SNR[6]);
 		
+		//SNR
 		QTableWidgetItem *itemSNR = new QTableWidgetItem(strSNRValue);
 		itemSNR->setTextAlignment(Qt::AlignCenter);
-		ui.TestTableWidget->setItem(5, iPos, itemSNR);
+		ui.TestTableWidget->setItem(4, iPos, itemSNR);
 
 		//BinCode
 		QString qsBinCodes("");
@@ -1048,7 +1049,7 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 		}
 		QTableWidgetItem *itemBinCode = new QTableWidgetItem(qsBinCodes);
 		itemBinCode->setTextAlignment(Qt::AlignCenter);
-		ui.TestTableWidget->setItem(4, iPos, itemBinCode);
+		ui.TestTableWidget->setItem(3, iPos, itemBinCode);
 
 		//TotalResults
 		QString strTotalResults("");
@@ -1077,7 +1078,7 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 		{
 			itemTotalResults->setBackgroundColor(QColor(255, 0, 0));
 		}
-		ui.TestTableWidget->setItem(6, iPos, itemTotalResults);
+		ui.TestTableWidget->setItem(5, iPos, itemTotalResults);
 	}
 	
 	QImage image((const uchar*)data.constData(), columnNumber, rowNumber, columnNumber, QImage::Format_Indexed8);
@@ -1133,18 +1134,18 @@ void FPS_TestExecutive::ReceiveTest(unsigned int iSiteNumber, const QString strT
 
 	//Display Results first
 	QString qsStepAndResult = strTestStepName + QString(" : ") + strPassResults;
-	if (NULL != ui.TestTableWidget->item(3, iPos))
+	if (NULL != ui.TestTableWidget->item(8, iPos))
 	{
-		QString qsTempContent = ui.TestTableWidget->item(3, iPos)->text();
-		ui.TestTableWidget->item(3, iPos)->setText(qsTempContent + QString("\n") + qsStepAndResult);
-		ui.TestTableWidget->resizeRowToContents(3);
+		QString qsTempContent = ui.TestTableWidget->item(8, iPos)->text();
+		ui.TestTableWidget->item(8, iPos)->setText(qsTempContent + QString("\n") + qsStepAndResult);
+		ui.TestTableWidget->resizeRowToContents(8);
 	}
 	else
 	{
 		QTableWidgetItem *item = new QTableWidgetItem(qsStepAndResult);
 		item->setTextAlignment(Qt::AlignCenter);
-		ui.TestTableWidget->setItem(3, iPos, item);
-		ui.TestTableWidget->resizeRowToContents(3);
+		ui.TestTableWidget->setItem(8, iPos, item);
+		ui.TestTableWidget->resizeRowToContents(8);
 	}
 
 	Syn_Site::SiteState oTempState;
