@@ -187,27 +187,30 @@ void Ts_SCM_WOF::ProcessData()
 	//ComputeRunningTime(dCurrentElapsedTime);
 	//_pSyn_Dut->_pSyn_DutTestResult->_SCM_wofResults.m_elapsedtime += dCurrentElapsedTime;
 
-	if (_pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults.m_bPass == 0 || _pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_bPass ==0)
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo.m_bWithStimulus)  // WithStimulus
 	{
-		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
-		if (_pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo.m_bWithStimulus)  // WithStimulus
+		if ((_pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo.m_bExecutedWithStimulus && _pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults.m_bPass == 0)
+			|| (_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_bExecutedWithStimulus && _pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_bPass == 0))
 		{
 			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("SCM_WOFWithStimulus", "Fail"));
 		}
 		else
 		{
-			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("SCM_WOFWithoutStimulus", "Fail"));
+			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("SCM_WOFWithStimulus", "Pass"));
 		}
 	}
-	else
-		if (_pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo.m_bWithStimulus)  // WithStimulus
+	else //without Stimulus
+	{
+		if ((_pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo.m_bExecutedWithoutStimulus && _pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults.m_bPass == 0)
+			|| (_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_bExecutedWithoutStimulus && _pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_bPass == 0))
 		{
-			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("SCM_WOFWithStimulus", "Pass"));
+			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("SCM_WOFWithoutStimulus", "Fail"));
 		}
 		else
 		{
 			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("SCM_WOFWithoutStimulus", "Pass"));
 		}
+	}
 }
 
 void Ts_SCM_WOF::CleanUp()
