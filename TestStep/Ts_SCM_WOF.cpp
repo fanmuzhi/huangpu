@@ -125,16 +125,20 @@ void Ts_SCM_WOF::Execute()
 	{
 		// run WOF test with stimulus at normal voltage
 		bool bWithStimulus = _pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo.m_bWithStimulus;
-		this->ExecuteTopSCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults);
-		this->SYN_SCMWofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults);
-		_pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo.m_bExecutedWithStimulus = true;
+		if (this->ExecuteTopSCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults))
+		{
+			this->SYN_SCMWofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults);
+			_pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo.m_bExecutedWithStimulus = true;
+		}
 	}
 	else  // Without Stimulus
 	{
 		//only execute
-		ExecuteTopSCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults);
-		_pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo.m_bExecutedWithoutStimulus = true;
-		_pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults.m_bPass = 1;
+		if (this->ExecuteTopSCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults))
+		{
+			_pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo.m_bExecutedWithoutStimulus = true;
+			_pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults.m_bPass = 1;
+		}
 	}
 
 	//Bottom SCM_WOF
@@ -142,16 +146,20 @@ void Ts_SCM_WOF::Execute()
 	{
 		// run WOF test with stimulus at normal voltage
 		bool bWithStimulus = _pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_bWithStimulus;
-		this->ExecuteTopSCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults);
-		this->SYN_SCMWofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults);
-		_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_bExecutedWithStimulus = true;
+		if (this->ExecuteTopSCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults))
+		{
+			this->SYN_SCMWofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults);
+			_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_bExecutedWithStimulus = true;
+		}
 	}
 	else  // Without Stimulus
 	{
 		//only execute
-		ExecuteTopSCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults);
-		_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_bExecutedWithoutStimulus = true;
-		_pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_bPass = 1;
+		if (this->ExecuteTopSCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults))
+		{
+			_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_bExecutedWithoutStimulus = true;
+			_pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_bPass = 1;
+		}
 	}
 }
 
@@ -262,7 +270,7 @@ void Ts_SCM_WOF::SYN_SCMWofTestExecute(SCM_WofTestInfo& pInfo, SCM_WofTestResult
 }
 
 
-void Ts_SCM_WOF::ExecuteBottomSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults& results)
+bool Ts_SCM_WOF::ExecuteBottomSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults& results)
 {	
 	Syn_PatchInfo ScmWofPatchInfo, Cmd1ScmWofPlotInfo, Cmd2ScmWofBinInfo, Cmd3SweepTagInfo, WofCmd2Info;
 	_pSyn_Dut->FindPatch("ScmWofPatch", ScmWofPatchInfo);
@@ -273,11 +281,11 @@ void Ts_SCM_WOF::ExecuteBottomSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResul
 
 	if (NULL == ScmWofPatchInfo._pArrayBuf || NULL == Cmd1ScmWofPlotInfo._pArrayBuf || NULL == Cmd2ScmWofBinInfo._pArrayBuf || NULL == Cmd3SweepTagInfo._pArrayBuf || NULL == WofCmd2Info._pArrayBuf)
 	{
-		Syn_Exception ex(0);
-		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-		ex.SetDescription("SCMWOF Patch is NULL!");
-		throw ex;
-		return;
+		//Syn_Exception ex(0);
+		//ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+		//ex.SetDescription("SCMWOF Patch is NULL!");
+		//throw ex;
+		return false;
 	}
 	bool		bWithStim = info.m_bWithStimulus;
 	int			timeout;			
@@ -342,14 +350,16 @@ void Ts_SCM_WOF::ExecuteBottomSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResul
 		Syn_Exception ex(0);
 		ex.SetDescription("SCM WOF: Status never complete.");
 		throw(ex);
+		return false;
 	}
 
 	//Clear registers.
 	PowerOff();
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+	return true;
 }
 
-void Ts_SCM_WOF::ExecuteTopSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults& results)
+bool Ts_SCM_WOF::ExecuteTopSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults& results)
 {	
 	Syn_PatchInfo ScmWofPatchInfo, Cmd1ScmWofPlotInfo, Cmd2ScmWofBinInfo, Cmd4SweepTagInfo, WofCmd2Info;
 	_pSyn_Dut->FindPatch("ScmWofPatch", ScmWofPatchInfo);
@@ -360,11 +370,11 @@ void Ts_SCM_WOF::ExecuteTopSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults&
 
 	if (NULL == ScmWofPatchInfo._pArrayBuf || NULL == Cmd1ScmWofPlotInfo._pArrayBuf || NULL == Cmd2ScmWofBinInfo._pArrayBuf || NULL == Cmd4SweepTagInfo._pArrayBuf || NULL == WofCmd2Info._pArrayBuf)
 	{
-		Syn_Exception ex(0);
-		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-		ex.SetDescription("SCMWOF Patch is NULL!");
-		throw ex;
-		return;
+		//Syn_Exception ex(0);
+		//ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+		//ex.SetDescription("SCMWOF Patch is NULL!");
+		//throw ex;
+		return false;
 	}
 	bool		bWithStim = info.m_bWithStimulus;
 	int			timeout;			
@@ -429,8 +439,10 @@ void Ts_SCM_WOF::ExecuteTopSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults&
 		Syn_Exception ex(0);
 		ex.SetDescription("SCM WOF: Status never complete.");
 		throw(ex);
+		return false;
 	}
 
 	PowerOff();
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+	return true;
 }

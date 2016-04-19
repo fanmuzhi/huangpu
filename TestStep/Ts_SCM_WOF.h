@@ -16,9 +16,9 @@ public:
 
 	virtual void CleanUp();
 
-	void ExecuteTopSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults& results);
+	bool ExecuteTopSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults& results);
 
-	void ExecuteBottomSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults& results);
+	bool ExecuteBottomSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults& results);
 
 	void SYN_SCMWofTestExecute(SCM_WofTestInfo& pInfo, SCM_WofTestResults& pResults);
 
