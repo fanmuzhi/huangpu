@@ -14,5 +14,10 @@ public:
 	virtual void	ProcessData();
 
 	virtual void	CleanUp();
+
+	float find_mean(float* arr, int S_COL);
+
+	float std_dev(float pData[], int size);
+
 };
 

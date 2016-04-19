@@ -117,3 +117,31 @@ void Ts_RxStandardDev::ProcessData()
 void Ts_RxStandardDev::CleanUp()
 {
 }
+
+float Ts_RxStandardDev::find_mean(float* arr, int S_COL)
+{
+	int i;
+	float tempsum = 0.0;
+	for (i = 0; i<S_COL; i++)
+	{
+		tempsum += arr[i];
+	}
+
+	return tempsum / S_COL;
+}
+
+float Ts_RxStandardDev::std_dev(float pData[], int size)
+{
+	float mean = 0.0, sum_deviation = 0.0;
+	int i;
+	for (i = 0; i<size; ++i)
+	{
+		mean += pData[i];
+	}
+	mean = mean / size;
+	for (i = 0; i<size; ++i)
+		sum_deviation += (pData[i] - mean)*(pData[i] - mean);
+
+
+	return (float)sqrt(sum_deviation / size);
+}

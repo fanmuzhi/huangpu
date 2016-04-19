@@ -197,3 +197,16 @@ void Syn_FingerprintTest::ComputeRunningTime(double &ioRunningTime)
 	_finishtime = GetTickCount();
 	ioRunningTime = (double)(_finishtime - _starttime);
 }
+
+int Syn_FingerprintTest::max_array(int a[], int num_elements)
+{
+	int i, max = -32000;
+	for (i = 0; i<num_elements; i++)
+	{
+		if (a[i]>max)
+		{
+			max = a[i];
+		}
+	}
+	return(max);
+}

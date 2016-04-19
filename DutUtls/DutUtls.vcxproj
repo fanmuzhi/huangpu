@@ -110,7 +110,6 @@
     <ClCompile Include="Syn_DutCtrl.cpp" />
     <ClCompile Include="Syn_MPC04Ctrl.cpp" />
     <ClCompile Include="Syn_SPCCtrl.cpp" />
-    <ClCompile Include="Syn_TestUtils.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
