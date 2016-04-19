@@ -64,11 +64,6 @@
                </row>
                <row>
                 <property name="text">
-                 <string>Test Step</string>
-                </property>
-               </row>
-               <row>
-                <property name="text">
                  <string>Result BinCode</string>
                 </property>
                </row>
@@ -90,6 +85,11 @@
                <row>
                 <property name="text">
                  <string>Image(FakeFinger)</string>
+                </property>
+               </row>
+               <row>
+                <property name="text">
+                 <string>Test Step</string>
                 </property>
                </row>
               </widget>
