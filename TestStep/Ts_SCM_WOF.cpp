@@ -120,6 +120,9 @@ void Ts_SCM_WOF::Execute()
 		return;
 	}
 
+	double dCurrentElapsedTime(0);
+	ComputeRunningTime(dCurrentElapsedTime);
+
 	//Top SCM_WOF
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo.m_bWithStimulus)  // WithStimulus
 	{
@@ -130,6 +133,8 @@ void Ts_SCM_WOF::Execute()
 			this->SYN_SCMWofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults);
 			_pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo.m_bExecutedWithStimulus = true;
 		}
+
+		_pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults.m_elapsedtime += dCurrentElapsedTime;
 	}
 	else  // Without Stimulus
 	{
@@ -139,6 +144,8 @@ void Ts_SCM_WOF::Execute()
 			_pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo.m_bExecutedWithoutStimulus = true;
 			_pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults.m_bPass = 1;
 		}
+
+		_pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults.m_elapsedtime += dCurrentElapsedTime;
 	}
 
 	//Bottom SCM_WOF
@@ -151,6 +158,8 @@ void Ts_SCM_WOF::Execute()
 			this->SYN_SCMWofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults);
 			_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_bExecutedWithStimulus = true;
 		}
+
+		_pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_elapsedtime += dCurrentElapsedTime;
 	}
 	else  // Without Stimulus
 	{
@@ -160,6 +169,8 @@ void Ts_SCM_WOF::Execute()
 			_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_bExecutedWithoutStimulus = true;
 			_pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_bPass = 1;
 		}
+
+		_pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_elapsedtime += dCurrentElapsedTime;
 	}
 }
 

@@ -469,6 +469,8 @@ typedef struct
 	int			m_nGainStop;
 	int			m_nNumGains;
 	int			m_nResponseSize;
+
+	double      m_elapsedtime;
 }SCM_WofTestResults;
 
 //////////////////////////// ////////////////////////
