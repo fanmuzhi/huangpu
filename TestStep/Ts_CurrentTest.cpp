@@ -73,17 +73,14 @@ void Ts_CurrentTest::SetUp()
 	}
 	_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);*/
 
-	if (Viper2 != _pSyn_Dut->_eProjectType)
+	//load ImgAcqPatch
+	Syn_PatchInfo ImgAcqPatchInfo;
+	if (_pSyn_Dut->FindPatch("ImageAcqPatch", ImgAcqPatchInfo))
 	{
-		Syn_PatchInfo ImgAcqPatchInfo;
-		if (!_pSyn_Dut->FindPatch("ImageAcqPatch", ImgAcqPatchInfo))
+		if (0 != ImgAcqPatchInfo._uiArraySize)
 		{
-			ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-			ex.SetDescription("ImageAcqPatch Patch is NULL!");
-			throw ex;
-			return;
+			_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);
 		}
-		_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);
 	}
 }
 
