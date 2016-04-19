@@ -108,6 +108,8 @@ public Q_SLOTS:
 	//
 	void ManageButtonStatus(int iFlag);
 
+	void GetErrorInfo(uint32_t iErrorCode, std::string &osErrorInfo);
+
 private:
 
 	//private function

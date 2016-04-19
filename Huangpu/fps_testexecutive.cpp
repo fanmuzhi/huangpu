@@ -184,7 +184,9 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 		rc = Syn_Site::CreateSiteInstance(uiSiteNumber, uiSerialNumber, _LocalSettingsInfo._strSysConfigFilePath, LocalSettingsInfo._listOfSiteSettings[i]._adcBaseLineInfo, pSyn_SiteInstance);
 		if (NULL == pSyn_SiteInstance || Syn_ExceptionCode::Syn_OK != rc)
 		{
-			QMessageBox::critical(this, QString("Error"), QString("Can't cosntruct Serial Number:") + QString::number(uiSerialNumber) + QString(" device,check it please!"));
+			string osErrorInfo("");
+			GetErrorInfo(rc, osErrorInfo);
+			QMessageBox::critical(this, QString("Error"), QString("Can't cosntruct Serial Number:") + QString::number(uiSerialNumber) + QString(" device(") + QString::fromStdString(osErrorInfo) + QString("),check it please!"));
 			IsSucess = false;
 			break;
 		}
@@ -1346,7 +1348,7 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 
 	ui.textBrowser->clear();
 	ui.textBrowser->append(QString("SiteNumber:") + QString::number(oSiteNumber));
-	ui.textBrowser->append(QString("SerialNumber:") + QString::number(oSerialNumber));
+	ui.textBrowser->append(QString("MPC04 SerialNumber:") + QString::number(oSerialNumber));
 
 	QPalette pa;
 	if (oDutTestResult->_binCodes[0] == "1")
@@ -1506,8 +1508,10 @@ void FPS_TestExecutive::ManageButtonStatus(int iFlag)
 
 		if (bAllFailed)
 		{
-			//ui.LocalSettingsPushButton->setDisabled(false);
 			ui.pushButtonRun->setDisabled(false);
+
+			//if all failed,reset it to init
+			ui.pushButtonRun->setText(QString("Run"));
 		}
 		else
 		{
@@ -1519,10 +1523,66 @@ void FPS_TestExecutive::ManageButtonStatus(int iFlag)
 			else if (2 == iFlag)
 			{
 				ui.pushButtonRun->setText(QString("Run"));
-				//ui.LocalSettingsPushButton->setDisabled(false);
 				ui.pushButtonRun->setDisabled(false);
 			}
 		}
 		
+	}
+}
+
+void FPS_TestExecutive::GetErrorInfo(uint32_t iErrorCode,std::string &osErrorInfo)
+{
+	switch (iErrorCode)
+	{
+		case Syn_ExceptionCode::Syn_UnknownError:
+			osErrorInfo = "Unknown Error";
+			break;
+
+		case Syn_ExceptionCode::Syn_DutInfoNull:
+			osErrorInfo = "DutInfo is NULL";
+			break;
+
+		case Syn_ExceptionCode::Syn_DutResultNull:
+			osErrorInfo = "DutResult is NULL";
+			break;
+
+		case Syn_ExceptionCode::Syn_DutNull:
+			osErrorInfo = "Dut is NULL";
+			break;
+
+		case Syn_ExceptionCode::Syn_DutCtrlNull:
+			osErrorInfo = "DutCtrl is NULL";
+			break;
+
+		case Syn_ExceptionCode::Syn_DutPatchError:
+			osErrorInfo = "DutPatch is NULL";
+			break;
+
+		case Syn_ExceptionCode::Syn_ConfigError:
+			osErrorInfo = "Config is Error";
+			break;
+
+		case Syn_ExceptionCode::Syn_TestStepConfigError:
+			osErrorInfo = "TestStep Config is Error";
+			break;
+
+		case Syn_ExceptionCode::Syn_TestStepNotExecuted:
+			osErrorInfo = "TestStep NotExecuted Error";
+			break;
+
+		case Syn_ExceptionCode::Syn_SiteStateError:
+			osErrorInfo = "SiteState is Error";
+			break;
+
+		case Syn_ExceptionCode::Syn_SiteThread:
+			osErrorInfo = "SiteThread is Error";
+			break;
+
+		case Syn_ExceptionCode::Syn_ERR_GET_DEVICE_HANDLE_FAILED:
+			osErrorInfo = "Cann't get device handle";
+			break;
+
+		default:
+			osErrorInfo = "unknown error";
 	}
 }
