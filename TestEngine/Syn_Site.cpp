@@ -757,7 +757,7 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 	
 	//SCM WakeOnFinger Test
 	Syn_PatchInfo Cmd3SweepTagPatchInfo;
-	if (_pSyn_Dut->FindPatch("Cmd3SweepTag", Cmd3SweepTagPatchInfo) && (DutInfo->_TopSCM_wofInfo.m_bExecutedWithoutStimulus == 1 || DutInfo->_TopSCM_wofInfo.m_bExecutedWithStimulus == 1))
+	if (_pSyn_Dut->FindPatch("Cmd3SweepTag", Cmd3SweepTagPatchInfo) && (DutInfo->_BottomSCM_wofInfo.m_bExecutedWithoutStimulus == 1 || DutInfo->_BottomSCM_wofInfo.m_bExecutedWithStimulus == 1))
 	{
 		//If we got the zone 0 data out of OTP rather than calculating.
 		if (DutResults->_calibrationResults.m_nScmWofBot_count != 0)
@@ -787,7 +787,7 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 	}
 
 	Syn_PatchInfo Cmd4SweepTagPatchInfo;
-	if (_pSyn_Dut->FindPatch("Cmd4SweepTag", Cmd4SweepTagPatchInfo) && (DutInfo->_BottomSCM_wofInfo.m_bExecutedWithoutStimulus == 1 || DutInfo->_BottomSCM_wofInfo.m_bExecutedWithStimulus == 1))
+	if (_pSyn_Dut->FindPatch("Cmd4SweepTag", Cmd4SweepTagPatchInfo) && (DutInfo->_TopSCM_wofInfo.m_bExecutedWithoutStimulus == 1 || DutInfo->_TopSCM_wofInfo.m_bExecutedWithStimulus == 1))
 	{
 		//If we got the zone 1 data out of OTP rather than calculating.
 		if (DutResults->_calibrationResults.m_nScmWofTop_count != 0)

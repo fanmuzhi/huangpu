@@ -43,6 +43,9 @@ public:
 
 	void ModifySweepCmdData(uint8_t* pSweepCmd);
 
+
+	int max_array(int a[], int num_elements);
+
 protected:
 
 	Syn_Module *_pSyn_Module;

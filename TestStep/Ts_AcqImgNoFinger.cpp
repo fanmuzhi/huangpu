@@ -65,7 +65,7 @@ void Ts_AcqImgNoFinger::SetUp()
 	_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);*/
 
 	Syn_PatchInfo ImgAcqPatchInfo;
-	if (_pSyn_Dut->FindPatch("IamgeAcqPatch", ImgAcqPatchInfo) && NULL != ImgAcqPatchInfo._pArrayBuf)
+	if (_pSyn_Dut->FindPatch("ImageAcqPatch", ImgAcqPatchInfo) && NULL != ImgAcqPatchInfo._pArrayBuf)
 	{
 		_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);
 	}

@@ -317,3 +317,381 @@ void Ts_SNRTest::ProcessData()
 void Ts_SNRTest::CleanUp()
 {
 }
+
+int Ts_SNRTest::get_signal_value(FPSFrame* fingerdata, FPSFrame* nofingerdata, SNRInfo* info, int minrow, int maxrow, int mincol, int maxcol, int regions, SNRResults* results)//,int s_ROW, int s_COL)
+{
+	int p_percent, row, col, layer, i, S_ROW, S_COL, SIGNAL = 0, signalmin = 0, signalmax = 0, signalsum_min = 0, signalsum_max = 0;
+	int temp_fing = 0, temp_nofing = 0;
+	float mean = 0.0, tempsum_finger = 0.0, tempsum_nofinger = 0.0;
+	float percent;
+
+
+	int bins[HISTOGRAM] = { 0 };
+	// float temp_mean[MAXC-MINC];
+	float* pTemp_mean = (float*)malloc((info->numMaxCols - info->numMinCols)*sizeof(float));
+
+	p_percent = info->percent;
+	percent = (float)p_percent / 100;
+
+	S_ROW = maxrow - minrow;
+	S_COL = maxcol - mincol;
+
+	//temp_mean =(float*) malloc(S_COL * sizeof(float *));
+
+	for (row = minrow; row<maxrow; row++)
+	{
+		for (col = mincol; col<maxcol; col++)
+		{
+			for (layer = 0; layer<info->numFrames; layer++)
+			{
+				temp_fing += fingerdata[layer].arr[row][col];
+			}
+			tempsum_finger = (float)temp_fing / info->numFrames;
+			//Truncate
+			if (tempsum_finger > 255 || tempsum_finger < 0)
+				tempsum_finger = tempsum_finger > 255 ? (float)255 : (float)0;
+
+			for (layer = 0; layer<info->numFrames; layer++)
+			{
+				temp_nofing += nofingerdata[layer].arr[row][col];
+			}
+			tempsum_nofinger = (float)temp_nofing / info->numFrames;
+			//Truncate
+			if (tempsum_nofinger > 255 || tempsum_nofinger < 0)
+				tempsum_nofinger = tempsum_nofinger > 255 ? (float)255 : (float)0;
+			/*---BEGIN PIXEL_AVGS---*/
+			results->PIXEL_AVGS[regions].arr[row - minrow][col - mincol] = tempsum_finger - tempsum_nofinger + 128;
+			/*---ENDPIXEL_AVGS---*/
+			pTemp_mean[col - mincol] = tempsum_finger - tempsum_nofinger + 128;//results->PIXEL_AVGS[regions].arr[row-minrow][col-mincol];//for calculating the norm_avgs
+			//Truncate
+			if (pTemp_mean[col - mincol] > 255 || pTemp_mean[col - mincol] < 0)
+				pTemp_mean[col - mincol] = pTemp_mean[col - mincol] > 255 ? (float)255 : (float)0;
+
+			tempsum_finger = 0.0;
+			tempsum_nofinger = 0.0;
+			temp_fing = 0;
+			temp_nofing = 0;
+		}
+
+		for (i = 0; i<S_COL; i++)
+		{
+			results->NORM_AVGS[regions].arr[row - minrow][i] = results->PIXEL_AVGS[regions].arr[row - minrow][i] - find_mean(pTemp_mean, S_COL) + (float)128.00;
+			//Truncate
+			if (results->NORM_AVGS[regions].arr[row - minrow][i] > 255 || results->NORM_AVGS[regions].arr[row - minrow][i] < 0)
+				results->NORM_AVGS[regions].arr[row - minrow][i] = results->NORM_AVGS[regions].arr[row - minrow][i] > 255 ? (float)255 : (float)0;
+		}
+	}
+
+	find_bins(results, S_ROW, S_COL, bins, regions);
+
+
+	signalmin = 0;
+	signalsum_min = 0;
+	for (i = 1; i<HISTOGRAM; i++)
+	{
+		if (signalsum_min == 0)
+		{
+			if (sum(bins, 0, i) >= 0.5*percent*sum(bins, 0, HISTOGRAM))
+				signalmin = i;
+			else
+				signalmin = 0;
+		}
+		else
+			signalmin = 0;
+
+		signalsum_min += signalmin;
+	}
+
+	signalmax = 0;
+	signalsum_max = 0;
+	for (i = 1; i<HISTOGRAM; i++)
+	{
+		if (signalsum_max == 0)
+		{
+			if (sum(bins, 0, i) >= (1 - 0.5*percent)*sum(bins, 0, HISTOGRAM))
+				signalmax = i;
+			else
+				signalmax = 0;
+		}
+		else
+			signalmax = 0;
+
+		signalsum_max += signalmax;
+
+	}
+	SIGNAL = signalsum_max - signalsum_min;
+
+	free(pTemp_mean);
+	pTemp_mean = NULL;
+
+	return SIGNAL;
+
+}
+
+float Ts_SNRTest::get_noise_value(FPSFrame* fingerdata, FPSFrame* nofingerdata, SNRInfo* info, int minrow, int maxrow, int mincol, int maxcol, int regions, SNRResults* results)//,int s_ROW, int s_COL)
+{
+	int row, col, layer, i, S_ROW, S_COL;
+	float mean = 0.0, sum_deviation = 0.0, tempsum_nofinger = 0.0;
+
+
+	short temp[MAXFRAMES] = { 0 };
+
+	S_ROW = maxrow - minrow;
+	S_COL = maxcol - mincol;
+
+	for (row = minrow; row<maxrow; row++)
+	{
+		for (col = mincol; col<maxcol; col++)
+		{
+			for (layer = 0; layer<info->numFrames; layer++)
+			{
+				*(temp + layer) = (short)nofingerdata[layer].arr[row][col];
+				mean += *(temp + layer);
+			}
+
+			tempsum_nofinger = mean / info->numFrames;
+			mean = mean / info->numFrames;
+			for (i = 0; i<info->numFrames; ++i)
+				sum_deviation += (*(temp + i) - mean)*(*(temp + i) - mean);
+			//NUMFRAMES from info structure.
+			results->STD[regions].arr[row - minrow][col - mincol] = (float)sqrt(sum_deviation / (info->numFrames - 1));
+
+			sum_deviation = 0.0;
+			mean = 0.0;
+
+		}
+	}
+
+	return find_noise(results, S_ROW, S_COL, regions);
+}
+
+
+float Ts_SNRTest::find_noise(SNRResults * pRes, int S_ROW, int S_COL, int regions)
+{
+	int row, col;
+	float temp = 0.0;
+
+	for (row = 0; row<S_ROW; row++)
+	{
+		for (col = 0; col<S_COL; col++)
+		{
+			temp += pRes->STD[regions].arr[row][col];
+		}
+	}
+
+	return temp / (S_ROW*S_COL);
+}
+
+void Ts_SNRTest::find_bins(SNRResults *pRes, int S_ROW, int S_COL, int bins[HISTOGRAM], int regions)
+{
+	int row, col, minlim, maxlim, i;
+	int count = 0;
+	float temp;
+
+	for (i = 0; i<HISTOGRAM; i++)
+	{
+		if (i == 0)
+		{
+			minlim = -1000;
+			maxlim = 0;
+		}
+		else if (i == HISTOGRAM - 1)
+		{
+			minlim = i;
+			maxlim = 1000;
+		}
+		else
+		{
+			minlim = i;
+			maxlim = i + 1;
+		}
+
+		for (row = 0; row<S_ROW; row++)
+		{
+			for (col = 0; col<S_COL; col++)
+			{
+				temp = pRes->NORM_AVGS[regions].arr[row][col];
+
+				if (temp >= minlim && temp<maxlim)
+					count += 1;
+			}
+		}
+
+		bins[i] = count;
+		count = 0;
+	}
+}
+
+int Ts_SNRTest::sum(int arr[HISTOGRAM], int firstindex, int lastindex)
+{
+	int i;
+	int tempsum = 0;
+
+	for (i = firstindex; i<lastindex; i++)
+	{
+		tempsum += arr[i];
+	}
+
+	return tempsum;
+}
+
+void Ts_SNRTest::SNR_Fill_Log(FPSFrame* fingerdata, FPSFrame* nofingerdata, SNRResults* pResults, int numRows, int numCols, int numFrames)
+{
+	int i, j, k, l;
+	int min, max;
+	float mean = 0.0, sum_deviation = 0.0;
+	int temp = 0;
+	int span[MAXFRAMES] = { 0 };
+
+	//nofinger avg
+	for (i = 0; i<numRows; i++)
+	{
+		for (j = 0; j<numCols; j++)
+		{
+			for (k = 0; k<numFrames; k++)
+			{
+				temp += nofingerdata[k].arr[i][j];
+			}
+
+			pResults->AVG_NOFINGER[i][j] = (float)temp / numFrames;
+			//Truncate
+			if (pResults->AVG_NOFINGER[i][j] > 255 || pResults->AVG_NOFINGER[i][j] < 0)
+				pResults->AVG_NOFINGER[i][j] = pResults->AVG_NOFINGER[i][j] > 255 ? (float)255 : (float)0;
+			temp = 0;
+		}
+	}
+
+	//finger avg
+	temp = 0;
+	for (i = 0; i<numRows; i++)
+	{
+		for (j = 0; j<numCols; j++)
+		{
+			for (k = 0; k<numFrames; k++)
+			{
+				temp += fingerdata[k].arr[i][j];
+			}
+
+			pResults->AVG_FINGER[i][j] = (float)temp / numFrames;
+			//Truncate
+			if (pResults->AVG_FINGER[i][j] > 255 || pResults->AVG_FINGER[i][j] < 0)
+				pResults->AVG_FINGER[i][j] = pResults->AVG_FINGER[i][j] > 255 ? (float)255 : (float)0;
+			temp = 0;
+		}
+	}
+
+	//nofinger span
+	for (i = 0; i<numRows; i++)
+	{
+		for (j = 0; j<numCols; j++)
+		{
+			for (k = 0; k<numFrames; k++)
+			{
+				span[k] = nofingerdata[k].arr[i][j];
+			}
+			get_span(span, &min, &max, numFrames);
+			pResults->SPAN_NOFINGER[i][j] = (float)max - min;
+			//Truncate
+			if (pResults->SPAN_NOFINGER[i][j] > 255 || pResults->SPAN_NOFINGER[i][j] < 0)
+				pResults->SPAN_NOFINGER[i][j] = pResults->SPAN_NOFINGER[i][j] > 255 ? (float)255 : (float)0;
+			max = 0;
+			min = 0;
+		}
+	}
+	//finger span	
+	for (i = 0; i<numRows; i++)
+	{
+		for (j = 0; j<numCols; j++)
+		{
+			for (k = 0; k<numFrames; k++)
+			{
+				span[k] = fingerdata[k].arr[i][j];
+			}
+			get_span(span, &min, &max, numFrames);
+			pResults->SPAN_FINGER[i][j] = (float)max - min;
+			//Truncate
+			if (pResults->SPAN_FINGER[i][j] > 255 || pResults->SPAN_FINGER[i][j] < 0)
+				pResults->SPAN_FINGER[i][j] = pResults->SPAN_FINGER[i][j] > 255 ? (float)255 : (float)0;
+			max = 0;
+			min = 0;
+		}
+	}
+
+
+	//nofinger std
+	for (i = 0; i<numRows; i++)
+	{
+		for (j = 0; j<numCols; j++)
+		{
+			for (k = 0; k<numFrames; k++)
+			{
+				*(span + k) = nofingerdata[k].arr[i][j];
+				mean += *(span + k);
+			}
+			mean = mean / numFrames;
+			for (l = 0; l<numFrames; ++l)
+				sum_deviation += (*(span + l) - mean)*(*(span + l) - mean);
+			//printf("%d\tstd_row\n",col-mincol);			
+			pResults->STD_NOFINGER[i][j] = (float)sqrt(sum_deviation / (numFrames - 1));
+			//Truncate
+			if (pResults->STD_NOFINGER[i][j] > 255 || pResults->STD_NOFINGER[i][j] < 0)
+				pResults->STD_NOFINGER[i][j] = pResults->STD_NOFINGER[i][j] > 255 ? (float)255 : (float)0;
+			sum_deviation = 0.0;
+			mean = 0.0;
+		}
+	}
+
+	//finger std
+	sum_deviation = 0.0;
+	mean = 0.0;
+	for (i = 0; i<numRows; i++)
+	{
+		for (j = 0; j<numCols; j++)
+		{
+			for (k = 0; k<numFrames; k++)
+			{
+				*(span + k) = fingerdata[k].arr[i][j];
+				mean += *(span + k);
+			}
+			mean = mean / numFrames;
+			for (l = 0; l<numFrames; ++l)
+				sum_deviation += (*(span + l) - mean)*(*(span + l) - mean);
+			//printf("%d\tstd_row\n",col-mincol);			
+			pResults->STD_FINGER[i][j] = (float)sqrt(sum_deviation / (numFrames - 1));
+			//Truncate
+			if (pResults->STD_FINGER[i][j] > 255 || pResults->STD_FINGER[i][j] < 0)
+				pResults->STD_FINGER[i][j] = pResults->STD_FINGER[i][j] > 255 ? (float)255 : (float)0;
+			sum_deviation = 0.0;
+			mean = 0.0;
+		}
+	}
+}
+
+float Ts_SNRTest::find_mean(float* arr, int S_COL)
+{
+	int i;
+	float tempsum = 0.0;
+	for (i = 0; i<S_COL; i++)
+	{
+		tempsum += arr[i];
+	}
+
+	return tempsum / S_COL;
+}
+
+void Ts_SNRTest::get_span(int span[MAXFRAMES], int *min, int *max, int numFrames)
+{
+	int i;
+	*max = -3200, *min = 3200;
+	for (i = 0; i<numFrames; i++)
+	{
+		if (span[i]> *max)
+		{
+			*max = span[i];
+		}
+		else if (span[i] < *min)
+		{
+			*min = span[i];
+		}
+	}
+}

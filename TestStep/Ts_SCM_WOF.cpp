@@ -153,7 +153,7 @@ void Ts_SCM_WOF::Execute()
 	{
 		// run WOF test with stimulus at normal voltage
 		bool bWithStimulus = _pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_bWithStimulus;
-		if (this->ExecuteTopSCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults))
+		if (this->ExecuteBottomSCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults))
 		{
 			this->SYN_SCMWofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults);
 			_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_bExecutedWithStimulus = true;
@@ -164,7 +164,7 @@ void Ts_SCM_WOF::Execute()
 	else  // Without Stimulus
 	{
 		//only execute
-		if (this->ExecuteTopSCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults))
+		if (this->ExecuteBottomSCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults))
 		{
 			_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_bExecutedWithoutStimulus = true;
 			_pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_bPass = 1;
