@@ -10,6 +10,15 @@ Syn_Viper2Module::~Syn_Viper2Module()
 {
 }
 
+
+void Syn_Viper2Module::ModifySweepCmdData(uint8_t* pSweepCmd)
+{
+	pSweepCmd[0x0B] = 100;	//Gain start.
+	pSweepCmd[0x0F] = 100;	//Gain increment.
+	pSweepCmd[0x13] = 200;	//Gain end.
+}
+
+
 void Syn_Viper2Module::ImageDecode(FPSFrame *pDecodeFrame, FPSFrame *pEncodeFrame, int nNumRow, int nNumCol, int nNumFrames)
 {
 	int c, d, k, layer;

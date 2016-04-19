@@ -16,10 +16,12 @@ public:
 
 	virtual void CleanUp();
 
-	virtual void SCM_WofTestExecute();//for SCM_WOF
+	bool ExecuteTopSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults& results);
 
-	virtual void SCM_WofTestProcessData();//for SCM_WOF
+	bool ExecuteBottomSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults& results);
 
-	virtual void GetOtpScmWofData(uint8_t pOtpData[MS0_SIZE], int OtpScmWofDataCount);//for SCM_WOF
+	void SYN_SCMWofTestExecute(SCM_WofTestInfo& pInfo, SCM_WofTestResults& pResults);
+
+	int CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf);
 };
 

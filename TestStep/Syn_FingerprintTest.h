@@ -41,6 +41,8 @@ public:
 
 	void ComputeRunningTime(double &ioRunningTime);
 
+	void ModifySweepCmdData(uint8_t* pSweepCmd);
+
 protected:
 
 	Syn_Module *_pSyn_Module;

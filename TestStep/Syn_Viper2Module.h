@@ -10,6 +10,8 @@ public:
 
 	bool CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRows, CalibrationInfo &calInfo, CalibrationResults &calResult);
 
+	virtual void ModifySweepCmdData(uint8_t* pSweepCmd);
+
 private:
 	//CDM16 conversion	
 	static float m_matrix[144][144];
