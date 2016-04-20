@@ -42,6 +42,19 @@ void Ts_WOF::SetUp()
 	_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nDelta_200 = 20;
 	_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nDelta_200_3p7 = 13;
 	_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nVCC = (float)3.7;
+
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_bWithStimulus = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nDelta_100 = 7;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nMinTriggerThreshold = 25;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nMaxTriggerThreshold = 60;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nNumResponseBytes = 2000;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nNumNoiseSamples = 10;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nThresholdOffsetHigh = 3;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nThresholdOffsetLow = 3;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nStdDevThreshold = (float)0.9;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nDelta_200 = 20;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nDelta_200_3p7 = 13;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nVCC = (float)3.7;
 	
 	std::vector<std::string> listOfArgValue;
 	ParseTestStepArgs(_strArgs, listOfArgValue);
@@ -53,31 +66,67 @@ void Ts_WOF::SetUp()
 	}
 
 	if (0 != listOfArgValue[0].length())
+	{
 		_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_bWithStimulus = atoi(listOfArgValue[0].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_bWithStimulus = atoi(listOfArgValue[0].c_str());
+	}
 	if (0 != listOfArgValue[1].length())
+	{
 		_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nDelta_100 = atoi(listOfArgValue[1].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nDelta_100 = atoi(listOfArgValue[1].c_str());
+	}
 	if (0 != listOfArgValue[2].length())
+	{
 		_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nMinTriggerThreshold = atoi(listOfArgValue[2].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nMinTriggerThreshold = atoi(listOfArgValue[2].c_str());
+	}
 	if (0 != listOfArgValue[3].length())
+	{
 		_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nMaxTriggerThreshold = atoi(listOfArgValue[3].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nMaxTriggerThreshold = atoi(listOfArgValue[3].c_str());
+	}
 	if (0 != listOfArgValue[4].length())
+	{
 		_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nNumResponseBytes = atoi(listOfArgValue[4].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nNumResponseBytes = atoi(listOfArgValue[4].c_str());
+	}
 	if (0 != listOfArgValue[5].length())
+	{
 		_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nNumNoiseSamples = atoi(listOfArgValue[5].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nNumNoiseSamples = atoi(listOfArgValue[5].c_str());
+	}
 	if (0 != listOfArgValue[6].length())
+	{
 		_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nThresholdOffsetHigh = atoi(listOfArgValue[6].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nThresholdOffsetHigh = atoi(listOfArgValue[6].c_str());
+	}
 	if (0 != listOfArgValue[7].length())
+	{
 		_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nThresholdOffsetLow = atoi(listOfArgValue[7].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nThresholdOffsetLow = atoi(listOfArgValue[7].c_str());
+	}
 	if (0 != listOfArgValue[8].length())
+	{
 		_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nStdDevThreshold = stof(listOfArgValue[8]);
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nStdDevThreshold = stof(listOfArgValue[8]);
+	}
 	if (0 != listOfArgValue[9].length())
+	{
 		_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nDelta_200 = atoi(listOfArgValue[9].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nDelta_200 = atoi(listOfArgValue[9].c_str());
+	}
 	if (0 != listOfArgValue[10].length())
+	{
 		_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nDelta_200_3p7 = atoi(listOfArgValue[10].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nDelta_200_3p7 = atoi(listOfArgValue[10].c_str());
+	}
 	if (0 != listOfArgValue[11].length())
+	{
 		_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nVCC = stof(listOfArgValue[11]);
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nVCC = stof(listOfArgValue[11]);
+	}
 
-	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo = _pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo;
+	//_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo = _pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo;
 }
 
 void Ts_WOF::Execute()

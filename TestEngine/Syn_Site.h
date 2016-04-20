@@ -31,7 +31,7 @@ public:
 	uint32_t Open();
 
 	/*fixed scriptID and scriptName in GUI. */
-	uint32_t ExecuteScript(uint8_t scriptID);
+	//uint32_t ExecuteScript(uint8_t scriptID);
 
 	uint32_t GetTestInfo(Syn_DutTestInfo * &opTestInfo);
 
@@ -100,8 +100,8 @@ private:
 
 private:
 
-	void RunScript(uint8_t scriptID);
+	//void RunScript(uint8_t scriptID);
 
-	bool GetTestScriptInfo(uint8_t scriptID, Syn_TestScript &oTestScriptInfo);
+	//bool GetTestScriptInfo(uint8_t scriptID, Syn_TestScript &oTestScriptInfo);
 };
 

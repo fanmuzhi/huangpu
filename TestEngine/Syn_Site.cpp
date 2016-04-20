@@ -222,152 +222,147 @@ uint32_t Syn_Site::Close()
 	return  Syn_ExceptionCode::Syn_OK;
 }
 
-uint32_t Syn_Site::ExecuteScript(uint8_t scriptID)
-{
-	if (_siteState == SiteState::Error)
-	{
-		return _uiErrorFlag;
-	}
-	if (_siteState != Idle)
-	{
-		return Syn_ExceptionCode::Syn_SiteStateError;
-	}
-
-	bool rc(false);
-	_siteState = Running;
-
-	//std::thread siteThread(RunScript, this, scriptID);
-
-	/*std::thread siteThread([&]()
-	{
-		this->RunScript(scriptID);
-	});
-
-	siteThread.detach();
-	//siteThread.join();
-	
-	//return Syn_ExceptionCode::Syn_SiteThread;
-	return Syn_ExceptionCode::Syn_OK;*/
-
-	RunScript(scriptID);
-
-	if (TestDataReady == _siteState)
-	{
-		return Syn_ExceptionCode::Syn_OK;
-	}
-	else
-	{
-		return _uiErrorFlag;
-	}
-}
-
-void Syn_Site::RunScript(uint8_t scriptID)
-{
-
-	//_pSyn_Dut->InitData(_SysConfig);
-
-	Syn_TestScript ExceteScriptInfo;
-	bool rc = GetTestScriptInfo(scriptID, ExceteScriptInfo);
-	if (!rc)
-	{
-		_uiErrorFlag = Syn_ExceptionCode::Syn_ScriptConfigError;
-		return;
-	}
-
-	unsigned int listSize = ExceteScriptInfo._listOfTestStep.size();
-	if (0 == listSize)
-	{
-		_uiErrorFlag = Syn_ExceptionCode::Syn_ScriptConfigError;
-		return;
-	}
-
-	bool errorFlag(false);
-	for (unsigned int i = 1; i <= listSize; i++)
-	{
-		if (errorFlag || _stopFlag)
-		{
-			break;
-		}
-
-		Syn_TestStepInfo CurrentTestStepInfo = ExceteScriptInfo._listOfTestStep[i - 1];
-		Syn_TestStep *pTestStep = NULL;
-
-		std::string strArgsValue("");
-		_SysConfig.GetSyn_TestStepInfo(CurrentTestStepInfo._strTestStepName, strArgsValue);
-
-		rc = Syn_TestStepFactory::CreateTestStepInstance(CurrentTestStepInfo._strTestStepName, strArgsValue, _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
-		if (rc && NULL != pTestStep)
-		{
-			try
-			{
-				if (1 == i)
-				{
-					pTestStep->SetUp();
-				}
-
-				pTestStep->Execute();
-
-				if (listSize == i)
-				{
-					pTestStep->CleanUp();
-				}
-
-				delete pTestStep;
-				pTestStep = NULL;
-			}
-			catch (Syn_Exception ex)
-			{
-				//pTestStep->CleanUp();
-				//LOG(ERROR) << "Error:Calibration is failed!";
-				//_siteInfo._strErrorMessage = ex.GetDescription();
-				errorFlag = true;
-
-				//_uiErrorFlag = Syn_Info::
-				_strErrorMessage = ex.GetDescription();
-				_uiErrorFlag = ex.GetError();
-				delete pTestStep;
-				pTestStep = NULL;
-				break;
-			}
-			catch (...)
-			{
-				errorFlag = true;
-				_uiErrorFlag = Syn_ExceptionCode::Syn_UnknownError;
-				delete pTestStep;
-				pTestStep = NULL;
-				break;
-			}
-		}
-	}
-
-	_stopFlag = false;
-
-	if (errorFlag)
-	{
-		_siteState = Error;
-	}
-	else
-	{
-		_siteState = TestDataReady;
-	}
-}
-
-bool Syn_Site::GetTestScriptInfo(uint8_t scriptID, Syn_TestScript &oTestScriptInfo)
-{
-	bool IsExists(false);
-
-	oTestScriptInfo._listOfTestStep.clear();
-	for(size_t i = 1; i <= _SysConfig._listTestSteps.size(); i++)
-	{
-		if (scriptID == _SysConfig._listTestSteps[i - 1]._uiScriptID)
-		{
-			oTestScriptInfo._listOfTestStep.push_back(_SysConfig._listTestSteps[i - 1]);
-			IsExists = true;
-		}
-	}
-		
-	return IsExists;
-}
+//uint32_t Syn_Site::ExecuteScript(uint8_t scriptID)
+//{
+//	if (_siteState == SiteState::Error)
+//	{
+//		return _uiErrorFlag;
+//	}
+//	if (_siteState != Idle)
+//	{
+//		return Syn_ExceptionCode::Syn_SiteStateError;
+//	}
+//
+//	bool rc(false);
+//	_siteState = Running;
+//
+//	/*std::thread siteThread([&]()
+//	{
+//		this->RunScript(scriptID);
+//	});
+//
+//	siteThread.detach();
+//	return Syn_ExceptionCode::Syn_OK;*/
+//
+//	RunScript(scriptID);
+//
+//	if (TestDataReady == _siteState)
+//	{
+//		return Syn_ExceptionCode::Syn_OK;
+//	}
+//	else
+//	{
+//		return _uiErrorFlag;
+//	}
+//}
+//
+//void Syn_Site::RunScript(uint8_t scriptID)
+//{
+//
+//	//_pSyn_Dut->InitData(_SysConfig);
+//
+//	Syn_TestScript ExceteScriptInfo;
+//	bool rc = GetTestScriptInfo(scriptID, ExceteScriptInfo);
+//	if (!rc)
+//	{
+//		_uiErrorFlag = Syn_ExceptionCode::Syn_ScriptConfigError;
+//		return;
+//	}
+//
+//	unsigned int listSize = ExceteScriptInfo._listOfTestStep.size();
+//	if (0 == listSize)
+//	{
+//		_uiErrorFlag = Syn_ExceptionCode::Syn_ScriptConfigError;
+//		return;
+//	}
+//
+//	bool errorFlag(false);
+//	for (unsigned int i = 1; i <= listSize; i++)
+//	{
+//		if (errorFlag || _stopFlag)
+//		{
+//			break;
+//		}
+//
+//		Syn_TestStepInfo CurrentTestStepInfo = ExceteScriptInfo._listOfTestStep[i - 1];
+//		Syn_TestStep *pTestStep = NULL;
+//
+//		std::string strArgsValue("");
+//		_SysConfig.GetSyn_TestStepInfo(CurrentTestStepInfo._strTestStepName, strArgsValue);
+//
+//		rc = Syn_TestStepFactory::CreateTestStepInstance(CurrentTestStepInfo._strTestStepName, strArgsValue, _pSyn_DutCtrl, _pSyn_Dut, pTestStep);
+//		if (rc && NULL != pTestStep)
+//		{
+//			try
+//			{
+//				if (1 == i)
+//				{
+//					pTestStep->SetUp();
+//				}
+//
+//				pTestStep->Execute();
+//
+//				if (listSize == i)
+//				{
+//					pTestStep->CleanUp();
+//				}
+//
+//				delete pTestStep;
+//				pTestStep = NULL;
+//			}
+//			catch (Syn_Exception ex)
+//			{
+//				//pTestStep->CleanUp();
+//				//LOG(ERROR) << "Error:Calibration is failed!";
+//				//_siteInfo._strErrorMessage = ex.GetDescription();
+//				errorFlag = true;
+//
+//				//_uiErrorFlag = Syn_Info::
+//				_strErrorMessage = ex.GetDescription();
+//				_uiErrorFlag = ex.GetError();
+//				delete pTestStep;
+//				pTestStep = NULL;
+//				break;
+//			}
+//			catch (...)
+//			{
+//				errorFlag = true;
+//				_uiErrorFlag = Syn_ExceptionCode::Syn_UnknownError;
+//				delete pTestStep;
+//				pTestStep = NULL;
+//				break;
+//			}
+//		}
+//	}
+//
+//	_stopFlag = false;
+//
+//	if (errorFlag)
+//	{
+//		_siteState = Error;
+//	}
+//	else
+//	{
+//		_siteState = TestDataReady;
+//	}
+//}
+//
+//bool Syn_Site::GetTestScriptInfo(uint8_t scriptID, Syn_TestScript &oTestScriptInfo)
+//{
+//	bool IsExists(false);
+//
+//	oTestScriptInfo._listOfTestStep.clear();
+//	for(size_t i = 1; i <= _SysConfig._listTestSteps.size(); i++)
+//	{
+//		if (scriptID == _SysConfig._listTestSteps[i - 1]._uiScriptID)
+//		{
+//			oTestScriptInfo._listOfTestStep.push_back(_SysConfig._listTestSteps[i - 1]);
+//			IsExists = true;
+//		}
+//	}
+//		
+//	return IsExists;
+//}
 
 uint32_t Syn_Site::GetTestInfo(Syn_DutTestInfo * &opTestInfo)
 {
@@ -752,8 +747,6 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 					_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nGain,
 					_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithoutStim - _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithStim);
 		}
-
-		fprintf(pFile, "\n");
 	}
 
 	//If the user has not skipped testing zone 1.
