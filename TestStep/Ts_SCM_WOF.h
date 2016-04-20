@@ -22,6 +22,6 @@ public:
 
 	void SYN_SCMWofTestExecute(SCM_WofTestInfo& pInfo, SCM_WofTestResults& pResults);
 
-	int CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf);
+	int CalcScmWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf);
 };
 

@@ -229,7 +229,7 @@ void Ts_SCM_WOF::CleanUp()
 	PowerOff();
 }
 
-int Ts_SCM_WOF::CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf)
+int Ts_SCM_WOF::CalcScmWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf)
 {
 	int i;
 
@@ -242,6 +242,7 @@ int Ts_SCM_WOF::CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf)
 	}
 	return nTgrIdx;
 }
+
 
 void Ts_SCM_WOF::SYN_SCMWofTestExecute(SCM_WofTestInfo& pInfo, SCM_WofTestResults& pResults)
 {
@@ -257,12 +258,12 @@ void Ts_SCM_WOF::SYN_SCMWofTestExecute(SCM_WofTestInfo& pInfo, SCM_WofTestResult
 	for (nGainIdx = 0; (nGainIdx < pResults.m_nNumGains) && (pResults.m_bPass == 0); nGainIdx++)
 	{
 		//If we got a good trigger at this gain (without stimulus).
-		nTgrIdx = CalcWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithoutStim[6 + (nGainIdx * pResults.m_nNumThresholds)]);
+		nTgrIdx = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithoutStim[6 + (nGainIdx * pResults.m_nNumThresholds)]);
 		if ((nTgrIdx >= pInfo.m_nMinTriggerThreshold) && (nTgrIdx < pInfo.m_nMaxTriggerThreshold))
 		{
 			//If we got a good trigger at this gain (with stimulus).
 			pResults.m_nTriggerWithoutStim = nTgrIdx;
-			nTgrIdx = CalcWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithStim[6 + (nGainIdx * pResults.m_nNumThresholds)]);
+			nTgrIdx = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithStim[6 + (nGainIdx * pResults.m_nNumThresholds)]);
 			if ((nTgrIdx >= pInfo.m_nMinTriggerThreshold) && (nTgrIdx < pInfo.m_nMaxTriggerThreshold))
 			{
 				//Success.
