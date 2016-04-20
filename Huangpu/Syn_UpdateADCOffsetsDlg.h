@@ -14,6 +14,8 @@ public:
 	Syn_UpdateADCOffsetsDlg(QWidget *parent = 0);
 	~Syn_UpdateADCOffsetsDlg();
 
+	void closeEvent(QCloseEvent * event);
+
 private:
 	Ui::Syn_UpdateADCOffsetsDlg ui;
 };

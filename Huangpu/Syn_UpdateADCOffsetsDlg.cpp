@@ -5,7 +5,7 @@ Syn_UpdateADCOffsetsDlg::Syn_UpdateADCOffsetsDlg(QWidget *parent)
 {
 	ui.setupUi(this);
 
-	setWindowFlags(windowFlags() | Qt::FramelessWindowHint | Qt::WindowTitleHint);
+	//setWindowFlags(windowFlags() | Qt::FramelessWindowHint | Qt::WindowTitleHint);
 
 	ui.VddLineEdit->setValidator(new QIntValidator(0, 3300, this));
 	ui.VioLineEdit->setValidator(new QIntValidator(0, 3300, this));
@@ -15,5 +15,9 @@ Syn_UpdateADCOffsetsDlg::Syn_UpdateADCOffsetsDlg(QWidget *parent)
 
 Syn_UpdateADCOffsetsDlg::~Syn_UpdateADCOffsetsDlg()
 {
+}
 
+void Syn_UpdateADCOffsetsDlg::closeEvent(QCloseEvent * event)
+{
+	ui.CancelPushButton->click();
 }

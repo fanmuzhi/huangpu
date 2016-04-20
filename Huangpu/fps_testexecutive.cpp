@@ -898,11 +898,11 @@ void FPS_TestExecutive::Run()
 				ui.TestTableWidget->takeItem(4, i - 1);
 			if (NULL != ui.TestTableWidget->item(5, i - 1))
 				ui.TestTableWidget->takeItem(5, i - 1);
-			if (NULL != ui.TestTableWidget->item(6, i - 1))
+			if (NULL != ui.TestTableWidget->cellWidget(6, i - 1))
 				ui.TestTableWidget->removeCellWidget(6, i - 1);
 			if (NULL != ui.TestTableWidget->cellWidget(7, i - 1))
 				ui.TestTableWidget->removeCellWidget(7, i - 1);
-			if (NULL != ui.TestTableWidget->cellWidget(8, i - 1))
+			if (NULL != ui.TestTableWidget->item(8, i - 1))
 				ui.TestTableWidget->takeItem(8, i - 1);
 		}
 
