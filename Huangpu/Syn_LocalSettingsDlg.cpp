@@ -8,7 +8,7 @@ Syn_LocalSettingsDlg::Syn_LocalSettingsDlg(QWidget *parent)
 	ui = new Ui::Syn_LocalSettingsDlg();
 	ui->setupUi(this);
 
-	setWindowFlags(windowFlags() | Qt::FramelessWindowHint | Qt::WindowTitleHint);
+	//setWindowFlags(windowFlags() | Qt::FramelessWindowHint | Qt::WindowTitleHint);
 
 	ui->SiteCountsLineEdit->setValidator(new QIntValidator(0, 20, this));
 
@@ -22,4 +22,9 @@ Syn_LocalSettingsDlg::Syn_LocalSettingsDlg(QWidget *parent)
 Syn_LocalSettingsDlg::~Syn_LocalSettingsDlg()
 {
 	delete ui;
+}
+
+void Syn_LocalSettingsDlg::closeEvent(QCloseEvent * event)
+{
+	ui->CancelPushButton->click();
 }

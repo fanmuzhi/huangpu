@@ -1488,7 +1488,10 @@ void FPS_TestExecutive::CloseBinCodesDlg()
 	if (NULL == _pSyn_BinCodesDlg)
 		return;
 
-	_pSyn_BinCodesDlg->hide();
+	//_pSyn_BinCodesDlg->hide();
+
+	delete _pSyn_BinCodesDlg;
+	_pSyn_BinCodesDlg = NULL;
 }
 
 void FPS_TestExecutive::ManageButtonStatus(int iFlag)

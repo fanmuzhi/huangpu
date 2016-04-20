@@ -18,6 +18,8 @@ public:
 
 	inline void GetUpdateTag(bool &oUpdateTag){ oUpdateTag = _UpdateTag; };
 
+	void closeEvent(QCloseEvent * event);
+
 private:
 	Ui::Syn_LocalSettingsDlg *ui;
 

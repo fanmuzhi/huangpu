@@ -14,6 +14,8 @@ public:
 	Syn_BinCodesDlg(QWidget *parent = 0);
 	~Syn_BinCodesDlg();
 
+	void closeEvent(QCloseEvent * event);
+
 private:
 	Ui::Syn_BinCodesDlg ui;
 };
