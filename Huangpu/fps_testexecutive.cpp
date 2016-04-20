@@ -898,11 +898,11 @@ void FPS_TestExecutive::Run()
 				ui.TestTableWidget->takeItem(4, i - 1);
 			if (NULL != ui.TestTableWidget->item(5, i - 1))
 				ui.TestTableWidget->takeItem(5, i - 1);
-			if (NULL != ui.TestTableWidget->item(6, i - 1))
+			if (NULL != ui.TestTableWidget->cellWidget(6, i - 1))
 				ui.TestTableWidget->removeCellWidget(6, i - 1);
 			if (NULL != ui.TestTableWidget->cellWidget(7, i - 1))
 				ui.TestTableWidget->removeCellWidget(7, i - 1);
-			if (NULL != ui.TestTableWidget->cellWidget(8, i - 1))
+			if (NULL != ui.TestTableWidget->item(8, i - 1))
 				ui.TestTableWidget->takeItem(8, i - 1);
 		}
 
@@ -1488,7 +1488,10 @@ void FPS_TestExecutive::CloseBinCodesDlg()
 	if (NULL == _pSyn_BinCodesDlg)
 		return;
 
-	_pSyn_BinCodesDlg->hide();
+	//_pSyn_BinCodesDlg->hide();
+
+	delete _pSyn_BinCodesDlg;
+	_pSyn_BinCodesDlg = NULL;
 }
 
 void FPS_TestExecutive::ManageButtonStatus(int iFlag)

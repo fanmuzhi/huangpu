@@ -14,3 +14,8 @@ Syn_BinCodesDlg::~Syn_BinCodesDlg()
 {
 
 }
+
+void Syn_BinCodesDlg::closeEvent(QCloseEvent * event)
+{
+	ui.ClosePushButton->click();
+}
