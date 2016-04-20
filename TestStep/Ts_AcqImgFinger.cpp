@@ -64,9 +64,12 @@ void Ts_AcqImgFinger::SetUp()
 	_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);*/
 
 	Syn_PatchInfo ImgAcqPatchInfo;
-	if (_pSyn_Dut->FindPatch("ImageAcqPatch", ImgAcqPatchInfo) && NULL != ImgAcqPatchInfo._pArrayBuf)
+	if (_pSyn_Dut->FindPatch("ImageAcqPatch", ImgAcqPatchInfo))
 	{
-		_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);
+		if (0 != ImgAcqPatchInfo._uiArraySize)
+		{
+			_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);
+		}
 	}
 }
 

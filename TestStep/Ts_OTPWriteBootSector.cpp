@@ -99,7 +99,7 @@ void Ts_OTPWriteBootSector::Execute()
 		otpBs0[index] |= 0x2;
 	}
 
-	_pSyn_DutCtrl->FpOtpRomWrite(1, 0, otpBs0, BS0_SIZE);
+	_pSyn_DutCtrl->FpOtpRomWrite(BOOT_SEC, 0, otpBs0, BS0_SIZE);
 
 }
 

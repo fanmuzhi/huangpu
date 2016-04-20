@@ -247,6 +247,10 @@ void Ts_WOF::GetZ0WofData(WofTestInfo &wofInfo,WofTestResults &wofResults)
 {
 	bool rc(false);
 
+	bool		bWithStim	 = wofInfo.m_bWithStimulus;
+	uint8_t*	pResponseBuf = bWithStim ? wofResults.m_arDataWithStim : wofResults.m_arDataWithoutStim;
+
+
 	int nVcc = (int)(wofInfo.m_nVCC * 1000);
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, nVcc, nVcc, true);
 
@@ -259,6 +263,7 @@ void Ts_WOF::GetZ0WofData(WofTestInfo &wofInfo,WofTestResults &wofResults)
 	rc = _pSyn_Dut->FindPatch("WofCmd1", WofCmd1PathInfo);
 	_pSyn_DutCtrl->FpWrite(1, WofCmd1PathInfo._pArrayBuf[0], &WofCmd1PathInfo._pArrayBuf[1], WofCmd1PathInfo._uiArraySize - 1);
 	_pSyn_DutCtrl->FpWaitForCMDComplete();
+	_pSyn_DutCtrl->FpReadAndCheckStatus(0);
 
 	Syn_PatchInfo WofCmd2PathInfo;
 	rc = _pSyn_Dut->FindPatch("WofCmd2", WofCmd2PathInfo);
@@ -278,17 +283,17 @@ void Ts_WOF::GetZ0WofData(WofTestInfo &wofInfo,WofTestResults &wofResults)
 	//Execute and wait for sweep command to complete.
 	_pSyn_DutCtrl->FpWrite(1, WofCmd2PathInfo._pArrayBuf[0], &WofCmd2PathInfo._pArrayBuf[1], WofCmd2PathInfo._uiArraySize - 1);
 	_pSyn_DutCtrl->FpWaitForCMDComplete();
+	_pSyn_DutCtrl->FpReadAndCheckStatus(0);
 
 	//Send execute command and wait for response.
-	uint8_t* pDst = wofResults.m_arDataWithoutStim;
 	int timeout = 100;
 	do
 	{
 		_pSyn_DutCtrl->FpWrite(1, 0xF9, (uint8_t*)0, 0);
 		Sleep(20);
-		_pSyn_DutCtrl->FpRead(1, 0xFF, pDst, wofResults.m_nResponseSize);
+		_pSyn_DutCtrl->FpRead(1, 0xFF, pResponseBuf, wofResults.m_nResponseSize);
 		timeout--;
-	} while (timeout && (!((pDst[0] == 0x00) && (pDst[1] == 0x00))));
+	} while (timeout && (!((pResponseBuf[0] == 0x00) && (pResponseBuf[1] == 0x00))));
 
 	if (timeout == 0)
 	{
@@ -307,6 +312,8 @@ void Ts_WOF::GetZ1WofData(WofTestInfo &wofInfo, WofTestResults &wofResults)
 {
 	bool rc(false);
 
+	bool		bWithStim	 = wofInfo.m_bWithStimulus;
+	uint8_t*	pResponseBuf = bWithStim ? wofResults.m_arDataWithStim : wofResults.m_arDataWithoutStim;
 	int nVcc = (int)(wofInfo.m_nVCC * 1000);
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, nVcc, nVcc, true);
 
@@ -319,6 +326,7 @@ void Ts_WOF::GetZ1WofData(WofTestInfo &wofInfo, WofTestResults &wofResults)
 	rc = _pSyn_Dut->FindPatch("WofCmd3", WofCmd3PathInfo);
 	_pSyn_DutCtrl->FpWrite(1, WofCmd3PathInfo._pArrayBuf[0], &WofCmd3PathInfo._pArrayBuf[1], WofCmd3PathInfo._uiArraySize - 1);
 	_pSyn_DutCtrl->FpWaitForCMDComplete();
+	_pSyn_DutCtrl->FpReadAndCheckStatus(0);
 
 	Syn_PatchInfo WofCmd4PathInfo;
 	rc = _pSyn_Dut->FindPatch("WofCmd4", WofCmd4PathInfo);
@@ -338,17 +346,17 @@ void Ts_WOF::GetZ1WofData(WofTestInfo &wofInfo, WofTestResults &wofResults)
 	//Execute and wait for sweep command to complete.
 	_pSyn_DutCtrl->FpWrite(1, WofCmd4PathInfo._pArrayBuf[0], &WofCmd4PathInfo._pArrayBuf[1], WofCmd4PathInfo._uiArraySize - 1);
 	_pSyn_DutCtrl->FpWaitForCMDComplete();
+	_pSyn_DutCtrl->FpReadAndCheckStatus(0);
 
 	//Send execute command and wait for response.
-	uint8_t* pDst = wofResults.m_arDataWithoutStim;
 	int timeout = 100;
 	do
 	{
 		_pSyn_DutCtrl->FpWrite(1, 0xF9, (uint8_t*)0, 0);
 		Sleep(20);
-		_pSyn_DutCtrl->FpRead(1, 0xFF, pDst, wofResults.m_nResponseSize);
+		_pSyn_DutCtrl->FpRead(1, 0xFF, pResponseBuf, wofResults.m_nResponseSize);
 		timeout--;
-	} while (timeout && (!((pDst[0] == 0x00) && (pDst[1] == 0x00))));
+	} while (timeout && (!((pResponseBuf[0] == 0x00) && (pResponseBuf[1] == 0x00))));
 
 	if (timeout == 0)
 	{
@@ -362,17 +370,6 @@ void Ts_WOF::GetZ1WofData(WofTestInfo &wofInfo, WofTestResults &wofResults)
 	PowerOff();
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 void Ts_WOF::SYN_WofTestExecute(WofTestInfo &Info, WofTestResults &Results)

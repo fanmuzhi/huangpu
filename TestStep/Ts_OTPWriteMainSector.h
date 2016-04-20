@@ -17,6 +17,8 @@ public:
 
 	void BurnToOTP(long nRecType, uint8_t* pSrc, int numBytes);
 
+	bool RegCheckBitSet();
+
 private:
 	bool bBurnPGA_OOPP;
 };
