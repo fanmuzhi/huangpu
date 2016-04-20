@@ -66,7 +66,7 @@ void Ts_OTPWriteMainSector::Execute()
 	//nSNR_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nSNR_count;
 	//nFlexId_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nFlexId_count;
 	//nWofBot_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofBot_count;
-	nWofTop_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofTop_count;
+	//nWofTop_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofTop_count;
 	//nDutTempAdc_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nDutTempAdc_count;
 	//nPGA_OOPP_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPGA_OOPP_count;
 	//nScmWofBot_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nScmWofBot_count;
@@ -153,33 +153,34 @@ void Ts_OTPWriteMainSector::Execute()
 		}
 	}
 
-	//if (//WOF)
-	//If WOF(bottom) values have not been stored in the OTP.
-	if (_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bExecutedWithStimulus)
+	//If WOF(zone 0) values have not been stored in the OTP.
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_bExecutedWithStimulus)
 	{
 		nWofBot_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_BOT, arMS0, MS0_SIZE);
 		if (nWofBot_count == 0)
 		{
 			memset(arMS0, 0, sizeof(arMS0));
-			if (_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_bPassAtGain100)
-			{
-				arMS0[0] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_nTriggerIdxWithoutStim_100;
-				arMS0[1] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_nTriggerIdxWithStim_100;
-				arMS0[2] = 100;
-				arMS0[3] = 0;
-			}
-			else
-			{
-				arMS0[0] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_nTriggerIdxWithoutStim_200;
-				arMS0[1] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_nTriggerIdxWithStim_200;
-				arMS0[2] = 200;
-				arMS0[3] = 0;
-			}
+			arMS0[0] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithoutStim;
+			arMS0[1] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithStim;
+			arMS0[2] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nGain & 0xFF);
+			arMS0[3] = 0;
+
 			BurnToOTP(EXT_TAG_WOF_BOT, arMS0, 4);
-			//PowerOff();
-			//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-			//_pSyn_DutCtrl->FpUnloadPatch();
-			//_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
+		}
+	}
+	//If WOF(zone 1) values have not been stored in the OTP.
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_bExecutedWithStimulus)
+	{
+		nWofTop_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_TOP, arMS0, MS0_SIZE);
+		if (nWofTop_count == 0)
+		{
+			memset(arMS0, 0, sizeof(arMS0));
+			arMS0[0] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_z1WofResults.m_nTriggerWithoutStim;
+			arMS0[1] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_z1WofResults.m_nTriggerWithStim;
+			arMS0[2] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_z1WofResults.m_nGain & 0xFF);
+			arMS0[3] = 0;
+
+			BurnToOTP(EXT_TAG_WOF_TOP, arMS0, 4);
 		}
 	}
 

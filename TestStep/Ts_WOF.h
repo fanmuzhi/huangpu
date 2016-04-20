@@ -17,10 +17,12 @@ public:
 
 	virtual void	CleanUp();
 
-	void ExecuteWofTest();
+	void GetZ0WofData(WofTestInfo &wofInfo, WofTestResults &wofResults);
 
-	void WofTestProcessData();
+	void GetZ1WofData(WofTestInfo &wofInfo, WofTestResults &wofResults);
 
-	void GetOtpWofData(uint8_t pOtpData[MS0_SIZE],int OtpWofDataCount);
+	void SYN_WofTestExecute(WofTestInfo &Info, WofTestResults &Results);
+
+	int CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf);
 };
 
