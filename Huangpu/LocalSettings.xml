@@ -3,6 +3,6 @@
     <SysConfigFile>C:/Users/bqiling/Google Drive/Metallica 109A0/FM192/(FM-000192-008)_OFilm_Gold_SCMWOF_PGA8_Huangpu.xml</SysConfigFile>
     <LogFilePath>C:/logfiles/Huangpu</LogFilePath>
     <NumSites>1</NumSites>
-    <Site1 AdcBaseLines="697 698 696 699 697 697 694 698 699 697 717 698 798 812 1128 800 " Voltages="1800 1800 3300 3300">1904205</Site1>
+    <Site1 AdcBaseLines="697 697 699 798 698 697 697 812 696 694 717 1128 699 698 698 800 " Voltages="1800 1800 3300 3300">1904205</Site1>
     <AutoController></AutoController>
 </LocalSettings>

@@ -165,7 +165,8 @@ void Syn_Dut::InitData(Syn_SysConfig &sysConfig, AdcBaseLineInfo &iAdcBaseLineIn
 
 	//time ms
 	_pSyn_DutTestResult->_wofResults.m_elapsedtime = 0;
-	//_pSyn_DutTestResult->_SCM_wofResults.m_elapsedtime = 0;
+	_pSyn_DutTestResult->_TopSCM_wofResults.m_elapsedtime = 0;
+	_pSyn_DutTestResult->_BottomSCM_wofResults.m_elapsedtime = 0;
 
 }
 
