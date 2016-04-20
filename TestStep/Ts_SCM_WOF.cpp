@@ -135,6 +135,11 @@ void Ts_SCM_WOF::Execute()
 		}
 
 		_pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults.m_elapsedtime += dCurrentElapsedTime;
+
+		if (_pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults.m_bPass == 0)
+		{
+			_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
+		}
 	}
 	else  // Without Stimulus
 	{
@@ -160,6 +165,12 @@ void Ts_SCM_WOF::Execute()
 		}
 
 		_pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_elapsedtime += dCurrentElapsedTime;
+
+		
+		if (_pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_bPass == 0)
+		{
+			_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
+		}
 	}
 	else  // Without Stimulus
 	{

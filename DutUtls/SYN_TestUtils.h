@@ -412,17 +412,21 @@ typedef struct
 {
 	int			m_bPass;
 	int			m_bValid;
-	int			m_bPassAtGain100;
-	int			m_bPassAtGain200;
-	int			m_bPassAtGain200_3p7V;
-	int			m_nRecIdxWithoutStim;
-	int			m_nTriggerIdxWithoutStim_100;
-	int			m_nTriggerIdxWithoutStim_200;
-	int			m_nTriggerIdxWithStim_100;
-	int			m_nTriggerIdxWithStim_200;
-	int         m_nTriggerIdxWithStim_200_3p7;
-	int			m_nWithStimCount;
-	int			m_arWofBottom[MAX_WOF_LINES];
+	int			m_nGain;
+	int			m_nTriggerWithoutStim;
+	int			m_nTriggerWithStim;
+	uint8_t		m_arDataWithoutStim[MAX_WOF_DATA];
+	uint8_t		m_arDataWithStim[MAX_WOF_DATA];
+
+	int			m_nThreshStart;
+	int			m_nThreshInc;
+	int			m_nThreshStop;
+	int			m_nNumThresholds;
+	int			m_nGainStart;
+	int			m_nGainInc;
+	int			m_nGainStop;
+	int			m_nNumGains;
+	int			m_nResponseSize;
 
 	double      m_elapsedtime;
 }WofTestResults;

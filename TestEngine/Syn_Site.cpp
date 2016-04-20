@@ -726,33 +726,64 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 	}
 
 	//WakeOnFinger Test
-	if ((DutInfo->_wofInfo.m_bExecutedWithoutStimulus == 1) || (DutInfo->_wofInfo.m_bExecutedWithStimulus == 1))
+	if (DutInfo->_z0WofInfo.m_bExecutedWithoutStimulus == 1 || DutInfo->_z0WofInfo.m_bExecutedWithStimulus == 1)
 	{
-		fprintf(pFile, "\nWakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta,WithFinger_3.7v,Delta_3.7v,Limit_Delta_100,Limit_Delta_200,Limit_Delta_200_3p7",DutResults->_wofResults.m_bPass ? "Pass" : "Fail", DutResults->_wofResults.m_elapsedtime);
+		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofBot_count != 0)
+		{
+			fprintf(pFile, "\nWOF Zone 0,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass (OTP)", _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_elapsedtime);
+			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithoutStim,
+					_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithStim,
+					_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nGain,
+					_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithoutStim - _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithStim);
+		}
+		else if (_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_bPass != 0)	//If passed.
+		{
+			fprintf(pFile, "\nWOF Zone 0,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_elapsedtime);
+			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithoutStim,
+					_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithStim,
+					_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nGain,
+					_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithoutStim - _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithStim);
+		}
+		else	//Failed.
+		{
+			fprintf(pFile, "\nWOF Zone 0,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Fail", _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_elapsedtime);
+			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithoutStim,
+					_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithStim,
+					_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nGain,
+					_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithoutStim - _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithStim);
+		}
 
-		if (DutResults->_wofResults.m_bPassAtGain100)
-		{
-			fprintf(pFile, "\n,,,%d,%d,%d,%d,%s,%s,%d,%d,%d\n",
-				DutResults->_wofResults.m_nTriggerIdxWithoutStim_100, DutResults->_wofResults.m_nTriggerIdxWithStim_100, 100,
-				DutResults->_wofResults.m_nTriggerIdxWithoutStim_100 - DutResults->_wofResults.m_nTriggerIdxWithStim_100, "None", "None",
-				DutInfo->_wofInfo.m_nDelta_100, DutInfo->_wofInfo.m_nDelta_200, DutInfo->_wofInfo.m_nDelta_200_3p7);
-		}
-		else if (DutResults->_wofResults.m_bPassAtGain200)
-		{
-			fprintf(pFile, "\n,,,%d,%d,%d,%d,%s,%s,%d,%d,%d\n",
-				DutResults->_wofResults.m_nTriggerIdxWithoutStim_200, DutResults->_wofResults.m_nTriggerIdxWithStim_200, 200,
-				DutResults->_wofResults.m_nTriggerIdxWithoutStim_200 - DutResults->_wofResults.m_nTriggerIdxWithStim_200, "None", "None",
-				DutInfo->_wofInfo.m_nDelta_100, DutInfo->_wofInfo.m_nDelta_200, DutInfo->_wofInfo.m_nDelta_200_3p7);
-		}
-		else
-		{
-			fprintf(pFile, "\n,,,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
-				DutResults->_wofResults.m_nTriggerIdxWithoutStim_200, DutResults->_wofResults.m_nTriggerIdxWithStim_200, 200,
-				DutResults->_wofResults.m_nTriggerIdxWithoutStim_200 - DutResults->_wofResults.m_nTriggerIdxWithStim_200, DutResults->_wofResults.m_nTriggerIdxWithStim_200_3p7,
-				DutResults->_wofResults.m_nTriggerIdxWithoutStim_200 - DutResults->_wofResults.m_nTriggerIdxWithStim_200_3p7,
-				DutInfo->_wofInfo.m_nDelta_100, DutInfo->_wofInfo.m_nDelta_200, DutInfo->_wofInfo.m_nDelta_200_3p7);
-		}
 		fprintf(pFile, "\n");
+	}
+
+	//If the user has not skipped testing zone 1.
+	if (DutInfo->_z1WofInfo.m_bExecutedWithoutStimulus == 1 || DutInfo->_z1WofInfo.m_bExecutedWithStimulus == 1)
+	{
+		//If we got the zone 1 data out of OTP rather than calculating.
+		if (DutResults->_calibrationResults.m_nWofTop_count != 0)
+		{
+			fprintf(pFile, "\nWOF Zone 1,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass (OTP)", DutResults->_z1WofResults.m_elapsedtime);
+			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_z1WofResults.m_nTriggerWithoutStim,
+					DutResults->_z1WofResults.m_nTriggerWithStim,
+					DutResults->_z1WofResults.m_nGain,
+					DutResults->_z1WofResults.m_nTriggerWithoutStim - DutResults->_z1WofResults.m_nTriggerWithStim);
+		}
+		else if (DutResults->_z1WofResults.m_bPass != 0)	//If passed.
+		{
+			fprintf(pFile, "\nWOF Zone 1,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_z1WofResults.m_elapsedtime);
+			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_z1WofResults.m_nTriggerWithoutStim,
+					DutResults->_z1WofResults.m_nTriggerWithStim,
+					DutResults->_z1WofResults.m_nGain,
+					DutResults->_z1WofResults.m_nTriggerWithoutStim - DutResults->_z1WofResults.m_nTriggerWithStim);
+		}
+		else	//Failed.
+		{
+			fprintf(pFile, "\nWOF Zone 1,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Fail", DutResults->_z1WofResults.m_elapsedtime);
+			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_z1WofResults.m_nTriggerWithoutStim,
+					DutResults->_z1WofResults.m_nTriggerWithStim,
+					DutResults->_z1WofResults.m_nGain,
+					DutResults->_z1WofResults.m_nTriggerWithoutStim - DutResults->_z1WofResults.m_nTriggerWithStim);
+		}
 	}
 	
 	//SCM WakeOnFinger Test

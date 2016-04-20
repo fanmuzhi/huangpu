@@ -93,8 +93,10 @@ void Syn_Dut::InitData(Syn_SysConfig &sysConfig, AdcBaseLineInfo &iAdcBaseLineIn
 	_pSyn_DutTestInfo->_pixelInfo.m_bExecuted = false;
 	_pSyn_DutTestInfo->_pixelPatchInfo.m_bExecuted = false;
 	_pSyn_DutTestInfo->_snrInfo.m_bExecuted = false;
-	_pSyn_DutTestInfo->_wofInfo.m_bExecutedWithStimulus = false;
-	_pSyn_DutTestInfo->_wofInfo.m_bExecutedWithoutStimulus = false;
+	_pSyn_DutTestInfo->_z0WofInfo.m_bExecutedWithStimulus = false;
+	_pSyn_DutTestInfo->_z0WofInfo.m_bExecutedWithoutStimulus = false;
+	_pSyn_DutTestInfo->_z1WofInfo.m_bExecutedWithStimulus = false;
+	_pSyn_DutTestInfo->_z1WofInfo.m_bExecutedWithoutStimulus = false;
 	_pSyn_DutTestInfo->_TopSCM_wofInfo.m_bExecutedWithStimulus = false;
 	_pSyn_DutTestInfo->_TopSCM_wofInfo.m_bExecutedWithoutStimulus = false;
 	_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_bExecutedWithStimulus = false;
@@ -137,7 +139,8 @@ void Syn_Dut::InitData(Syn_SysConfig &sysConfig, AdcBaseLineInfo &iAdcBaseLineIn
 	_pSyn_DutTestResult->_pixelResults.bPass = 1;
 	_pSyn_DutTestResult->_pixelPatchResults.m_bPass = 1;
 	_pSyn_DutTestResult->_snrResults.bPass = 1;
-	_pSyn_DutTestResult->_wofResults.m_bPass = 1;
+	_pSyn_DutTestResult->_z0WofResults.m_bPass = 1;
+	_pSyn_DutTestResult->_z1WofResults.m_bPass = 1;
 	_pSyn_DutTestResult->_TopSCM_wofResults.m_bPass = 1;
 	_pSyn_DutTestResult->_BottomSCM_wofResults.m_bPass = 1;
 	_pSyn_DutTestResult->_woVarResults.m_bPass = 1;
@@ -164,7 +167,8 @@ void Syn_Dut::InitData(Syn_SysConfig &sysConfig, AdcBaseLineInfo &iAdcBaseLineIn
 	_pSyn_DutTestResult->_otpCheckResult._bPass = 1;
 
 	//time ms
-	_pSyn_DutTestResult->_wofResults.m_elapsedtime = 0;
+	_pSyn_DutTestResult->_z0WofResults.m_elapsedtime = 0;
+	_pSyn_DutTestResult->_z1WofResults.m_elapsedtime = 0;
 	_pSyn_DutTestResult->_TopSCM_wofResults.m_elapsedtime = 0;
 	_pSyn_DutTestResult->_BottomSCM_wofResults.m_elapsedtime = 0;
 
