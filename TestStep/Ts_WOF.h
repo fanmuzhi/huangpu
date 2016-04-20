@@ -17,11 +17,11 @@ public:
 
 	virtual void	CleanUp();
 
-	void GetZ0WofData(WofTestInfo &wofInfo, WofTestResults &wofResults);
+	bool GetZ0WofData(WofTestInfo &wofInfo, WofTestResults &wofResults);
 
-	void GetZ1WofData(WofTestInfo &wofInfo, WofTestResults &wofResults);
+	bool GetZ1WofData(WofTestInfo &wofInfo, WofTestResults &wofResults);
 
-	void SYN_WofTestExecute(WofTestInfo &Info, WofTestResults &Results);
+	void SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Results);
 
 	int CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf);
 };
