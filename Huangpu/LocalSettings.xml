@@ -3,6 +3,6 @@
     <SysConfigFile>C:/Users/jezhang/Desktop/580-006016-01r1 (FM-000166-009) Huangpu.xml</SysConfigFile>
     <LogFilePath>D:/LogFile</LogFilePath>
     <NumSites>1</NumSites>
-    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="696 698 698 699 697 699 699 700 694 699 688 699 739 798 1054 800 ">1904205</Site1>
+    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="692 691 689 655 691 691 690 690 691 692 692 685 692 692 692 692 ">1476676</Site1>
     <AutoController></AutoController>
 </LocalSettings>
