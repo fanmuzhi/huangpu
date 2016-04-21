@@ -6,155 +6,146 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>658</width>
-    <height>728</height>
+    <width>664</width>
+    <height>710</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>FPS Test Executive</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QGridLayout" name="gridLayout_4">
-    <item row="0" column="0">
-     <widget class="QGroupBox" name="TestGroupBox">
-      <property name="title">
-       <string>Test</string>
+   <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>0</number>
       </property>
-      <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
-        <widget class="QTabWidget" name="tabWidget">
-         <property name="currentIndex">
-          <number>0</number>
-         </property>
-         <widget class="QWidget" name="tab">
-          <attribute name="title">
-           <string>Main</string>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_3">
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout">
-             <item>
-              <widget class="QTableWidget" name="TestTableWidget">
-               <property name="autoScroll">
-                <bool>false</bool>
-               </property>
-               <property name="selectionMode">
-                <enum>QAbstractItemView::SingleSelection</enum>
-               </property>
-               <property name="selectionBehavior">
-                <enum>QAbstractItemView::SelectRows</enum>
-               </property>
-               <property name="textElideMode">
-                <enum>Qt::ElideMiddle</enum>
-               </property>
-               <row>
-                <property name="text">
-                 <string>Test Site</string>
-                </property>
-               </row>
-               <row>
-                <property name="text">
-                 <string>SerialNumber</string>
-                </property>
-               </row>
-               <row>
-                <property name="text">
-                 <string>Status</string>
-                </property>
-               </row>
-               <row>
-                <property name="text">
-                 <string>Result BinCode</string>
-                </property>
-               </row>
-               <row>
-                <property name="text">
-                 <string>SNR</string>
-                </property>
-               </row>
-               <row>
-                <property name="text">
-                 <string>Pass/Fail</string>
-                </property>
-               </row>
-               <row>
-                <property name="text">
-                 <string>Image(NoFinger)</string>
-                </property>
-               </row>
-               <row>
-                <property name="text">
-                 <string>Image(FakeFinger)</string>
-                </property>
-               </row>
-               <row>
-                <property name="text">
-                 <string>Test Step</string>
-                </property>
-               </row>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="QGroupBox" name="TestOperationGroupBox">
-             <property name="title">
-              <string>Test Operation</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_3">
-              <item row="0" column="0">
-               <widget class="QPushButton" name="pushButtonRun">
-                <property name="text">
-                 <string>Run</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="tab_2">
-          <attribute name="title">
-           <string>OTPDump</string>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout">
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_2">
-             <item>
-              <widget class="QComboBox" name="comboBox"/>
-             </item>
-             <item>
-              <widget class="QPushButton" name="pushButtonGetVer">
-               <property name="text">
-                <string>GetVer</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="pushButtonReadOTP">
-               <property name="text">
-                <string>ReadOTP</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="QTextBrowser" name="textBrowser"/>
-           </item>
-           <item>
-            <widget class="QLabel" name="OTPResultLabel">
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Main</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QTableWidget" name="TestTableWidget">
+            <property name="autoScroll">
+             <bool>false</bool>
+            </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::SingleSelection</enum>
+            </property>
+            <property name="selectionBehavior">
+             <enum>QAbstractItemView::SelectRows</enum>
+            </property>
+            <property name="textElideMode">
+             <enum>Qt::ElideMiddle</enum>
+            </property>
+            <row>
              <property name="text">
-              <string>NULL</string>
+              <string>Test Site</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
+              <string>SerialNumber</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
+              <string>Status</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
+              <string>Result BinCode</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
+              <string>SNR</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
+              <string>Pass/Fail</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
+              <string>Image(NoFinger)</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
+              <string>Image(FakeFinger)</string>
+             </property>
+            </row>
+            <row>
+             <property name="text">
+              <string>Test Step</string>
+             </property>
+            </row>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="TestOperationGroupBox">
+          <property name="title">
+           <string>Test Operation</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="0" column="0">
+            <widget class="QPushButton" name="pushButtonRun">
+             <property name="text">
+              <string>Run</string>
              </property>
             </widget>
            </item>
           </layout>
          </widget>
-        </widget>
-       </item>
-      </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>OTPDump</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QComboBox" name="comboBox"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButtonGetVer">
+            <property name="text">
+             <string>GetVer</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButtonReadOTP">
+            <property name="text">
+             <string>ReadOTP</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTextBrowser" name="textBrowser"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="OTPResultLabel">
+          <property name="text">
+           <string>NULL</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -167,14 +158,13 @@
     <bool>false</bool>
    </attribute>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>658</width>
-     <height>21</height>
+     <width>664</width>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

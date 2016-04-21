@@ -23,7 +23,6 @@
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTableWidget>
 #include <QtWidgets/QTextBrowser>
@@ -44,12 +43,10 @@ public:
     QAction *actionBinCodes;
     QAction *actionAbout_FPS_Test_Executive;
     QWidget *centralWidget;
-    QGridLayout *gridLayout_4;
-    QGroupBox *TestGroupBox;
-    QGridLayout *gridLayout;
+    QHBoxLayout *horizontalLayout_3;
     QTabWidget *tabWidget;
     QWidget *tab;
-    QVBoxLayout *verticalLayout_3;
+    QVBoxLayout *verticalLayout_2;
     QHBoxLayout *horizontalLayout;
     QTableWidget *TestTableWidget;
     QGroupBox *TestOperationGroupBox;
@@ -64,7 +61,6 @@ public:
     QTextBrowser *textBrowser;
     QLabel *OTPResultLabel;
     QToolBar *mainToolBar;
-    QStatusBar *statusBar;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuOption;
@@ -74,7 +70,7 @@ public:
     {
         if (FPS_TestExecutiveClass->objectName().isEmpty())
             FPS_TestExecutiveClass->setObjectName(QStringLiteral("FPS_TestExecutiveClass"));
-        FPS_TestExecutiveClass->resize(658, 728);
+        FPS_TestExecutiveClass->resize(664, 710);
         openAct = new QAction(FPS_TestExecutiveClass);
         openAct->setObjectName(QStringLiteral("openAct"));
         saveAsAct = new QAction(FPS_TestExecutiveClass);
@@ -91,24 +87,18 @@ public:
         actionAbout_FPS_Test_Executive->setObjectName(QStringLiteral("actionAbout_FPS_Test_Executive"));
         centralWidget = new QWidget(FPS_TestExecutiveClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        gridLayout_4 = new QGridLayout(centralWidget);
-        gridLayout_4->setSpacing(6);
-        gridLayout_4->setContentsMargins(11, 11, 11, 11);
-        gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
-        TestGroupBox = new QGroupBox(centralWidget);
-        TestGroupBox->setObjectName(QStringLiteral("TestGroupBox"));
-        gridLayout = new QGridLayout(TestGroupBox);
-        gridLayout->setSpacing(6);
-        gridLayout->setContentsMargins(11, 11, 11, 11);
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        tabWidget = new QTabWidget(TestGroupBox);
+        horizontalLayout_3 = new QHBoxLayout(centralWidget);
+        horizontalLayout_3->setSpacing(6);
+        horizontalLayout_3->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
+        tabWidget = new QTabWidget(centralWidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
         tab = new QWidget();
         tab->setObjectName(QStringLiteral("tab"));
-        verticalLayout_3 = new QVBoxLayout(tab);
-        verticalLayout_3->setSpacing(6);
-        verticalLayout_3->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
+        verticalLayout_2 = new QVBoxLayout(tab);
+        verticalLayout_2->setSpacing(6);
+        verticalLayout_2->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(6);
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
@@ -142,7 +132,7 @@ public:
         horizontalLayout->addWidget(TestTableWidget);
 
 
-        verticalLayout_3->addLayout(horizontalLayout);
+        verticalLayout_2->addLayout(horizontalLayout);
 
         TestOperationGroupBox = new QGroupBox(tab);
         TestOperationGroupBox->setObjectName(QStringLiteral("TestOperationGroupBox"));
@@ -156,7 +146,7 @@ public:
         gridLayout_3->addWidget(pushButtonRun, 0, 0, 1, 1);
 
 
-        verticalLayout_3->addWidget(TestOperationGroupBox);
+        verticalLayout_2->addWidget(TestOperationGroupBox);
 
         tabWidget->addTab(tab, QString());
         tab_2 = new QWidget();
@@ -198,21 +188,15 @@ public:
 
         tabWidget->addTab(tab_2, QString());
 
-        gridLayout->addWidget(tabWidget, 0, 0, 1, 1);
-
-
-        gridLayout_4->addWidget(TestGroupBox, 0, 0, 1, 1);
+        horizontalLayout_3->addWidget(tabWidget);
 
         FPS_TestExecutiveClass->setCentralWidget(centralWidget);
         mainToolBar = new QToolBar(FPS_TestExecutiveClass);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
         FPS_TestExecutiveClass->addToolBar(Qt::BottomToolBarArea, mainToolBar);
-        statusBar = new QStatusBar(FPS_TestExecutiveClass);
-        statusBar->setObjectName(QStringLiteral("statusBar"));
-        FPS_TestExecutiveClass->setStatusBar(statusBar);
         menuBar = new QMenuBar(FPS_TestExecutiveClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 658, 21));
+        menuBar->setGeometry(QRect(0, 0, 664, 23));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
         menuOption = new QMenu(menuBar);
@@ -247,7 +231,6 @@ public:
         actionLocalSetttings->setText(QApplication::translate("FPS_TestExecutiveClass", "LocalSetttings", 0));
         actionBinCodes->setText(QApplication::translate("FPS_TestExecutiveClass", "BinCodes", 0));
         actionAbout_FPS_Test_Executive->setText(QApplication::translate("FPS_TestExecutiveClass", "About FPS Test Executive", 0));
-        TestGroupBox->setTitle(QApplication::translate("FPS_TestExecutiveClass", "Test", 0));
         QTableWidgetItem *___qtablewidgetitem = TestTableWidget->verticalHeaderItem(0);
         ___qtablewidgetitem->setText(QApplication::translate("FPS_TestExecutiveClass", "Test Site", 0));
         QTableWidgetItem *___qtablewidgetitem1 = TestTableWidget->verticalHeaderItem(1);
