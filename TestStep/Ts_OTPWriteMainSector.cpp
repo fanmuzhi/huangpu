@@ -356,7 +356,8 @@ void Ts_OTPWriteMainSector::BurnToOTP(long nRecType, uint8_t* pSrc, int numBytes
 	arOutBuf[15] = (uint8_t)((nRecType >> 24) & 0xFF);
 	arOutBuf[18] = 0x0E;
 
-	if ((nRecType == EXT_TAG_PGA_OOPR) || (nRecType == EXT_TAG_PGA_OOPP) ||(nRecType == EXT_TAG_LNA) || (nRecType == EXT_TAG_WOF_BOT) || (nRecType == EXT_TAG_SCM_WOF_BOT))
+	if ((nRecType == EXT_TAG_PGA_OOPR) || (nRecType == EXT_TAG_PGA_OOPP) ||(nRecType == EXT_TAG_LNA) || 
+		(nRecType == EXT_TAG_WOF_BOT) || (nRecType == EXT_TAG_SCM_WOF_BOT)|| (nRecType == EXT_TAG_SCM_WOF_TOP) || (nRecType == EXT_TAG_WOF_TOP))
 	{
 		//PGA and LNA records have an extra 4 bytes (0x00000007).
 		arOutBuf[24] = 0x07;

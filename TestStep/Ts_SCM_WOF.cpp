@@ -330,10 +330,11 @@ bool Ts_SCM_WOF::ExecuteBottomSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResul
 	uint8_t		pGetPrintMerged[3000] = { 0 };
 	int			nGetPrintMergedSize = nCmd2Size + nCmd3Size;
 	uint8_t*	pResponseBuf = bWithStim ? results.m_arDataWithStim : results.m_arDataWithoutStim;
-	int			nVCC = (int)(info.m_nVCC * 1000);
+	int			nVcc = (int)(info.m_nVCC * 1000);
 
 	PowerOff();
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+	//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, nVcc, nVcc, true);
 	ModifySweepCmdData(pWofCmd3);
 
 	//Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.
@@ -418,10 +419,11 @@ bool Ts_SCM_WOF::ExecuteTopSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults&
 	uint8_t		pGetPrintMerged[3000] = { 0 };
 	int			nGetPrintMergedSize = nCmd2Size + nCmd4Size;
 	uint8_t*	pResponseBuf = bWithStim ? results.m_arDataWithStim : results.m_arDataWithoutStim;
-	int			nVCC = (int)(info.m_nVCC * 1000);
+	int			nVcc = (int)(info.m_nVCC * 1000);
 
 	PowerOff();
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+	//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, nVcc, nVcc, true);
 
 	//Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.
 	results.m_nThreshStart		= pWofCmd4[0x1F];
