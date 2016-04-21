@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
-    <SysConfigFile>C:/Users/bqiling/Google Drive/Viper 86C/FM-000166-009/huangpu/580-006016-01r1 (FM-000166-009) Huangpu.xml</SysConfigFile>
+    <SysConfigFile>C:/Users/bqiling/Google Drive/Metallica 109A0/FM192/(FM-000192-008)_OFilm_Gold_SCMWOF_PGA8_Huangpu.xml</SysConfigFile>
     <LogFilePath>C:/logfiles/Huangpu</LogFilePath>
     <NumSites>1</NumSites>
-    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="697 697 699 798 698 697 697 812 696 694 717 1128 699 698 698 800 ">1904205</Site1>
+    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="698 699 698 700 697 699 697 700 694 699 695 700 671 699 662 699 ">1904205</Site1>
     <AutoController></AutoController>
 </LocalSettings>
