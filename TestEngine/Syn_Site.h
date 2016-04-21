@@ -30,9 +30,6 @@ public:
 	/*site open*/
 	uint32_t Open();
 
-	/*fixed scriptID and scriptName in GUI. */
-	//uint32_t ExecuteScript(uint8_t scriptID);
-
 	uint32_t GetTestInfo(Syn_DutTestInfo * &opTestInfo);
 
 	/*get the test result of specified step number.*/
@@ -97,11 +94,5 @@ private:
 	std::string _strErrorMessage;
 
 	AdcBaseLineInfo _ADCInfo;
-
-private:
-
-	//void RunScript(uint8_t scriptID);
-
-	//bool GetTestScriptInfo(uint8_t scriptID, Syn_TestScript &oTestScriptInfo);
 };
 

@@ -80,6 +80,7 @@ void Ts_OTPWriteMainSector::Execute()
 		if (nLNA_count == 0)
 		{
 			BurnToOTP(EXT_TAG_LNA, &(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults).m_pPrintPatch[(_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nLnaIdx], _pSyn_Dut->_RowNumber);
+			BurnToOTP(EXT_TAG_LNA, &(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults).m_pPrintPatch[(_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nLnaIdx], _pSyn_Dut->_RowNumber);
 		}
 
 		//If PGA values (one offset per pixel) have not been stored in the OTP.
@@ -88,6 +89,7 @@ void Ts_OTPWriteMainSector::Execute()
 			nPGA_OOPP_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPP, arMS0, MS0_SIZE);
 			if (nPGA_OOPP_count == 0)
 			{
+				BurnToOTP(EXT_TAG_PGA_OOPP, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_arPgaOffsets, NUM_PGA_OOPP_OTP_ROWS * (nNumCols - 8));
 				BurnToOTP(EXT_TAG_PGA_OOPP, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_arPgaOffsets, NUM_PGA_OOPP_OTP_ROWS * (nNumCols - 8));
 				bBurnPGA_OOPP = true;
 			}
@@ -99,6 +101,7 @@ void Ts_OTPWriteMainSector::Execute()
 			nPGA_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPR, arMS0, MS0_SIZE);
 			if (nPGA_count == 0)
 			{
+				BurnToOTP(EXT_TAG_PGA_OOPR, &(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults).m_pPrintPatch[(_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nPgaIdx], _pSyn_Dut->_RowNumber);
 				BurnToOTP(EXT_TAG_PGA_OOPR, &(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults).m_pPrintPatch[(_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nPgaIdx], _pSyn_Dut->_RowNumber);
 			}
 		}
@@ -116,6 +119,7 @@ void Ts_OTPWriteMainSector::Execute()
 			arMS0[2] = (uint8_t)((_pSyn_Dut->_pSyn_DutTestResult->_snrResults).OTPVal_Noise);
 			arMS0[3] = 0;
 			BurnToOTP(EXT_TAG_SNR, arMS0, 4);
+			BurnToOTP(EXT_TAG_SNR, arMS0, 4);
 		}
 	}
 	
@@ -129,6 +133,7 @@ void Ts_OTPWriteMainSector::Execute()
 			memset(arMS0, 0, sizeof(arMS0));
 			arMS0[0] = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nFlexId;
 			arMS0[1] = (uint8_t)((_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nFlexId) >> 8);
+			BurnToOTP(EXT_TAG_FlexId, arMS0, 8);
 			BurnToOTP(EXT_TAG_FlexId, arMS0, 8);
 		}
 	}
@@ -146,6 +151,7 @@ void Ts_OTPWriteMainSector::Execute()
 			arMS0[3] = 0;
 
 			BurnToOTP(EXT_TAG_WOF_BOT, arMS0, 4);
+			BurnToOTP(EXT_TAG_WOF_BOT, arMS0, 4);
 		}
 	}
 	//If WOF(zone 1) values have not been stored in the OTP.
@@ -160,6 +166,7 @@ void Ts_OTPWriteMainSector::Execute()
 			arMS0[2] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_z1WofResults.m_nGain & 0xFF);
 			arMS0[3] = 0;
 
+			BurnToOTP(EXT_TAG_WOF_TOP, arMS0, 4);
 			BurnToOTP(EXT_TAG_WOF_TOP, arMS0, 4);
 		}
 	}
@@ -176,6 +183,7 @@ void Ts_OTPWriteMainSector::Execute()
             arMS0[2] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults.m_nGain & 0xFF);
             arMS0[3] = 0;
 			BurnToOTP(EXT_TAG_SCM_WOF_TOP, arMS0, 4);
+			BurnToOTP(EXT_TAG_SCM_WOF_TOP, arMS0, 4);
 		}
 	}
 
@@ -191,6 +199,7 @@ void Ts_OTPWriteMainSector::Execute()
             arMS0[2] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_nGain & 0xFF);
             arMS0[3] = 0;
 			BurnToOTP(EXT_TAG_SCM_WOF_BOT, arMS0, 4);
+			BurnToOTP(EXT_TAG_SCM_WOF_BOT, arMS0, 4);
 		}
 	}
 
@@ -204,6 +213,7 @@ void Ts_OTPWriteMainSector::Execute()
 			arMS0[0] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_ReadDutAdcResults.m_nDutAdc;
 			arMS0[1] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_ReadDutAdcResults.m_nDutAdc >> 8);
 			BurnToOTP(EXT_TAG_DutTempAdc, arMS0, 4);
+			BurnToOTP(EXT_TAG_DutTempAdc, arMS0, 4);
 		}
 	}
 
@@ -216,6 +226,7 @@ void Ts_OTPWriteMainSector::Execute()
 			memset(arMS0, 0, sizeof(arMS0));
 			*((uint32_t*)(&arMS0[4])) = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nProductId;
 			BurnToOTP(EXT_TAG_PRODUCT_ID, arMS0, 8);
+			BurnToOTP(EXT_TAG_PRODUCT_ID, arMS0, 8);
 		}
 	}
 
@@ -223,6 +234,10 @@ void Ts_OTPWriteMainSector::Execute()
 	Syn_PatchInfo fmPatch;
 	if (_pSyn_Dut->FindPatch("FrimwareUpdate", fmPatch))
 	{
+		if (NULL == fmPatch._pArrayBuf)
+		{
+			return;
+		}
 		if (!RegCheckBitSet())
 		{
 			return;
@@ -341,7 +356,8 @@ void Ts_OTPWriteMainSector::BurnToOTP(long nRecType, uint8_t* pSrc, int numBytes
 	arOutBuf[15] = (uint8_t)((nRecType >> 24) & 0xFF);
 	arOutBuf[18] = 0x0E;
 
-	if ((nRecType == EXT_TAG_PGA_OOPR) || (nRecType == EXT_TAG_PGA_OOPP) ||(nRecType == EXT_TAG_LNA) || (nRecType == EXT_TAG_WOF_BOT) || (nRecType == EXT_TAG_SCM_WOF_BOT))
+	if ((nRecType == EXT_TAG_PGA_OOPR) || (nRecType == EXT_TAG_PGA_OOPP) ||(nRecType == EXT_TAG_LNA) || 
+		(nRecType == EXT_TAG_WOF_BOT) || (nRecType == EXT_TAG_SCM_WOF_BOT)|| (nRecType == EXT_TAG_SCM_WOF_TOP) || (nRecType == EXT_TAG_WOF_TOP))
 	{
 		//PGA and LNA records have an extra 4 bytes (0x00000007).
 		arOutBuf[24] = 0x07;

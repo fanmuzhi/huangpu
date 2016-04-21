@@ -20,7 +20,7 @@ public:
 
 	bool ExecuteBottomSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults& results);
 
-	void SYN_SCMWofTestExecute(SCM_WofTestInfo& pInfo, SCM_WofTestResults& pResults);
+	void SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_WofTestResults& pResults);
 
 	int CalcScmWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf);
 };

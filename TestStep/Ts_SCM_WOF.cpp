@@ -51,6 +51,7 @@ void Ts_SCM_WOF::SetUp()
 			listOfArgValue.push_back(std::string(""));
 	}
 
+	//TOP WOF
 	if (0 != listOfArgValue[0].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo.m_bWithStimulus = atoi(listOfArgValue[0].c_str());
 	if (0 != listOfArgValue[1].length())
@@ -76,29 +77,33 @@ void Ts_SCM_WOF::SetUp()
 	if (0 != listOfArgValue[11].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo.m_nVCC = std::stof(listOfArgValue[11]);
 
-	_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo = _pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo;
+	//_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo = _pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo;
 
-	////load OTPReadWritePatch
-	//Syn_PatchInfo OTPRWPatchInfo;
-	//if (!_pSyn_Dut->FindPatch("OtpReadWritePatch", OTPRWPatchInfo) || NULL == OTPRWPatchInfo._pArrayBuf)
-	//{
-	//	ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-	//	ex.SetDescription("OtpReadWritePatch Patch is NULL!");
-	//	throw ex;
-	//	return;
-	//}
-	//_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
-
-	//Syn_PatchInfo ScmWofPatchInfo, Cmd1ScmWofPlotInfo, Cmd2ScmWofBinInfo, Cmd3SweepTagInfo;
-	//if (!_pSyn_Dut->FindPatch("ScmWofPatch", ScmWofPatchInfo) || NULL == ScmWofPatchInfo._pArrayBuf
-	//	|| !_pSyn_Dut->FindPatch("Cmd1ScmWofPlot", Cmd1ScmWofPlotInfo) || NULL == Cmd1ScmWofPlotInfo._pArrayBuf
-	//	|| !_pSyn_Dut->FindPatch("Cmd2ScmWofBin", Cmd2ScmWofBinInfo) || NULL == Cmd2ScmWofBinInfo._pArrayBuf
-	//	|| !_pSyn_Dut->FindPatch("Cmd3SweepTag", Cmd3SweepTagInfo) || NULL == Cmd3SweepTagInfo._pArrayBuf)
-	//{
-	//	ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-	//	ex.SetDescription("ScmWofPatch or Cmd1ScmWofPlot or Cmd2ScmWofBin or Cmd3SweepTag Patch is NULL!");
-	//	throw ex;
-	//}
+	//BOTTOM WOF
+	if (0 != listOfArgValue[0].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_bWithStimulus = atoi(listOfArgValue[0].c_str());
+	if (0 != listOfArgValue[1].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_nDelta_100 = atoi(listOfArgValue[1].c_str());
+	if (0 != listOfArgValue[2].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_nMinTriggerThreshold = atoi(listOfArgValue[2].c_str());
+	if (0 != listOfArgValue[3].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_nMaxTriggerThreshold = atoi(listOfArgValue[3].c_str());
+	if (0 != listOfArgValue[4].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_nNumResponseBytes = atoi(listOfArgValue[4].c_str());
+	if (0 != listOfArgValue[5].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_nNumNoiseSamples = atoi(listOfArgValue[5].c_str());
+	if (0 != listOfArgValue[6].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_nThresholdOffsetHigh = atoi(listOfArgValue[6].c_str());
+	if (0 != listOfArgValue[7].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_nThresholdOffsetLow = atoi(listOfArgValue[7].c_str());
+	if (0 != listOfArgValue[8].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_nStdDevThreshold = std::stof(listOfArgValue[8]);
+	if (0 != listOfArgValue[9].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_nDelta_200 = atoi(listOfArgValue[9].c_str());
+	if (0 != listOfArgValue[10].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_nDelta_200_3p7 = atoi(listOfArgValue[10].c_str());
+	if (0 != listOfArgValue[11].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_nVCC = std::stof(listOfArgValue[11]);
 
 }
 
@@ -255,7 +260,7 @@ int Ts_SCM_WOF::CalcScmWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf)
 }
 
 
-void Ts_SCM_WOF::SYN_SCMWofTestExecute(SCM_WofTestInfo& pInfo, SCM_WofTestResults& pResults)
+void Ts_SCM_WOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_WofTestResults& pResults)
 {
 	int			nTgrIdx, nGainIdx;
 
@@ -325,10 +330,11 @@ bool Ts_SCM_WOF::ExecuteBottomSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResul
 	uint8_t		pGetPrintMerged[3000] = { 0 };
 	int			nGetPrintMergedSize = nCmd2Size + nCmd3Size;
 	uint8_t*	pResponseBuf = bWithStim ? results.m_arDataWithStim : results.m_arDataWithoutStim;
-	int			nVCC = (int)(info.m_nVCC * 1000);
+	int			nVcc = (int)(info.m_nVCC * 1000);
 
 	PowerOff();
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+	//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, nVcc, nVcc, true);
 	ModifySweepCmdData(pWofCmd3);
 
 	//Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.
@@ -381,7 +387,6 @@ bool Ts_SCM_WOF::ExecuteBottomSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResul
 
 	//Clear registers.
 	PowerOff();
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 	return true;
 }
 
@@ -414,10 +419,11 @@ bool Ts_SCM_WOF::ExecuteTopSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults&
 	uint8_t		pGetPrintMerged[3000] = { 0 };
 	int			nGetPrintMergedSize = nCmd2Size + nCmd4Size;
 	uint8_t*	pResponseBuf = bWithStim ? results.m_arDataWithStim : results.m_arDataWithoutStim;
-	int			nVCC = (int)(info.m_nVCC * 1000);
+	int			nVcc = (int)(info.m_nVCC * 1000);
 
 	PowerOff();
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+	//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, nVcc, nVcc, true);
 
 	//Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.
 	results.m_nThreshStart		= pWofCmd4[0x1F];
@@ -469,6 +475,5 @@ bool Ts_SCM_WOF::ExecuteTopSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults&
 	}
 
 	PowerOff();
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 	return true;
 }
