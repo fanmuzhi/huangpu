@@ -66,6 +66,7 @@ public:
 	//bool ConstructSiteList(QString strConfigFilePath, bool SendMsg = false);
 	bool ConstructSiteList(const Syn_LocalSettings &LocalSettingsInfo);
 
+	void keyPressEvent(QKeyEvent * ev);
 
 public Q_SLOTS:
 

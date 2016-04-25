@@ -15,6 +15,7 @@
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -22,6 +23,7 @@ QT_BEGIN_NAMESPACE
 class Ui_Syn_UpdateFirmwareProcessDlg
 {
 public:
+    QVBoxLayout *verticalLayout;
     QLabel *UpdateFirmwareLabel;
 
     void setupUi(QWidget *Syn_UpdateFirmwareProcessDlg)
@@ -29,13 +31,19 @@ public:
         if (Syn_UpdateFirmwareProcessDlg->objectName().isEmpty())
             Syn_UpdateFirmwareProcessDlg->setObjectName(QStringLiteral("Syn_UpdateFirmwareProcessDlg"));
         Syn_UpdateFirmwareProcessDlg->setWindowModality(Qt::ApplicationModal);
-        Syn_UpdateFirmwareProcessDlg->resize(505, 77);
+        Syn_UpdateFirmwareProcessDlg->resize(525, 78);
+        verticalLayout = new QVBoxLayout(Syn_UpdateFirmwareProcessDlg);
+        verticalLayout->setSpacing(6);
+        verticalLayout->setContentsMargins(11, 11, 11, 11);
+        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
         UpdateFirmwareLabel = new QLabel(Syn_UpdateFirmwareProcessDlg);
         UpdateFirmwareLabel->setObjectName(QStringLiteral("UpdateFirmwareLabel"));
-        UpdateFirmwareLabel->setGeometry(QRect(20, 20, 461, 31));
         QFont font;
         font.setPointSize(16);
         UpdateFirmwareLabel->setFont(font);
+
+        verticalLayout->addWidget(UpdateFirmwareLabel);
+
 
         retranslateUi(Syn_UpdateFirmwareProcessDlg);
 
@@ -45,7 +53,7 @@ public:
     void retranslateUi(QWidget *Syn_UpdateFirmwareProcessDlg)
     {
         Syn_UpdateFirmwareProcessDlg->setWindowTitle(QApplication::translate("Syn_UpdateFirmwareProcessDlg", "Update Firmware", 0));
-        UpdateFirmwareLabel->setText(QApplication::translate("Syn_UpdateFirmwareProcessDlg", "MPC04 Bootloader will be updated.Please wait...", 0));
+        UpdateFirmwareLabel->setText(QApplication::translate("Syn_UpdateFirmwareProcessDlg", "    MPC04 Bootloader will be updated.Please wait...    ", 0));
     } // retranslateUi
 
 };

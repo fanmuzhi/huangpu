@@ -9,31 +9,27 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>505</width>
-    <height>77</height>
+    <width>525</width>
+    <height>78</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Update Firmware</string>
   </property>
-  <widget class="QLabel" name="UpdateFirmwareLabel">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>20</y>
-     <width>461</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>16</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>MPC04 Bootloader will be updated.Please wait...</string>
-   </property>
-  </widget>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="UpdateFirmwareLabel">
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>    MPC04 Bootloader will be updated.Please wait...    </string>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

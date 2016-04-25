@@ -40,7 +40,6 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	QObject::connect(ui.actionLocalSetttings, SIGNAL(triggered(bool)), this, SLOT(CreateLocalSettings()));
 
 	//Testing Operation
-	//QObject::connect(ui.pushButtonRun, SIGNAL(clicked()), this, SLOT(RunningTest()));
 	QObject::connect(ui.pushButtonRun, SIGNAL(clicked()), this, SLOT(Run()));
 
 	//Thread
@@ -140,6 +139,14 @@ void FPS_TestExecutive::Initialize()
 	{
 		cout << "Error:FPS_TestExecutive::Initialize() - ::ConstructSiteList() is failed!" << endl;
 		return;
+	}
+}
+
+void FPS_TestExecutive::keyPressEvent(QKeyEvent * ev)
+{
+	if (ev->key() == Qt::Key_Enter || ev->key() == Qt::Key_Return)
+	{
+		Run();
 	}
 }
 
@@ -646,7 +653,7 @@ void FPS_TestExecutive::ConfirmSite()
 		_pSyn_UpdateFirmwareProcessDlg = new Syn_UpdateFirmwareProcessDlg();
 	_pSyn_UpdateFirmwareProcessDlg->show();
 
-	_pSyn_DeviceManager->UpdateFirmware();
+	uint32_t uiResults = _pSyn_DeviceManager->UpdateFirmware();
 
 	_pSyn_UpdateFirmwareProcessDlg->hide();
 	delete _pSyn_UpdateFirmwareProcessDlg;
