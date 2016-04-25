@@ -17,6 +17,7 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 , _pSyn_SerialNumberManageDlg(NULL)
 , _pSyn_UpdateADCOffsetsDlg(NULL)
 , _pSyn_BinCodesDlg(NULL)
+, _pSyn_UpdateFirmwareProcessDlg(NULL)
 , _pSyn_DeviceManager(NULL)
 , _FinishedSiteCounts(0)
 {
@@ -92,6 +93,12 @@ FPS_TestExecutive::~FPS_TestExecutive()
 	{
 		delete _pSyn_BinCodesDlg;
 		_pSyn_BinCodesDlg = NULL;
+	}
+
+	if (NULL != _pSyn_UpdateFirmwareProcessDlg)
+	{
+		delete _pSyn_UpdateFirmwareProcessDlg;
+		_pSyn_UpdateFirmwareProcessDlg = NULL;
 	}
 
 	if (NULL != _pSyn_DeviceManager)
@@ -635,7 +642,15 @@ void FPS_TestExecutive::ConfirmSite()
 		pLocalSettingsInstance = NULL;
 	}
 
+	if (NULL==_pSyn_UpdateFirmwareProcessDlg)
+		_pSyn_UpdateFirmwareProcessDlg = new Syn_UpdateFirmwareProcessDlg();
+	_pSyn_UpdateFirmwareProcessDlg->show();
+
 	_pSyn_DeviceManager->UpdateFirmware();
+
+	_pSyn_UpdateFirmwareProcessDlg->hide();
+	delete _pSyn_UpdateFirmwareProcessDlg;
+	_pSyn_UpdateFirmwareProcessDlg = NULL;
 
 	//ReConstruct SiteList
 	if (ConstructSiteList(_LocalSettingsInfo))

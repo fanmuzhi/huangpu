@@ -21,6 +21,7 @@
 #include "Syn_UpdateADCOffsetsDlg.h"
 #include "Ui_Syn_UpdateADCOffsetsDlg.h"
 #include "Syn_BinCodesDlg.h"
+#include "Syn_UpdateFirmwareProcessDlg.h"
 
 //DutUtls
 #include "Syn_Dut.h"
@@ -133,6 +134,7 @@ private:
 	Syn_SerialNumberManageDlg *_pSyn_SerialNumberManageDlg;
 	Syn_UpdateADCOffsetsDlg *_pSyn_UpdateADCOffsetsDlg;
 	Syn_BinCodesDlg *_pSyn_BinCodesDlg;
+	Syn_UpdateFirmwareProcessDlg *_pSyn_UpdateFirmwareProcessDlg;
 
 	//LocalSetting config Operation
 	Syn_LocalSettings _LocalSettingsInfo;
