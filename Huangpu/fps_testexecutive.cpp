@@ -289,6 +289,8 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 	}
 	ui.TestTableWidget->setHorizontalHeaderLabels(strListOfHeader);
 
+	ui.pushButtonRun->setText("Run");
+
 	//Debug,not release
 	//DutDump
 	ui.comboBox->clear();
@@ -970,6 +972,7 @@ void FPS_TestExecutive::ReceiveSiteInfo(unsigned int iSiteNumber)
 		QTableWidgetItem *itemState = new QTableWidgetItem(QString("Error"));
 		itemState->setTextAlignment(Qt::AlignCenter);
 		ui.TestTableWidget->setItem(2, iPos, itemState);
+		itemState->setBackgroundColor(QColor(255, 0, 0));
 		this->ManageButtonStatus(iFlag);
 		return;
 	}
@@ -1148,6 +1151,11 @@ void FPS_TestExecutive::ReceiveTest(unsigned int iSiteNumber, const QString strT
 		ui.TestTableWidget->resizeRowToContents(8);
 	}
 
+	if ("Pass" != strPassResults)
+	{
+		ui.TestTableWidget->item(8, iPos)->setBackgroundColor(QColor(255, 0, 0));
+	}
+
 	Syn_Site::SiteState oTempState;
 	_ListOfSitePtr[iPos]->GetState(oTempState);
 	if (oTempState == Syn_Site::Error)
@@ -1160,6 +1168,7 @@ void FPS_TestExecutive::ReceiveTest(unsigned int iSiteNumber, const QString strT
 		QTableWidgetItem *itemState = new QTableWidgetItem(QString("Error"));
 		itemState->setTextAlignment(Qt::AlignCenter);
 		ui.TestTableWidget->setItem(2, iPos, itemState);
+		itemState->setBackgroundColor(QColor(255, 0, 0));
 		return;
 	}
 
