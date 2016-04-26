@@ -94,10 +94,11 @@ public Q_SLOTS:
 	void CloseUpdateADCOffsetsDialog();
 
 	void Run();
-	void ReceiveSiteInfo(unsigned int iSiteNumber);
 
-	void ReceiveTest(unsigned int iSiteNumber, const QString strTestStepName, const QString strPassResults);
+	void ReceiveTestStep(unsigned int iSiteNumber, const QString strTestStepName, const QString strPassResults);
 
+	void ReceiveTestResults(unsigned int iSiteNumber);
+	
 	//Debug
 	//Dut dump
 	void GetVersionForDutDump();
