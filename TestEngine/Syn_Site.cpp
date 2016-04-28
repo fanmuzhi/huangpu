@@ -581,15 +581,7 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 	//WakeOnFinger Test
 	if (DutInfo->_z0WofInfo.m_bExecutedWithoutStimulus == 1 || DutInfo->_z0WofInfo.m_bExecutedWithStimulus == 1)
 	{
-		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofBot_count != 0)
-		{
-			fprintf(pFile, "\nWOF Zone 0,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass (OTP)", _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_elapsedtime);
-			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithoutStim,
-					_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithStim,
-					_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nGain,
-					_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithoutStim - _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithStim);
-		}
-		else if (_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_bPass != 0)	//If passed.
+		if (_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_bPass != 0)	//If passed.
 		{
 			fprintf(pFile, "\nWOF Zone 0,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_elapsedtime);
 			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithoutStim,
@@ -610,16 +602,7 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 	//If the user has not skipped testing zone 1.
 	if (DutInfo->_z1WofInfo.m_bExecutedWithoutStimulus == 1 || DutInfo->_z1WofInfo.m_bExecutedWithStimulus == 1)
 	{
-		//If we got the zone 1 data out of OTP rather than calculating.
-		if (DutResults->_calibrationResults.m_nWofTop_count != 0)
-		{
-			fprintf(pFile, "\nWOF Zone 1,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass (OTP)", DutResults->_z1WofResults.m_elapsedtime);
-			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_z1WofResults.m_nTriggerWithoutStim,
-					DutResults->_z1WofResults.m_nTriggerWithStim,
-					DutResults->_z1WofResults.m_nGain,
-					DutResults->_z1WofResults.m_nTriggerWithoutStim - DutResults->_z1WofResults.m_nTriggerWithStim);
-		}
-		else if (DutResults->_z1WofResults.m_bPass != 0)	//If passed.
+		if (DutResults->_z1WofResults.m_bPass != 0)	//If passed.
 		{
 			fprintf(pFile, "\nWOF Zone 1,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_z1WofResults.m_elapsedtime);
 			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_z1WofResults.m_nTriggerWithoutStim,
@@ -640,16 +623,7 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 	//SCM WakeOnFinger Test
 	if (DutInfo->_BottomSCM_wofInfo.m_bExecutedWithoutStimulus == 1 || DutInfo->_BottomSCM_wofInfo.m_bExecutedWithStimulus == 1)
 	{
-		//If we got the zone 0 data out of OTP rather than calculating.
-		if (DutResults->_calibrationResults.m_nScmWofBot_count != 0)
-		{
-			fprintf(pFile, "\nSCM Bottom WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass (OTP)", DutResults->_BottomSCM_wofResults.m_elapsedtime);
-			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_BottomSCM_wofResults.m_nTriggerWithoutStim,
-					DutResults->_BottomSCM_wofResults.m_nTriggerWithStim,
-					DutResults->_BottomSCM_wofResults.m_nGain,
-					DutResults->_BottomSCM_wofResults.m_nTriggerWithoutStim - DutResults->_BottomSCM_wofResults.m_nTriggerWithStim);
-		}
-		else if (_pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_bPass != 0)	//If passed.
+		if (_pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_bPass != 0)	//If passed.
 		{
 			fprintf(pFile, "\nSCM Bottom WakeOnFinger Test,%s,%d.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_BottomSCM_wofResults.m_elapsedtime);
 			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_BottomSCM_wofResults.m_nTriggerWithoutStim,
@@ -669,16 +643,7 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 
 	if (DutInfo->_TopSCM_wofInfo.m_bExecutedWithoutStimulus == 1 || DutInfo->_TopSCM_wofInfo.m_bExecutedWithStimulus == 1)
 	{
-		//If we got the zone 1 data out of OTP rather than calculating.
-		if (DutResults->_calibrationResults.m_nScmWofTop_count != 0)
-		{
-			fprintf(pFile, "\nSCM Top WakeOnFinger Test,%s,%d ms,NoFinger,WithFinger,Gain,Delta", "Pass (OTP)", DutResults->_TopSCM_wofResults.m_elapsedtime);
-			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_TopSCM_wofResults.m_nTriggerWithoutStim,
-				DutResults->_TopSCM_wofResults.m_nTriggerWithStim,
-				DutResults->_TopSCM_wofResults.m_nGain,
-				DutResults->_TopSCM_wofResults.m_nTriggerWithoutStim - DutResults->_TopSCM_wofResults.m_nTriggerWithStim);
-		}
-		else if (DutResults->_TopSCM_wofResults.m_bPass != 0)	//If passed.
+		if (DutResults->_TopSCM_wofResults.m_bPass != 0)	//If passed.
 		{
 			fprintf(pFile, "\nSCM Top WakeOnFinger Test,%s,%d ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_TopSCM_wofResults.m_elapsedtime);
 			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_TopSCM_wofResults.m_nTriggerWithoutStim,
