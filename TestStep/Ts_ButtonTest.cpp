@@ -59,8 +59,8 @@ void Ts_ButtonTest::SetUp()
 	}
 	if (0 != listOfArgValue[2].length())
 	{
-		_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo.m_pinMsk = stoul(listOfArgValue[2]);
-		_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_pinMsk = stoul(listOfArgValue[2]);
+		_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo.m_pinMsk = strtoul(listOfArgValue[2].c_str(), NULL, 16);
+		_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_pinMsk = strtoul(listOfArgValue[2].c_str(), NULL, 16);
 	}
 	if (0 != listOfArgValue[3].length())
 	{
