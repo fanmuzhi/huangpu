@@ -34,7 +34,6 @@ struct Syn_DutTestInfo
 	PixelInfo					_pixelInfo;
 	PixelPatchInfo				_pixelPatchInfo;
 	SNRInfo						_snrInfo;
-	//WofTestInfo					_wofInfo;
 	WofTestInfo					_z0WofInfo;
 	WofTestInfo					_z1WofInfo;
 	SCM_WofTestInfo				_BottomSCM_wofInfo;
@@ -87,7 +86,6 @@ struct Syn_DutTestResult
 	PixelResults				_pixelResults;
 	PixelPatchResults			_pixelPatchResults;
 	SNRResults					_snrResults;
-	//WofTestResults				_wofResults;
 	WofTestResults				_z0WofResults;
 	WofTestResults				_z1WofResults;
 	SCM_WofTestResults			_BottomSCM_wofResults;

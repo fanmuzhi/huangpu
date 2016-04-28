@@ -892,6 +892,7 @@ enum	{NUM_BTN_CHECKS = 10};
 //structures for Button Test
 typedef struct
 {
+	int				m_bWithStimulus;
 	int				m_bExecuted;
 	int				m_portId;
 	unsigned int	m_pinMsk;
@@ -903,6 +904,8 @@ typedef struct
 	int			m_bPass;
 	uint8_t     m_btnCurrState;
 	uint8_t		m_arCurrStates[NUM_BTN_CHECKS];
+
+	double      m_elapsedtime;
 }BtnTestResults;
 
 //////////////////////////// ////////////////////////

@@ -37,9 +37,11 @@ void Ts_HuaweiImageQualityTest::Execute()
 	int iRowNumber = _pSyn_Dut->_RowNumber;
 	int iColumnNumber = _pSyn_Dut->_ColumnNumber - HEADER;
 
-	uint8_t *arrImageNoFinger = new uint8_t[iRowNumber*iColumnNumber * 30];
+	int NumberOfIamge(30);
+
+	uint8_t *arrImageNoFinger = new uint8_t[iRowNumber*iColumnNumber * NumberOfIamge];
 	int k = 0;
-	for (int i = 0; i < 30; i++)
+	for (int i = 0; i < NumberOfIamge; i++)
 	{
 		for (int m = 0; m < iRowNumber; m++)
 		{
@@ -51,9 +53,9 @@ void Ts_HuaweiImageQualityTest::Execute()
 		}
 	}
 
-	uint8_t *arrImageFinger = new uint8_t[iRowNumber*iColumnNumber * 30];
+	uint8_t *arrImageFinger = new uint8_t[iRowNumber*iColumnNumber * NumberOfIamge];
 	k = 0;
-	for (int i = 0; i < 30; i++)
+	for (int i = 0; i < NumberOfIamge; i++)
 	{
 		for (int m = 0; m < iRowNumber; m++)
 		{
@@ -68,7 +70,7 @@ void Ts_HuaweiImageQualityTest::Execute()
 	float snrValue(0);
 	try
 	{
-		snrValue = testSNR(arrImageNoFinger, arrImageFinger, iColumnNumber, iRowNumber, 30);
+		snrValue = testSNR(arrImageNoFinger, arrImageFinger, iColumnNumber, iRowNumber, NumberOfIamge);
 	}
 	catch (...)
 	{

@@ -3,7 +3,7 @@
     <SysConfigFile>D:/ConfigFile(xml)/P2/A1/580-006016-01r1 (FM-000166-009) Huangpu.xml</SysConfigFile>
     <LogFilePath>D:/LogFile</LogFilePath>
     <NumSites>2</NumSites>
-    <Site1 AdcBaseLines="694 695 694 696 696 696 694 697 698 696 706 697 797 800 1087 794 " Voltages="1800 1800 3300 3300">1684806</Site1>
-    <Site2 AdcBaseLines="702 703 702 707 704 704 702 707 699 704 697 707 661 704 643 707 " Voltages="1800 1800 3300 3300">1550810</Site2>
+    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="696 696 698 811 696 696 696 800 695 697 697 1107 698 697 697 797 ">1684806</Site1>
+    <Site2 Voltages="1800 1800 3300 3300" AdcBaseLines="702 703 699 661 705 705 705 705 703 703 697 646 708 708 708 708 ">1550810</Site2>
     <AutoController></AutoController>
 </LocalSettings>

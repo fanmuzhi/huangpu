@@ -696,6 +696,18 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 		}
 	}
 
+	//ButtonTest
+	if (DutInfo->_btnTestWithoutStimInfo.m_bExecuted == 1)
+	{
+		fprintf(pFile, "\nButton Test Without Stimulus,%s,%.0f ms,Curr State,Expected State\n", DutResults->_btnTestWithoutStimResults.m_bPass ? "Pass" : "Fail", DutResults->_btnTestWithoutStimResults.m_elapsedtime);
+		fprintf(pFile, ",,,%d,%d\n", DutResults->_btnTestWithoutStimResults.m_btnCurrState, DutInfo->_btnTestWithoutStimInfo.m_expectedState);
+	}
+	if (DutInfo->_btnTestWithStimInfo.m_bExecuted == 1)
+	{
+		fprintf(pFile, "\nButton Test With Stimulus,%s,%.0f ms,Curr State,Expected State\n", DutResults->_btnTestWithStimResults.m_bPass ? "Pass" : "Fail", DutResults->_btnTestWithStimResults.m_elapsedtime);
+		fprintf(pFile, ",,,%d,%d\n", DutResults->_btnTestWithStimResults.m_btnCurrState, DutInfo->_btnTestWithStimInfo.m_expectedState);
+	}
+
 	//Pegged Pixels Test
 	if (DutInfo->_peggedPixelsInfo.m_bExecuted)
 	{

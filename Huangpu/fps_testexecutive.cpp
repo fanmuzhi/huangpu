@@ -652,7 +652,7 @@ void FPS_TestExecutive::ConfirmSite()
 	if (NULL==_pSyn_UpdateFirmwareProcessDlg)
 		_pSyn_UpdateFirmwareProcessDlg = new Syn_UpdateFirmwareProcessDlg();
 	_pSyn_UpdateFirmwareProcessDlg->show();
-
+	
 	uint32_t uiResults = _pSyn_DeviceManager->UpdateFirmware();
 
 	_pSyn_UpdateFirmwareProcessDlg->hide();
@@ -1453,7 +1453,7 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 
 	ui.textBrowser->clear();
 	ui.textBrowser->append(QString("SiteNumber:") + QString::number(oSiteNumber));
-	ui.textBrowser->append(QString("MPC04 SerialNumber:") + QString::number(oSerialNumber));
+	ui.textBrowser->append(QString("Device SerialNumber:") + QString::number(oSerialNumber));
 
 	QPalette pa;
 	if (oDutTestResult->_binCodes[0] == "1")
