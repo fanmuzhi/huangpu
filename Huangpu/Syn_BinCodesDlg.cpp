@@ -3,19 +3,24 @@
 Syn_BinCodesDlg::Syn_BinCodesDlg(QWidget *parent)
 	: QWidget(parent)
 {
-	ui.setupUi(this);
+	ui = new Ui::Syn_BinCodesDlg();
 
-	ui.BinCodesTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	ui->setupUi(this);
 
-	ui.BinCodesTableWidget->resizeColumnsToContents();
+	ui->BinCodesTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+	ui->BinCodesTableWidget->resizeColumnsToContents();
+
+	QObject::connect(ui->ClosePushButton, SIGNAL(clicked()), this, SLOT(close()));
 }
 
 Syn_BinCodesDlg::~Syn_BinCodesDlg()
 {
-
+	delete ui;
+	ui = NULL;
 }
 
 void Syn_BinCodesDlg::closeEvent(QCloseEvent * event)
 {
-	ui.ClosePushButton->click();
+	ui->ClosePushButton->click();
 }

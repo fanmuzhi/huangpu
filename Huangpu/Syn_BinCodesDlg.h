@@ -17,7 +17,7 @@ public:
 	void closeEvent(QCloseEvent * event);
 
 private:
-	Ui::Syn_BinCodesDlg ui;
+	Ui::Syn_BinCodesDlg *ui;
 };
 
 #endif // SYN_BINCODESDLG_H

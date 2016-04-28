@@ -1584,7 +1584,7 @@ void FPS_TestExecutive::DisplayBinCodes()
 		_pSyn_BinCodesDlg->show();
 	}
 
-	QObject::connect(_pSyn_BinCodesDlg->ui.ClosePushButton, SIGNAL(clicked()), this, SLOT(CloseBinCodesDlg()));
+	QObject::connect(_pSyn_BinCodesDlg->ui->ClosePushButton, SIGNAL(clicked()), this, SLOT(CloseBinCodesDlg()));
 }
 
 void FPS_TestExecutive::CloseBinCodesDlg()
