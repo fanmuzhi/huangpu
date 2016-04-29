@@ -64,7 +64,6 @@ protected:
 		if (!find)
 			return;
 		
-		Syn_DutTestResult *pTestResults = NULL;
 		do
 		{
 			Syn_Site::SiteState oState;
@@ -72,8 +71,6 @@ protected:
 			if (Syn_Site::Error != oState)
 			{
 				rc = _pSyn_Site->ExecuteTestStep(listOfTestStepName[iWaitStimulusPosition]);
-				rc = _pSyn_Site->GetTestResult(pTestResults);
-
 				emit sendImageInTime(iSiteNumber);
 			}
 		} while (!_stopped);

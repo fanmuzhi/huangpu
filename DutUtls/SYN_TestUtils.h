@@ -1090,4 +1090,4 @@ typedef struct
 	int iRealRowNumber;
 	int iRealColumnNumber;
 
-}Syn_WaitStimulusInfo;
+}Syn_WaitStimulusResults;
