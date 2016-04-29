@@ -107,6 +107,12 @@
     <ClCompile Include="GeneratedFiles\Release\moc_Syn_UpdateFirmwareProcessDlg.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Syn_MiniThread.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Syn_MiniThread.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="fps_testexecutive.h">
@@ -150,6 +156,9 @@
     </CustomBuild>
     <CustomBuild Include="Syn_UpdateFirmwareProcessDlg.ui">
       <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Syn_MiniThread.h">
+      <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

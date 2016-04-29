@@ -124,6 +124,7 @@
     <ClInclude Include="Ts_SCM_WOF.h" />
     <ClInclude Include="Ts_SharpnessTest.h" />
     <ClInclude Include="Ts_SNRTest.h" />
+    <ClInclude Include="Ts_WaitStimulus.h" />
     <ClInclude Include="Ts_WOF.h" />
     <ClInclude Include="Ts_WOFLowPower.h" />
     <ClInclude Include="Ts_WoVarTest.h" />
@@ -164,6 +165,7 @@
     <ClCompile Include="Ts_SCM_WOF.cpp" />
     <ClCompile Include="Ts_SharpnessTest.cpp" />
     <ClCompile Include="Ts_SNRTest.cpp" />
+    <ClCompile Include="Ts_WaitStimulus.cpp" />
     <ClCompile Include="Ts_WOF.cpp" />
     <ClCompile Include="Ts_WOFLowPower.cpp" />
     <ClCompile Include="Ts_WoVarTest.cpp" />

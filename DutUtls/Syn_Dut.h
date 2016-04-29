@@ -62,6 +62,9 @@ struct Syn_DutTestInfo
 	SpiOwnershipInfo		    _SpiOwnershipInfo;
 	OTPCheckInfo				_otpCheckInfo;
 	GetVerInfo					_getVerInfo;
+
+
+	Syn_WaitStimulusInfo     _WaitStimulusInfo;
 };
 
 struct Syn_DutTestResult

@@ -14,6 +14,7 @@
 //Local
 #include "Syn_LocalSettingConfig.h"
 #include "Syn_Thread.h"
+#include "Syn_MiniThread.h"
 #include "Syn_LocalSettingsDlg.h"
 #include "Ui_Syn_LocalSettingsDlg.h"
 #include "Syn_SerialNumberManageDlg.h"
@@ -98,6 +99,8 @@ public Q_SLOTS:
 	void ReceiveTestStep(unsigned int iSiteNumber, const QString strTestStepName, const QString strPassResults);
 
 	void ReceiveTestResults(unsigned int iSiteNumber);
+
+	void DisplayImageInTime(unsigned int iSiteNumber);
 	
 	//Debug
 	//Dut dump
@@ -126,6 +129,7 @@ private:
 	//Sites&thread
 	vector<Syn_Site*> _ListOfSitePtr;
 	Syn_Thread _SynThreadArray[DeviceCounts];
+	Syn_MiniThread _SynMiniThreadArray[DeviceCounts];
 	unsigned int _iRealDeviceCounts;
 
 	//Device Manage(for Construct Sites)

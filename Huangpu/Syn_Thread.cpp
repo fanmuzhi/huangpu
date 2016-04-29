@@ -6,8 +6,8 @@ Syn_Thread::Syn_Thread()
 : QThread()
 , _stopped(true)
 , _pSyn_Site(NULL)
-, _bFinished(true)
-, _strPreTestStepName("")
+//, _bFinished(true)
+//, _strPreTestStepName("")
 {
 }
 

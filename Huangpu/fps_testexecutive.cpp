@@ -47,6 +47,8 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	{
 		QObject::connect(&(_SynThreadArray[i - 1]), SIGNAL(send(unsigned int, const QString, const QString)), this, SLOT(ReceiveTestStep(unsigned int, const QString, const QString)));
 		QObject::connect(&(_SynThreadArray[i - 1]), SIGNAL(send(unsigned int)), this, SLOT(ReceiveTestResults(unsigned int)));
+
+		QObject::connect(&(_SynMiniThreadArray[i - 1]), SIGNAL(sendImageInTime(unsigned int)), this, SLOT(DisplayImageInTime(unsigned int)));
 	}
 
 	//BinCodes Dislpay
@@ -243,6 +245,9 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 	{
 		_SynThreadArray[i].SetSite(_ListOfSitePtr[i]);
 		_SynThreadArray[i].SetStopTag(true);
+
+		_SynMiniThreadArray[i].SetSite(_ListOfSitePtr[i]);
+		_SynMiniThreadArray[i].SetStopTag(true);
 	}
 	_iRealDeviceCounts = ilistCounts;
 
@@ -957,6 +962,13 @@ void FPS_TestExecutive::Run()
 
 	for (int i = 1; i <= iSiteCounts; i++)
 	{
+		if (_SynMiniThreadArray[i - 1].isRunning())
+		{
+			_SynMiniThreadArray[i - 1].SetStopTag(true);
+			//::Sleep(400);
+			_SynMiniThreadArray[i - 1].wait();
+		}
+
 		if (!_SynThreadArray[i - 1].isRunning())
 		{
 			_SynThreadArray[i - 1].SetFlag(iRunFlag);
@@ -965,9 +977,6 @@ void FPS_TestExecutive::Run()
 		}
 		else
 		{
-			//_SynThreadArray[i - 1].SetStopTag(true);
-			//_synThread.terminate();
-			//ui.pushButtonRun->setText(QString("Run"));
 		}
 
 		Syn_Site::SiteState oState;
@@ -1288,6 +1297,54 @@ void FPS_TestExecutive::ReceiveTestResults(unsigned int iSiteNumber)
 	}
 
 	this->ManageButtonStatus(iFlag);
+}
+
+void FPS_TestExecutive::DisplayImageInTime(unsigned int iSiteNumber)
+{
+	unsigned int iPos = iSiteNumber - 1;
+	Syn_DutTestInfo *pInfo = NULL;
+	_ListOfSitePtr[iPos]->GetTestInfo(pInfo);
+	if (NULL == pInfo)
+		return;
+
+	int rowNumber = pInfo->_WaitStimulusInfo.iRealRowNumber;
+	int columnNumber = pInfo->_WaitStimulusInfo.iRealColumnNumber;
+
+	QVector<QRgb> vcolorTable;
+	for (int i = 0; i < 256; i++)
+	{
+		vcolorTable.append(qRgb(i, i, i));
+	}
+	QByteArray data;
+	data.resize((rowNumber)*(columnNumber));
+	int k(0);
+	for (int m = 0; m < rowNumber; m++)
+	{
+		for (int n = 0; n < columnNumber; n++)
+		{
+			data[k] = (pInfo->_WaitStimulusInfo)._ImagepFrame.arr[m][n];
+			k++;
+		}
+	}
+
+	QImage image((const uchar*)data.constData(), columnNumber, rowNumber, columnNumber, QImage::Format_Indexed8);
+	image.setColorTable(vcolorTable);
+	//image = image.copy(iStartColumn, iStartRow, iEndColumn, iEndRow);
+
+	QLabel *pImageLabel = NULL;
+	if (NULL != ui.TestTableWidget->cellWidget(7, iPos))
+	{
+		pImageLabel = static_cast<QLabel*>(ui.TestTableWidget->cellWidget(7, iPos));
+	}
+	else
+	{
+		pImageLabel = new QLabel();
+	}
+
+	pImageLabel->setPixmap(QPixmap::fromImage(image));
+	pImageLabel->setAlignment(Qt::AlignCenter);
+	ui.TestTableWidget->setCellWidget(7, iPos, pImageLabel);
+	ui.TestTableWidget->resizeRowToContents(7);
 }
 
 void FPS_TestExecutive::GetVersionForDutDump()
@@ -1627,6 +1684,17 @@ void FPS_TestExecutive::ManageButtonStatus(int iFlag)
 			{
 				ui.pushButtonRun->setText(QString("Continue"));
 				ui.pushButtonRun->setDisabled(false);
+
+				//DisplayImage In time
+				for (size_t i = 1; i <= _ListOfSitePtr.size(); i++)
+				{
+					if (!_SynMiniThreadArray[i - 1].isRunning())
+					{
+						_SynMiniThreadArray[i - 1].SetStopTag(false);
+						_SynMiniThreadArray[i - 1].start();
+					}
+				}
+
 			}
 			else if (2 == iFlag)
 			{

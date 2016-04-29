@@ -1083,3 +1083,11 @@ typedef struct
 {
 	int			m_bPass;
 }SecurityStepResults;
+
+typedef struct
+{
+	FPSFrame _ImagepFrame;
+	int iRealRowNumber;
+	int iRealColumnNumber;
+
+}Syn_WaitStimulusInfo;

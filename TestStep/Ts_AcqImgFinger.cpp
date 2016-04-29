@@ -53,16 +53,6 @@ void Ts_AcqImgFinger::SetUp()
 	_pSyn_DutCtrl->FpUnloadPatch();
 
 	//load ImgAcqPatch
-	/*Syn_PatchInfo ImgAcqPatchInfo;
-	if (!_pSyn_Dut->FindPatch("ImageAcqPatch", ImgAcqPatchInfo))
-	{
-		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-		ex.SetDescription("ImageAcqPatch Patch is NULL!");
-		throw ex;
-		return;
-	}
-	_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);*/
-
 	Syn_PatchInfo ImgAcqPatchInfo;
 	if (_pSyn_Dut->FindPatch("ImageAcqPatch", ImgAcqPatchInfo))
 	{
@@ -156,28 +146,6 @@ void Ts_AcqImgFinger::ProcessData()
 			temp=0;
 		}
 	}
-
-	//remove baseline
-	/*for (int i = 0; i<numRows; i++)
-	{
-		for (int j = 0; j<numCols; j++)
-		{
-			uint8_t iCurrentFingerValue = _pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.arr_ImageFPSFrame.arr[i][j];
-			uint8_t iCurrentNoFingerValue = _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.arr_ImageFPSFrame.arr[i][j];
-
-			iCurrentFingerValue = 128 - iCurrentNoFingerValue + iCurrentFingerValue;
-			_pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.arr_ImageFPSFrame.arr[i][j] = iCurrentFingerValue;
-		}
-	}*/
-
-	/*for (i = pInfo->numMinRows; i<pInfo->numMaxRows; i++)
-	{
-		for (j = pInfo->numMinCols; j<pInfo->numMaxCols - HEADER; j++)
-		{
-			finger[i - pInfo->numMinRows][j - pInfo->numMinCols] = pResult->NORM_AVGS[6].arr[i - pInfo->numMinRows][j - pInfo->numMinCols];
-		}
-	}*/
-
 
 	_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("AcqImgFinger", "Pass"));
 }

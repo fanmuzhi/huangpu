@@ -23,15 +23,17 @@ public:
 
 	void SetStopTag(bool stoptag);
 
-	void SetFlag(int iFlag){ _iFlag = iFlag; _strPreTestStepName = ""; };
+	void SetFlag(int iFlag){ _iFlag = iFlag; };
 
-	bool GetFinished(){ return _bFinished; };
+	//bool GetFinished(){ return _bFinished; };
 
 signals:
 
 	void send(unsigned int iSiteNumber);
 
 	void send(unsigned int iSiteNumber, const QString strTestStepName, const QString strPassResults);
+
+	void sendImageInTime(unsigned int iSiteNumber);
 
 protected:
 
@@ -45,8 +47,8 @@ private:
 
 	int _iFlag;
 
-	bool _bFinished;
-	std::string _strPreTestStepName;
+	//bool _bFinished;
+	//std::string _strPreTestStepName;
 };
 
 #endif // SYN_THREAD_H
