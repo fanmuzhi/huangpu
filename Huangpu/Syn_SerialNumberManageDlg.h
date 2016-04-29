@@ -8,7 +8,7 @@ class Syn_SerialNumberManageDlg : public QWidget
 {
 	Q_OBJECT
 
-	friend class FPS_TestExecutive;
+	friend class Syn_LocalSettingsDlg;
 
 public:
 	Syn_SerialNumberManageDlg(QWidget *parent = 0);

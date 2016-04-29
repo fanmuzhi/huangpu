@@ -10,7 +10,7 @@ Syn_SerialNumberManageDlg::Syn_SerialNumberManageDlg(QWidget *parent)
 	ui.SerialNumberTableWidget->setColumnWidth(1,320);
 	ui.SerialNumberTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-
+	QObject::connect(ui.CancelPushButton, SIGNAL(clicked()), this, SLOT(close()));
 }
 
 Syn_SerialNumberManageDlg::~Syn_SerialNumberManageDlg()

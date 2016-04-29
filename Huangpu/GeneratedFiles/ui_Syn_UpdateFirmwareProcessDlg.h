@@ -13,10 +13,10 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QDialog>
 #include <QtWidgets/QHeaderView>
-#include <QtWidgets/QLabel>
+#include <QtWidgets/QProgressBar>
 #include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
 
@@ -24,25 +24,30 @@ class Ui_Syn_UpdateFirmwareProcessDlg
 {
 public:
     QVBoxLayout *verticalLayout;
-    QLabel *UpdateFirmwareLabel;
+    QVBoxLayout *verticalLayout_2;
+    QProgressBar *progressBar;
 
-    void setupUi(QWidget *Syn_UpdateFirmwareProcessDlg)
+    void setupUi(QDialog *Syn_UpdateFirmwareProcessDlg)
     {
         if (Syn_UpdateFirmwareProcessDlg->objectName().isEmpty())
             Syn_UpdateFirmwareProcessDlg->setObjectName(QStringLiteral("Syn_UpdateFirmwareProcessDlg"));
         Syn_UpdateFirmwareProcessDlg->setWindowModality(Qt::ApplicationModal);
-        Syn_UpdateFirmwareProcessDlg->resize(525, 78);
+        Syn_UpdateFirmwareProcessDlg->resize(623, 78);
         verticalLayout = new QVBoxLayout(Syn_UpdateFirmwareProcessDlg);
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
-        UpdateFirmwareLabel = new QLabel(Syn_UpdateFirmwareProcessDlg);
-        UpdateFirmwareLabel->setObjectName(QStringLiteral("UpdateFirmwareLabel"));
-        QFont font;
-        font.setPointSize(16);
-        UpdateFirmwareLabel->setFont(font);
+        verticalLayout_2 = new QVBoxLayout();
+        verticalLayout_2->setSpacing(6);
+        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
+        progressBar = new QProgressBar(Syn_UpdateFirmwareProcessDlg);
+        progressBar->setObjectName(QStringLiteral("progressBar"));
+        progressBar->setValue(24);
 
-        verticalLayout->addWidget(UpdateFirmwareLabel);
+        verticalLayout_2->addWidget(progressBar);
+
+
+        verticalLayout->addLayout(verticalLayout_2);
 
 
         retranslateUi(Syn_UpdateFirmwareProcessDlg);
@@ -50,10 +55,9 @@ public:
         QMetaObject::connectSlotsByName(Syn_UpdateFirmwareProcessDlg);
     } // setupUi
 
-    void retranslateUi(QWidget *Syn_UpdateFirmwareProcessDlg)
+    void retranslateUi(QDialog *Syn_UpdateFirmwareProcessDlg)
     {
         Syn_UpdateFirmwareProcessDlg->setWindowTitle(QApplication::translate("Syn_UpdateFirmwareProcessDlg", "Update Firmware", 0));
-        UpdateFirmwareLabel->setText(QApplication::translate("Syn_UpdateFirmwareProcessDlg", "    MPC04 Bootloader will be updated.Please wait...    ", 0));
     } // retranslateUi
 
 };

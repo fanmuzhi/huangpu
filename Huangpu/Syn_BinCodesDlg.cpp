@@ -1,10 +1,10 @@
 #include "Syn_BinCodesDlg.h"
 
 Syn_BinCodesDlg::Syn_BinCodesDlg(QWidget *parent)
-	: QWidget(parent)
+	:QDialog(parent)
 {
 	ui = new Ui::Syn_BinCodesDlg();
-
+	
 	ui->setupUi(this);
 
 	ui->BinCodesTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -20,7 +20,6 @@ Syn_BinCodesDlg::~Syn_BinCodesDlg()
 	ui = NULL;
 }
 
-void Syn_BinCodesDlg::closeEvent(QCloseEvent * event)
-{
-	ui->ClosePushButton->click();
-}
+//void Syn_BinCodesDlg::closeEvent(QCloseEvent * event)
+//{
+//}

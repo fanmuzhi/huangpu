@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>Syn_LocalSettingsDlg</class>
- <widget class="QWidget" name="Syn_LocalSettingsDlg">
+ <widget class="QDialog" name="Syn_LocalSettingsDlg">
   <property name="windowModality">
    <enum>Qt::ApplicationModal</enum>
   </property>

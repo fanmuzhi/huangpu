@@ -1,15 +1,30 @@
 #include "Syn_UpdateFirmwareProcessDlg.h"
 
 Syn_UpdateFirmwareProcessDlg::Syn_UpdateFirmwareProcessDlg(QWidget *parent)
-	: QWidget(parent)
+	: QDialog(parent)
 {
-	ui.setupUi(this);
+	ui = new Ui::Syn_UpdateFirmwareProcessDlg();
 
-	this->setWindowFlags(this->windowFlags()& ~Qt::WindowMaximizeButtonHint& ~Qt::WindowMinimizeButtonHint);
+	ui->setupUi(this);
 
-	ui.UpdateFirmwareLabel->show();
+	//this->setWindowFlags(this->windowFlags()& ~Qt::WindowMaximizeButtonHint& ~Qt::WindowMinimizeButtonHint);
+
+	//ui->UpdateFirmwareLabel->show();
+
+	//this->hide();
+}
+
+void Syn_UpdateFirmwareProcessDlg::UpdateFW()
+{
+	Syn_LocalSettingsDlg *pLocalSettingsDlg = (Syn_LocalSettingsDlg*)parentWidget();
+	pLocalSettingsDlg->_pSyn_DeviceManager->UpdateFirmware();
 }
 
 Syn_UpdateFirmwareProcessDlg::~Syn_UpdateFirmwareProcessDlg()
 {
+	if (NULL != ui)
+	{
+		delete ui;
+		ui == NULL;
+	}
 }
