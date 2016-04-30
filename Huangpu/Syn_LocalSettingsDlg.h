@@ -37,22 +37,24 @@ public:
 	//void closeEvent(QCloseEvent * event);
 	Syn_DeviceManager *_pSyn_DeviceManager;
 
+	void GetSerialNumberList(std::vector<uint32_t> &listOfSerialNumber);
+	void SetSerialNumberForSite(const QString strSerialNumber);
+	void UpdateADCOffsets(int Vdd, int Vio, int Vled, int Vddh);
+	int GetSiteRowIndex();
+
 public Q_SLOTS:
 
 	void SelectConfigFile();
 	void SelectLogFilePath();
 	void ModifySiteCounts();
-	void ModifySerialNumber();
 	void SetLeds(int rowNumber, int columnNumber);
 	void ConfirmSite();
 
 	void CreateUpdateADCOffsetsDlg();
-	void UpdateADCOffsets();
-	void CloseUpdateADCOffsetsDialog();
+	//void CloseUpdateADCOffsetsDialog();
 
 	//SerialNumber Manage Dialog slots
-	void ConfirmSerialNumberForSite();
-	//void CloseSerialNumberManageDialog();
+	void CreateSerialNumberManageDialog();
 
 private:
 	Ui::Syn_LocalSettingsDlg *ui;
@@ -62,8 +64,8 @@ private:
 	//Temp Voltages,save VoltagesValue from user define or configfile
 	Syn_VoltagesValue _TempVoltagesValue;
 
-	Syn_SerialNumberManageDlg *_pSyn_SerialNumberManageDlg;
-	Syn_UpdateADCOffsetsDlg *_pSyn_UpdateADCOffsetsDlg;
+	//Syn_SerialNumberManageDlg *_pSyn_SerialNumberManageDlg;
+	//Syn_UpdateADCOffsetsDlg *_pSyn_UpdateADCOffsetsDlg;
 	//Syn_UpdateFirmwareProcessDlg *_pSyn_UpdateFirmwareProcessDlg;
 };
 

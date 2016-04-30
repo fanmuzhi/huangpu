@@ -2,22 +2,28 @@
 #define SYN_UPDATEADCOFFSETSDLG_H
 
 #include <QWidget>
+#include <QtWidgets/QDialog>
 #include "ui_Syn_UpdateADCOffsetsDlg.h"
+#include "Syn_LocalSettingsDlg.h"
 
-class Syn_UpdateADCOffsetsDlg : public QWidget
+class Syn_UpdateADCOffsetsDlg : public QDialog
 {
 	Q_OBJECT
-
-	friend class Syn_LocalSettingsDlg;
 
 public:
 	Syn_UpdateADCOffsetsDlg(QWidget *parent = 0);
 	~Syn_UpdateADCOffsetsDlg();
 
-	void closeEvent(QCloseEvent * event);
+	//void closeEvent(QCloseEvent * event);
+
+public Q_SLOTS:
+
+	void UpdateADC();
 
 private:
-	Ui::Syn_UpdateADCOffsetsDlg ui;
+
+	Ui::Syn_UpdateADCOffsetsDlg *ui;
+
 };
 
 #endif // SYN_UPDATEADCOFFSETSDLG_H

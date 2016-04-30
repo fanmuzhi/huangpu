@@ -5,8 +5,8 @@
 Syn_LocalSettingsDlg::Syn_LocalSettingsDlg(QWidget *parent)
 : QDialog(parent)
 , _pSyn_DeviceManager(NULL)
-, _pSyn_SerialNumberManageDlg(NULL)
-, _pSyn_UpdateADCOffsetsDlg(NULL)
+//, _pSyn_SerialNumberManageDlg(NULL)
+//, _pSyn_UpdateADCOffsetsDlg(NULL)
 //, _pSyn_UpdateFirmwareProcessDlg(NULL)
 {
 	ui = new Ui::Syn_LocalSettingsDlg();
@@ -27,7 +27,7 @@ Syn_LocalSettingsDlg::Syn_LocalSettingsDlg(QWidget *parent)
 	QObject::connect(ui->SelectSysConfigFilePushButton, SIGNAL(clicked()), this, SLOT(SelectConfigFile()));
 	QObject::connect(ui->SelectLogFilePushButton, SIGNAL(clicked()), this, SLOT(SelectLogFilePath()));
 	QObject::connect(ui->SiteCountsLineEdit, SIGNAL(editingFinished()), this, SLOT(ModifySiteCounts()));//returnPressed
-	QObject::connect(ui->ModifySerialNumberPushButton, SIGNAL(clicked()), this, SLOT(ModifySerialNumber()));
+	QObject::connect(ui->ModifySerialNumberPushButton, SIGNAL(clicked()), this, SLOT(CreateSerialNumberManageDialog()));
 	QObject::connect(ui->UpdateADCOffsetsPushButton, SIGNAL(clicked()), this, SLOT(CreateUpdateADCOffsetsDlg()));
 	QObject::connect(ui->SiteTableWidget, SIGNAL(cellClicked(int, int)), this, SLOT(SetLeds(int, int)));
 	QObject::connect(ui->OKPushButton, SIGNAL(clicked()), this, SLOT(ConfirmSite()));
@@ -83,7 +83,7 @@ Syn_LocalSettingsDlg::Syn_LocalSettingsDlg(QWidget *parent)
 	{
 		_pSyn_DeviceManager = new Syn_DeviceManager();
 	}
-	_pSyn_DeviceManager->Close();
+	//_pSyn_DeviceManager->Close();
 	uint32_t uiResult = _pSyn_DeviceManager->Open();
 }
 
@@ -100,16 +100,6 @@ Syn_LocalSettingsDlg::~Syn_LocalSettingsDlg()
 		_pSyn_DeviceManager = NULL;
 	}
 }
-
-//void Syn_LocalSettingsDlg::CloseSerialNumberManageDialog()
-//{
-//	if (NULL == _pSyn_SerialNumberManageDlg)
-//		return;
-
-//	_pSyn_SerialNumberManageDlg->hide();
-//	delete _pSyn_SerialNumberManageDlg;
-//	_pSyn_SerialNumberManageDlg = NULL;
-//}
 
 void Syn_LocalSettingsDlg::ConfirmSite()
 {
@@ -244,8 +234,7 @@ void Syn_LocalSettingsDlg::ConfirmSite()
 	Syn_UpdateFirmwareProcessDlg *_pSyn_UpdateFirmwareProcessDlg = new Syn_UpdateFirmwareProcessDlg(this);
 	_pSyn_UpdateFirmwareProcessDlg->setAttribute(Qt::WA_DeleteOnClose);
 	_pSyn_UpdateFirmwareProcessDlg->show();
-	_pSyn_UpdateFirmwareProcessDlg->UpdateFW();
-	_pSyn_UpdateFirmwareProcessDlg->close();
+	//_pSyn_UpdateFirmwareProcessDlg->close();
 	
 	//uint32_t uiResults = _pSyn_DeviceManager->UpdateFirmware();
 	this->close();
@@ -349,11 +338,15 @@ void Syn_LocalSettingsDlg::SetLeds(int rowNumber, int columnNumber)
 	}
 }
 
-void Syn_LocalSettingsDlg::ModifySerialNumber()
+void Syn_LocalSettingsDlg::CreateSerialNumberManageDialog()
 {
-	int iSelectRowIndex = ui->SiteTableWidget->currentRow();
-	if (iSelectRowIndex < 0)
-		iSelectRowIndex = 0;
+	Syn_SerialNumberManageDlg *_pSyn_SerialNumberManageDlg = new Syn_SerialNumberManageDlg(this);
+	_pSyn_SerialNumberManageDlg->setAttribute(Qt::WA_DeleteOnClose);
+	_pSyn_SerialNumberManageDlg->show();
+}
+
+void Syn_LocalSettingsDlg::GetSerialNumberList(std::vector<uint32_t> &listOfSerialNumber)
+{
 
 	if (NULL == _pSyn_DeviceManager)
 	{
@@ -361,110 +354,43 @@ void Syn_LocalSettingsDlg::ModifySerialNumber()
 	}
 
 	uint32_t rc = _pSyn_DeviceManager->Open();
-	std::vector<uint32_t> listOfSerialNumber;
 	_pSyn_DeviceManager->GetSerialNumberList(listOfSerialNumber);
 	if (0 == listOfSerialNumber.size())
 	{
 		QMessageBox::critical(this, QString("Error"), QString("Can't find device,check it please!"));
 		return;
 	}
-
-	if (NULL == _pSyn_SerialNumberManageDlg)
-		_pSyn_SerialNumberManageDlg = new Syn_SerialNumberManageDlg();
-
-	//slots
-	QObject::connect(_pSyn_SerialNumberManageDlg->ui.OKPushButton, SIGNAL(clicked()), this, SLOT(ConfirmSerialNumberForSite()));
-
-	_pSyn_SerialNumberManageDlg->ui.SiteManagePromptLabel->setText(QString("Select Serial Number for Site ") + QString::number(iSelectRowIndex+1)+QString(":"));
-	_pSyn_SerialNumberManageDlg->ui.SerialNumberTableWidget->setRowCount(listOfSerialNumber.size());
-	for (size_t i = 1; i <= listOfSerialNumber.size(); i++)
-	{
-		_pSyn_SerialNumberManageDlg->ui.SerialNumberTableWidget->setItem(i - 1, 0, new QTableWidgetItem(QString::number(listOfSerialNumber[i-1])));
-	}
-
-	_pSyn_SerialNumberManageDlg->show();
-	//_pSyn_SerialNumberManageDlg->setAttribute(Qt::WA_DeleteOnClose);
 }
 
-void Syn_LocalSettingsDlg::ConfirmSerialNumberForSite()
+void Syn_LocalSettingsDlg::SetSerialNumberForSite(const QString strSerialNumber)
 {
-	bool focus = _pSyn_SerialNumberManageDlg->ui.SerialNumberTableWidget->isItemSelected(_pSyn_SerialNumberManageDlg->ui.SerialNumberTableWidget->currentItem());
-	if (!focus)
-	{
-		QMessageBox::critical(_pSyn_SerialNumberManageDlg, QString("Error"), QString("Select a SerialNumber for Site,please!"));
-		return;
-	}
-
-	int iSerialNumberRowIndex = _pSyn_SerialNumberManageDlg->ui.SerialNumberTableWidget->currentRow();
-	QString strSerialNumber = _pSyn_SerialNumberManageDlg->ui.SerialNumberTableWidget->item(iSerialNumberRowIndex, 0)->text();
 
 	int iSiteRowIndex = ui->SiteTableWidget->currentRow();
 	if (iSiteRowIndex < 0)
 		iSiteRowIndex = 0;
 	ui->SiteTableWidget->setItem(iSiteRowIndex, 1, new QTableWidgetItem(strSerialNumber));
 	//_pSyn_LocalSettingsDlg->ui->SiteTableWidget->setItem(iSiteRowIndex, 2, new QTableWidgetItem(QString("0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ")));
-
-	_pSyn_SerialNumberManageDlg->hide();
-	delete _pSyn_SerialNumberManageDlg;
-	_pSyn_SerialNumberManageDlg = NULL;
 }
 
 void Syn_LocalSettingsDlg::CreateUpdateADCOffsetsDlg()
 {
-	if (NULL != _pSyn_UpdateADCOffsetsDlg)
-	{
-		_pSyn_UpdateADCOffsetsDlg->hide();
-		delete _pSyn_UpdateADCOffsetsDlg;
-		_pSyn_UpdateADCOffsetsDlg = NULL;
-	}
 
-	_pSyn_UpdateADCOffsetsDlg = new Syn_UpdateADCOffsetsDlg();
+	Syn_UpdateADCOffsetsDlg *_pSyn_UpdateADCOffsetsDlg = new Syn_UpdateADCOffsetsDlg(this);
+	_pSyn_UpdateADCOffsetsDlg->setAttribute(Qt::WA_DeleteOnClose);
 	_pSyn_UpdateADCOffsetsDlg->show();
-
-	_pSyn_UpdateADCOffsetsDlg->ui.VddLineEdit->setText(QString("1800"));
-	_pSyn_UpdateADCOffsetsDlg->ui.VioLineEdit->setText(QString("1800"));
-	_pSyn_UpdateADCOffsetsDlg->ui.VledLineEdit->setText(QString("3300"));
-	_pSyn_UpdateADCOffsetsDlg->ui.VddhLineEdit->setText(QString("3300"));
-
-	QObject::connect(_pSyn_UpdateADCOffsetsDlg->ui.OKPushButton, SIGNAL(clicked()), this, SLOT(UpdateADCOffsets()));
-	QObject::connect(_pSyn_UpdateADCOffsetsDlg->ui.CancelPushButton, SIGNAL(clicked()), this, SLOT(CloseUpdateADCOffsetsDialog()));
 }
 
-void Syn_LocalSettingsDlg::UpdateADCOffsets()
+void Syn_LocalSettingsDlg::UpdateADCOffsets(int Vdd, int Vio, int Vled, int Vddh)
 {
-	if (NULL == _pSyn_UpdateADCOffsetsDlg)
-	{
-		return;
-	}
-
-	//if (NULL == _pSyn_DeviceManager)
-	//{
-	//	_pSyn_DeviceManager = new Syn_DeviceManager();
-	//}
-	//_pSyn_DeviceManager->Open();
-
-	QString strVdd = _pSyn_UpdateADCOffsetsDlg->ui.VddLineEdit->text();
-	QString strVio = _pSyn_UpdateADCOffsetsDlg->ui.VioLineEdit->text();
-	QString strVled = _pSyn_UpdateADCOffsetsDlg->ui.VledLineEdit->text();
-	QString strVddh = _pSyn_UpdateADCOffsetsDlg->ui.VddhLineEdit->text();
-
-	uint32_t uiVdd = strVdd.toInt();
-	uint32_t uiVio = strVio.toInt();
-	uint32_t uiVled = strVled.toInt();
-	uint32_t uiVddh = strVddh.toInt();
-
-	//if (uiVdd<0 || uiVdd>3300)
-
 	int iSiteCounts = ui->SiteTableWidget->rowCount();
 	if (0 == iSiteCounts)
 	{
 		return;
 	}
-
-	_TempVoltagesValue.nVdd = uiVdd;
-	_TempVoltagesValue.nVio = uiVio;
-	_TempVoltagesValue.nVled = uiVled;
-	_TempVoltagesValue.nVddh = uiVddh;
+	_TempVoltagesValue.nVdd  = Vdd;
+	_TempVoltagesValue.nVio  = Vio;
+	_TempVoltagesValue.nVled = Vled;
+	_TempVoltagesValue.nVddh = Vddh;
 
 	uint32_t rc = 0;
 	for (int i = 0; i < iSiteCounts; i++)
@@ -477,7 +403,7 @@ void Syn_LocalSettingsDlg::UpdateADCOffsets()
 			uint32_t uiSerialNumber = strSerialNumber.toInt();
 			uint32_t arAdcBaseLines[NUM_CURRENT_VALUES][KNUMGAINS] = { 0 };
 
-			rc = _pSyn_DeviceManager->UpdateADCOffsets(uiSerialNumber, uiVdd, uiVio, uiVled, uiVddh, arAdcBaseLines);
+			rc = _pSyn_DeviceManager->UpdateADCOffsets(uiSerialNumber, Vdd, Vio, Vled, Vddh, arAdcBaseLines);
 			if (Syn_ExceptionCode::Syn_OK == rc)
 			{
 				QString strAdcBaseLinesValue("");
@@ -486,26 +412,22 @@ void Syn_LocalSettingsDlg::UpdateADCOffsets()
 					for (int b = 0; b < KNUMGAINS; b++)
 					{
 						strAdcBaseLinesValue += QString::number(arAdcBaseLines[a][b]) + QString(" ");
-						//strAdcBaseLinesValue += QString::number(arAdcBaseLines[b][a]) + QString(" ");
 					}
 				}
-
 				ui->SiteTableWidget->setItem(i, 2, new QTableWidgetItem(strAdcBaseLinesValue));
 			}
 		}
 	}
-
-	_pSyn_UpdateADCOffsetsDlg->hide();
-	delete _pSyn_UpdateADCOffsetsDlg;
-	_pSyn_UpdateADCOffsetsDlg = NULL;
 }
 
-void Syn_LocalSettingsDlg::CloseUpdateADCOffsetsDialog()
-{
-	if (NULL != _pSyn_UpdateADCOffsetsDlg)
+int Syn_LocalSettingsDlg::GetSiteRowIndex()
+{ 
+	if (NULL != ui)
 	{
-		_pSyn_UpdateADCOffsetsDlg->hide();
-		delete _pSyn_UpdateADCOffsetsDlg;
-		_pSyn_UpdateADCOffsetsDlg = NULL;
+		return ui->SiteTableWidget->currentRow(); 
+	}
+	else
+	{
+		return 0;
 	}
 }

@@ -282,6 +282,20 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 
 void FPS_TestExecutive::CreateLocalSettings()
 {
+	//clear
+	if (0 != _ListOfSitePtr.size())
+	{
+		for (size_t i = _ListOfSitePtr.size(); i >= 1; i--)
+		{
+			if (NULL != _ListOfSitePtr[i - 1])
+			{
+				delete _ListOfSitePtr[i - 1];
+				_ListOfSitePtr[i - 1] = NULL;
+			}
+		}
+		_ListOfSitePtr.clear();
+	}
+
 	Syn_LocalSettingsDlg *_pSyn_LocalSettingsDlg = new Syn_LocalSettingsDlg();
 	_pSyn_LocalSettingsDlg->show();
 	_pSyn_LocalSettingsDlg->setAttribute(Qt::WA_DeleteOnClose);

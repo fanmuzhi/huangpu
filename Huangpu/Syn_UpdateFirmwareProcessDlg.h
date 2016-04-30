@@ -14,11 +14,12 @@ public:
 	Syn_UpdateFirmwareProcessDlg(QWidget *parent = 0);
 	~Syn_UpdateFirmwareProcessDlg();
 
-	//updateFW
-	void UpdateFW();
+	void showEvent(QShowEvent * event);
 
 private:
 	Ui::Syn_UpdateFirmwareProcessDlg *ui;
+	//updateFW
+	//void UpdateFW();
 };
 
 #endif // SYN_UPDATEFIRMWAREPROCESSDLG_H
