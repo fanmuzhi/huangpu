@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QDialog>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHeaderView>
@@ -20,7 +21,6 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
 
@@ -42,7 +42,7 @@ public:
     QPushButton *OKPushButton;
     QPushButton *CancelPushButton;
 
-    void setupUi(QWidget *Syn_UpdateADCOffsetsDlg)
+    void setupUi(QDialog *Syn_UpdateADCOffsetsDlg)
     {
         if (Syn_UpdateADCOffsetsDlg->objectName().isEmpty())
             Syn_UpdateADCOffsetsDlg->setObjectName(QStringLiteral("Syn_UpdateADCOffsetsDlg"));
@@ -121,7 +121,7 @@ public:
         QMetaObject::connectSlotsByName(Syn_UpdateADCOffsetsDlg);
     } // setupUi
 
-    void retranslateUi(QWidget *Syn_UpdateADCOffsetsDlg)
+    void retranslateUi(QDialog *Syn_UpdateADCOffsetsDlg)
     {
         Syn_UpdateADCOffsetsDlg->setWindowTitle(QApplication::translate("Syn_UpdateADCOffsetsDlg", "Update ADC Offsets", 0));
         VoltagesGroupBox->setTitle(QApplication::translate("Syn_UpdateADCOffsetsDlg", "Voltages(mV)", 0));
