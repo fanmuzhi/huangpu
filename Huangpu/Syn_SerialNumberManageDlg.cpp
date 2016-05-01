@@ -28,6 +28,7 @@ Syn_SerialNumberManageDlg::~Syn_SerialNumberManageDlg()
 
 void Syn_SerialNumberManageDlg::showEvent(QShowEvent * event)
 {
+	QDialog::showEvent(event);
 	Syn_LocalSettingsDlg *pLocalSettingsDlg = (Syn_LocalSettingsDlg*)parentWidget();
 
 	//get row index
@@ -67,4 +68,6 @@ void Syn_SerialNumberManageDlg::SelectSerialNumber()
 	Syn_LocalSettingsDlg *pLocalSettingsDlg = (Syn_LocalSettingsDlg*)parentWidget();
 
 	pLocalSettingsDlg->SetSerialNumberForSite(strSerialNumber);
+
+	this->close();
 }

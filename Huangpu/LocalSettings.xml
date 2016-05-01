@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
-    <SysConfigFile>C:/Users/bqiling/Google Drive/Metallica 109A0/FM192/(FM-000192-001)_OFilm_Gold_Huangpu.xml</SysConfigFile>
+    <SysConfigFile>C:/Users/bqiling/Google Drive/Metallica 109A0/FM182/(FM-000182-001)_OFilm_Matte_Gold_PGA8_Huangpu.xml</SysConfigFile>
     <LogFilePath>C:/logfiles/Huangpu</LogFilePath>
     <NumSites>1</NumSites>
-    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ">1405853</Site1>
+    <Site1 AdcBaseLines="709 709 710 712 708 709 710 712 705 708 705 712 672 708 654 712 " Voltages="1800 1800 3300 3300">1405853</Site1>
     <AutoController></AutoController>
 </LocalSettings>
