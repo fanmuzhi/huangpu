@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QDialog>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
@@ -23,7 +24,6 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QTableWidget>
-#include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,7 +55,7 @@ public:
     QPushButton *OKPushButton;
     QSpacerItem *horizontalSpacer;
 
-    void setupUi(QWidget *Syn_LocalSettingsDlg)
+    void setupUi(QDialog *Syn_LocalSettingsDlg)
     {
         if (Syn_LocalSettingsDlg->objectName().isEmpty())
             Syn_LocalSettingsDlg->setObjectName(QStringLiteral("Syn_LocalSettingsDlg"));
@@ -197,7 +197,7 @@ public:
         QMetaObject::connectSlotsByName(Syn_LocalSettingsDlg);
     } // setupUi
 
-    void retranslateUi(QWidget *Syn_LocalSettingsDlg)
+    void retranslateUi(QDialog *Syn_LocalSettingsDlg)
     {
         Syn_LocalSettingsDlg->setWindowTitle(QApplication::translate("Syn_LocalSettingsDlg", "Local Settings", 0));
         LogFileGroupBox->setTitle(QApplication::translate("Syn_LocalSettingsDlg", "LogFile Path", 0));

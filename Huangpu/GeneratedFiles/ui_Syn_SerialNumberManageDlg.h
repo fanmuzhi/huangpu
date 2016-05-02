@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QDialog>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
@@ -20,7 +21,6 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QTableWidget>
-#include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
 
@@ -35,7 +35,7 @@ public:
     QPushButton *CancelPushButton;
     QLabel *SiteManagePromptLabel;
 
-    void setupUi(QWidget *Syn_SerialNumberManageDlg)
+    void setupUi(QDialog *Syn_SerialNumberManageDlg)
     {
         if (Syn_SerialNumberManageDlg->objectName().isEmpty())
             Syn_SerialNumberManageDlg->setObjectName(QStringLiteral("Syn_SerialNumberManageDlg"));
@@ -86,7 +86,7 @@ public:
         QMetaObject::connectSlotsByName(Syn_SerialNumberManageDlg);
     } // setupUi
 
-    void retranslateUi(QWidget *Syn_SerialNumberManageDlg)
+    void retranslateUi(QDialog *Syn_SerialNumberManageDlg)
     {
         Syn_SerialNumberManageDlg->setWindowTitle(QApplication::translate("Syn_SerialNumberManageDlg", "SerialNumber Manage", 0));
         QTableWidgetItem *___qtablewidgetitem = SerialNumberTableWidget->horizontalHeaderItem(0);

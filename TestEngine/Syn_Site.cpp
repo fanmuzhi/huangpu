@@ -331,7 +331,7 @@ void Syn_Site::GetTestStepList(std::vector<std::string> &olistOfTestStepName)
 	}
 }
 
-bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
+bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 {
 	if (-1 == _access(sFolderPath.c_str(), 2))
 	{
@@ -358,77 +358,40 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 		sSensorSerialNumber.push_back(DutInfo->_getVerInfo.sSerialNumber[i]);
 	}
 
-	std::string stringFilePath;
-	if (0 == sFileName.size())
+	std::string strFilePath = sFolderPath + std::string("/") + sSensorSerialNumber + std::string(".csv");
+	int iCount(1);
+	while (FileExists(strFilePath))
 	{
-		std::string strSerachContent = sFolderPath + std::string("\\")+sSensorSerialNumber + std::string("*.csv");
-		std::string strSensorSerialNumber;
-		std::vector<std::string> lsitOfFileName;
-		long handle;
-		struct _finddata_t fileinfo;
-		handle = _findfirst(strSerachContent.c_str(), &fileinfo);
-		if (-1 == handle)
-		{
-			strSensorSerialNumber = sSensorSerialNumber + std::string("_1");
-		}
-		else
-		{
-			int iCounts(1);
-
-			do
-			{
-				std::string strFileName = fileinfo.name;
-				if (std::string::npos != strFileName.find_first_of(sSensorSerialNumber))
-				{
-					iCounts += 1;
-				}
-			} while (_findnext(handle, &fileinfo) == 0);
-
-			strSensorSerialNumber = sSensorSerialNumber + std::string("_") + to_string(iCounts);
-			_findclose(handle);
-		}
-
-		stringFilePath = sFolderPath + "\\" + strSensorSerialNumber + ".csv";
-	}
-	else
-	{
-		if (std::string::npos != sFileName.find_first_of(".csv"))
-		{
-			stringFilePath = sFolderPath + "\\" + sFileName;
-		}
-		else
-		{
-			stringFilePath = sFolderPath + "\\" + sFileName + ".csv";
-		}
+		strFilePath = sFolderPath + std::string("/") + sSensorSerialNumber + "_" + to_string(iCount) + std::string(".csv");
+		iCount++;
 	}
 
-	
-	FILE *pFile = fopen(stringFilePath.c_str(), "a");
+	FILE *pFile = fopen(strFilePath.c_str(), "a");
 	if (NULL == pFile)
 	{
 		return false;
 	}
 
-	fprintf(pFile, "\n%%%%%%%%%%%%%%%%%%%%%%\n");
+	fprintf(pFile, "%%%%%%%%%%%%%%%%%%%%%%\n");
 	fprintf(pFile, "MTLog\n");
 
 	//Put in part number.
 	//fprintf(pFile, "Part Number,%s\n", "");//DebugVersion
 
 	//fprintf(pFile, "ConfigFile,%s\n", _pSyn_Dut->_pSyn_DutTestInfo-);
-	fprintf(pFile, "\n%%%%%%%%%%%%%%%%%%%%%%\n");
+	fprintf(pFile, "%%%%%%%%%%%%%%%%%%%%%%\n");
 
 	fprintf(pFile, "\n---------------------\n");
 	const time_t t = time(NULL);
 	struct tm* current_time = localtime(&t);
 	//fprintf(pFile, "Run %d,%s\n", "", asctime(current_time));
-	fprintf(pFile, "Run ,%s\n", asctime(current_time));
+	fprintf(pFile, "Test Time,%s\n", asctime(current_time));
 
 	//Sensor Serial Number
-	fprintf(pFile, "Sensor Serial Number ,%s\n", sSensorSerialNumber.c_str());
+	fprintf(pFile, "Sensor Serial Number,%s\n", sSensorSerialNumber.c_str());
 
 	//InitlizationStep
-	fprintf(pFile, "\nInitialization, %s,%d ms\n", DutResults->_initResults.m_bPass ? "Pass" : "Fail", 0);
+	fprintf(pFile, "\nInitialization,%s,%d ms\n", DutResults->_initResults.m_bPass ? "Pass" : "Fail", 0);
 
 	//RAMTest
 	if (DutInfo->_RAMTestInfo.m_bExecuted)
@@ -465,7 +428,7 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 	//Pixel Patch
 	if (DutInfo->_pixelPatchInfo.m_bExecuted)
 	{
-		fprintf(pFile, "\nPixel Patch, %s,%.0f ms\n", DutResults->_pixelPatchResults.m_bPass ? "Pass" : "Fail", DutResults->_pixelPatchResults.m_elapsedtime);
+		fprintf(pFile, "\nPixel Patch,%s,%.0f ms\n", DutResults->_pixelPatchResults.m_bPass ? "Pass" : "Fail", DutResults->_pixelPatchResults.m_elapsedtime);
 		fprintf(pFile, ",,,");
 		for (int i = 0; i < (DutInfo->_pixelPatchInfo.m_nNumResBytes) / 4; i++)
 			fprintf(pFile, "%d,", *((uint32_t*)&DutResults->_pixelPatchResults.m_pResponse[i * 4]));
@@ -527,7 +490,7 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 	//Cablication
 	if (DutInfo->_calibrationInfo.m_bExecuted)
 	{
-		fprintf(pFile, "\nCalibration, %s,%.0f ms\n", DutResults->_calibrationResults.m_bPass ? "Pass" : "Fail", DutResults->_calibrationResults.m_elapsedtime);
+		fprintf(pFile, "\nCalibration,%s,%.0f ms\n", DutResults->_calibrationResults.m_bPass ? "Pass" : "Fail", DutResults->_calibrationResults.m_elapsedtime);
 		// Stage1 LNA values from print patch
 		fprintf(pFile, ",,,Stage1");
 		for (int i = 0; i < RowNumber; i++)
@@ -581,15 +544,7 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 	//WakeOnFinger Test
 	if (DutInfo->_z0WofInfo.m_bExecutedWithoutStimulus == 1 || DutInfo->_z0WofInfo.m_bExecutedWithStimulus == 1)
 	{
-		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofBot_count != 0)
-		{
-			fprintf(pFile, "\nWOF Zone 0,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass (OTP)", _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_elapsedtime);
-			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithoutStim,
-					_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithStim,
-					_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nGain,
-					_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithoutStim - _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithStim);
-		}
-		else if (_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_bPass != 0)	//If passed.
+		if (_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_bPass != 0)	//If passed.
 		{
 			fprintf(pFile, "\nWOF Zone 0,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_elapsedtime);
 			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithoutStim,
@@ -610,16 +565,7 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 	//If the user has not skipped testing zone 1.
 	if (DutInfo->_z1WofInfo.m_bExecutedWithoutStimulus == 1 || DutInfo->_z1WofInfo.m_bExecutedWithStimulus == 1)
 	{
-		//If we got the zone 1 data out of OTP rather than calculating.
-		if (DutResults->_calibrationResults.m_nWofTop_count != 0)
-		{
-			fprintf(pFile, "\nWOF Zone 1,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass (OTP)", DutResults->_z1WofResults.m_elapsedtime);
-			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_z1WofResults.m_nTriggerWithoutStim,
-					DutResults->_z1WofResults.m_nTriggerWithStim,
-					DutResults->_z1WofResults.m_nGain,
-					DutResults->_z1WofResults.m_nTriggerWithoutStim - DutResults->_z1WofResults.m_nTriggerWithStim);
-		}
-		else if (DutResults->_z1WofResults.m_bPass != 0)	//If passed.
+		if (DutResults->_z1WofResults.m_bPass != 0)	//If passed.
 		{
 			fprintf(pFile, "\nWOF Zone 1,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_z1WofResults.m_elapsedtime);
 			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_z1WofResults.m_nTriggerWithoutStim,
@@ -640,16 +586,7 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 	//SCM WakeOnFinger Test
 	if (DutInfo->_BottomSCM_wofInfo.m_bExecutedWithoutStimulus == 1 || DutInfo->_BottomSCM_wofInfo.m_bExecutedWithStimulus == 1)
 	{
-		//If we got the zone 0 data out of OTP rather than calculating.
-		if (DutResults->_calibrationResults.m_nScmWofBot_count != 0)
-		{
-			fprintf(pFile, "\nSCM Bottom WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass (OTP)", DutResults->_BottomSCM_wofResults.m_elapsedtime);
-			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_BottomSCM_wofResults.m_nTriggerWithoutStim,
-					DutResults->_BottomSCM_wofResults.m_nTriggerWithStim,
-					DutResults->_BottomSCM_wofResults.m_nGain,
-					DutResults->_BottomSCM_wofResults.m_nTriggerWithoutStim - DutResults->_BottomSCM_wofResults.m_nTriggerWithStim);
-		}
-		else if (_pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_bPass != 0)	//If passed.
+		if (_pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_bPass != 0)	//If passed.
 		{
 			fprintf(pFile, "\nSCM Bottom WakeOnFinger Test,%s,%d.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_BottomSCM_wofResults.m_elapsedtime);
 			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_BottomSCM_wofResults.m_nTriggerWithoutStim,
@@ -669,16 +606,7 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 
 	if (DutInfo->_TopSCM_wofInfo.m_bExecutedWithoutStimulus == 1 || DutInfo->_TopSCM_wofInfo.m_bExecutedWithStimulus == 1)
 	{
-		//If we got the zone 1 data out of OTP rather than calculating.
-		if (DutResults->_calibrationResults.m_nScmWofTop_count != 0)
-		{
-			fprintf(pFile, "\nSCM Top WakeOnFinger Test,%s,%d ms,NoFinger,WithFinger,Gain,Delta", "Pass (OTP)", DutResults->_TopSCM_wofResults.m_elapsedtime);
-			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_TopSCM_wofResults.m_nTriggerWithoutStim,
-				DutResults->_TopSCM_wofResults.m_nTriggerWithStim,
-				DutResults->_TopSCM_wofResults.m_nGain,
-				DutResults->_TopSCM_wofResults.m_nTriggerWithoutStim - DutResults->_TopSCM_wofResults.m_nTriggerWithStim);
-		}
-		else if (DutResults->_TopSCM_wofResults.m_bPass != 0)	//If passed.
+		if (DutResults->_TopSCM_wofResults.m_bPass != 0)	//If passed.
 		{
 			fprintf(pFile, "\nSCM Top WakeOnFinger Test,%s,%d ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_TopSCM_wofResults.m_elapsedtime);
 			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_TopSCM_wofResults.m_nTriggerWithoutStim,
@@ -860,7 +788,7 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 		fprintf(pFile, "\n");
 	}
 
-	fprintf(pFile, "\n,Bin Codes");
+	fprintf(pFile, "\nBin Codes");
 	for (size_t i = 1; i <= DutResults->_binCodes.size(); i++)
 	{
 		fprintf(pFile, ",%s", (DutResults->_binCodes[i - 1]).c_str());
@@ -869,6 +797,12 @@ bool Syn_Site::Write_Log(std::string sFolderPath, std::string sFileName)
 	fclose(pFile);
 
 	return true;
+}
+
+bool Syn_Site::FileExists(const std::string& name)
+{
+  struct stat buffer;   
+  return (stat (name.c_str(), &buffer) == 0); 
 }
 
 //bool Syn_Site::RegisterLoggingConfig()

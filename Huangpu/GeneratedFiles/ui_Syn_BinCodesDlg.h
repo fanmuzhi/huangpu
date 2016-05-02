@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QDialog>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
@@ -20,7 +21,6 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QTableWidget>
-#include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
 
@@ -35,7 +35,7 @@ public:
     QSpacerItem *horizontalSpacer;
     QPushButton *ClosePushButton;
 
-    void setupUi(QWidget *Syn_BinCodesDlg)
+    void setupUi(QDialog *Syn_BinCodesDlg)
     {
         if (Syn_BinCodesDlg->objectName().isEmpty())
             Syn_BinCodesDlg->setObjectName(QStringLiteral("Syn_BinCodesDlg"));
@@ -549,7 +549,7 @@ public:
         QMetaObject::connectSlotsByName(Syn_BinCodesDlg);
     } // setupUi
 
-    void retranslateUi(QWidget *Syn_BinCodesDlg)
+    void retranslateUi(QDialog *Syn_BinCodesDlg)
     {
         Syn_BinCodesDlg->setWindowTitle(QApplication::translate("Syn_BinCodesDlg", "BinCodes Display", 0));
         BinCodesGroupBox->setTitle(QApplication::translate("Syn_BinCodesDlg", "BinCodes", 0));

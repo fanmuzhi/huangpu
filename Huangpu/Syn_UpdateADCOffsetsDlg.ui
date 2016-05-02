@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>Syn_UpdateADCOffsetsDlg</class>
- <widget class="QWidget" name="Syn_UpdateADCOffsetsDlg">
+ <widget class="QDialog" name="Syn_UpdateADCOffsetsDlg">
   <property name="windowModality">
    <enum>Qt::ApplicationModal</enum>
   </property>

@@ -11,6 +11,9 @@
 #include "Syn_TestStep.h"
 #include "Syn_TestStepFactory.h"
 
+//stat
+#include <sys/stat.h>
+
 
 class Syn_Site
 {
@@ -63,7 +66,7 @@ public:
 
 	void GetTestStepList(std::vector<std::string> &olistOfTestStepName);
 
-	bool Write_Log(std::string sFolderPath, std::string sFileName = "");
+	bool WriteLog(std::string sFolderPath, std::string sFileName = "");
 
 private:
 
@@ -72,6 +75,8 @@ private:
 
 	/*site initiazlization*/
 	uint32_t Init();
+
+	bool FileExists(const std::string& name);
 
 	//variable
 	std::string _strConfigFilePath;

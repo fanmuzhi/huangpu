@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>Syn_SerialNumberManageDlg</class>
- <widget class="QWidget" name="Syn_SerialNumberManageDlg">
+ <widget class="QDialog" name="Syn_SerialNumberManageDlg">
   <property name="windowModality">
    <enum>Qt::ApplicationModal</enum>
   </property>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>Syn_UpdateFirmwareProcessDlg</class>
- <widget class="QWidget" name="Syn_UpdateFirmwareProcessDlg">
+ <widget class="QDialog" name="Syn_UpdateFirmwareProcessDlg">
   <property name="windowModality">
    <enum>Qt::ApplicationModal</enum>
   </property>
@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>525</width>
+    <width>408</width>
     <height>78</height>
    </rect>
   </property>
@@ -18,16 +18,23 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="UpdateFirmwareLabel">
-     <property name="font">
-      <font>
-       <pointsize>16</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>    MPC04 Bootloader will be updated.Please wait...    </string>
-     </property>
-    </widget>
+    <layout class="QVBoxLayout" name="verticalLayout1">
+     <item>
+      <widget class="QLabel" name="labelInfo">
+       <property name="font">
+        <font>
+         <family>Segoe UI</family>
+         <pointsize>12</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>MPC04 Firmware updating....</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

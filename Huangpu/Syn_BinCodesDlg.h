@@ -2,22 +2,21 @@
 #define SYN_BINCODESDLG_H
 
 #include <QWidget>
+#include <QtWidgets/QDialog>
 #include "ui_Syn_BinCodesDlg.h"
 
-class Syn_BinCodesDlg : public QWidget
+class Syn_BinCodesDlg : public QDialog 
 {
 	Q_OBJECT
-	
-	friend class FPS_TestExecutive;
 
 public:
 	Syn_BinCodesDlg(QWidget *parent = 0);
 	~Syn_BinCodesDlg();
 
-	void closeEvent(QCloseEvent * event);
+	//void closeEvent(QCloseEvent * event);
 
 private:
-	Ui::Syn_BinCodesDlg ui;
+	Ui::Syn_BinCodesDlg *ui;
 };
 
 #endif // SYN_BINCODESDLG_H
