@@ -296,7 +296,8 @@ bool Ts_WOF::GetZ0WofData(WofTestInfo &wofInfo,WofTestResults &wofResults)
 
 	int nVcc = (int)(wofInfo.m_nVCC * 1000);
 	PowerOff();
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, nVcc, nVcc, true);
+	//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, nVcc, nVcc, true);
+	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 
 	Syn_PatchInfo WofPatchInfo, WofCmd1PathInfo, WofCmd2PathInfo;
 	rc = _pSyn_Dut->FindPatch("WofPatch", WofPatchInfo);
@@ -372,7 +373,8 @@ bool Ts_WOF::GetZ1WofData(WofTestInfo &wofInfo, WofTestResults &wofResults)
 	}
 
 	PowerOff();
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, nVcc, nVcc, true);
+	//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, nVcc, nVcc, true);
+	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 
 	//Load the patch, execute and wait for cmd3 to complete.
 	_pSyn_DutCtrl->FpLoadPatch(WofPatchInfo._pArrayBuf, WofPatchInfo._uiArraySize);

@@ -39,8 +39,10 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	//Thread
 	for (int i = 1; i <= DeviceCounts; i++)
 	{
-		QObject::connect(&(_SynThreadArray[i - 1]), SIGNAL(send(unsigned int, const QString, const QString)), this, SLOT(ReceiveTestStep(unsigned int, const QString, const QString)));
-		QObject::connect(&(_SynThreadArray[i - 1]), SIGNAL(send(unsigned int)), this, SLOT(ReceiveTestResults(unsigned int)));
+		QObject::connect(&(_SynThreadArray[i - 1]), SIGNAL(send(unsigned int, const QString, const QString)), 
+			this, SLOT(ReceiveTestStep(unsigned int, const QString, const QString)), Qt::ConnectionType(Qt::QueuedConnection));
+		QObject::connect(&(_SynThreadArray[i - 1]), SIGNAL(send(unsigned int)),
+			this, SLOT(ReceiveTestResults(unsigned int)), Qt::ConnectionType(Qt::QueuedConnection));
 	}
 
 	//BinCodes Dislpay
@@ -54,15 +56,7 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 
 FPS_TestExecutive::~FPS_TestExecutive()
 {
-	if (0 != _ListOfSitePtr.size())
-	{
-		for (size_t i = _ListOfSitePtr.size(); i >= 1; i--)
-		{
-			delete _ListOfSitePtr[i - 1];
-			_ListOfSitePtr[i - 1] = NULL;
-		}
-		_ListOfSitePtr.clear();
-	}
+	this->ClearSites();
 }
 
 void FPS_TestExecutive::Initialize()
@@ -134,18 +128,7 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 	}
 
 	//clear
-	if (0 != _ListOfSitePtr.size())
-	{
-		for (size_t i = _ListOfSitePtr.size(); i >= 1; i--)
-		{
-			if (NULL != _ListOfSitePtr[i - 1])
-			{
-				delete _ListOfSitePtr[i - 1];
-				_ListOfSitePtr[i - 1] = NULL;
-			}
-		}
-		_ListOfSitePtr.clear();
-	}
+	this->ClearSites();
 
 	bool IsSucess(true);
 	for (size_t i = 0; i < iLocalSettingsSiteCounts; i++)
@@ -168,19 +151,7 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 
 	if (!IsSucess)
 	{
-		if (0 != _ListOfSitePtr.size())
-		{
-			for (size_t i = _ListOfSitePtr.size(); i >= 1; i--)
-			{
-				if (NULL != _ListOfSitePtr[i - 1])
-				{
-					delete _ListOfSitePtr[i - 1];
-					_ListOfSitePtr[i - 1] = NULL;
-				}
-			}
-			_ListOfSitePtr.clear();
-		}
-
+		this->ClearSites();
 		return false;
 	}
 
@@ -263,7 +234,6 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 
 	ui.pushButtonRun->setText("Run");
 
-	//Debug,not release
 	//DutDump
 	ui.comboBox->clear();
 	ui.textBrowser->clear();
@@ -275,33 +245,19 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 	}
 	ui.OTPResultLabel->setText("");
 
-	//_pSyn_DeviceManager->UpdateFirmware(_ListOfSitePtr);
-
 	return true;
 }
 
 void FPS_TestExecutive::CreateLocalSettings()
 {
 	//clear
-	if (0 != _ListOfSitePtr.size())
-	{
-		for (size_t i = _ListOfSitePtr.size(); i >= 1; i--)
-		{
-			if (NULL != _ListOfSitePtr[i - 1])
-			{
-				delete _ListOfSitePtr[i - 1];
-				_ListOfSitePtr[i - 1] = NULL;
-			}
-		}
-		_ListOfSitePtr.clear();
-	}
+	this->ClearSites();
 
 	Syn_LocalSettingsDlg *_pSyn_LocalSettingsDlg = new Syn_LocalSettingsDlg();
 	_pSyn_LocalSettingsDlg->show();
 	_pSyn_LocalSettingsDlg->setAttribute(Qt::WA_DeleteOnClose);
 	//connect LocalSettings close signal to re-construct site list
 	QObject::connect(_pSyn_LocalSettingsDlg, SIGNAL(destroyed()), this, SLOT(Initialize()));
-
 }
 
 void FPS_TestExecutive::CreateBinCodesDlg()
@@ -351,6 +307,8 @@ void FPS_TestExecutive::Run()
 		}
 
 		ui.pushButtonRun->setDisabled(true);
+		ui.actionBinCodes->setDisabled(true);
+		ui.actionLocalSetttings->setDisabled(true);
 
 		bool bWaitStimulus(false);
 		std::vector<std::string> listOfTestStepName;
@@ -374,6 +332,8 @@ void FPS_TestExecutive::Run()
 		iRunFlag = 2;
 
 		ui.pushButtonRun->setDisabled(true);
+		ui.actionBinCodes->setDisabled(true);
+		ui.actionLocalSetttings->setDisabled(true);
 	}
 
 	for (int i = 1; i <= iSiteCounts; i++)
@@ -691,7 +651,7 @@ void FPS_TestExecutive::ReceiveTestResults(unsigned int iSiteNumber)
 	if (2 == iFlag||3 == iFlag)
 	{
 		//writelog
-		_ListOfSitePtr[iPos]->Write_Log(_LocalSettingsInfo._strLogFilePath);
+		_ListOfSitePtr[iPos]->WriteLog(_LocalSettingsInfo._strLogFilePath);
 		_ListOfSitePtr[iPos]->Close();
 
 		//State
@@ -1010,7 +970,6 @@ void FPS_TestExecutive::ManageButtonStatus(int iFlag)
 
 		if (bAllFailed)
 		{
-			ui.pushButtonRun->setDisabled(false);
 
 			//if all failed,reset it to init
 			ui.pushButtonRun->setText(QString("Run"));
@@ -1020,19 +979,19 @@ void FPS_TestExecutive::ManageButtonStatus(int iFlag)
 			if (1 == iFlag)
 			{
 				ui.pushButtonRun->setText(QString("Continue"));
-				ui.pushButtonRun->setDisabled(false);
 			}
 			else if (2 == iFlag)
 			{
 				ui.pushButtonRun->setText(QString("Run"));
-				ui.pushButtonRun->setDisabled(false);
 			}
 			else
 			{
 				ui.pushButtonRun->setText(QString("Run"));
-				ui.pushButtonRun->setDisabled(false);
 			}
 		}
+		ui.pushButtonRun->setDisabled(false);
+		ui.actionBinCodes->setDisabled(false);
+		ui.actionLocalSetttings->setDisabled(false);
 		
 	}
 }
@@ -1091,5 +1050,18 @@ void FPS_TestExecutive::GetErrorInfo(uint32_t iErrorCode,std::string &osErrorInf
 
 		default:
 			osErrorInfo = "unknown error";
+	}
+}
+
+void FPS_TestExecutive::ClearSites()
+{
+	if (0 != _ListOfSitePtr.size())
+	{
+		for (size_t i = _ListOfSitePtr.size(); i >= 1; i--)
+		{
+			delete _ListOfSitePtr[i - 1];
+			_ListOfSitePtr[i - 1] = NULL;
+		}
+		_ListOfSitePtr.clear();
 	}
 }

@@ -78,6 +78,7 @@ private:
 	//private function
 	void Display(uint8_t* pDst, int DstSize);
 	void Display(uint8_t* pDst, unsigned int StartPos, unsigned int EndPos);
+	void ClearSites();
 
 	//UI
 	Ui::FPS_TestExecutiveClass ui;
