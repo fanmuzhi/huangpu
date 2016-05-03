@@ -31,6 +31,7 @@
 #include "Ts_OTPWriteBootSector.h"
 #include "Ts_ButtonTest.h"
 #include "Ts_WaitStimulus.h"
+#include "Ts_Invalidate.h"
 #include "Ts_HuaweiImageQualityTest.h"
 
 Syn_TestStepFactory::Syn_TestStepFactory()
@@ -191,7 +192,10 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	else if (std::string("WaitStimulus") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_WaitStimulus(strTestStepName, strTestArgs, pDutCtrl, pDut);
-
+	}
+	else if (std::string("Invalidate") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_Invalidate(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else
 	{

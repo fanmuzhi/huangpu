@@ -55,7 +55,7 @@ typedef unsigned char UINT8; // UINT8 is created to handle MPC04 data
 #define	EXT_TAG_SCM_WOF_BOT		0x8000000DL
 #define	EXT_TAG_SCM_WOF_TOP		0x8000000EL
 #define EXT_TAG_PART_NUMBERS	0x8000000FL
-#define	NUM_EXT_TAGS		11
+#define	NUM_EXT_TAGS			12
 
 #define	PGA_OOPP_OTP_ROW1					4
 #define	PGA_OOPP_OTP_ROW2					18

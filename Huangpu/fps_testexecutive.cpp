@@ -53,6 +53,9 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	//OTP Dump
 	QObject::connect(ui.pushButtonGetVer, SIGNAL(clicked()), this, SLOT(GetVersionForDutDump()));
 	QObject::connect(ui.pushButtonReadOTP, SIGNAL(clicked()), this, SLOT(ReadOTPForDutDump()));
+
+	//Invalidate sensor
+	QObject::connect(ui.pushButtonInvalidate, SIGNAL(clicked()), this, SLOT(Invalidate()));
 }
 
 FPS_TestExecutive::~FPS_TestExecutive()
@@ -726,6 +729,137 @@ void FPS_TestExecutive::DisplayImageInTime(unsigned int iSiteNumber)
 	ui.TestTableWidget->resizeRowToContents(7);
 }
 
+void FPS_TestExecutive::ManageButtonStatus(int iFlag)
+{
+	if (_FinishedSiteCounts == _ListOfSitePtr.size())
+	{
+		bool bAllFailed(true);
+		for (size_t i = 1; i <= _ListOfSitePtr.size(); i++)
+		{
+			Syn_Site::SiteState oTmpState;
+			_ListOfSitePtr[i - 1]->GetState(oTmpState);
+			if (Syn_Site::Error != oTmpState)
+			{
+				bAllFailed = false;
+				break;
+			}
+		}
+
+		if (bAllFailed)
+		{
+
+			//if all failed,reset it to init
+			ui.pushButtonRun->setText(QString("Run"));
+			ui.pushButtonRun->setDisabled(false);
+			ui.actionBinCodes->setDisabled(false);
+			ui.actionLocalSetttings->setDisabled(false);
+		}
+		else
+		{
+			if (1 == iFlag)
+			{
+				ui.pushButtonRun->setText(QString("Continue"));
+				ui.pushButtonRun->setDisabled(false);
+
+				//DisplayImage In time
+				for (size_t i = 1; i <= _ListOfSitePtr.size(); i++)
+				{
+					if (!_SynMiniThreadArray[i - 1].isRunning())
+					{
+						_SynMiniThreadArray[i - 1].SetStopTag(false);
+						_SynMiniThreadArray[i - 1].start();
+					}
+				}
+			}
+			else if (2 == iFlag)
+			{
+				ui.pushButtonRun->setText(QString("Run"));
+				ui.pushButtonRun->setDisabled(false);
+				ui.actionBinCodes->setDisabled(false);
+				ui.actionLocalSetttings->setDisabled(false);
+			}
+			else
+			{
+				ui.pushButtonRun->setText(QString("Run"));
+				ui.pushButtonRun->setDisabled(false);
+				ui.actionBinCodes->setDisabled(false);
+				ui.actionLocalSetttings->setDisabled(false);
+			}
+		}
+		
+	}
+}
+
+void FPS_TestExecutive::GetErrorInfo(uint32_t iErrorCode,std::string &osErrorInfo)
+{
+	switch (iErrorCode)
+	{
+		case Syn_ExceptionCode::Syn_UnknownError:
+			osErrorInfo = "Unknown Error";
+			break;
+
+		case Syn_ExceptionCode::Syn_DutInfoNull:
+			osErrorInfo = "DutInfo is NULL";
+			break;
+
+		case Syn_ExceptionCode::Syn_DutResultNull:
+			osErrorInfo = "DutResult is NULL";
+			break;
+
+		case Syn_ExceptionCode::Syn_DutNull:
+			osErrorInfo = "Dut is NULL";
+			break;
+
+		case Syn_ExceptionCode::Syn_DutCtrlNull:
+			osErrorInfo = "DutCtrl is NULL";
+			break;
+
+		case Syn_ExceptionCode::Syn_DutPatchError:
+			osErrorInfo = "DutPatch is NULL";
+			break;
+
+		case Syn_ExceptionCode::Syn_ConfigError:
+			osErrorInfo = "Config is Error";
+			break;
+
+		case Syn_ExceptionCode::Syn_TestStepConfigError:
+			osErrorInfo = "TestStep Config is Error";
+			break;
+
+		case Syn_ExceptionCode::Syn_TestStepNotExecuted:
+			osErrorInfo = "TestStep NotExecuted Error";
+			break;
+
+		case Syn_ExceptionCode::Syn_SiteStateError:
+			osErrorInfo = "SiteState is Error";
+			break;
+
+		case Syn_ExceptionCode::Syn_SiteThread:
+			osErrorInfo = "SiteThread is Error";
+			break;
+
+		case Syn_ExceptionCode::Syn_ERR_GET_DEVICE_HANDLE_FAILED:
+			osErrorInfo = "Cann't get device handle";
+			break;
+
+		default:
+			osErrorInfo = "unknown error";
+	}
+}
+
+void FPS_TestExecutive::ClearSites()
+{
+	if (0 != _ListOfSitePtr.size())
+	{
+		for (size_t i = _ListOfSitePtr.size(); i >= 1; i--)
+		{
+			delete _ListOfSitePtr[i - 1];
+			_ListOfSitePtr[i - 1] = NULL;
+		}
+		_ListOfSitePtr.clear();
+	}
+}
+
 void FPS_TestExecutive::GetVersionForDutDump()
 {
 	int iSiteCurrentIndex = ui.comboBox->currentIndex();
@@ -758,7 +892,7 @@ void FPS_TestExecutive::GetVersionForDutDump()
 	uint32_t rc = pSelectedSite->Open();
 	if (rc != 0)
 	{
-		QMessageBox::information(this, QString("Error"), QString::number(rc,16).toUpper());
+		QMessageBox::information(this, QString("Error"), QString::number(rc, 16).toUpper());
 		return;
 	}
 
@@ -798,7 +932,7 @@ void FPS_TestExecutive::GetVersionForDutDump()
 
 	QDateTime timeValue = QDateTime::fromTime_t(pInfo->_getVerInfo.buildtime + 43200);
 	ui.textBrowser->append(QString("buildtime:") + timeValue.toString());
-	ui.textBrowser->append(QString("buildnum:") + QString::number(pInfo->_getVerInfo.buildnum,16).toUpper());
+	ui.textBrowser->append(QString("buildnum:") + QString::number(pInfo->_getVerInfo.buildnum, 16).toUpper());
 	ui.textBrowser->append(QString("vmajor:") + QString::number(pInfo->_getVerInfo.vmajor));
 	ui.textBrowser->append(QString("vminor:") + QString::number(pInfo->_getVerInfo.vminor));
 	ui.textBrowser->append(QString("target:") + QString::number(pInfo->_getVerInfo.target));
@@ -808,7 +942,7 @@ void FPS_TestExecutive::GetVersionForDutDump()
 	ui.textBrowser->append(QString("platform:") + QString::number(pInfo->_getVerInfo.platform));
 	ui.textBrowser->append(QString("patch:") + QString::number(pInfo->_getVerInfo.patch));
 	//ui.textBrowser->append(QString("serial_number:") + QString::number(pInfo->_getVerInfo.serial_number[0], 16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[1], 16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[2], 16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[3], 16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[4], 16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[5], 16));
-	ui.textBrowser->append(QString("serial_number:") + QString::fromLatin1(pInfo->_getVerInfo.sSerialNumber,12));
+	ui.textBrowser->append(QString("serial_number:") + QString::fromLatin1(pInfo->_getVerInfo.sSerialNumber, 12));
 	ui.textBrowser->append(QString("security:") + QString::number(pInfo->_getVerInfo.security[0]) + QString("|") + QString::number(pInfo->_getVerInfo.security[1]));
 	ui.textBrowser->append(QString("patchsig:") + QString::number(pInfo->_getVerInfo.patchsig));
 	ui.textBrowser->append(QString("iface:") + QString::number(pInfo->_getVerInfo.iface));
@@ -976,20 +1110,68 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 	ui.textBrowser->append(QString("=============="));
 	for (std::map<std::string, std::string>::iterator iter = oDutTestResult->_mapMainSectorInfo.begin(); iter != oDutTestResult->_mapMainSectorInfo.end(); iter++)
 	{
-		QString qsTempValue = QString::fromStdString(iter->first) + ":" + QString::fromStdString(iter->second)+"\n";
+		QString qsTempValue = QString::fromStdString(iter->first) + ":" + QString::fromStdString(iter->second) + "\n";
 		ui.textBrowser->append(qsTempValue);
 	}
 
 	pSelectedSite->Close();
 }
 
-void FPS_TestExecutive::Display(uint8_t* pDst, int DstSize)
+void FPS_TestExecutive::Invalidate()
 {
-	QString s = "";
-	for (int i = 0; i<DstSize; i++){
-		s += QString::number(pDst[i], 16) + ",";
+	int iSiteCurrentIndex = ui.comboBox->currentIndex();
+	if (iSiteCurrentIndex<0)
+	{
+		cout << "Error:FPS_TestExecutive - iSiteCurrentIndex is less than 0!" << endl;
+		return;
 	}
-	//ui.textBrowser->append(s);
+
+	size_t iSiteCounts = _ListOfSitePtr.size();
+	if (0 == iSiteCounts)
+	{
+		cout << "Error:FPS_TestExecutive - iSiteCounts is 0!" << endl;
+		return;
+	}
+
+	if (iSiteCurrentIndex > iSiteCounts)
+	{
+		cout << "Error:FPS_TestExecutive - iSiteCounts is less than iSiteCurrentIndex!" << endl;
+		return;
+	}
+
+	Syn_Site *pSelectedSite = _ListOfSitePtr[iSiteCurrentIndex];
+	if (NULL == pSelectedSite)
+	{
+		cout << "Error:FPS_TestExecutive - pSelectedSite is NULL!" << endl;
+		return;
+	}
+
+	QMessageBox::StandardButton ret = QMessageBox::warning(this, QString("Warning"), QString("The Selected Sensor will be invalidate,click \"Yes\" to continue,\"No\" to exit!"), QMessageBox::Yes | QMessageBox::No);
+	if (QMessageBox::Yes != ret)
+	{
+		return;
+	}
+
+	uint32_t rc = pSelectedSite->Open();
+	if (rc != 0)
+	{
+		QMessageBox::information(this, QString("Error"), QString::number(rc, 16).toUpper());
+		return;
+	}
+
+	Syn_DutTestResult *oDutTestResult = NULL;
+	rc = pSelectedSite->ExecuteTestStep("Invalidate");
+	pSelectedSite->GetTestResult(oDutTestResult);
+	if (rc != 0)
+	{
+		QMessageBox::information(this, QString("Error"), QString("Invalidate is failed,error code is ") + QString::number(rc, 16).toUpper());
+		return;
+	}
+
+	pSelectedSite->Close();
+
+	//OTP Check
+	ReadOTPForDutDump();
 }
 
 void FPS_TestExecutive::Display(uint8_t* pDst, unsigned int StartPos, unsigned int EndPos)
@@ -1006,135 +1188,4 @@ void FPS_TestExecutive::Display(uint8_t* pDst, unsigned int StartPos, unsigned i
 		s += (QString::number(pDst[i], 16)).toUpper() + ",";
 	}
 	ui.textBrowser->append(s);
-}
-
-void FPS_TestExecutive::ManageButtonStatus(int iFlag)
-{
-	if (_FinishedSiteCounts == _ListOfSitePtr.size())
-	{
-		bool bAllFailed(true);
-		for (size_t i = 1; i <= _ListOfSitePtr.size(); i++)
-		{
-			Syn_Site::SiteState oTmpState;
-			_ListOfSitePtr[i - 1]->GetState(oTmpState);
-			if (Syn_Site::Error != oTmpState)
-			{
-				bAllFailed = false;
-				break;
-			}
-		}
-
-		if (bAllFailed)
-		{
-
-			//if all failed,reset it to init
-			ui.pushButtonRun->setText(QString("Run"));
-			ui.pushButtonRun->setDisabled(false);
-			ui.actionBinCodes->setDisabled(false);
-			ui.actionLocalSetttings->setDisabled(false);
-		}
-		else
-		{
-			if (1 == iFlag)
-			{
-				ui.pushButtonRun->setText(QString("Continue"));
-				ui.pushButtonRun->setDisabled(false);
-
-				//DisplayImage In time
-				for (size_t i = 1; i <= _ListOfSitePtr.size(); i++)
-				{
-					if (!_SynMiniThreadArray[i - 1].isRunning())
-					{
-						_SynMiniThreadArray[i - 1].SetStopTag(false);
-						_SynMiniThreadArray[i - 1].start();
-					}
-				}
-			}
-			else if (2 == iFlag)
-			{
-				ui.pushButtonRun->setText(QString("Run"));
-				ui.pushButtonRun->setDisabled(false);
-				ui.actionBinCodes->setDisabled(false);
-				ui.actionLocalSetttings->setDisabled(false);
-			}
-			else
-			{
-				ui.pushButtonRun->setText(QString("Run"));
-				ui.pushButtonRun->setDisabled(false);
-				ui.actionBinCodes->setDisabled(false);
-				ui.actionLocalSetttings->setDisabled(false);
-			}
-		}
-		
-	}
-}
-
-void FPS_TestExecutive::GetErrorInfo(uint32_t iErrorCode,std::string &osErrorInfo)
-{
-	switch (iErrorCode)
-	{
-		case Syn_ExceptionCode::Syn_UnknownError:
-			osErrorInfo = "Unknown Error";
-			break;
-
-		case Syn_ExceptionCode::Syn_DutInfoNull:
-			osErrorInfo = "DutInfo is NULL";
-			break;
-
-		case Syn_ExceptionCode::Syn_DutResultNull:
-			osErrorInfo = "DutResult is NULL";
-			break;
-
-		case Syn_ExceptionCode::Syn_DutNull:
-			osErrorInfo = "Dut is NULL";
-			break;
-
-		case Syn_ExceptionCode::Syn_DutCtrlNull:
-			osErrorInfo = "DutCtrl is NULL";
-			break;
-
-		case Syn_ExceptionCode::Syn_DutPatchError:
-			osErrorInfo = "DutPatch is NULL";
-			break;
-
-		case Syn_ExceptionCode::Syn_ConfigError:
-			osErrorInfo = "Config is Error";
-			break;
-
-		case Syn_ExceptionCode::Syn_TestStepConfigError:
-			osErrorInfo = "TestStep Config is Error";
-			break;
-
-		case Syn_ExceptionCode::Syn_TestStepNotExecuted:
-			osErrorInfo = "TestStep NotExecuted Error";
-			break;
-
-		case Syn_ExceptionCode::Syn_SiteStateError:
-			osErrorInfo = "SiteState is Error";
-			break;
-
-		case Syn_ExceptionCode::Syn_SiteThread:
-			osErrorInfo = "SiteThread is Error";
-			break;
-
-		case Syn_ExceptionCode::Syn_ERR_GET_DEVICE_HANDLE_FAILED:
-			osErrorInfo = "Cann't get device handle";
-			break;
-
-		default:
-			osErrorInfo = "unknown error";
-	}
-}
-
-void FPS_TestExecutive::ClearSites()
-{
-	if (0 != _ListOfSitePtr.size())
-	{
-		for (size_t i = _ListOfSitePtr.size(); i >= 1; i--)
-		{
-			delete _ListOfSitePtr[i - 1];
-			_ListOfSitePtr[i - 1] = NULL;
-		}
-		_ListOfSitePtr.clear();
-	}
 }

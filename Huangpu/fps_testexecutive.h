@@ -67,19 +67,19 @@ public Q_SLOTS:
 	void ReceiveTestResults(unsigned int iSiteNumber);
 
 	void DisplayImageInTime(unsigned int iSiteNumber);
-	
-	//Debug
-	void GetVersionForDutDump();
-	void ReadOTPForDutDump();
 
 	void ManageButtonStatus(int iFlag);
 
 	void GetErrorInfo(uint32_t iErrorCode, std::string &osErrorInfo);
+	
+	//Debug
+	void GetVersionForDutDump();
+	void ReadOTPForDutDump();
+	void Invalidate();
 
 private:
 
 	//private function
-	void Display(uint8_t* pDst, int DstSize);
 	void Display(uint8_t* pDst, unsigned int StartPos, unsigned int EndPos);
 	void ClearSites();
 

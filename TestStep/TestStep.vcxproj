@@ -109,6 +109,7 @@
     <ClInclude Include="Ts_HuaweiImageQualityTest.h" />
     <ClInclude Include="Ts_Imperfections.h" />
     <ClInclude Include="Ts_InitializationStep.h" />
+    <ClInclude Include="Ts_Invalidate.h" />
     <ClInclude Include="Ts_LaplacianTest.h" />
     <ClInclude Include="Ts_OpensShortsTest.h" />
     <ClInclude Include="Ts_OTPCheck.h" />
@@ -150,6 +151,7 @@
     <ClCompile Include="Ts_HuaweiImageQualityTest.cpp" />
     <ClCompile Include="Ts_Imperfections.cpp" />
     <ClCompile Include="Ts_InitializationStep.cpp" />
+    <ClCompile Include="Ts_Invalidate.cpp" />
     <ClCompile Include="Ts_LaplacianTest.cpp" />
     <ClCompile Include="Ts_OpensShortsTest.cpp" />
     <ClCompile Include="Ts_OTPCheck.cpp" />

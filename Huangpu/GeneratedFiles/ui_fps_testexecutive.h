@@ -58,6 +58,7 @@ public:
     QComboBox *comboBox;
     QPushButton *pushButtonGetVer;
     QPushButton *pushButtonReadOTP;
+    QPushButton *pushButtonInvalidate;
     QTextBrowser *textBrowser;
     QLabel *OTPResultLabel;
     QToolBar *mainToolBar;
@@ -173,6 +174,11 @@ public:
 
         horizontalLayout_2->addWidget(pushButtonReadOTP);
 
+        pushButtonInvalidate = new QPushButton(tab_2);
+        pushButtonInvalidate->setObjectName(QStringLiteral("pushButtonInvalidate"));
+
+        horizontalLayout_2->addWidget(pushButtonInvalidate);
+
 
         verticalLayout->addLayout(horizontalLayout_2);
 
@@ -196,7 +202,7 @@ public:
         FPS_TestExecutiveClass->addToolBar(Qt::BottomToolBarArea, mainToolBar);
         menuBar = new QMenuBar(FPS_TestExecutiveClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 664, 23));
+        menuBar->setGeometry(QRect(0, 0, 664, 21));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
         menuOption = new QMenu(menuBar);
@@ -254,6 +260,7 @@ public:
         tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("FPS_TestExecutiveClass", "Main", 0));
         pushButtonGetVer->setText(QApplication::translate("FPS_TestExecutiveClass", "GetVer", 0));
         pushButtonReadOTP->setText(QApplication::translate("FPS_TestExecutiveClass", "ReadOTP", 0));
+        pushButtonInvalidate->setText(QApplication::translate("FPS_TestExecutiveClass", "Invalidate", 0));
         OTPResultLabel->setText(QApplication::translate("FPS_TestExecutiveClass", "NULL", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("FPS_TestExecutiveClass", "OTPDump", 0));
         menuFile->setTitle(QApplication::translate("FPS_TestExecutiveClass", "File", 0));
