@@ -59,7 +59,7 @@ void Ts_WaitStimulus::Execute()
 	GetFingerprintImage(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults, pFrame, numRows, numCols);
 
 	//image decode
-	ImageDecode(&(_pSyn_Dut->_pSyn_DutTestResult->_WaitStimulusResults._ImagepFrame), pFrame, numRows, numCols, 1);
+	ImageDecode(&(_pSyn_Dut->_pSyn_DutTestInfo->_WaitStimulusInfo._ImagepFrame), pFrame, numRows, numCols, 1);
 
 	//Trim
 	int	numMaxColsWithStim = numCols - _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimRightWithStim;
@@ -81,8 +81,8 @@ void Ts_WaitStimulus::Execute()
 		for (int j = numMinCols + HEADER; j<numMaxCols; j++)
 		{
 			int iTempValue(0);
-			iTempValue = _pSyn_Dut->_pSyn_DutTestResult->_WaitStimulusResults._ImagepFrame.arr[i][j];
-			_pSyn_Dut->_pSyn_DutTestResult->_WaitStimulusResults._ImagepFrame.arr[i - numMinRows][j - numMinCols - HEADER] = iTempValue;
+			iTempValue = _pSyn_Dut->_pSyn_DutTestInfo->_WaitStimulusInfo._ImagepFrame.arr[i][j];
+			_pSyn_Dut->_pSyn_DutTestInfo->_WaitStimulusInfo._ImagepFrame.arr[i - numMinRows][j - numMinCols - HEADER] = iTempValue;
 		}
 	}
 
@@ -92,8 +92,8 @@ void Ts_WaitStimulus::Execute()
 
 void Ts_WaitStimulus::ProcessData()
 {
-	_pSyn_Dut->_pSyn_DutTestResult->_WaitStimulusResults.iRealRowNumber = _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealRowNumber;
-	_pSyn_Dut->_pSyn_DutTestResult->_WaitStimulusResults.iRealColumnNumber = _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealColumnNumber;
+	_pSyn_Dut->_pSyn_DutTestInfo->_WaitStimulusInfo.iRealRowNumber = _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealRowNumber;
+	_pSyn_Dut->_pSyn_DutTestInfo->_WaitStimulusInfo.iRealColumnNumber = _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealColumnNumber;
 }
 
 void Ts_WaitStimulus::CleanUp()

@@ -63,17 +63,19 @@ protected:
 		}
 		if (!find)
 			return;
-		
-		do
+
+		Syn_DutTestResult *pResults = NULL;
+		while (!_stopped)
 		{
 			Syn_Site::SiteState oState;
 			_pSyn_Site->GetState(oState);
 			if (Syn_Site::Error != oState)
 			{
 				rc = _pSyn_Site->ExecuteTestStep(listOfTestStepName[iWaitStimulusPosition]);
+				_pSyn_Site->GetTestResult(pResults);
 				emit sendImageInTime(iSiteNumber);
 			}
-		} while (!_stopped);
+		}
 	}
 
 private:

@@ -684,13 +684,13 @@ void FPS_TestExecutive::ReceiveTestResults(unsigned int iSiteNumber)
 void FPS_TestExecutive::DisplayImageInTime(unsigned int iSiteNumber)
 {
 	unsigned int iPos = iSiteNumber - 1;
-	Syn_DutTestResult *pResults = NULL;
-	_ListOfSitePtr[iPos]->GetTestResult(pResults);
-	if (NULL == pResults)
+	Syn_DutTestInfo *pInfo = NULL;
+	_ListOfSitePtr[iPos]->GetTestInfo(pInfo);
+	if (NULL == pInfo)
 		return;
 
-	int rowNumber = pResults->_WaitStimulusResults.iRealRowNumber;
-	int columnNumber = pResults->_WaitStimulusResults.iRealColumnNumber;
+	int rowNumber = pInfo->_WaitStimulusInfo.iRealRowNumber;
+	int columnNumber = pInfo->_WaitStimulusInfo.iRealColumnNumber;
 
 	QVector<QRgb> vcolorTable;
 	for (int i = 0; i < 256; i++)
@@ -704,7 +704,7 @@ void FPS_TestExecutive::DisplayImageInTime(unsigned int iSiteNumber)
 	{
 		for (int n = 0; n < columnNumber; n++)
 		{
-			data[k] = (pResults->_WaitStimulusResults)._ImagepFrame.arr[m][n];
+			data[k] = (pInfo->_WaitStimulusInfo)._ImagepFrame.arr[m][n];
 			k++;
 		}
 	}
