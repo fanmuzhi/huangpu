@@ -47,46 +47,27 @@ void Ts_Invalidate::SetUp()
 
 void Ts_Invalidate::Execute()
 {
-	//product ID
-	Invalidate(EXT_TAG_PRODUCT_ID);
+	uint32_t tag_array[NUM_EXT_TAGS] = {EXT_TAG_PRODUCT_ID,
+										EXT_TAG_LNA,
+										EXT_TAG_SNR,
+										EXT_TAG_PGA_OOPR,
+										EXT_TAG_FlexId,
+										EXT_TAG_WOF_BOT,
+										EXT_TAG_DutTempAdc,
+										EXT_TAG_WOF_TOP,
+										EXT_TAG_PGA_OOPP,
+										EXT_TAG_SCM_WOF_BOT,
+										EXT_TAG_SCM_WOF_TOP,
+										EXT_TAG_PART_NUMBERS};
 
-	//LNA
-	Invalidate(EXT_TAG_LNA);
-
-	//SNR
-	Invalidate(EXT_TAG_SNR);
-
-	//PGA one offset per row
-	Invalidate(EXT_TAG_PGA_OOPR);
-
-	//Flex ID
-	Invalidate(EXT_TAG_FlexId);
-	
-	//WOF Bot values
-	Invalidate(EXT_TAG_WOF_BOT);
-	
-	//DUT temperature
-	Invalidate(EXT_TAG_DutTempAdc);
-	
-	//WOF Top values
-	Invalidate(EXT_TAG_WOF_TOP);
-	
-	//PGA one offset per pixel
-	Invalidate(EXT_TAG_PGA_OOPP);
-	
-	//scm wof bottom
-	Invalidate(EXT_TAG_SCM_WOF_BOT);
-	
-	//scm wof top
-	Invalidate(EXT_TAG_SCM_WOF_TOP);
-	
-	//Part Numbers - Config and MT
-	Invalidate(EXT_TAG_PART_NUMBERS);
+	for (int i = 0; i < NUM_EXT_TAGS; i++)
+	{
+		Invalidate(tag_array[i]);
+	}
 }
 
 void Ts_Invalidate::ProcessData()
 {
-
 }
 
 void Ts_Invalidate::CleanUp()
