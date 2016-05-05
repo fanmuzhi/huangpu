@@ -9,8 +9,6 @@
 //std
 #include <string>
 
-//Q_DECLARE_METATYPE(Syn_SiteInfo)
-
 class Syn_Thread : public QThread
 {
 	Q_OBJECT
@@ -25,15 +23,11 @@ public:
 
 	void SetFlag(int iFlag){ _iFlag = iFlag; };
 
-	//bool GetFinished(){ return _bFinished; };
-
 signals:
 
-	void send(unsigned int iSiteNumber);
+	void send(unsigned int iSiteNumber, const Syn_DutTestResult *pDutResult);
 
 	void send(unsigned int iSiteNumber, const QString strTestStepName, const QString strPassResults);
-
-	void sendImageInTime(unsigned int iSiteNumber);
 
 protected:
 
@@ -46,9 +40,6 @@ private:
 	Syn_Site *_pSyn_Site;
 
 	int _iFlag;
-
-	//bool _bFinished;
-	//std::string _strPreTestStepName;
 };
 
 #endif // SYN_THREAD_H

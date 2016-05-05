@@ -29,9 +29,9 @@ void Ts_WaitStimulus::SetUp()
 
 	if (!_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted)
 	{
-		ex.SetError(Syn_ExceptionCode::Syn_DutNull);
-		ex.SetDescription("Calibrate has not executed!");
-		throw ex;
+		//ex.SetError(Syn_ExceptionCode::Syn_DutNull);
+		//ex.SetDescription("Calibrate has not executed!");
+		//throw ex;
 		return;
 	}
 
@@ -52,6 +52,11 @@ void Ts_WaitStimulus::SetUp()
 
 void Ts_WaitStimulus::Execute()
 {
+	if (!_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted)
+	{
+		return;
+	}
+
 	uint16_t numRows = _pSyn_Dut->_RowNumber;
 	uint16_t numCols = _pSyn_Dut->_ColumnNumber;
 
@@ -92,6 +97,11 @@ void Ts_WaitStimulus::Execute()
 
 void Ts_WaitStimulus::ProcessData()
 {
+	if (!_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted)
+	{
+		return;
+	}
+
 	_pSyn_Dut->_pSyn_DutTestInfo->_WaitStimulusInfo.iRealRowNumber = _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealRowNumber;
 	_pSyn_Dut->_pSyn_DutTestInfo->_WaitStimulusInfo.iRealColumnNumber = _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealColumnNumber;
 }

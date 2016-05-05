@@ -64,7 +64,7 @@ public Q_SLOTS:
 
 	void ReceiveTestStep(unsigned int iSiteNumber, const QString strTestStepName, const QString strPassResults);
 
-	void ReceiveTestResults(unsigned int iSiteNumber);
+	void ReceiveTestResults(unsigned int iSiteNumber, const Syn_DutTestResult *pDutResult);
 
 	void DisplayImageInTime(unsigned int iSiteNumber);
 

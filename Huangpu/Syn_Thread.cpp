@@ -6,8 +6,6 @@ Syn_Thread::Syn_Thread()
 : QThread()
 , _stopped(true)
 , _pSyn_Site(NULL)
-//, _bFinished(true)
-//, _strPreTestStepName("")
 {
 }
 
@@ -40,43 +38,32 @@ void Syn_Thread::run()
 		}
 	}
 
+	Syn_DutTestResult *pTestResult = NULL;
 	if (1 == _iFlag)
 	{
-		Syn_DutTestResult *pTestResult = NULL;
-
 		rc = _pSyn_Site->Open();
 		if (rc == 0)
 		{
 			for (size_t t = 0; t < iWaitStimulusPosition; t++)
 			{
-				if (0!=t)
-					_pSyn_Site->GetTestResult(pTestResult);
-
 				rc = _pSyn_Site->ExecuteTestStep(listOfTestStepName[t]);
-				if (Syn_ExceptionCode::Syn_OK != rc)
+				_pSyn_Site->GetTestResult(pTestResult);
+				if (Syn_ExceptionCode::Syn_OK != rc || NULL == pTestResult)
 				{
 					emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), "Failed");
-					emit send(iSiteNumber);
+					emit send(iSiteNumber, pTestResult);
 					return;
 				}
 				else
 				{
-					if (0==t)
-					{
-						emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), "Pass");
-					}
-					else
-					{
-						emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), QString::fromStdString(pTestResult->_mapTestPassInfo[listOfTestStepName[t]]));
-					}
+					emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), QString::fromStdString(pTestResult->_mapTestPassInfo[listOfTestStepName[t]]));
 				}
 			}
-			emit send(iSiteNumber);
+			emit send(iSiteNumber, pTestResult);
 		}
 	}
 	else if (2 == _iFlag)
 	{
-		Syn_DutTestResult *pTestResult = NULL;
 		if (rc == 0)
 		{
 			Syn_Site::SiteState oState;
@@ -88,67 +75,43 @@ void Syn_Thread::run()
 
 			for (size_t t = iWaitStimulusPosition+1; t < listOfTestStepName.size(); t++)
 			{
-
-				if (t != (iWaitStimulusPosition+1))
-					_pSyn_Site->GetTestResult(pTestResult);
-					
 				rc = _pSyn_Site->ExecuteTestStep(listOfTestStepName[t]);
-				if (Syn_ExceptionCode::Syn_OK != rc)
+				_pSyn_Site->GetTestResult(pTestResult);
+				if (Syn_ExceptionCode::Syn_OK != rc || NULL == pTestResult)
 				{
 					emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), "Failed");
-					emit send(iSiteNumber);
+					emit send(iSiteNumber, pTestResult);
 					return;
 				}
 				else
 				{
-					if (t == iWaitStimulusPosition+1)
-					{
-						emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), "Pass");
-					}
-					else
-					{
-						emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), QString::fromStdString(pTestResult->_mapTestPassInfo[listOfTestStepName[t]]));
-					}
+					emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), QString::fromStdString(pTestResult->_mapTestPassInfo[listOfTestStepName[t]]));
 				}
-
 			}
-
-			emit send(iSiteNumber);
+			emit send(iSiteNumber, pTestResult);
 		}
 	}
 	else
 	{
-		Syn_DutTestResult *pTestResult = NULL;
-
 		rc = _pSyn_Site->Open();
 		if (rc == 0)
 		{
 			for (size_t t = 0; t < listOfTestStepName.size(); t++)
 			{
-				if (0 != t)
-					_pSyn_Site->GetTestResult(pTestResult);
-
 				rc = _pSyn_Site->ExecuteTestStep(listOfTestStepName[t]);
-				if (Syn_ExceptionCode::Syn_OK != rc)
+				_pSyn_Site->GetTestResult(pTestResult);
+				if (Syn_ExceptionCode::Syn_OK != rc || NULL == pTestResult)
 				{
 					emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), "Failed");
-					emit send(iSiteNumber);
+					emit send(iSiteNumber, pTestResult);
 					return;
 				}
 				else
 				{
-					if (0 == t)
-					{
-						emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), "Pass");
-					}
-					else
-					{
-						emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), QString::fromStdString(pTestResult->_mapTestPassInfo[listOfTestStepName[t]]));
-					}
+					emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), QString::fromStdString(pTestResult->_mapTestPassInfo[listOfTestStepName[t]]));
 				}
 			}
-
-			emit send(iSiteNumber);
+			emit send(iSiteNumber, pTestResult);
 		}
 	}
 

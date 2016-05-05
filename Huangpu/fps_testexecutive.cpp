@@ -42,8 +42,8 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 		QObject::connect(&(_SynMiniThreadArray[i - 1]), SIGNAL(sendImageInTime(unsigned int)), this, SLOT(DisplayImageInTime(unsigned int)));
 		QObject::connect(&(_SynThreadArray[i - 1]), SIGNAL(send(unsigned int, const QString, const QString)), 
 			this, SLOT(ReceiveTestStep(unsigned int, const QString, const QString)), Qt::ConnectionType(Qt::QueuedConnection));
-		QObject::connect(&(_SynThreadArray[i - 1]), SIGNAL(send(unsigned int)),
-			this, SLOT(ReceiveTestResults(unsigned int)), Qt::ConnectionType(Qt::QueuedConnection));
+		QObject::connect(&(_SynThreadArray[i - 1]), SIGNAL(send(unsigned int, const Syn_DutTestResult *)),
+			this, SLOT(ReceiveTestResults(unsigned int, const Syn_DutTestResult *)), Qt::ConnectionType(Qt::QueuedConnection));
 	}
 
 	//BinCodes Dislpay
@@ -81,7 +81,7 @@ void FPS_TestExecutive::Initialize()
 	unsigned int iLocalSettingSiteCounts = _LocalSettingsInfo._listOfSiteSettings.size();
 	if (0 == iLocalSettingSiteCounts)
 	{
-		QMessageBox::critical(this, QString("Error"), QString("Local Settings' Site info is NULL,check it please!"));
+		QMessageBox::critical(this, QString("Error"), QString("Can't retrieve Site info from LocalSettings,check it please!!"));
 		return;
 	}
 	
@@ -127,7 +127,7 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 	unsigned int iLocalSettingsSiteCounts = LocalSettingsInfo._listOfSiteSettings.size();
 	if (0 == iLocalSettingsSiteCounts)
 	{
-		QMessageBox::critical(this, QString("Error"), QString("Can't retrieve Site info in LocalSettings,check it please!"));
+		QMessageBox::critical(this, QString("Error"), QString("Can't get Site info in LocalSettings,check it please!"));
 		return false;
 	}
 
@@ -437,7 +437,7 @@ void FPS_TestExecutive::ReceiveTestStep(unsigned int iSiteNumber, const QString 
 	}
 }
 
-void FPS_TestExecutive::ReceiveTestResults(unsigned int iSiteNumber)
+void FPS_TestExecutive::ReceiveTestResults(unsigned int iSiteNumber,const Syn_DutTestResult *pDutResult)
 {
 	unsigned int iPos = iSiteNumber - 1;
 
@@ -491,11 +491,9 @@ void FPS_TestExecutive::ReceiveTestResults(unsigned int iSiteNumber)
 		return;
 	}
 
-	Syn_DutTestResult *pCurrentDutTestResult = NULL;
 	Syn_SysConfig CurrentSysConfig;
-	_ListOfSitePtr[iPos]->GetTestResult(pCurrentDutTestResult);
 	_ListOfSitePtr[iPos]->GetSysConfig(CurrentSysConfig);
-	if (NULL == pCurrentDutTestResult)
+	if (NULL == pDutResult)
 		return;
 
 	int rowNumber = CurrentSysConfig._uiNumRows;
@@ -511,16 +509,16 @@ void FPS_TestExecutive::ReceiveTestResults(unsigned int iSiteNumber)
 	unsigned int iRowNumber(0);
 	if (1 == iFlag)
 	{
-		rowNumber = pCurrentDutTestResult->_acqImgNoFingerResult.iRealRowNumber;
-		columnNumber = pCurrentDutTestResult->_acqImgNoFingerResult.iRealColumnNumber;
+		rowNumber = pDutResult->_acqImgNoFingerResult.iRealRowNumber;
+		columnNumber = pDutResult->_acqImgNoFingerResult.iRealColumnNumber;
 		data.resize((rowNumber)*(columnNumber));
 		
 		for (int m = 0; m < rowNumber; m++)
 		{
 			for (int n = 0; n < columnNumber; n++)
 			{
-				data[m*(columnNumber)+n] = (pCurrentDutTestResult->_acqImgNoFingerResult).arr_ImageFPSFrame.arr[m][n];
-				//data[m*(columnNumber)+n] = (pCurrentDutTestResult->_acqImgNoFingerResult.arr_nofinger[0]).arr[m][n];
+				data[m*(columnNumber)+n] = (pDutResult->_acqImgNoFingerResult).arr_ImageFPSFrame.arr[m][n];
+				//data[m*(columnNumber)+n] = (pDutResult->_acqImgNoFingerResult.arr_nofinger[0]).arr[m][n];
 			}
 		}
 
@@ -528,21 +526,21 @@ void FPS_TestExecutive::ReceiveTestResults(unsigned int iSiteNumber)
 	}
 	else if (2 == iFlag)
 	{
-		rowNumber = pCurrentDutTestResult->_acqImgFingerResult.iRealRowNumber;
-		columnNumber = pCurrentDutTestResult->_acqImgFingerResult.iRealColumnNumber;
+		rowNumber = pDutResult->_acqImgFingerResult.iRealRowNumber;
+		columnNumber = pDutResult->_acqImgFingerResult.iRealColumnNumber;
 		data.resize((rowNumber)*(columnNumber));
 
 		for (int m = 0; m < rowNumber; m++)
 		{
 			for (int n = 0; n < columnNumber; n++)
 			{
-				data[m*(columnNumber)+n] = (pCurrentDutTestResult->_acqImgFingerResult).arr_ImageFPSFrame.arr[m][n];
+				data[m*(columnNumber)+n] = (pDutResult->_acqImgFingerResult).arr_ImageFPSFrame.arr[m][n];
 			}
 		}
 
 		iRowNumber = 7;
 
-		QString strSNRValue = QString::number(pCurrentDutTestResult->_snrResults.SNR[6]);
+		QString strSNRValue = QString::number(pDutResult->_snrResults.SNR[6]);
 		
 		//SNR
 		QTableWidgetItem *itemSNR = new QTableWidgetItem(strSNRValue);
@@ -551,15 +549,15 @@ void FPS_TestExecutive::ReceiveTestResults(unsigned int iSiteNumber)
 
 		//BinCode
 		QString qsBinCodes("");
-		for (size_t i = 1; i <= pCurrentDutTestResult->_binCodes.size(); i++)
+		for (size_t i = 1; i <= pDutResult->_binCodes.size(); i++)
 		{
 			if (1 == i)
 			{
-				qsBinCodes += QString::fromStdString(pCurrentDutTestResult->_binCodes[i - 1]);
+				qsBinCodes += QString::fromStdString(pDutResult->_binCodes[i - 1]);
 			}
 			else
 			{
-				qsBinCodes = qsBinCodes + QString(" , ") + QString::fromStdString(pCurrentDutTestResult->_binCodes[i - 1]);
+				qsBinCodes = qsBinCodes + QString(" , ") + QString::fromStdString(pDutResult->_binCodes[i - 1]);
 			}
 		}
 		QTableWidgetItem *itemBinCode = new QTableWidgetItem(qsBinCodes);
@@ -568,9 +566,9 @@ void FPS_TestExecutive::ReceiveTestResults(unsigned int iSiteNumber)
 
 		//TotalResults
 		QString strTotalResults("");
-		if (1 == pCurrentDutTestResult->_binCodes.size())
+		if (1 == pDutResult->_binCodes.size())
 		{
-			if (Syn_BinCodes::m_sPass == pCurrentDutTestResult->_binCodes[0])
+			if (Syn_BinCodes::m_sPass == pDutResult->_binCodes[0])
 			{
 				strTotalResults = "Pass";
 			}
@@ -599,15 +597,15 @@ void FPS_TestExecutive::ReceiveTestResults(unsigned int iSiteNumber)
 	{
 		//BinCode
 		QString qsBinCodes("");
-		for (size_t i = 1; i <= pCurrentDutTestResult->_binCodes.size(); i++)
+		for (size_t i = 1; i <= pDutResult->_binCodes.size(); i++)
 		{
 			if (1 == i)
 			{
-				qsBinCodes += QString::fromStdString(pCurrentDutTestResult->_binCodes[i - 1]);
+				qsBinCodes += QString::fromStdString(pDutResult->_binCodes[i - 1]);
 			}
 			else
 			{
-				qsBinCodes = qsBinCodes + QString(" , ") + QString::fromStdString(pCurrentDutTestResult->_binCodes[i - 1]);
+				qsBinCodes = qsBinCodes + QString(" , ") + QString::fromStdString(pDutResult->_binCodes[i - 1]);
 			}
 		}
 		QTableWidgetItem *itemBinCode = new QTableWidgetItem(qsBinCodes);
@@ -616,9 +614,9 @@ void FPS_TestExecutive::ReceiveTestResults(unsigned int iSiteNumber)
 
 		//TotalResults
 		QString strTotalResults("");
-		if (1 == pCurrentDutTestResult->_binCodes.size())
+		if (1 == pDutResult->_binCodes.size())
 		{
-			if (Syn_BinCodes::m_sPass == pCurrentDutTestResult->_binCodes[0])
+			if (Syn_BinCodes::m_sPass == pDutResult->_binCodes[0])
 			{
 				strTotalResults = "Pass";
 			}
