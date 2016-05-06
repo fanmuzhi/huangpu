@@ -20,7 +20,7 @@ public Q_SLOTS:
 
 signals:
 
-	void sendPasswordInfo(bool Pass);
+	void sendPass();
 
 private:
 	Ui::Syn_DebugModeDlg *ui;

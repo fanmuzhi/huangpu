@@ -1216,17 +1216,13 @@ void FPS_TestExecutive::CreateDebugModeDlg()
 	pSyn_DebugModeDlg->show();
 	pSyn_DebugModeDlg->setAttribute(Qt::WA_DeleteOnClose);
 
-	QObject::connect(pSyn_DebugModeDlg, SIGNAL(sendPasswordInfo(bool)), this, SLOT(StartDebugMode(bool)));
+	QObject::connect(pSyn_DebugModeDlg, SIGNAL(sendPass()), this, SLOT(StartDebugMode()));
 }
 
-void FPS_TestExecutive::StartDebugMode(bool PassResult)
+void FPS_TestExecutive::StartDebugMode()
 {
-	if (PassResult)
+	if (-1 == ui.tabWidget->indexOf(ui.tab_2))
 	{
-		if (-1 == ui.tabWidget->indexOf(ui.tab_2))
-		{
-			ui.tabWidget->addTab(ui.tab_2, "Engineer Mode");
-		}
-	}
-	
+		ui.tabWidget->addTab(ui.tab_2, "Engineer Mode");
+	}	
 }

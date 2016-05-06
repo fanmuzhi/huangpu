@@ -79,7 +79,7 @@ public Q_SLOTS:
 	void Invalidate();
 
 	void CreateDebugModeDlg();
-	void StartDebugMode(bool PassResult);
+	void StartDebugMode();
 
 private:
 

@@ -29,15 +29,14 @@ Syn_DebugModeDlg::~Syn_DebugModeDlg()
 void Syn_DebugModeDlg::OKPushButtonClick()
 {
 	QString qsPassword = ui->DebugModeLineEdit->text();
-	if (QString("BPDTest") == qsPassword)
+	if (QString("SYNABPDTest") == qsPassword)
 	{
-		emit sendPasswordInfo(true);
+		emit sendPass();
 		this->close();
 	}
 	else
 	{
 		QMessageBox::warning(this, QString("Warning"), QString("Password is wrong!"));
-		emit sendPasswordInfo(false);
 	}
 }
 
