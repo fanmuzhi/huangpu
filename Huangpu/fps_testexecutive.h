@@ -66,7 +66,7 @@ public Q_SLOTS:
 
 	void ReceiveTestResults(unsigned int iSiteNumber, const Syn_DutTestResult *pDutResult);
 
-	void DisplayImageInTime(unsigned int iSiteNumber);
+	void DisplayImageInTime(unsigned int iSiteNumber, const Syn_DutTestResult *pDutResult);
 
 	void ManageButtonStatus(int iFlag);
 

@@ -62,8 +62,6 @@ struct Syn_DutTestInfo
 	SpiOwnershipInfo		    _SpiOwnershipInfo;
 	OTPCheckInfo				_otpCheckInfo;
 	GetVerInfo					_getVerInfo;
-
-	Syn_WaitStimulusInfo		_WaitStimulusInfo;
 };
 
 struct Syn_DutTestResult
@@ -115,7 +113,7 @@ struct Syn_DutTestResult
 	SpiOwnershipResults			_SpiOwnershipResults;
 	OTPCheckResults				_otpCheckResult;
 
-	//Syn_WaitStimulusResults		_WaitStimulusResults;
+	Syn_WaitStimulusResults		_WaitStimulusResults;
 };
 
 class Syn_Dut
@@ -151,4 +149,6 @@ public:
 	uint16_t		_ColumnNumber;//NumCols
 
 	ProjectType		_eProjectType;
+
+	string			_sConfigFileName;
 };

@@ -32,7 +32,7 @@ public:
 
 signals:
 
-	void sendImageInTime(unsigned int iSiteNumber);
+	void sendImageInTime(unsigned int iSiteNumber, const Syn_DutTestResult *pDutResult);
 
 protected:
 
@@ -73,7 +73,7 @@ protected:
 			{
 				rc = _pSyn_Site->ExecuteTestStep(listOfTestStepName[iWaitStimulusPosition]);
 				_pSyn_Site->GetTestResult(pResults);
-				emit sendImageInTime(iSiteNumber);
+				emit sendImageInTime(iSiteNumber, pResults);
 			}
 		}
 	}

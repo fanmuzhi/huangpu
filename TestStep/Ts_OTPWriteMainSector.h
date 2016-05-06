@@ -19,6 +19,8 @@ public:
 
 	bool RegCheckBitSet();
 
+	bool GetMtAndConfigPartNumbers(MtAndConfigPnInfo* pInfo);
+
 private:
 	bool bBurnPGA_OOPP;
 };

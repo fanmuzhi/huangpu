@@ -59,7 +59,8 @@ void Ts_OTPWriteMainSector::Execute()
 	bool	bSuccess = true;
 	int		nNumCols = _pSyn_Dut->_ColumnNumber;
 	int		nLNA_count, nPGA_count, nSNR_count;
-	int		nFlexId_count, nWofBot_count, nWofTop_count, nDutTempAdc_count, nPGA_OOPP_count, nScmWofTop_count, nScmWofBot_count, nProductId_count;
+	int		nFlexId_count, nWofBot_count, nWofTop_count, nDutTempAdc_count, nPGA_OOPP_count, nScmWofTop_count, nScmWofBot_count, nProductId_count, nPartNumberId_count;
+	MtAndConfigPnInfo    partNumbers;
 
 	//nLNA_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nLNA_count;
 	//nPGA_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPGA_OOPR_count;
@@ -71,6 +72,7 @@ void Ts_OTPWriteMainSector::Execute()
 	//nPGA_OOPP_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPGA_OOPP_count;
 	//nScmWofBot_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nScmWofBot_count;
 	//nProductId_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nProductId_count;
+	nPartNumberId_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPartNumberId_count;
 
 	//Cablirate
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted)
@@ -227,6 +229,17 @@ void Ts_OTPWriteMainSector::Execute()
 			*((uint32_t*)(&arMS0[4])) = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nProductId;
 			BurnToOTP(EXT_TAG_PRODUCT_ID, arMS0, 8);
 			BurnToOTP(EXT_TAG_PRODUCT_ID, arMS0, 8);
+		}
+	}
+
+	//PART_NUMBERS
+	if (GetMtAndConfigPartNumbers(&partNumbers))
+	{
+		nPartNumberId_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PART_NUMBERS, arMS0, MS0_SIZE);
+		if (nPartNumberId_count == 0)
+		{
+			BurnToOTP(EXT_TAG_PART_NUMBERS, (uint8_t*)&partNumbers, sizeof(partNumbers));
+			BurnToOTP(EXT_TAG_PART_NUMBERS, (uint8_t*)&partNumbers, sizeof(partNumbers));
 		}
 	}
 
@@ -397,4 +410,54 @@ bool Ts_OTPWriteMainSector::RegCheckBitSet()
 	}
 	regCheckBit = (bootSector0[49] >> 4);	
 	return ((regCheckBit & 0x4)>>2) != 0;
+}
+
+bool Ts_OTPWriteMainSector::GetMtAndConfigPartNumbers(MtAndConfigPnInfo* pInfo)
+{
+	bool bIsPNValid = true;
+	string sConfigFileName = _pSyn_Dut->_sConfigFileName;
+
+	string sPartNumber("");
+	if (ProjectType::Viper1 == _pSyn_Dut->_eProjectType)
+	{
+		sPartNumber = "555-000551-01rE";
+	}
+	else if (ProjectType::Viper2 == _pSyn_Dut->_eProjectType)
+	{
+		sPartNumber = "555-000584-01r9";
+	}
+	else if (ProjectType::Metallica == _pSyn_Dut->_eProjectType)
+	{
+		sPartNumber = "555-000574-01r12";
+	}
+	else
+	{
+		sPartNumber = "Debug Version";
+	}
+
+	//Check for validity of Part Numbers
+	if (sConfigFileName.length() == 0)
+	{
+		bIsPNValid = false;
+	}
+	else
+	{
+		//Nullify the members of pInfo
+		memset(pInfo->mt_partnum, NULL, MAX_PART_NUMBER_LENGTH);
+		memset(pInfo->mt_config, NULL, MAX_PART_NUMBER_LENGTH);
+
+		//Copy config file name and MT part number to struct members
+		memcpy(pInfo->mt_partnum, sPartNumber.c_str(), MAX_PART_NUMBER_LENGTH - 1);//MT Part Number		
+		memcpy(pInfo->mt_config, sConfigFileName.c_str(), MAX_PART_NUMBER_LENGTH - 1);
+
+		//Get time info
+		time_t t = time(NULL);
+		struct tm tm;
+		localtime_s(&tm, &t);
+		pInfo->mt_month = tm.tm_mon;
+		pInfo->mt_day = tm.tm_mday - 1;
+		pInfo->mt_year = tm.tm_year + 1900;
+	}
+
+	return bIsPNValid;
 }

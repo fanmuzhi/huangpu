@@ -47,6 +47,7 @@ public:
     QTabWidget *tabWidget;
     QWidget *tab;
     QVBoxLayout *verticalLayout_2;
+    QLabel *TestInfoLabel;
     QHBoxLayout *horizontalLayout;
     QTableWidget *TestTableWidget;
     QGroupBox *TestOperationGroupBox;
@@ -71,7 +72,7 @@ public:
     {
         if (FPS_TestExecutiveClass->objectName().isEmpty())
             FPS_TestExecutiveClass->setObjectName(QStringLiteral("FPS_TestExecutiveClass"));
-        FPS_TestExecutiveClass->resize(664, 710);
+        FPS_TestExecutiveClass->resize(600, 700);
         openAct = new QAction(FPS_TestExecutiveClass);
         openAct->setObjectName(QStringLiteral("openAct"));
         saveAsAct = new QAction(FPS_TestExecutiveClass);
@@ -100,6 +101,14 @@ public:
         verticalLayout_2->setSpacing(6);
         verticalLayout_2->setContentsMargins(11, 11, 11, 11);
         verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
+        TestInfoLabel = new QLabel(tab);
+        TestInfoLabel->setObjectName(QStringLiteral("TestInfoLabel"));
+        QFont font;
+        font.setPointSize(8);
+        TestInfoLabel->setFont(font);
+
+        verticalLayout_2->addWidget(TestInfoLabel);
+
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(6);
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
@@ -202,7 +211,7 @@ public:
         FPS_TestExecutiveClass->addToolBar(Qt::BottomToolBarArea, mainToolBar);
         menuBar = new QMenuBar(FPS_TestExecutiveClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 664, 21));
+        menuBar->setGeometry(QRect(0, 0, 600, 21));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
         menuOption = new QMenu(menuBar);
@@ -237,6 +246,7 @@ public:
         actionLocalSetttings->setText(QApplication::translate("FPS_TestExecutiveClass", "LocalSetttings", 0));
         actionBinCodes->setText(QApplication::translate("FPS_TestExecutiveClass", "BinCodes", 0));
         actionAbout_FPS_Test_Executive->setText(QApplication::translate("FPS_TestExecutiveClass", "About FPS Test Executive", 0));
+        TestInfoLabel->setText(QApplication::translate("FPS_TestExecutiveClass", "Info", 0));
         QTableWidgetItem *___qtablewidgetitem = TestTableWidget->verticalHeaderItem(0);
         ___qtablewidgetitem->setText(QApplication::translate("FPS_TestExecutiveClass", "Test Site", 0));
         QTableWidgetItem *___qtablewidgetitem1 = TestTableWidget->verticalHeaderItem(1);

@@ -23,6 +23,8 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	//ui.TestTableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 	//ui.TestTableWidget->verticalHeader()->setStretchLastSection(true);
 
+	//ui.tabWidget->removeTab(1);
+
 	//Init
 	Initialize();
 
@@ -39,7 +41,7 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	//Thread
 	for (int i = 1; i <= DeviceCounts; i++)
 	{
-		QObject::connect(&(_SynMiniThreadArray[i - 1]), SIGNAL(sendImageInTime(unsigned int)), this, SLOT(DisplayImageInTime(unsigned int)));
+		QObject::connect(&(_SynMiniThreadArray[i - 1]), SIGNAL(sendImageInTime(unsigned int, const Syn_DutTestResult *)), this, SLOT(DisplayImageInTime(unsigned int, const Syn_DutTestResult *)));
 		QObject::connect(&(_SynThreadArray[i - 1]), SIGNAL(send(unsigned int, const QString, const QString)), 
 			this, SLOT(ReceiveTestStep(unsigned int, const QString, const QString)), Qt::ConnectionType(Qt::QueuedConnection));
 		QObject::connect(&(_SynThreadArray[i - 1]), SIGNAL(send(unsigned int, const Syn_DutTestResult *)),
@@ -66,6 +68,8 @@ FPS_TestExecutive::~FPS_TestExecutive()
 void FPS_TestExecutive::Initialize()
 {
 	bool rc(false);
+
+	ui.TestInfoLabel->hide();
 
 	//LocalSettings
 	Syn_LocalSettingConfig *pSyn_LocalSettingConfig = NULL;
@@ -127,7 +131,7 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 	unsigned int iLocalSettingsSiteCounts = LocalSettingsInfo._listOfSiteSettings.size();
 	if (0 == iLocalSettingsSiteCounts)
 	{
-		QMessageBox::critical(this, QString("Error"), QString("Can't get Site info in LocalSettings,check it please!"));
+		QMessageBox::critical(this, QString("Error"), QString("Can't get Site info from LocalSettings,check it please!"));
 		return false;
 	}
 
@@ -252,6 +256,19 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 	}
 	ui.OTPResultLabel->setText("");
 
+	//TestInfo:
+	Syn_SysConfig TestConfig;
+	_ListOfSitePtr[0]->GetSysConfig(TestConfig);
+	QString qsTestInfo("");
+	QString qsConfigFilePath = QString::fromStdString(LocalSettingsInfo._strSysConfigFilePath);
+	int LastBackslashIndex = qsConfigFilePath.lastIndexOf(QChar('/'));
+	QString qsConfigFileName = qsConfigFilePath.remove(0, LastBackslashIndex+1);
+	qsTestInfo = QString("Vdd:") + QString::number(TestConfig._uiDutpwrVdd_mV) + QString(" Vio:") + QString::number(TestConfig._uiDutpwrVio_mV) +
+					QString(" Vled:") + QString::number(TestConfig._uiDutpwrVled_mV) + QString(" Vddh:") + QString::number(TestConfig._uiDutpwrVddh_mV)+
+					QString("\n") + qsConfigFileName;
+	ui.TestInfoLabel->setText(qsTestInfo);
+	ui.TestInfoLabel->show();
+
 	return true;
 }
 
@@ -272,6 +289,8 @@ void FPS_TestExecutive::CreateBinCodesDlg()
 	Syn_BinCodesDlg *_pSyn_BinCodesDlg = new Syn_BinCodesDlg(this);
 	_pSyn_BinCodesDlg->show();
 	_pSyn_BinCodesDlg->setAttribute(Qt::WA_DeleteOnClose);
+
+	//ui.tabWidget->addTab(ui.tab_2, "Debug Mode");
 }
 
 void FPS_TestExecutive::Run()
@@ -679,16 +698,14 @@ void FPS_TestExecutive::ReceiveTestResults(unsigned int iSiteNumber,const Syn_Du
 	this->ManageButtonStatus(iFlag);
 }
 
-void FPS_TestExecutive::DisplayImageInTime(unsigned int iSiteNumber)
+void FPS_TestExecutive::DisplayImageInTime(unsigned int iSiteNumber, const Syn_DutTestResult *pDutResult)
 {
 	unsigned int iPos = iSiteNumber - 1;
-	Syn_DutTestInfo *pInfo = NULL;
-	_ListOfSitePtr[iPos]->GetTestInfo(pInfo);
-	if (NULL == pInfo)
+	if (NULL == pDutResult)
 		return;
 
-	int rowNumber = pInfo->_WaitStimulusInfo.iRealRowNumber;
-	int columnNumber = pInfo->_WaitStimulusInfo.iRealColumnNumber;
+	int rowNumber = pDutResult->_WaitStimulusResults.iRealRowNumber;
+	int columnNumber = pDutResult->_WaitStimulusResults.iRealColumnNumber;
 
 	QVector<QRgb> vcolorTable;
 	for (int i = 0; i < 256; i++)
@@ -702,7 +719,7 @@ void FPS_TestExecutive::DisplayImageInTime(unsigned int iSiteNumber)
 	{
 		for (int n = 0; n < columnNumber; n++)
 		{
-			data[k] = (pInfo->_WaitStimulusInfo)._ImagepFrame.arr[m][n];
+			data[k] = (pDutResult->_WaitStimulusResults)._ImagepFrame.arr[m][n];
 			k++;
 		}
 	}

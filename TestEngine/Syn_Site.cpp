@@ -198,6 +198,9 @@ uint32_t Syn_Site::Open()
 
 	//fill info
 	_pSyn_Dut->InitData(_SysConfig,_ADCInfo);
+	size_t stringSize = _strConfigFilePath.size();
+	size_t lastBackslashIndex = _strConfigFilePath.find_last_of("/");
+	_pSyn_Dut->_sConfigFileName = _strConfigFilePath.substr(lastBackslashIndex + 1, stringSize - lastBackslashIndex-1);
 	
 	_siteState = Idle;
 

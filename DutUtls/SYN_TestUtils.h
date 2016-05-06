@@ -1089,4 +1089,4 @@ typedef struct
 	FPSFrame _ImagepFrame;
 	int iRealRowNumber;
 	int iRealColumnNumber;
-}Syn_WaitStimulusInfo;//Syn_WaitStimulusResults;
+}Syn_WaitStimulusResults;// Syn_WaitStimulusInfo;
