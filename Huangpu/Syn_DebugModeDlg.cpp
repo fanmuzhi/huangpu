@@ -9,8 +9,6 @@ Syn_DebugModeDlg::Syn_DebugModeDlg(QWidget *parent)
 	ui = new Ui::Syn_DebugModeDlg();
 	ui->setupUi(this);
 
-	//setWindowFlags(windowFlags() | Qt::FramelessWindowHint | Qt::WindowTitleHint);
-
 	Qt::WindowFlags flags = Qt::Dialog;
 	this->setWindowFlags(flags);
 
