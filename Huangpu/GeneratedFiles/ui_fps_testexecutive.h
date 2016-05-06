@@ -42,6 +42,7 @@ public:
     QAction *actionLocalSetttings;
     QAction *actionBinCodes;
     QAction *actionAbout_FPS_Test_Executive;
+    QAction *actionEngineer_Mode;
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout_3;
     QTabWidget *tabWidget;
@@ -87,6 +88,8 @@ public:
         actionBinCodes->setObjectName(QStringLiteral("actionBinCodes"));
         actionAbout_FPS_Test_Executive = new QAction(FPS_TestExecutiveClass);
         actionAbout_FPS_Test_Executive->setObjectName(QStringLiteral("actionAbout_FPS_Test_Executive"));
+        actionEngineer_Mode = new QAction(FPS_TestExecutiveClass);
+        actionEngineer_Mode->setObjectName(QStringLiteral("actionEngineer_Mode"));
         centralWidget = new QWidget(FPS_TestExecutiveClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         horizontalLayout_3 = new QHBoxLayout(centralWidget);
@@ -226,6 +229,7 @@ public:
         menuFile->addAction(actionExit);
         menuOption->addAction(actionLocalSetttings);
         menuOption->addAction(actionBinCodes);
+        menuOption->addAction(actionEngineer_Mode);
         menuAbout->addAction(actionAbout_FPS_Test_Executive);
 
         retranslateUi(FPS_TestExecutiveClass);
@@ -246,6 +250,7 @@ public:
         actionLocalSetttings->setText(QApplication::translate("FPS_TestExecutiveClass", "LocalSetttings", 0));
         actionBinCodes->setText(QApplication::translate("FPS_TestExecutiveClass", "BinCodes", 0));
         actionAbout_FPS_Test_Executive->setText(QApplication::translate("FPS_TestExecutiveClass", "About FPS Test Executive", 0));
+        actionEngineer_Mode->setText(QApplication::translate("FPS_TestExecutiveClass", "Engineer Mode", 0));
         TestInfoLabel->setText(QApplication::translate("FPS_TestExecutiveClass", "Info", 0));
         QTableWidgetItem *___qtablewidgetitem = TestTableWidget->verticalHeaderItem(0);
         ___qtablewidgetitem->setText(QApplication::translate("FPS_TestExecutiveClass", "Test Site", 0));

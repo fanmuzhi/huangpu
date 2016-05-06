@@ -14,6 +14,7 @@
 #include "Syn_MiniThread.h"
 #include "Syn_LocalSettingsDlg.h"
 #include "Syn_BinCodesDlg.h"
+#include "Syn_DebugModeDlg.h"
 
 //DutUtls
 #include "Syn_Dut.h"
@@ -76,6 +77,9 @@ public Q_SLOTS:
 	void GetVersionForDutDump();
 	void ReadOTPForDutDump();
 	void Invalidate();
+
+	void CreateDebugModeDlg();
+	void StartDebugMode(bool PassResult);
 
 private:
 
