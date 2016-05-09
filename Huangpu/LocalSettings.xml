@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
-    <SysConfigFile>D:/ConfigFile(xml)/P2/A1/580-006016-01r1 (FM-000166-009) Huangpu.xml</SysConfigFile>
-    <LogFilePath>C:/logfiles</LogFilePath>
+    <SysConfigFile>C:/Users/bqiling/Google Drive/Metallica 109A0/FM192/(FM-000192-001)_OFilm_White_ForHuaweiQA_Huangpu.xml</SysConfigFile>
+    <LogFilePath>C:/logfiles/Huawei_OQC_test</LogFilePath>
     <NumSites>1</NumSites>
-    <Site1 AdcBaseLines="693 694 693 696 695 695 694 696 697 694 683 696 797 783 1122 804 " Voltages="1800 1800 3300 3300">1684806</Site1>
+    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="711 710 721 712 708 710 797 712 709 709 1576 713 669 709 3791 712 ">1405853</Site1>
     <AutoController></AutoController>
 </LocalSettings>

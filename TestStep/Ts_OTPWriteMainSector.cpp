@@ -414,50 +414,70 @@ bool Ts_OTPWriteMainSector::RegCheckBitSet()
 
 bool Ts_OTPWriteMainSector::GetMtAndConfigPartNumbers(MtAndConfigPnInfo* pInfo)
 {
-	bool bIsPNValid = true;
-	string sConfigFileName = _pSyn_Dut->_sConfigFileName;
+	//bool bIsPNValid = true;
+	//string sConfigFileName = _pSyn_Dut->_sConfigFileName;
 
-	string sPartNumber("");
-	if (ProjectType::Viper1 == _pSyn_Dut->_eProjectType)
-	{
-		sPartNumber = "555-000551-01rE";
-	}
-	else if (ProjectType::Viper2 == _pSyn_Dut->_eProjectType)
-	{
-		sPartNumber = "555-000584-01r9";
-	}
-	else if (ProjectType::Metallica == _pSyn_Dut->_eProjectType)
-	{
-		sPartNumber = "555-000574-01r12";
-	}
-	else
-	{
-		sPartNumber = "Debug Version";
-	}
+	//string sPartNumber("");
+	//if (ProjectType::Viper1 == _pSyn_Dut->_eProjectType)
+	//{
+	//	sPartNumber = "555-000551-01rE";
+	//}
+	//else if (ProjectType::Viper2 == _pSyn_Dut->_eProjectType)
+	//{
+	//	sPartNumber = "555-000584-01r9";
+	//}
+	//else if (ProjectType::Metallica == _pSyn_Dut->_eProjectType)
+	//{
+	//	sPartNumber = "555-000574-01r12";
+	//}
+	//else
+	//{
+	//	sPartNumber = "Debug Version";
+	//}
 
-	//Check for validity of Part Numbers
-	if (sConfigFileName.length() == 0)
-	{
-		bIsPNValid = false;
-	}
-	else
-	{
-		//Nullify the members of pInfo
-		memset(pInfo->mt_partnum, NULL, MAX_PART_NUMBER_LENGTH);
-		memset(pInfo->mt_config, NULL, MAX_PART_NUMBER_LENGTH);
+	////Check for validity of Part Numbers
+	//if (sConfigFileName.length() == 0)
+	//{
+	//	bIsPNValid = false;
+	//}
+	//else
+	//{
+	//	//Nullify the members of pInfo
+	//	memset(pInfo->mt_partnum, NULL, MAX_PART_NUMBER_LENGTH);
+	//	memset(pInfo->mt_config, NULL, MAX_PART_NUMBER_LENGTH);
 
-		//Copy config file name and MT part number to struct members
-		memcpy(pInfo->mt_partnum, sPartNumber.c_str(), MAX_PART_NUMBER_LENGTH - 1);//MT Part Number		
-		memcpy(pInfo->mt_config, sConfigFileName.c_str(), MAX_PART_NUMBER_LENGTH - 1);
+	//	//Copy config file name and MT part number to struct members
+	//	memcpy(pInfo->mt_partnum, sPartNumber.c_str(), MAX_PART_NUMBER_LENGTH - 1);//MT Part Number		
+	//	memcpy(pInfo->mt_config, sConfigFileName.c_str(), MAX_PART_NUMBER_LENGTH - 1);
 
-		//Get time info
-		time_t t = time(NULL);
-		struct tm tm;
-		localtime_s(&tm, &t);
-		pInfo->mt_month = tm.tm_mon;
-		pInfo->mt_day = tm.tm_mday - 1;
-		pInfo->mt_year = tm.tm_year + 1900;
-	}
+	//	//Get time info
+	//	time_t t = time(NULL);
+	//	struct tm tm;
+	//	localtime_s(&tm, &t);
+	//	pInfo->mt_month = tm.tm_mon;
+	//	pInfo->mt_day = tm.tm_mday - 1;
+	//	pInfo->mt_year = tm.tm_year + 1900;
+	//}
 
-	return bIsPNValid;
+	//return bIsPNValid;
+
+	
+	memset(pInfo->mt_partnum, NULL, MAX_PART_NUMBER_LENGTH);
+	memset(pInfo->mt_config, NULL, MAX_PART_NUMBER_LENGTH);
+
+	uint8_t pPartNumber[MAX_PART_NUMBER_LENGTH] = {0x05, 0x55, 0x00, 0x06, 0x19, 0x01, 0x00, 0x01};
+	uint8_t pConfigFile[MAX_PART_NUMBER_LENGTH] = {0x05, 0x80, 0x00, 0x60, 0x33, 0x01, 0x00, 0x01};
+
+	memcpy(pInfo->mt_partnum, pPartNumber, MAX_PART_NUMBER_LENGTH);//MT Part Number		
+	memcpy(pInfo->mt_config, pConfigFile, MAX_PART_NUMBER_LENGTH);
+
+	//Get time info
+	time_t t = time(NULL);
+	struct tm tm;
+	localtime_s(&tm, &t);
+	pInfo->mt_month = tm.tm_mon;
+	pInfo->mt_day = tm.tm_mday - 1;
+	pInfo->mt_year = tm.tm_year + 1900;
+
+	return 1;
 }

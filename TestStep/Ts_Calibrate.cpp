@@ -199,8 +199,9 @@ void Ts_Calibrate::Execute()
 			//If at least 1 PGA record exists in the OTP, and an error has NOT yet been detected.
 			if ((nPgaRecCount != 0) && (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_bPass != 0))
 			{
-				//int32_t nVariance = OtpPgaVarianceTest(site, (int8_t*)site.m_calibrationResults.m_pPGAOtpArray, (int8_t*)site.m_calibrationResults.m_arPgaOffsets);
-				//calResult.m_nStage2VarianceScore = nVariance;
+				int32_t nVariance = OtpPgaVarianceTest((int8_t*)_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPGAOtpArray, 
+													   (int8_t*)_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_arPgaOffsets);
+				_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nStage2VarianceScore = nVariance;
 
 				//If the variance is not within spec, record the error.
 				if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nStage2VarianceScore > _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nPgaVarianceLimit)
@@ -293,4 +294,20 @@ bool Ts_Calibrate::VerifyPixelRanges()
 	}
 
 	return bSuccess;
+}
+
+int32_t Ts_Calibrate::OtpPgaVarianceTest(int8_t* pOtpPgaOffsets, int8_t* pCurPgaOffsets)
+{
+	int	nNumCols = _pSyn_Dut->_ColumnNumber;
+
+	//Calculate the variance between OTP PGA offsets and current PGA offsets.
+	int32_t nVariance = 0, nDelta;
+	for (int i=0; i < NUM_PGA_OOPP_OTP_ROWS * (nNumCols-8); i++)
+	{
+		nDelta = (int32_t)(pOtpPgaOffsets[i] - pCurPgaOffsets[i]);
+		nVariance += nDelta * nDelta;
+	}
+	nVariance /= 4096;
+
+	return nVariance;
 }

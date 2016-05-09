@@ -728,6 +728,14 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 		fprintf(pFile, "\n");
 	}
 
+	if (DutInfo->_huaweiIqTestInfo._bExecuted)
+	{
+		fprintf(pFile, "\nHuaWei SNR Test,%s,,", DutResults->_huaweiIqTestResults._bPass ? "Pass" : "Fail");
+		fprintf(pFile, "\n%f,", DutResults->_huaweiIqTestResults.snr);
+		fprintf(pFile, "\n");
+	}
+
+
 	//Pixel Uniformity Test
 	if (DutInfo->_pixelInfo.m_bExecuted)
 	{

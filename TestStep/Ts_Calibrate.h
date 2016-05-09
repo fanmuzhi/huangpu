@@ -22,5 +22,6 @@ public:
 	virtual void	CleanUp();
 
 	bool VerifyPixelRanges();
-};
 
+	int32_t OtpPgaVarianceTest(int8_t* pOtpPgaOffsets, int8_t* pCurPgaOffsets);
+};

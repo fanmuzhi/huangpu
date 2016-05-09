@@ -267,6 +267,12 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 					QString(" Vled:") + QString::number(TestConfig._uiDutpwrVled_mV) + QString(" Vddh:") + QString::number(TestConfig._uiDutpwrVddh_mV)+
 					QString("\n") + qsConfigFileName;
 	ui.TestInfoLabel->setText(qsTestInfo);
+	QFont font;
+	font.setFamily(QStringLiteral("Segoe UI"));
+	font.setPointSize(9);
+	font.setBold(false);
+	font.setWeight(50);
+	ui.TestInfoLabel->setFont(font);
 	ui.TestInfoLabel->show();
 
 	return true;
