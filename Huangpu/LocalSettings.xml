@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
-    <SysConfigFile>D:/ConfigFile(xml)/Manhattan/(FM-000192-001)_OFilm_Gold_Huangpu.xml</SysConfigFile>
+    <SysConfigFile>D:/ConfigFile(xml)/Manhattan/(580-006033-01r01)_Ofilm_Gold_Huangpu.xml.xml</SysConfigFile>
     <LogFilePath>C:/logfiles</LogFilePath>
     <NumSites>1</NumSites>
     <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="693 694 693 696 695 695 694 696 697 694 683 696 797 783 1122 804 ">1684806</Site1>
