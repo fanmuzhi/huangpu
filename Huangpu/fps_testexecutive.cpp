@@ -23,7 +23,11 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	//ui.TestTableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 	//ui.TestTableWidget->verticalHeader()->setStretchLastSection(true);
 
-	//ui.tabWidget->removeTab(1);
+	//remove OTPDump tab
+	if (0 != ui.tabWidget->indexOf(ui.tab_2))
+	{
+		ui.tabWidget->removeTab(ui.tabWidget->indexOf(ui.tab_2));
+	}
 
 	//Init
 	Initialize();
@@ -50,6 +54,12 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 
 	//BinCodes Dislpay
 	QObject::connect(ui.actionBinCodes, SIGNAL(triggered(bool)), this, SLOT(CreateBinCodesDlg()));
+
+	//About FPS
+	QObject::connect(ui.actionAbout_FPS_Test_Executive, SIGNAL(triggered(bool)), this, SLOT(ShowAboutDlg()));
+
+	//Debug Mode
+	QObject::connect(ui.actionEngineer_Mode, SIGNAL(triggered(bool)), this, SLOT(CreateDebugModeDlg()));
 	
 	//Debug
 	//OTP Dump
@@ -68,6 +78,8 @@ FPS_TestExecutive::~FPS_TestExecutive()
 void FPS_TestExecutive::Initialize()
 {
 	bool rc(false);
+
+	ui.OTPResultLabel->setText("");
 
 	ui.TestInfoLabel->hide();
 
@@ -254,7 +266,6 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 		_ListOfSitePtr[i - 1]->GetSiteNumber(iSiteNumber);
 		ui.comboBox->addItem(QString("#") + QString::number(iSiteNumber));
 	}
-	ui.OTPResultLabel->setText("");
 
 	//TestInfo:
 	Syn_SysConfig TestConfig;
@@ -283,7 +294,7 @@ void FPS_TestExecutive::CreateLocalSettings()
 	//clear
 	this->ClearSites();
 
-	Syn_LocalSettingsDlg *_pSyn_LocalSettingsDlg = new Syn_LocalSettingsDlg();
+	Syn_LocalSettingsDlg *_pSyn_LocalSettingsDlg = new Syn_LocalSettingsDlg(this);
 	_pSyn_LocalSettingsDlg->show();
 	_pSyn_LocalSettingsDlg->setAttribute(Qt::WA_DeleteOnClose);
 	//connect LocalSettings close signal to re-construct site list
@@ -295,8 +306,13 @@ void FPS_TestExecutive::CreateBinCodesDlg()
 	Syn_BinCodesDlg *_pSyn_BinCodesDlg = new Syn_BinCodesDlg(this);
 	_pSyn_BinCodesDlg->show();
 	_pSyn_BinCodesDlg->setAttribute(Qt::WA_DeleteOnClose);
+}
 
-	//ui.tabWidget->addTab(ui.tab_2, "Debug Mode");
+void FPS_TestExecutive::ShowAboutDlg()
+{
+	Syn_AboutDlg *pSyn_AboutDlg = new Syn_AboutDlg();
+	pSyn_AboutDlg->show();
+	pSyn_AboutDlg->setAttribute(Qt::WA_DeleteOnClose);
 }
 
 void FPS_TestExecutive::Run()
@@ -382,9 +398,6 @@ void FPS_TestExecutive::Run()
 			_SynThreadArray[i - 1].SetFlag(iRunFlag);
 			_SynThreadArray[i - 1].start();
 			_SynThreadArray[i - 1].SetStopTag(false);
-		}
-		else
-		{
 		}
 
 		Syn_Site::SiteState oState;
@@ -1209,4 +1222,21 @@ void FPS_TestExecutive::Display(uint8_t* pDst, unsigned int StartPos, unsigned i
 		s += (QString::number(pDst[i], 16)).toUpper() + ",";
 	}
 	ui.textBrowser->append(s);
+}
+
+void FPS_TestExecutive::CreateDebugModeDlg()
+{
+	Syn_DebugModeDlg *pSyn_DebugModeDlg = new Syn_DebugModeDlg();
+	pSyn_DebugModeDlg->show();
+	pSyn_DebugModeDlg->setAttribute(Qt::WA_DeleteOnClose);
+
+	QObject::connect(pSyn_DebugModeDlg, SIGNAL(sendPass()), this, SLOT(StartDebugMode()));
+}
+
+void FPS_TestExecutive::StartDebugMode()
+{
+	if (-1 == ui.tabWidget->indexOf(ui.tab_2))
+	{
+		ui.tabWidget->addTab(ui.tab_2, "Engineer Mode");
+	}	
 }

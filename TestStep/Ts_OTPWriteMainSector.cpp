@@ -414,61 +414,20 @@ bool Ts_OTPWriteMainSector::RegCheckBitSet()
 
 bool Ts_OTPWriteMainSector::GetMtAndConfigPartNumbers(MtAndConfigPnInfo* pInfo)
 {
-	//bool bIsPNValid = true;
-	//string sConfigFileName = _pSyn_Dut->_sConfigFileName;
+	string sConfigFileName = _pSyn_Dut->_sConfigFileName;
 
-	//string sPartNumber("");
-	//if (ProjectType::Viper1 == _pSyn_Dut->_eProjectType)
-	//{
-	//	sPartNumber = "555-000551-01rE";
-	//}
-	//else if (ProjectType::Viper2 == _pSyn_Dut->_eProjectType)
-	//{
-	//	sPartNumber = "555-000584-01r9";
-	//}
-	//else if (ProjectType::Metallica == _pSyn_Dut->_eProjectType)
-	//{
-	//	sPartNumber = "555-000574-01r12";
-	//}
-	//else
-	//{
-	//	sPartNumber = "Debug Version";
-	//}
-
-	////Check for validity of Part Numbers
-	//if (sConfigFileName.length() == 0)
-	//{
-	//	bIsPNValid = false;
-	//}
-	//else
-	//{
-	//	//Nullify the members of pInfo
-	//	memset(pInfo->mt_partnum, NULL, MAX_PART_NUMBER_LENGTH);
-	//	memset(pInfo->mt_config, NULL, MAX_PART_NUMBER_LENGTH);
-
-	//	//Copy config file name and MT part number to struct members
-	//	memcpy(pInfo->mt_partnum, sPartNumber.c_str(), MAX_PART_NUMBER_LENGTH - 1);//MT Part Number		
-	//	memcpy(pInfo->mt_config, sConfigFileName.c_str(), MAX_PART_NUMBER_LENGTH - 1);
-
-	//	//Get time info
-	//	time_t t = time(NULL);
-	//	struct tm tm;
-	//	localtime_s(&tm, &t);
-	//	pInfo->mt_month = tm.tm_mon;
-	//	pInfo->mt_day = tm.tm_mday - 1;
-	//	pInfo->mt_year = tm.tm_year + 1900;
-	//}
-
-	//return bIsPNValid;
-
-	
 	memset(pInfo->mt_partnum, NULL, MAX_PART_NUMBER_LENGTH);
 	memset(pInfo->mt_config, NULL, MAX_PART_NUMBER_LENGTH);
 
-	uint8_t pPartNumber[MAX_PART_NUMBER_LENGTH] = {0x05, 0x55, 0x00, 0x06, 0x19, 0x01, 0x00, 0x01};
-	uint8_t pConfigFile[MAX_PART_NUMBER_LENGTH] = {0x05, 0x80, 0x00, 0x60, 0x33, 0x01, 0x00, 0x01};
+	uint8_t pPartNumber[MAX_PART_NUMBER_LENGTH] = { 0x05, 0x55, 0x00, 0x06, 0x19, 0x01, 0x00, 0x01 };
+	uint8_t pConfigFile[MAX_PART_NUMBER_LENGTH] = { 0x05, 0x80, 0x00, 0x60, 0x33, 0x01, 0x00, 0x01 };
+	//uint8_t pConfigFile[MAX_PART_NUMBER_LENGTH] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+	if (!GetConfigFileArray(sConfigFileName, pConfigFile))
+	{
+		return false;
+	}
 
-	memcpy(pInfo->mt_partnum, pPartNumber, MAX_PART_NUMBER_LENGTH);//MT Part Number		
+	memcpy(pInfo->mt_partnum, pPartNumber, MAX_PART_NUMBER_LENGTH);//MT Part Number              
 	memcpy(pInfo->mt_config, pConfigFile, MAX_PART_NUMBER_LENGTH);
 
 	//Get time info
@@ -479,5 +438,53 @@ bool Ts_OTPWriteMainSector::GetMtAndConfigPartNumbers(MtAndConfigPnInfo* pInfo)
 	pInfo->mt_day = tm.tm_mday - 1;
 	pInfo->mt_year = tm.tm_year + 1900;
 
-	return 1;
+	return true;
+}
+
+bool Ts_OTPWriteMainSector::GetConfigFileArray(string sConfigFileName, uint8_t oConfigFilerArray[MAX_PART_NUMBER_LENGTH])
+{
+	size_t LeftParenthesisPosition = sConfigFileName.find_first_of("(");
+	size_t RightParenthesisPosition = sConfigFileName.find_first_of(")");
+	if (LeftParenthesisPosition < 0 || RightParenthesisPosition < 0)
+	{
+		return false;
+	}
+
+	string sConfigFile = sConfigFileName.substr(LeftParenthesisPosition + 1, RightParenthesisPosition - LeftParenthesisPosition - 1);
+
+	size_t FirstDashPosition = sConfigFile.find_first_of("-");
+	if (FirstDashPosition < 0)
+		return false;
+	size_t SecondDashPosition = sConfigFile.find_first_of("-", FirstDashPosition + 1);
+	if (SecondDashPosition < 0)
+		return false;
+
+	if (MAX_PART_NUMBER_LENGTH < 8)
+		return false;
+
+	string sFirstInfo = sConfigFile.substr(0, FirstDashPosition);
+	string sSencondInfo = sConfigFile.substr(FirstDashPosition + 1, SecondDashPosition - FirstDashPosition-1);
+	string sThirdInfo = sConfigFile.substr(SecondDashPosition + 1, sConfigFile.size() - SecondDashPosition-1);
+	if (3!=sFirstInfo.size() || 6 != sSencondInfo.size() || 5 != sThirdInfo.size())
+		return false;
+
+	string s1 = sFirstInfo.substr(0, 1);
+	string s2 = sFirstInfo.substr(1, 2);
+	string s3 = sSencondInfo.substr(0, 2);
+	string s4 = sSencondInfo.substr(2, 2);
+	string s5 = sSencondInfo.substr(4, 2);
+	string s6 = sThirdInfo.substr(0, 2);
+	string s7 = sThirdInfo.substr(3, 1);
+	string s8 = sThirdInfo.substr(4, 1);
+
+	oConfigFilerArray[0] = std::stoul(s1, 0, 16);
+	oConfigFilerArray[1] = std::stoul(s2, 0, 16);
+	oConfigFilerArray[2] = std::stoul(s3, 0, 16);
+	oConfigFilerArray[3] = std::stoul(s4, 0, 16);
+	oConfigFilerArray[4] = std::stoul(s5, 0, 16);
+	oConfigFilerArray[5] = std::stoul(s6, 0, 16);
+	oConfigFilerArray[6] = std::stoul(s7, 0, 16);
+	oConfigFilerArray[7] = std::stoul(s8, 0, 16);
+
+	return true;
 }

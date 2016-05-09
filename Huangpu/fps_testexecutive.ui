@@ -198,6 +198,7 @@
     </property>
     <addaction name="actionLocalSetttings"/>
     <addaction name="actionBinCodes"/>
+    <addaction name="actionEngineer_Mode"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
@@ -242,6 +243,11 @@
   <action name="actionAbout_FPS_Test_Executive">
    <property name="text">
     <string>About FPS Test Executive</string>
+   </property>
+  </action>
+  <action name="actionEngineer_Mode">
+   <property name="text">
+    <string>Engineer Mode</string>
    </property>
   </action>
  </widget>

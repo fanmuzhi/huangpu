@@ -14,6 +14,8 @@
 #include "Syn_MiniThread.h"
 #include "Syn_LocalSettingsDlg.h"
 #include "Syn_BinCodesDlg.h"
+#include "Syn_DebugModeDlg.h"
+#include "Syn_AboutDlg.h"
 
 //DutUtls
 #include "Syn_Dut.h"
@@ -60,6 +62,8 @@ public Q_SLOTS:
 	//bincode display
 	void CreateBinCodesDlg();
 
+	void ShowAboutDlg();
+
 	void Run();
 
 	void ReceiveTestStep(unsigned int iSiteNumber, const QString strTestStepName, const QString strPassResults);
@@ -76,6 +80,9 @@ public Q_SLOTS:
 	void GetVersionForDutDump();
 	void ReadOTPForDutDump();
 	void Invalidate();
+
+	void CreateDebugModeDlg();
+	void StartDebugMode();
 
 private:
 

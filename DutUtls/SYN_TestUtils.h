@@ -82,7 +82,6 @@ typedef unsigned char UINT8; // UINT8 is created to handle MPC04 data
 
 #define MPC_SELF_TEST_BUFFER 32
 
-//#define MAX_PART_NUMBER_LENGTH 20
 #define MAX_PART_NUMBER_LENGTH 8
 
 
