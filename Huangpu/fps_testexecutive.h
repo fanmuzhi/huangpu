@@ -15,6 +15,7 @@
 #include "Syn_LocalSettingsDlg.h"
 #include "Syn_BinCodesDlg.h"
 #include "Syn_DebugModeDlg.h"
+#include "Syn_AboutDlg.h"
 
 //DutUtls
 #include "Syn_Dut.h"
@@ -60,6 +61,8 @@ public Q_SLOTS:
 	void CreateLocalSettings();
 	//bincode display
 	void CreateBinCodesDlg();
+
+	void ShowAboutDlg();
 
 	void Run();
 

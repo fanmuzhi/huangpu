@@ -36,7 +36,7 @@ void Syn_DebugModeDlg::OKPushButtonClick()
 	}
 	else
 	{
-		QMessageBox::warning(this, QString("Warning"), QString("Password is wrong!"));
+		QMessageBox::warning(this, QString("Warning"), QString("Password is not correct!"));
 	}
 }
 

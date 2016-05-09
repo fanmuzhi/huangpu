@@ -55,6 +55,9 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	//BinCodes Dislpay
 	QObject::connect(ui.actionBinCodes, SIGNAL(triggered(bool)), this, SLOT(CreateBinCodesDlg()));
 
+	//About FPS
+	QObject::connect(ui.actionAbout_FPS_Test_Executive, SIGNAL(triggered(bool)), this, SLOT(ShowAboutDlg()));
+
 	//Debug Mode
 	QObject::connect(ui.actionEngineer_Mode, SIGNAL(triggered(bool)), this, SLOT(CreateDebugModeDlg()));
 	
@@ -75,6 +78,8 @@ FPS_TestExecutive::~FPS_TestExecutive()
 void FPS_TestExecutive::Initialize()
 {
 	bool rc(false);
+
+	ui.OTPResultLabel->setText("");
 
 	ui.TestInfoLabel->hide();
 
@@ -261,7 +266,6 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 		_ListOfSitePtr[i - 1]->GetSiteNumber(iSiteNumber);
 		ui.comboBox->addItem(QString("#") + QString::number(iSiteNumber));
 	}
-	ui.OTPResultLabel->setText("");
 
 	//TestInfo:
 	Syn_SysConfig TestConfig;
@@ -296,6 +300,13 @@ void FPS_TestExecutive::CreateBinCodesDlg()
 	Syn_BinCodesDlg *_pSyn_BinCodesDlg = new Syn_BinCodesDlg(this);
 	_pSyn_BinCodesDlg->show();
 	_pSyn_BinCodesDlg->setAttribute(Qt::WA_DeleteOnClose);
+}
+
+void FPS_TestExecutive::ShowAboutDlg()
+{
+	Syn_AboutDlg *pSyn_AboutDlg = new Syn_AboutDlg();
+	pSyn_AboutDlg->show();
+	pSyn_AboutDlg->setAttribute(Qt::WA_DeleteOnClose);
 }
 
 void FPS_TestExecutive::Run()
@@ -381,9 +392,6 @@ void FPS_TestExecutive::Run()
 			_SynThreadArray[i - 1].SetFlag(iRunFlag);
 			_SynThreadArray[i - 1].start();
 			_SynThreadArray[i - 1].SetStopTag(false);
-		}
-		else
-		{
 		}
 
 		Syn_Site::SiteState oState;
