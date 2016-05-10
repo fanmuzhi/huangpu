@@ -3,6 +3,6 @@
     <SysConfigFile>D:/ConfigFile(xml)/Manhattan/(580-006033-01r01)_Ofilm_Gold_Huangpu.xml.xml</SysConfigFile>
     <LogFilePath>C:/logfiles</LogFilePath>
     <NumSites>1</NumSites>
-    <Site1 AdcBaseLines="697 697 696 698 697 697 697 698 697 697 682 698 698 697 763 698 " Voltages="1800 1800 3300 3300">1684806</Site1>
+    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="697 697 696 698 697 697 695 698 698 697 731 698 713 697 685 698 ">1684806</Site1>
     <AutoController></AutoController>
 </LocalSettings>

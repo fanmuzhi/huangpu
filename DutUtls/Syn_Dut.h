@@ -62,6 +62,7 @@ struct Syn_DutTestInfo
 	SpiOwnershipInfo		    _SpiOwnershipInfo;
 	OTPCheckInfo				_otpCheckInfo;
 	GetVerInfo					_getVerInfo;
+	HuaweiIQTestInfo			_huaweiIqTestInfo;
 };
 
 struct Syn_DutTestResult
@@ -112,8 +113,8 @@ struct Syn_DutTestResult
 	SdkBaselineTestResults	    _SdkBaselineResults;
 	SpiOwnershipResults			_SpiOwnershipResults;
 	OTPCheckResults				_otpCheckResult;
-
 	Syn_WaitStimulusResults		_WaitStimulusResults;
+	HuaweiIQTestResults			_huaweiIqTestResults;
 };
 
 class Syn_Dut

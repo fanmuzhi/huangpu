@@ -90,6 +90,12 @@ void Ts_WaitStimulus::Execute()
 			_pSyn_Dut->_pSyn_DutTestResult->_WaitStimulusResults._ImagepFrame.arr[i - numMinRows][j - numMinCols - HEADER] = iTempValue;
 		}
 	}
+	RemoveBaseline(
+		&_pSyn_Dut->_pSyn_DutTestResult->_WaitStimulusResults._ImagepFrame,
+		&_pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.arr_ImageFPSFrame,
+		_pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealRowNumber,
+		_pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealColumnNumber
+		);
 
 	delete pFrame;
 	pFrame = NULL;

@@ -229,7 +229,7 @@ void Ts_OTPCheck::Execute()
 		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PART_NUMBERS, pDst, MS0_SIZE);
 		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPartNumberId_count= count;
 
-		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_PART_NUMBERS", HexToString(pDst, 0, 99)));
+		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_PART_NUMBERS", HexToString(pDst, 0, 19)));
 	}
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bExecuted = true;

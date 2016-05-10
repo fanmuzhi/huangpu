@@ -88,6 +88,7 @@ void FPS_TestExecutive::Initialize()
 	rc = Syn_LocalSettingConfig::CreateLSConfigInstance(Syn_LocalSettingConfig::Read,pSyn_LocalSettingConfig);
 	if (!rc || NULL == pSyn_LocalSettingConfig)
 	{
+		QMessageBox::critical(this, QString("Error"), QString("Can't retrieve Site info from LocalSettings,check it please!!"));
 		cout << "Error:FPS_TestExecutive::Initialize() - pSyn_LocalSettingConfig is NULL!" << endl;
 		return;
 	}
@@ -278,6 +279,12 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 					QString(" Vled:") + QString::number(TestConfig._uiDutpwrVled_mV) + QString(" Vddh:") + QString::number(TestConfig._uiDutpwrVddh_mV)+
 					QString("\n") + qsConfigFileName;
 	ui.TestInfoLabel->setText(qsTestInfo);
+	QFont font;
+	font.setFamily(QStringLiteral("Segoe UI"));
+	font.setPointSize(9);
+	font.setBold(false);
+	font.setWeight(50);
+	ui.TestInfoLabel->setFont(font);
 	ui.TestInfoLabel->show();
 
 	return true;

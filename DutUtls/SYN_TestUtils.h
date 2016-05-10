@@ -124,6 +124,20 @@ typedef struct
 	int			_bPass;
 }OTPCheckResults;
 
+typedef struct
+{
+	int	_bExecuted;
+	int _highLimit;
+	int _lowLimit;
+
+}HuaweiIQTestInfo;
+
+typedef struct
+{
+	float snr;
+	int	_bPass;
+
+}HuaweiIQTestResults;
 
 typedef struct
 {

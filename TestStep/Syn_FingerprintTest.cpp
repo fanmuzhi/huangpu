@@ -210,3 +210,34 @@ int Syn_FingerprintTest::max_array(int a[], int num_elements)
 	}
 	return(max);
 }
+
+void Syn_FingerprintTest::RemoveBaseline(FPSFrame *pImgFingerArr, FPSFrame *pImgNoFingerArr, int nNumRow, int nNumCol)
+{
+	float tempSum = 0;
+	float tempMean[MAXROW] = {0};
+	//FPSFrame tempFrame;
+
+	for (int row = 0; row < nNumRow; row++)
+	{
+		for (int col = 0; col < nNumCol; col++)
+		{
+			pImgFingerArr->arr[row][col] = pImgFingerArr->arr[row][col] - pImgNoFingerArr->arr[row][col] + 128;
+			tempSum += pImgFingerArr->arr[row][col];
+		}
+
+		tempMean[row] = (float)(tempSum / nNumCol);
+		tempSum = 0;
+	}
+
+	for (int row = 0; row < nNumRow; row++)
+	{
+		for (int col = 0; col < nNumCol; col++)
+		{
+			int temp = (pImgFingerArr->arr[row][col] - tempMean[row] + 128);
+			temp = temp>255 ? 255 : temp;
+			temp = temp<0 ? 0 : temp;
+			pImgFingerArr->arr[row][col] = temp;
+		}
+	}
+
+}
