@@ -39,7 +39,7 @@ public:
 	uint32_t GetTestResult(Syn_DutTestResult * &opTestResult);
 
 	/*Debug interface for each test step*/
-	uint32_t ExecuteTestStep(std::string sTestStepName);
+	uint32_t ExecuteTestStep(std::string sTestName, bool setupOnly = false, bool executeOnly = false, bool cleanupOnly = false);
 
 	/*get the current state of site*/
 	inline void GetState(SiteState &oSiteState){ oSiteState = _siteState; };

@@ -99,6 +99,9 @@ void Ts_WaitStimulus::Execute()
 
 	delete pFrame;
 	pFrame = NULL;
+
+	_pSyn_Dut->_pSyn_DutTestResult->_WaitStimulusResults.iRealRowNumber = _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealRowNumber;
+	_pSyn_Dut->_pSyn_DutTestResult->_WaitStimulusResults.iRealColumnNumber = _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealColumnNumber;
 }
 
 void Ts_WaitStimulus::ProcessData()
@@ -107,9 +110,6 @@ void Ts_WaitStimulus::ProcessData()
 	{
 		return;
 	}
-
-	_pSyn_Dut->_pSyn_DutTestResult->_WaitStimulusResults.iRealRowNumber = _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealRowNumber;
-	_pSyn_Dut->_pSyn_DutTestResult->_WaitStimulusResults.iRealColumnNumber = _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealColumnNumber;
 }
 
 void Ts_WaitStimulus::CleanUp()
