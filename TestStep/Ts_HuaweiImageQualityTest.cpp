@@ -70,9 +70,9 @@ void Ts_HuaweiImageQualityTest::Execute()
 	int k = 0;
 	for (int i = 0; i < NumberOfIamge; i++)
 	{
-		for (int m = 0; m < _uiNumRows; m++)
+		for (int m = numMinRowsWithStim; m < numMaxRowsWithStim; m++)
 		{
-			for (int n = HEADER; n < (_uiNumCols + HEADER); n++)
+			for (int n = (numMinColsWithStim + HEADER); n < numMaxColsWithStim; n++)
 			{
 				arrImageNoFinger[k] = (_pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult).arr_nofinger[i].arr[m][n];
 				k++;
@@ -90,9 +90,9 @@ void Ts_HuaweiImageQualityTest::Execute()
 		//	_uiNumRows,
 		//	_uiNumCols
 		//	);
-		for (int m = 0; m < _uiNumRows; m++)
+		for (int m = numMinRowsWithStim; m < numMaxRowsWithStim; m++)
 		{
-			for (int n = HEADER; n < (_uiNumCols + HEADER); n++)
+			for (int n = (numMinColsWithStim + HEADER); n < numMaxColsWithStim; n++)
 			{
 				arrImageFinger[k] = (_pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult).arr_finger[i].arr[m][n];
 				k++;
