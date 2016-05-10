@@ -21,7 +21,7 @@ public:
 
 	bool GetMtAndConfigPartNumbers(MtAndConfigPnInfo* pInfo);
 
-	bool GetConfigFileArray(string sConfigFileName, uint8_t oConfigFilerArray[MAX_PART_NUMBER_LENGTH]);
+	bool GetConfigFileArray(string sConfigFileName, uint8_t *pConfigFilerArray, int arrSize = MAX_PART_NUMBER_LENGTH);
 
 private:
 	bool bBurnPGA_OOPP;
