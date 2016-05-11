@@ -30,9 +30,9 @@ void Syn_AboutDlg::SetInfo()
 
 	ui->NameLabel->setText("FPS Test Executive");
 
-	ui->VersionLabel->setText("Version:1.0.1");
+	ui->VersionLabel->setText("Version:1.0.2");
 	
-	ui->DateLabel->setText("Release Date:2016-05-10");
+	ui->DateLabel->setText("Release Date:2016-05-11");
 
 	ui->CopyrightLabel->setText("Copyright@2016 Synaptics");
 }

@@ -291,8 +291,9 @@ void Ts_SCM_WOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_WofTest
 				pResults.m_bPass = 0;
 		}
 
-		if (pResults.m_bPass == 0)
-			pResults.m_nGain += pResults.m_nGainInc;
+		//if (pResults.m_bPass == 0)
+		//	pResults.m_nGain += pResults.m_nGainInc;
+		pResults.m_nGain = pResults.m_nGainStart + (pResults.m_nGainInc * nGainIdx);
 	}
 }
 
