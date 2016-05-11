@@ -441,7 +441,7 @@ bool Ts_OTPWriteMainSector::GetMtAndConfigPartNumbers(MtAndConfigPnInfo* pInfo)
 	return true;
 }
 
-bool Ts_OTPWriteMainSector::GetConfigFileArray(string sConfigFileName, uint8_t oConfigFilerArray[MAX_PART_NUMBER_LENGTH])
+bool Ts_OTPWriteMainSector::GetConfigFileArray(string sConfigFileName, uint8_t *pConfigFilerArray, int arrSize)
 {
 	size_t LeftParenthesisPosition = sConfigFileName.find_first_of("(");
 	size_t RightParenthesisPosition = sConfigFileName.find_first_of(")");
@@ -459,7 +459,7 @@ bool Ts_OTPWriteMainSector::GetConfigFileArray(string sConfigFileName, uint8_t o
 	if (SecondDashPosition < 0)
 		return false;
 
-	if (MAX_PART_NUMBER_LENGTH < 8)
+	if (arrSize < 8)
 		return false;
 
 	string sFirstInfo = sConfigFile.substr(0, FirstDashPosition);
@@ -477,14 +477,14 @@ bool Ts_OTPWriteMainSector::GetConfigFileArray(string sConfigFileName, uint8_t o
 	string s7 = sThirdInfo.substr(3, 1);
 	string s8 = sThirdInfo.substr(4, 1);
 
-	oConfigFilerArray[0] = std::stoul(s1, 0, 16);
-	oConfigFilerArray[1] = std::stoul(s2, 0, 16);
-	oConfigFilerArray[2] = std::stoul(s3, 0, 16);
-	oConfigFilerArray[3] = std::stoul(s4, 0, 16);
-	oConfigFilerArray[4] = std::stoul(s5, 0, 16);
-	oConfigFilerArray[5] = std::stoul(s6, 0, 16);
-	oConfigFilerArray[6] = std::stoul(s7, 0, 16);
-	oConfigFilerArray[7] = std::stoul(s8, 0, 16);
+	pConfigFilerArray[0] = std::stoul(s1, 0, 16);
+	pConfigFilerArray[1] = std::stoul(s2, 0, 16);
+	pConfigFilerArray[2] = std::stoul(s3, 0, 16);
+	pConfigFilerArray[3] = std::stoul(s4, 0, 16);
+	pConfigFilerArray[4] = std::stoul(s5, 0, 16);
+	pConfigFilerArray[5] = std::stoul(s6, 0, 16);
+	pConfigFilerArray[6] = std::stoul(s7, 0, 16);
+	pConfigFilerArray[7] = std::stoul(s8, 0, 16);
 
 	return true;
 }

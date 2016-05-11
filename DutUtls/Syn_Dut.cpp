@@ -124,7 +124,7 @@ void Syn_Dut::InitData(Syn_SysConfig &sysConfig, AdcBaseLineInfo &iAdcBaseLineIn
 	_pSyn_DutTestInfo->_SdkBaselineInfo.m_bExecuted = false;
 	_pSyn_DutTestInfo->_SpiOwnershipInfo.m_bExecuted = false;
 	_pSyn_DutTestInfo->_otpCheckInfo._bExecuted = false;
-	//_pSyn_DutTestInfo->_getVerInfo. = false;
+	_pSyn_DutTestInfo->_huaweiIqTestInfo._bExecuted = false;
 
 	_pSyn_DutTestResult->_initResults.m_bPass = 1;
 	_pSyn_DutTestResult->_calibrationResults.m_bPass = 1;

@@ -36,6 +36,10 @@ Syn_LocalSettingsDlg::Syn_LocalSettingsDlg(QWidget *parent)
 	//load localsetting
 	Syn_LocalSettingConfig *pSyn_LocalSettingConfig = NULL;
 	Syn_LocalSettingConfig::CreateLSConfigInstance(Syn_LocalSettingConfig::Read,pSyn_LocalSettingConfig);
+	if (NULL == pSyn_LocalSettingConfig)
+	{
+		Syn_LocalSettingConfig::CreateLSConfigInstance(Syn_LocalSettingConfig::Write, pSyn_LocalSettingConfig);
+	}
 	pSyn_LocalSettingConfig->GetLocalSettings(_LocalSettingsInfo);
 	delete pSyn_LocalSettingConfig;
 	pSyn_LocalSettingConfig = NULL;

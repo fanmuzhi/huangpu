@@ -36,9 +36,9 @@ void Ts_HuaweiImageQualityTest::SetUp()
 	
 	ParseTestStepArgs(_strArgs, listOfArgValue);
 	size_t ilistSize = listOfArgValue.size();
-	if (ilistSize < 3)
+	if (ilistSize < 2)
 	{
-		for (size_t t = 1; t <= 6 - ilistSize; t++)
+		for (size_t t = 1; t <= 2 - ilistSize; t++)
 			listOfArgValue.push_back(std::string(""));
 	}
 

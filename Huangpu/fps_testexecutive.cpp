@@ -88,6 +88,7 @@ void FPS_TestExecutive::Initialize()
 	rc = Syn_LocalSettingConfig::CreateLSConfigInstance(Syn_LocalSettingConfig::Read,pSyn_LocalSettingConfig);
 	if (!rc || NULL == pSyn_LocalSettingConfig)
 	{
+		QMessageBox::critical(this, QString("Error"), QString("Can't retrieve Site info from LocalSettings,check it please!!"));
 		cout << "Error:FPS_TestExecutive::Initialize() - pSyn_LocalSettingConfig is NULL!" << endl;
 		return;
 	}
@@ -579,6 +580,15 @@ void FPS_TestExecutive::ReceiveTestResults(unsigned int iSiteNumber,const Syn_Du
 		iRowNumber = 7;
 
 		QString strSNRValue = QString::number(pDutResult->_snrResults.SNR[6]);
+		Syn_DutTestInfo *pDutInfo = NULL;
+		_ListOfSitePtr[iPos]->GetTestInfo(pDutInfo);
+		if (NULL != pDutInfo)
+		{
+			if (pDutInfo->_huaweiIqTestInfo._bExecuted)
+			{
+				strSNRValue += QString(" ") + QString::number(pDutResult->_huaweiIqTestResults.snr);
+			}
+		}
 		
 		//SNR
 		QTableWidgetItem *itemSNR = new QTableWidgetItem(strSNRValue);
