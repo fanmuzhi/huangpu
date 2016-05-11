@@ -84,12 +84,6 @@ void Ts_HuaweiImageQualityTest::Execute()
 	k = 0;
 	for (int i = 0; i < NumberOfIamge; i++)
 	{
-		//RemoveBaseline(
-		//	&_pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.arr_finger[i],
-		//	&_pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.arr_ImageFPSFrame,
-		//	_uiNumRows,
-		//	_uiNumCols
-		//	);
 		for (int m = 0; m < _uiNumRows; m++)
 		{
 			for (int n = HEADER; n < (_uiNumCols + HEADER); n++)

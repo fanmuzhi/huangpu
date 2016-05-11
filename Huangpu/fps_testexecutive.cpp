@@ -580,6 +580,15 @@ void FPS_TestExecutive::ReceiveTestResults(unsigned int iSiteNumber,const Syn_Du
 		iRowNumber = 7;
 
 		QString strSNRValue = QString::number(pDutResult->_snrResults.SNR[6]);
+		Syn_DutTestInfo *pDutInfo = NULL;
+		_ListOfSitePtr[iPos]->GetTestInfo(pDutInfo);
+		if (NULL != pDutInfo)
+		{
+			if (pDutInfo->_huaweiIqTestInfo._bExecuted)
+			{
+				strSNRValue += QString(" ") + QString::number(pDutResult->_huaweiIqTestResults.snr);
+			}
+		}
 		
 		//SNR
 		QTableWidgetItem *itemSNR = new QTableWidgetItem(strSNRValue);

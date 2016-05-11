@@ -90,15 +90,17 @@ void Ts_WaitStimulus::Execute()
 			_pSyn_Dut->_pSyn_DutTestResult->_WaitStimulusResults._ImagepFrame.arr[i - numMinRows][j - numMinCols - HEADER] = iTempValue;
 		}
 	}
-	RemoveBaseline(
-		&_pSyn_Dut->_pSyn_DutTestResult->_WaitStimulusResults._ImagepFrame,
-		&_pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.arr_ImageFPSFrame,
-		_pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealRowNumber,
-		_pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealColumnNumber
-		);
+
+	int iRealRowNumber(numMaxRows - numMinRows), iRealColumnNumber(numMaxCols - numMinCols - HEADER);
+	_pSyn_Dut->_pSyn_DutTestResult->_WaitStimulusResults.iRealRowNumber = iRealRowNumber;
+	_pSyn_Dut->_pSyn_DutTestResult->_WaitStimulusResults.iRealColumnNumber = iRealColumnNumber;
+
+	RemoveBaseline(&_pSyn_Dut->_pSyn_DutTestResult->_WaitStimulusResults._ImagepFrame,&_pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.arr_ImageFPSFrame, iRealRowNumber, iRealColumnNumber);
 
 	delete pFrame;
 	pFrame = NULL;
+
+	
 }
 
 void Ts_WaitStimulus::ProcessData()
@@ -108,8 +110,7 @@ void Ts_WaitStimulus::ProcessData()
 		return;
 	}
 
-	_pSyn_Dut->_pSyn_DutTestResult->_WaitStimulusResults.iRealRowNumber = _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealRowNumber;
-	_pSyn_Dut->_pSyn_DutTestResult->_WaitStimulusResults.iRealColumnNumber = _pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.iRealColumnNumber;
+	
 }
 
 void Ts_WaitStimulus::CleanUp()
