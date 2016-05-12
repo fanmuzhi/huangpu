@@ -73,9 +73,10 @@ void Ts_OTPWriteBootSector::Execute()
 	//Communication Option and flash bit
 	int index = 51;
 	int mask = _pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._UserSpecifiedBS0[index];
-	if ((otpBs0[index] & mask) == mask)
+	if ((otpBs0[index] | mask) == mask)		//check if writable
 	{
 		otpBs0[index] = mask;
+		otpBs0[index + 8] = mask;
 	}
 	else
 	{
@@ -89,6 +90,7 @@ void Ts_OTPWriteBootSector::Execute()
 	if (mask)
 	{
 		otpBs0[index] |= 0x40;
+		otpBs0[index + 8] |= 0x40;
 	}
 
 	//HW secure
@@ -97,9 +99,21 @@ void Ts_OTPWriteBootSector::Execute()
 	if (mask)
 	{
 		otpBs0[index] |= 0x2;
+		otpBs0[index + 8] |= 0x2;
+	}
+
+	//Sleep Enable
+	index = 49;
+	mask = _pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._UserSpecifiedBS0[index] & 0x10;
+	if (mask)
+	{
+		otpBs0[index] |= 0x10;
+		otpBs0[index + 8] |= 0x10;
 	}
 
 	_pSyn_DutCtrl->FpOtpRomWrite(BOOT_SEC, 0, otpBs0, BS0_SIZE);
+
+
 
 }
 
