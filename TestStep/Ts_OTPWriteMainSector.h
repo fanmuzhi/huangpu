@@ -23,6 +23,8 @@ public:
 
 	bool GetConfigFileArray(string sConfigFileName, uint8_t *pConfigFilerArray, int arrSize = MAX_PART_NUMBER_LENGTH);
 
+	void TranslatePartNum(const string& sPN, uint8_t* pDst);
+
 private:
 	bool bBurnPGA_OOPP;
 };
