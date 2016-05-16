@@ -30,7 +30,7 @@ void Syn_AboutDlg::SetInfo()
 
 	ui->NameLabel->setText("FPS Test Executive");
 
-	ui->VersionLabel->setText("Version:1.0.3");
+	ui->VersionLabel->setText("Version:1.0.4");
 	
 	ui->DateLabel->setText("Release Date:2016-05-12");
 
