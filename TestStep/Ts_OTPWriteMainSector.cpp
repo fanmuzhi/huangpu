@@ -452,21 +452,21 @@ bool Ts_OTPWriteMainSector::GetConfigFileArray(string sConfigFileName, uint8_t *
 
 	string sConfigFile = sConfigFileName.substr(LeftParenthesisPosition + 1, RightParenthesisPosition - LeftParenthesisPosition - 1);
 
-	size_t FirstDashPosition = sConfigFile.find_first_of("-");
+	/*size_t FirstDashPosition = sConfigFile.find_first_of("-");
 	if (FirstDashPosition < 0)
-		return false;
+	return false;
 	size_t SecondDashPosition = sConfigFile.find_first_of("-", FirstDashPosition + 1);
 	if (SecondDashPosition < 0)
-		return false;
+	return false;
 
 	if (arrSize < 8)
-		return false;
+	return false;
 
 	string sFirstInfo = sConfigFile.substr(0, FirstDashPosition);
 	string sSencondInfo = sConfigFile.substr(FirstDashPosition + 1, SecondDashPosition - FirstDashPosition-1);
 	string sThirdInfo = sConfigFile.substr(SecondDashPosition + 1, sConfigFile.size() - SecondDashPosition-1);
 	if (3!=sFirstInfo.size() || 6 != sSencondInfo.size() || 5 != sThirdInfo.size())
-		return false;
+	return false;
 
 	string s1 = sFirstInfo.substr(0, 1);
 	string s2 = sFirstInfo.substr(1, 2);
@@ -484,7 +484,53 @@ bool Ts_OTPWriteMainSector::GetConfigFileArray(string sConfigFileName, uint8_t *
 	pConfigFilerArray[4] = std::stoul(s5, 0, 16);
 	pConfigFilerArray[5] = std::stoul(s6, 0, 16);
 	pConfigFilerArray[6] = std::stoul(s7, 0, 16);
-	pConfigFilerArray[7] = std::stoul(s8, 0, 16);
+	pConfigFilerArray[7] = std::stoul(s8, 0, 16);*/
+
+	TranslatePartNum(sConfigFile, pConfigFilerArray);
 
 	return true;
+}
+
+void Ts_OTPWriteMainSector::TranslatePartNum(const string& sPN, uint8_t* pDst)
+{
+	string        sTemp;
+
+	memset(pDst, 0, MAX_PART_NUMBER_LENGTH);
+
+	//With one character following the 'r', valid PNs have at least 15 characters.
+	if (sPN.length() >= 15)
+	{
+		//Remove all '-' characters up to the 'r'.
+		sTemp = "0";
+		sTemp += sPN.substr(0, 3);
+		sTemp += sPN.substr(4, 6);
+		sTemp += sPN.substr(11, 2);
+
+		//The 1 or 2 characters following the 'r' can be either 0-99 or A-Z.
+		char   nChr1 = (sPN.substr(14)).at(0);
+		if ((nChr1 >= 'A') && (nChr1 <= 'Z'))
+		{
+			pDst[7] = 0x9A + (nChr1 - 'A');
+		}
+		else
+		{
+			if ((nChr1 >= '0') && (nChr1 <= '9'))
+			{
+				pDst[7] = nChr1 - '0';
+				if (sPN.length() >= 16)    //If there are two revision characters.
+				{
+					char   nChr2 = (sPN.substr(15)).at(0);
+					if ((nChr2 >= '0') && (nChr2 <= '9'))
+						pDst[7] = (pDst[7] << 4) + nChr2 - '0';
+				}
+			}
+		}
+
+		//Put the translated part number into given buffer. Convert to BCD.
+		for (int i = 0; i < (MAX_PART_NUMBER_LENGTH - 2); i++)
+		{
+			pDst[i] = sTemp.at(i * 2) << 4;
+			pDst[i] += sTemp.at((i * 2) + 1) & 0x0F;
+		}
+	}
 }

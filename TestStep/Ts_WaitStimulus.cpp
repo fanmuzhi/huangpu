@@ -48,6 +48,7 @@ void Ts_WaitStimulus::SetUp()
 			_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);
 		}
 	}
+
 }
 
 void Ts_WaitStimulus::Execute()
