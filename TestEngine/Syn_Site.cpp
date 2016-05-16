@@ -269,7 +269,7 @@ uint32_t Syn_Site::GetTestResult(Syn_DutTestResult * &opTestResult)
 	return Syn_ExceptionCode::Syn_DutResultNull;
 }
 
-uint32_t Syn_Site::ExecuteTestStep(std::string sTestName, bool setupOnly, bool executeOnly, bool cleanupOnly)
+uint32_t Syn_Site::ExecuteTestStep(std::string sTestName, ExcuteType Type)
 {
 	if (_siteState == SiteState::Error)
 	{
@@ -296,24 +296,37 @@ uint32_t Syn_Site::ExecuteTestStep(std::string sTestName, bool setupOnly, bool e
 	_siteState = Running;
 	try
 	{
-		if (setupOnly)
+		switch (Type)
 		{
-			pTestStep->SetUp();
-		}
-		else if (executeOnly)
-		{
-			pTestStep->Execute();
-		}
-		else if (cleanupOnly)
-		{
-			pTestStep->CleanUp();
-		}
-		else
-		{
-			pTestStep->SetUp();
-			pTestStep->Execute();
-			pTestStep->ProcessData();
-			pTestStep->CleanUp();
+			case Syn_Site::All:
+				pTestStep->SetUp();
+				pTestStep->Execute();
+				pTestStep->ProcessData();
+				pTestStep->CleanUp();
+				break;
+
+			case Syn_Site::Setup:
+				pTestStep->SetUp();
+				break;
+
+			case Syn_Site::Excute:
+				pTestStep->Execute();
+				break;
+
+			case Syn_Site::ProcessData:
+				pTestStep->ProcessData();
+				break;
+
+			case Syn_Site::Cleanup:
+				pTestStep->CleanUp();
+				break;
+
+			default:
+				pTestStep->SetUp();
+				pTestStep->Execute();
+				pTestStep->ProcessData();
+				pTestStep->CleanUp();
+				break;
 		}
 
 		delete pTestStep;

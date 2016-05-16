@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
-    <SysConfigFile>C:/Users/bqiling/Google Drive/Metallica 109A0/FM192/(580-006033-01r01)_OFilm_Manhattan_Huangpu.xml</SysConfigFile>
-    <LogFilePath>C:/logfiles/Huawei_OQC_test</LogFilePath>
+    <SysConfigFile>D:/ConfigFile(xml)/Manhattan/FineTune/(580-006033-01r01)_OFilm_Manhattan_Huangpu.xml</SysConfigFile>
+    <LogFilePath>C:/logfiles</LogFilePath>
     <NumSites>1</NumSites>
-    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="693 693 695 696 694 694 710 696 695 694 851 696 688 694 2268 696 ">1034337</Site1>
+    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="697 697 712 699 697 697 853 699 705 696 2273 699 749 697 3741 699 ">1684806</Site1>
     <AutoController></AutoController>
 </LocalSettings>

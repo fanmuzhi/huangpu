@@ -22,6 +22,8 @@ public:
 
 	enum SiteState{ Idle = 0x8001, TestDataReady, Running, Error, Closed };
 
+	enum ExcuteType{ All = 0x6001, Setup, Excute, ProcessData, Cleanup};
+
 	//static function
 	static uint32_t CreateSiteInstance(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath, const AdcBaseLineInfo &iADCInfo, Syn_Site * &opSiteInstance);
 
@@ -39,7 +41,7 @@ public:
 	uint32_t GetTestResult(Syn_DutTestResult * &opTestResult);
 
 	/*Debug interface for each test step*/
-	uint32_t ExecuteTestStep(std::string sTestName, bool setupOnly = false, bool executeOnly = false, bool cleanupOnly = false);
+	uint32_t ExecuteTestStep(std::string sTestName, ExcuteType Type = Syn_Site::All);
 
 	/*get the current state of site*/
 	inline void GetState(SiteState &oSiteState){ oSiteState = _siteState; };
