@@ -81,7 +81,7 @@ void Syn_Module::GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *
 		pFrame->arr[i / nCols][i%nCols] = pImgBuff[i];
 	}
 
-	for (int i = 0; i < nNumRows; i++)
+	/*for (int i = 0; i < nNumRows; i++)
 	{
 		std::string strTempRowValue;
 		for (int j = HEADER; j < nNumCols; j++)		// HEADER defined the first 8 cols to ignore.
@@ -89,7 +89,7 @@ void Syn_Module::GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *
 			//strTempRowValue += to_string(pImgBuff[i*nRows + j]) + std::string(",");
 			strTempRowValue += to_string(pFrame->arr[i][j]) + std::string(",");
 		}
-	}
+	}*/
 
 	delete[] pImgBuff;
 	pImgBuff = NULL;

@@ -80,6 +80,8 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 
 	if (calInfo.m_bPgaFineTuning)
 	{
+		pTmp = pTempOffsets;
+
 		//Get user-specified number of images with new PGA offsets, then calculate the average.
 		for (int nFrame = 0; nFrame<nNumFrames; nFrame++)
 			GetFingerprintImage(calResult, &arFrames[nFrame], nNumRows, nNumCols);
