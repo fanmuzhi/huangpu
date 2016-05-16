@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>About FPS Test Executive</string>
+   <string>About Huangpu</string>
   </property>
   <layout class="QFormLayout" name="formLayout">
    <item row="0" column="0">

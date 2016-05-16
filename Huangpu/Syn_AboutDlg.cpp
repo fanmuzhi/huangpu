@@ -28,7 +28,7 @@ void Syn_AboutDlg::SetInfo()
 {
 	ui->LogoLabel->setPixmap(QPixmap("images/Synaptics.bmp"));
 
-	ui->NameLabel->setText("FPS Test Executive");
+	ui->NameLabel->setText("Huangpu");
 
 	ui->VersionLabel->setText("Version:1.0.4");
 	
