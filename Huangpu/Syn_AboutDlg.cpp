@@ -32,7 +32,7 @@ void Syn_AboutDlg::SetInfo()
 
 	ui->VersionLabel->setText("Version:1.0.4");
 	
-	ui->DateLabel->setText("Release Date:2016-05-12");
+	ui->DateLabel->setText("Release Date:2016-05-16");
 
 	ui->CopyrightLabel->setText("Copyright@2016 Synaptics");
 }
