@@ -242,14 +242,14 @@ public:
 
     void retranslateUi(QMainWindow *FPS_TestExecutiveClass)
     {
-        FPS_TestExecutiveClass->setWindowTitle(QApplication::translate("FPS_TestExecutiveClass", "FPS Test Executive", 0));
+        FPS_TestExecutiveClass->setWindowTitle(QApplication::translate("FPS_TestExecutiveClass", "Huangpu", 0));
         openAct->setText(QApplication::translate("FPS_TestExecutiveClass", "Open...", 0));
         saveAsAct->setText(QApplication::translate("FPS_TestExecutiveClass", "Save As...", 0));
         exitAct->setText(QApplication::translate("FPS_TestExecutiveClass", "Exit", 0));
         actionExit->setText(QApplication::translate("FPS_TestExecutiveClass", "Exit", 0));
         actionLocalSetttings->setText(QApplication::translate("FPS_TestExecutiveClass", "LocalSetttings", 0));
         actionBinCodes->setText(QApplication::translate("FPS_TestExecutiveClass", "BinCodes", 0));
-        actionAbout_FPS_Test_Executive->setText(QApplication::translate("FPS_TestExecutiveClass", "About FPS Test Executive", 0));
+        actionAbout_FPS_Test_Executive->setText(QApplication::translate("FPS_TestExecutiveClass", "Huangpu", 0));
         actionEngineer_Mode->setText(QApplication::translate("FPS_TestExecutiveClass", "Engineer Mode", 0));
         TestInfoLabel->setText(QApplication::translate("FPS_TestExecutiveClass", "Info", 0));
         QTableWidgetItem *___qtablewidgetitem = TestTableWidget->verticalHeaderItem(0);
