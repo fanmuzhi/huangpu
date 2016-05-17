@@ -316,7 +316,7 @@ bool Ts_WOF::GetZ0WofData(WofTestInfo &wofInfo,WofTestResults &wofResults)
 	_pSyn_DutCtrl->FpReadAndCheckStatus(0);
 
 	//Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.
-	ModifySweepCmdData(WofCmd2PathInfo._pArrayBuf);
+	ModifySweepWofCmdData(WofCmd2PathInfo._pArrayBuf);
 	wofResults.m_nThreshStart = WofCmd2PathInfo._pArrayBuf[0x1E];
 	wofResults.m_nThreshInc = WofCmd2PathInfo._pArrayBuf[0x22];
 	wofResults.m_nThreshStop = WofCmd2PathInfo._pArrayBuf[0x26];
@@ -384,7 +384,7 @@ bool Ts_WOF::GetZ1WofData(WofTestInfo &wofInfo, WofTestResults &wofResults)
 	_pSyn_DutCtrl->FpReadAndCheckStatus(0);
 
 	//Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.
-	ModifySweepCmdData(WofCmd4PathInfo._pArrayBuf);
+	ModifySweepWofCmdData(WofCmd4PathInfo._pArrayBuf);
 	wofResults.m_nThreshStart = WofCmd4PathInfo._pArrayBuf[0x1F];
 	wofResults.m_nThreshInc = WofCmd4PathInfo._pArrayBuf[0x23];
 	wofResults.m_nThreshStop = WofCmd4PathInfo._pArrayBuf[0x27];

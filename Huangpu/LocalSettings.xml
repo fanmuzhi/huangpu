@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
-    <SysConfigFile>C:/Users/bqiling/Google Drive/Viper 86C/Lenovo_P2_A1_configs/updateFWpatch.xml</SysConfigFile>
+    <SysConfigFile>C:/Users/bqiling/Google Drive/Metallica 109A0/FM192/(580-006033-01r01)_OFilm_109A_Huangpu.xml</SysConfigFile>
     <LogFilePath>C:/logfiles</LogFilePath>
     <NumSites>1</NumSites>
-    <Site1 AdcBaseLines="695 695 695 697 696 696 695 697 695 696 695 697 675 696 688 697 " Voltages="1800 1800 3300 3300">1034337</Site1>
+    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="695 695 695 697 696 696 695 697 695 696 695 697 675 696 688 697 ">1034337</Site1>
     <AutoController></AutoController>
 </LocalSettings>

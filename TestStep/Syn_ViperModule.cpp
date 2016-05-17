@@ -26,3 +26,17 @@ void Syn_ViperModule::CopyToPrintPatch(uint8_t* pSrc, uint8_t* pPrintPatch, int 
 		memcpy(&pPrintPatch[nPatchIdx + (nNumBytes + (4 - (nNumBytes % 4)))], pSrc, nNumBytes);
 	}
 }
+
+void Syn_ViperModule::ModifySweepWofCmdData(uint8_t* pSweepCmd) 
+{ 
+	pSweepCmd[0x0C] = 100;	//Gain start.
+	pSweepCmd[0x10] = 100;	//Gain increment.
+	pSweepCmd[0x14] = 200;	//Gain end.
+}
+
+void Syn_ViperModule::ModifySweepSCMWofCmdData(uint8_t* pSweepCmd) 
+{
+	pSweepCmd[0x0B] = 100;	//Gain start.
+	pSweepCmd[0x0F] = 100;	//Gain increment.
+	pSweepCmd[0x13] = 200;	//Gain end.
+}

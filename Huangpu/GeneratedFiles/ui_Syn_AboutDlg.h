@@ -114,7 +114,7 @@ public:
 
     void retranslateUi(QWidget *Syn_AboutDlg)
     {
-        Syn_AboutDlg->setWindowTitle(QApplication::translate("Syn_AboutDlg", "About FPS Test Executive", 0));
+        Syn_AboutDlg->setWindowTitle(QApplication::translate("Syn_AboutDlg", "About Huangpu", 0));
         LogoLabel->setText(QApplication::translate("Syn_AboutDlg", "SYNALogo", 0));
         NameLabel->setText(QApplication::translate("Syn_AboutDlg", "Name", 0));
         VersionLabel->setText(QApplication::translate("Syn_AboutDlg", "Version", 0));

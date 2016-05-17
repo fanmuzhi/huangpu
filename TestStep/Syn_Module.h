@@ -37,7 +37,9 @@ public:
 
 	virtual bool CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRows, CalibrationInfo &calInfo, CalibrationResults &calResult) = 0;
 
-	virtual void ModifySweepCmdData(uint8_t* pGetPrintMerged) {}
+	virtual void ModifySweepWofCmdData(uint8_t* pSweepCmd) {}
+
+	virtual void ModifySweepSCMWofCmdData(uint8_t* pSweepCmd) {}
 
 protected:
 
