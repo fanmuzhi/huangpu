@@ -245,7 +245,7 @@ void Ts_OTPWriteMainSector::Execute()
 
 	//FW patch
 	Syn_PatchInfo fmPatch;
-	if (_pSyn_Dut->FindPatch("FrimwareUpdate", fmPatch))
+	if (_pSyn_Dut->FindPatch("FirmwareUpdate", fmPatch))
 	{
 		if (NULL == fmPatch._pArrayBuf)
 		{

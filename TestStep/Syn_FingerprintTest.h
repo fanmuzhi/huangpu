@@ -41,7 +41,9 @@ public:
 
 	void ComputeRunningTime(double &ioRunningTime);
 
-	void ModifySweepCmdData(uint8_t* pSweepCmd);
+	void ModifySweepWofCmdData(uint8_t* pSweepCmd);
+
+	void ModifySweepSCMWofCmdData(uint8_t* pSweepCmd);
 
 	void RemoveBaseline(FPSFrame *pImgFingerArr, FPSFrame *pImgNoFingerArr, int nNumRow, int nNumCol);
 

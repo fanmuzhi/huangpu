@@ -332,7 +332,7 @@ bool Ts_SCM_WOF::ExecuteBottomSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResul
 	PowerOff();
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 	//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, nVcc, nVcc, true);
-	ModifySweepCmdData(pWofCmd3);
+	ModifySweepSCMWofCmdData(pWofCmd3);
 
 	//Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.
 	results.m_nThreshStart		= pWofCmd3[0x1E];
@@ -420,6 +420,7 @@ bool Ts_SCM_WOF::ExecuteTopSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults&
 
 	PowerOff();
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+	ModifySweepSCMWofCmdData(pWofCmd4);
 	//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, nVcc, nVcc, true);
 
 	//Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.

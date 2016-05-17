@@ -180,7 +180,7 @@ uint32_t Syn_SysConfigOperation::GetSysConfig(Syn_SysConfig &oSyn_SysConfig)
 			rapidxml::xml_attribute<> *attribute = node->first_attribute("Script");
 			if (NULL != attribute)
 			{
-				CurrentTestScript._strScriptName = attribute->value();
+			CurrentTestScript._strScriptName = attribute->value();
 			}*/
 
 			for (rapidxml::xml_node<char> *TestNode = node->first_node(); TestNode != NULL; TestNode = TestNode->next_sibling())
@@ -204,7 +204,7 @@ uint32_t Syn_SysConfigOperation::GetSysConfig(Syn_SysConfig &oSyn_SysConfig)
 			//oSyn_SysConfig._listTestScript.push_back(CurrentTestScript);
 
 		}
-		else 
+		else
 		{
 			Syn_PatchInfo CurrentSyn_XepatchInfo;
 

@@ -11,5 +11,8 @@ public:
 
 	void CopyToPrintPatch(uint8_t* pSrc, uint8_t* pPrintPatch, int nNumBytes, int nPatchIdx);
 
+	virtual void ModifySweepWofCmdData(uint8_t* pSweepCmd);
+
+	virtual void ModifySweepSCMWofCmdData(uint8_t* pSweepCmd);
 };
 
