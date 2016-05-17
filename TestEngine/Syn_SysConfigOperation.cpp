@@ -204,11 +204,13 @@ uint32_t Syn_SysConfigOperation::GetSysConfig(Syn_SysConfig &oSyn_SysConfig)
 			//oSyn_SysConfig._listTestScript.push_back(CurrentTestScript);
 
 		}
-		else if (std::string("ImageAcqPatch") == strNodeName || std::string("PrintFile") == strNodeName || std::string("OtpReadWritePatch") == strNodeName || std::string("OpensShortsPatch") == strNodeName || std::string("WofPatch") == strNodeName || std::string("WofLowPowerPatch") == strNodeName || std::string("ScmWofPatch") == strNodeName || std::string("AfePatch") == strNodeName
-				|| std::string("CacheDataRam") == strNodeName || std::string("CacheTagRam") == strNodeName || std::string("CachInstDataRam") == strNodeName || std::string("CachInstTagRam") == strNodeName || std::string("ScmAndMainRam") == strNodeName
-				|| std::string("Cmd1ScmWofPlot") == strNodeName || std::string("Cmd2ScmWofBin") == strNodeName || std::string("Cmd3SweepTag") == strNodeName || std::string("Cmd4SweepTag") == strNodeName
-				|| std::string("WofCmd1") == strNodeName || std::string("WofCmd2") == strNodeName || std::string("WofCmd3") == strNodeName || std::string("WofCmd4") == strNodeName || std::string("PixelPatch") == strNodeName || std::string("SpiFlashRamPatch") == strNodeName || std::string("BulkEraseCmd") == strNodeName || std::string("ProgramCmd") == strNodeName
-				|| std::string("ReadCmd") == strNodeName || std::string("WovarPatch") == strNodeName || std::string("VCEK_IV") == strNodeName || std::string("WofLowPowerBin") == strNodeName || std::string("ProdOtpReadWritePatch") == strNodeName || std::string("SecurityMgtEngrPatch") == strNodeName || std::string("SecurityMgtProdPatch") == strNodeName || std::string("TakeOwnershipBin") == strNodeName)
+		//else if (std::string("ImageAcqPatch") == strNodeName || std::string("PrintFile") == strNodeName || std::string("OtpReadWritePatch") == strNodeName || std::string("OpensShortsPatch") == strNodeName || std::string("WofPatch") == strNodeName || std::string("WofLowPowerPatch") == strNodeName || std::string("ScmWofPatch") == strNodeName || std::string("AfePatch") == strNodeName
+		//		|| std::string("CacheDataRam") == strNodeName || std::string("CacheTagRam") == strNodeName || std::string("CachInstDataRam") == strNodeName || std::string("CachInstTagRam") == strNodeName || std::string("ScmAndMainRam") == strNodeName
+		//		|| std::string("Cmd1ScmWofPlot") == strNodeName || std::string("Cmd2ScmWofBin") == strNodeName || std::string("Cmd3SweepTag") == strNodeName || std::string("Cmd4SweepTag") == strNodeName
+		//		|| std::string("WofCmd1") == strNodeName || std::string("WofCmd2") == strNodeName || std::string("WofCmd3") == strNodeName || std::string("WofCmd4") == strNodeName || std::string("PixelPatch") == strNodeName || std::string("SpiFlashRamPatch") == strNodeName || std::string("BulkEraseCmd") == strNodeName || std::string("ProgramCmd") == strNodeName
+		//		|| std::string("ReadCmd") == strNodeName || std::string("WovarPatch") == strNodeName || std::string("VCEK_IV") == strNodeName || std::string("WofLowPowerBin") == strNodeName || std::string("ProdOtpReadWritePatch") == strNodeName || std::string("SecurityMgtEngrPatch") == strNodeName || std::string("SecurityMgtProdPatch") == strNodeName || std::string("TakeOwnershipBin") == strNodeName)
+		//{
+		else
 		{
 			Syn_PatchInfo CurrentSyn_XepatchInfo;
 
@@ -248,10 +250,10 @@ uint32_t Syn_SysConfigOperation::GetSysConfig(Syn_SysConfig &oSyn_SysConfig)
 			SysConfigJudgeTag += 1;
 
 		}
-		else
-		{
-			continue;
-		}
+		//else
+		//{
+		//	continue;
+		//}
 	}
 
 	if (SysConfigJudgeTag < 20)
