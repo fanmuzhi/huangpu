@@ -389,12 +389,27 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 		sSensorSerialNumber.push_back(DutInfo->_getVerInfo.sSerialNumber[i]);
 	}
 
-	std::string strFilePath = sFolderPath + std::string("/") + sSensorSerialNumber + std::string(".csv");
-	int iCount(1);
-	while (FileExists(strFilePath))
+	std::string strFilePath("");
+	if (0 == sFileName.size())
 	{
-		strFilePath = sFolderPath + std::string("/") + sSensorSerialNumber + "_" + to_string(iCount) + std::string(".csv");
-		iCount++;
+		strFilePath = sFolderPath + std::string("/") + sSensorSerialNumber + std::string(".csv");
+		int iCount(1);
+		while (FileExists(strFilePath))
+		{
+			strFilePath = sFolderPath + std::string("/") + sSensorSerialNumber + "_" + to_string(iCount) + std::string(".csv");
+			iCount++;
+		}
+	}
+	else
+	{
+		if (std::string::npos != sFileName.find_first_of(".csv"))
+		{
+			strFilePath = sFolderPath + "\\" + sFileName;
+		}
+		else
+		{
+			strFilePath = sFolderPath + "\\" + sFileName + ".csv";
+		}
 	}
 
 	FILE *pFile = fopen(strFilePath.c_str(), "a");
