@@ -775,6 +775,8 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	{
 		fprintf(pFile, "\nHuaWei SNR Test,%s,,", DutResults->_huaweiIqTestResults._bPass ? "Pass" : "Fail");
 		fprintf(pFile, "\n%f,", DutResults->_huaweiIqTestResults.snr);
+		fprintf(pFile, "%f,", DutResults->_huaweiIqTestResults.singalValue);
+		fprintf(pFile, "%f,", DutResults->_huaweiIqTestResults.nosieValue);
 		fprintf(pFile, "\n");
 	}
 

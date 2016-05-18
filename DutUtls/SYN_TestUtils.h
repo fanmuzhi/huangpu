@@ -129,13 +129,16 @@ typedef struct
 	int	_bExecuted;
 	int _highLimit;
 	int _lowLimit;
+	int _numSamples;
 
 }HuaweiIQTestInfo;
 
 typedef struct
 {
-	float snr;
-	int	_bPass;
+	float	snr;
+	int		singalValue;
+	float	nosieValue;
+	int		_bPass;
 
 }HuaweiIQTestResults;
 

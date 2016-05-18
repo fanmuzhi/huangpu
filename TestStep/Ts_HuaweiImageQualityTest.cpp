@@ -33,12 +33,13 @@ void Ts_HuaweiImageQualityTest::SetUp()
 	_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._bExecuted = false;
 	_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._highLimit = 100;
 	_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._lowLimit = 30;
+	_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._numSamples = 30;
 	
 	ParseTestStepArgs(_strArgs, listOfArgValue);
 	size_t ilistSize = listOfArgValue.size();
-	if (ilistSize < 2)
+	if (ilistSize < 3)
 	{
-		for (size_t t = 1; t <= 2 - ilistSize; t++)
+		for (size_t t = 1; t <= 3 - ilistSize; t++)
 			listOfArgValue.push_back(std::string(""));
 	}
 
@@ -46,6 +47,8 @@ void Ts_HuaweiImageQualityTest::SetUp()
 		_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._highLimit = atoi(listOfArgValue[0].c_str());
 	if (0 != listOfArgValue[1].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._lowLimit = atoi(listOfArgValue[1].c_str());
+	if (0 != listOfArgValue[2].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._numSamples = atoi(listOfArgValue[2].c_str());
 }
 
 void Ts_HuaweiImageQualityTest::Execute()
@@ -64,7 +67,7 @@ void Ts_HuaweiImageQualityTest::Execute()
 	uint16_t _uiNumRows = numMaxRowsWithStim - numMinRowsWithStim;
 	uint16_t _uiNumCols = numMaxColsWithStim - numMinColsWithStim - HEADER;
 
-	int NumberOfIamge(30);
+	int NumberOfIamge(_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._numSamples);
 
 	uint8_t *arrImageNoFinger = new uint8_t[_uiNumRows * _uiNumCols * NumberOfIamge];
 	int k = 0;
@@ -101,9 +104,11 @@ void Ts_HuaweiImageQualityTest::Execute()
 	}
 
 	float snrValue(0);
+	int singalvalue(0);
+	float noisevalue(0);
 	try
 	{
-		snrValue = testSNR(arrImageNoFinger, arrImageFinger,_uiNumCols, _uiNumRows, NumberOfIamge);
+		snrValue = testSNR(arrImageNoFinger, arrImageFinger, _uiNumCols, _uiNumRows, NumberOfIamge, &singalvalue, &noisevalue);
 	}
 	catch (...)
 	{
@@ -114,6 +119,8 @@ void Ts_HuaweiImageQualityTest::Execute()
 	}
 
 	_pSyn_Dut->_pSyn_DutTestResult->_huaweiIqTestResults.snr = snrValue;
+	_pSyn_Dut->_pSyn_DutTestResult->_huaweiIqTestResults.singalValue = singalvalue;
+	_pSyn_Dut->_pSyn_DutTestResult->_huaweiIqTestResults.nosieValue = noisevalue;
 
 	delete[] arrImageNoFinger;
 	arrImageNoFinger = NULL;
