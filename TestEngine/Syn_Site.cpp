@@ -773,9 +773,10 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 
 	if (DutInfo->_huaweiIqTestInfo._bExecuted)
 	{
-		fprintf(pFile, "\nHuaWei SNR Test,%s,,", DutResults->_huaweiIqTestResults._bPass ? "Pass" : "Fail");
-		fprintf(pFile, "\n%f,", DutResults->_huaweiIqTestResults.snr);
-		fprintf(pFile, "%f,", DutResults->_huaweiIqTestResults.singalValue);
+		fprintf(pFile, "\nHuaWei ImageQuality Test,%s,%.0f ms,", DutResults->_huaweiIqTestResults._bPass ? "Pass" : "Fail", DutResults->_huaweiIqTestResults.m_elapsedtime);
+		fprintf(pFile, "Signal,Noise,SNR");
+		fprintf(pFile, "\n,,,%f,", DutResults->_huaweiIqTestResults.snr);
+		fprintf(pFile, "%d,", DutResults->_huaweiIqTestResults.singalValue);
 		fprintf(pFile, "%f,", DutResults->_huaweiIqTestResults.nosieValue);
 		fprintf(pFile, "\n");
 	}
