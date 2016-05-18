@@ -30,9 +30,9 @@ void Syn_AboutDlg::SetInfo()
 
 	ui->NameLabel->setText("Huangpu");
 
-	ui->VersionLabel->setText("Version:1.0.4");
+	ui->VersionLabel->setText("Version:1.0.5");
 	
-	ui->DateLabel->setText("Release Date:2016-05-16");
+	ui->DateLabel->setText("Release Date:2016-05-18");
 
 	ui->CopyrightLabel->setText("Copyright@2016 Synaptics");
 }
