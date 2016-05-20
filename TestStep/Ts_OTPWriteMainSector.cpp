@@ -72,7 +72,7 @@ void Ts_OTPWriteMainSector::Execute()
 	//nPGA_OOPP_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPGA_OOPP_count;
 	//nScmWofBot_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nScmWofBot_count;
 	//nProductId_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nProductId_count;
-	nPartNumberId_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPartNumberId_count;
+	//nPartNumberId_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPartNumberId_count;
 
 	//Cablirate
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted)
@@ -244,6 +244,7 @@ void Ts_OTPWriteMainSector::Execute()
 		PgaRatio = (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nPgaOffsetRatio)*100;
 		if (LnaResult&&PgaRatio)
 		{
+			memset(arMS0, 0, sizeof(arMS0));
 			arMS0[0] = LnaGainValue;
 			arMS0[1] = PgaGainValue;
 			arMS0[2] = (uint8_t)(PgaRatio & 0xFF);

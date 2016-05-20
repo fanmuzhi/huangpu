@@ -111,6 +111,7 @@ typedef struct
 	int		_bCheckTAG_PGA_OOPP;
 	int		_bCheckTAG_PRODUCT_ID;
 	int		_bCheckTAG_PART_NUMBERS;
+	int		_bCheckTAG_LNA_PGA_GAINS;
 
 }OTPCheckInfo;
 
@@ -376,6 +377,7 @@ typedef struct
 	int			m_nLNA_count, m_nPGA_OOPR_count, m_nPGA_OOPP_count, m_nSNR_count;
 	int			m_nFlexId_count, m_nWofBot_count, m_nWofTop_count, m_nDutTempAdc_count;
 	int			m_nScmWofTop_count, m_nScmWofBot_count, m_nProductId_count, m_nPartNumberId_count;
+	int			m_nLNAPGAGains_count;
 	uint8_t		m_arPgaOffsets[NUM_PGA_OOPP_OTP_ROWS * MAXCOL];
 	uint8_t     m_pPGAOtpArray[NUM_PGA_OOPP_OTP_ROWS * MAXCOL];
 	int			m_nStage2VarianceScore;

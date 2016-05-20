@@ -43,14 +43,15 @@ void Ts_OTPCheck::SetUp()
 	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_BOT = 1;
 	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_TOP = 1;
 	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PART_NUMBERS = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_LNA_PGA_GAINS = 1;
 
 	std::vector<std::string> listOfArgValue;
 	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bExecuted = false;
 	ParseTestStepArgs(_strArgs, listOfArgValue);
 	size_t ilistSize = listOfArgValue.size();
-	if (ilistSize < 14)
+	if (ilistSize < 13)
 	{
-		for (size_t t = 1; t <= 14 - ilistSize; t++)
+		for (size_t t = 1; t <= 13 - ilistSize; t++)
 			listOfArgValue.push_back(std::string(""));
 	}
 	if (0 != listOfArgValue[0].length())
@@ -77,6 +78,8 @@ void Ts_OTPCheck::SetUp()
 		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_TOP= atoi(listOfArgValue[10].c_str());
 	if (0 != listOfArgValue[11].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PART_NUMBERS= atoi(listOfArgValue[11].c_str());
+	if (0 != listOfArgValue[12].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_LNA_PGA_GAINS = atoi(listOfArgValue[12].c_str());
 
 	//Power On
 	PowerOff();
@@ -231,6 +234,13 @@ void Ts_OTPCheck::Execute()
 
 		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_PART_NUMBERS", HexToString(pDst, 0, 19)));
 	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_LNA_PGA_GAINS)
+	{
+		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA_PGA_GAINS, pDst, MS0_SIZE);
+		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nLNAPGAGains_count = count;
+
+		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_LNA_PGA_GAINS", HexToString(pDst, 0, 11)));
+	}
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bExecuted = true;
 }
@@ -345,6 +355,11 @@ void Ts_OTPCheck::ProcessData()
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PART_NUMBERS)
 	{
 		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPartNumberId_count < count_threshold)
+			bPass = false;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_LNA_PGA_GAINS)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nLNAPGAGains_count < count_threshold)
 			bPass = false;
 	}
 
