@@ -58,7 +58,7 @@ void Ts_OTPWriteMainSector::Execute()
 	uint8_t	arMS0[MS0_SIZE] = { 0 };
 	bool	bSuccess = true;
 	int		nNumCols = _pSyn_Dut->_ColumnNumber;
-	int		nLNA_count, nPGA_count, nSNR_count;
+	int		nLNA_count, nPGA_count, nSNR_count, nLNA_PGA_GAINS_count;
 	int		nFlexId_count, nWofBot_count, nWofTop_count, nDutTempAdc_count, nPGA_OOPP_count, nScmWofTop_count, nScmWofBot_count, nProductId_count, nPartNumberId_count;
 	MtAndConfigPnInfo    partNumbers;
 
@@ -232,6 +232,32 @@ void Ts_OTPWriteMainSector::Execute()
 		}
 	}
 
+	//LNA_PGA_GAINS
+	nLNA_PGA_GAINS_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA_PGA_GAINS, arMS0, MS0_SIZE);
+	if (nLNA_PGA_GAINS_count == 0)
+	{
+		uint8_t LnaGainValue(0), PgaGainValue(0);
+		bool LnaResult(false), PgaResult(false);
+		LnaResult = FindGainInPrintFile(0x08, 0x21, LnaGainValue);
+		PgaResult = FindGainInPrintFile(0x48, 0x21, PgaGainValue);
+		uint16_t PgaRatio(0);
+		PgaRatio = (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nPgaOffsetRatio)*100;
+		if (LnaResult&&PgaRatio)
+		{
+			arMS0[0] = LnaGainValue;
+			arMS0[1] = PgaGainValue;
+			arMS0[2] = (uint8_t)(PgaRatio & 0xFF);
+			arMS0[3] = (uint8_t)(PgaRatio >> 8);
+			arMS0[4] = LnaGainValue;
+			arMS0[5] = PgaGainValue;
+			arMS0[6] = (uint8_t)(PgaRatio & 0xFF);
+			arMS0[7] = (uint8_t)(PgaRatio >> 8);
+
+			BurnToOTP(EXT_TAG_LNA_PGA_GAINS, arMS0, 8);
+			BurnToOTP(EXT_TAG_LNA_PGA_GAINS, arMS0, 8);
+		}
+	}
+
 	//PART_NUMBERS
 	if (GetMtAndConfigPartNumbers(&partNumbers))
 	{
@@ -251,10 +277,10 @@ void Ts_OTPWriteMainSector::Execute()
 		{
 			return;
 		}
-		if (!RegCheckBitSet())
+		/*if (!RegCheckBitSet())
 		{
 			return;
-		}
+		}*/
 		_pSyn_DutCtrl->FpOtpRomWrite(MAIN_SEC, 1, fmPatch._pArrayBuf, fmPatch._uiArraySize);
 
 	}
@@ -370,7 +396,7 @@ void Ts_OTPWriteMainSector::BurnToOTP(long nRecType, uint8_t* pSrc, int numBytes
 	arOutBuf[18] = 0x0E;
 
 	if ((nRecType == EXT_TAG_PGA_OOPR) || (nRecType == EXT_TAG_PGA_OOPP) ||(nRecType == EXT_TAG_LNA) || 
-		(nRecType == EXT_TAG_WOF_BOT) || (nRecType == EXT_TAG_SCM_WOF_BOT)|| (nRecType == EXT_TAG_SCM_WOF_TOP) || (nRecType == EXT_TAG_WOF_TOP))
+		(nRecType == EXT_TAG_WOF_BOT) || (nRecType == EXT_TAG_SCM_WOF_BOT) || (nRecType == EXT_TAG_SCM_WOF_TOP) || (nRecType == EXT_TAG_WOF_TOP) || (nRecType == EXT_TAG_LNA_PGA_GAINS))
 	{
 		//PGA and LNA records have an extra 4 bytes (0x00000007).
 		arOutBuf[24] = 0x07;
@@ -533,4 +559,26 @@ void Ts_OTPWriteMainSector::TranslatePartNum(const string& sPN, uint8_t* pDst)
 			pDst[i] += sTemp.at((i * 2) + 1) & 0x0F;
 		}
 	}
+}
+
+bool Ts_OTPWriteMainSector::FindGainInPrintFile(uint8_t iFirstValue, uint8_t iSecondValue, uint8_t &oGainValue)
+{
+	Syn_PatchInfo PrintFileInfo;
+	bool rc = _pSyn_Dut->FindPatch("PrintFile", PrintFileInfo);
+	if (!rc || NULL == PrintFileInfo._pArrayBuf)
+		return false;
+
+	rc = false;
+	for (int i = 0; i < PrintFileInfo._uiArraySize - 2; i++)
+	{
+		if (iFirstValue == PrintFileInfo._pArrayBuf[i] && iSecondValue == PrintFileInfo._pArrayBuf[i + 1])
+		{
+			oGainValue = PrintFileInfo._pArrayBuf[i + 2];
+			rc = true;
+			break;
+		}
+	}
+
+
+	return rc;
 }

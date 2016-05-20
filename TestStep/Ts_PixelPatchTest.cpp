@@ -48,6 +48,9 @@ void Ts_PixelPatchTest::SetUp()
 	if (0 != listOfArgValue[1].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_pixelPatchInfo.m_nDelay_ms = atoi(listOfArgValue[1].c_str());
 
+	//
+	//_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sPixPatchFail);
+
 	//Power On
 	PowerOff();
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
@@ -91,6 +94,7 @@ void Ts_PixelPatchTest::ProcessData()
 	else
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("PixelPatchTest", "Pass"));
+		//_pSyn_Dut->_pSyn_DutTestResult->_binCodes.pop_back();
 	}
 
 	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_pixelPatchResults.m_elapsedtime);

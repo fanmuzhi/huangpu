@@ -58,7 +58,8 @@ void Ts_Invalidate::Execute()
 										EXT_TAG_PGA_OOPP,
 										EXT_TAG_SCM_WOF_BOT,
 										EXT_TAG_SCM_WOF_TOP,
-										EXT_TAG_PART_NUMBERS};
+										EXT_TAG_PART_NUMBERS,
+										EXT_TAG_LNA_PGA_GAINS };
 
 	for (int i = 0; i < NUM_EXT_TAGS; i++)
 	{
@@ -151,6 +152,10 @@ void Ts_Invalidate::get_invalidate_arguments(uint32_t tagId, char* outString, in
 
 		case EXT_TAG_PART_NUMBERS:
 			extended_tag[0] = 0x0F;
+			break;
+
+		case EXT_TAG_LNA_PGA_GAINS:
+			extended_tag[0] = 0x12;
 			break;
 
 		default:
