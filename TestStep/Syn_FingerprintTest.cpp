@@ -252,3 +252,23 @@ void Syn_FingerprintTest::RemoveBaseline(FPSFrame *pImgFingerArr, FPSFrame *pImg
 	}
 
 }
+
+void Syn_FingerprintTest::TrimOsc(OscTrimInfo &iOscTrimInfo, OscTrimResults &ioOscTrimResults, uint16_t Vdd_mV, uint16_t Vio_mV, uint16_t Vled_mV, uint16_t Vddh_mV)
+{
+	if (NULL == _pSyn_Module)
+	{
+		return;
+	}
+
+	return _pSyn_Module->TrimOsc(iOscTrimInfo, ioOscTrimResults, Vdd_mV,Vio_mV,Vled_mV,Vddh_mV);
+}
+
+void Syn_FingerprintTest::TrimSlowOsc(SlowOscInfo &iSlowOscInfo, SlowOscResults &ioSlowOscResults, uint16_t Vdd_mV, uint16_t Vio_mV, uint16_t Vled_mV, uint16_t Vddh_mV)
+{
+	if (NULL == _pSyn_Module)
+	{
+		return;
+	}
+
+	return _pSyn_Module->TrimSlowOsc(iSlowOscInfo, ioSlowOscResults, Vdd_mV, Vio_mV, Vled_mV, Vddh_mV);
+}
