@@ -251,10 +251,10 @@ void Ts_OTPWriteMainSector::Execute()
 		{
 			return;
 		}
-		if (!RegCheckBitSet())
-		{
-			return;
-		}
+		//if (!RegCheckBitSet())
+		//{
+		//	return;
+		//}
 		_pSyn_DutCtrl->FpOtpRomWrite(MAIN_SEC, 1, fmPatch._pArrayBuf, fmPatch._uiArraySize);
 
 	}

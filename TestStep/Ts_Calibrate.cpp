@@ -186,7 +186,7 @@ void Ts_Calibrate::Execute()
 		//If the OOPP offsets exist in the OTP, put them in a more convenient location. Skip the 0x00000007 stored in 1st 4 bytes.
 		//int nPgaRecCount = GetMS0RecordData(TAG_CAL, EXT_TAG_PGA_OOPP, pPgaValues, MS0_SIZE, site);
 		int nPgaRecCount = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPP, pPgaValues, MS0_SIZE);
-		memcpy(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPGAOtpArray, &pPgaValues[4], NUM_PGA_OOPP_OTP_ROWS * numCols);
+		memcpy(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPGAOtpArray, &pPgaValues[4], NUM_PGA_OOPP_OTP_ROWS * (numCols  - HEADER));
 
 		bSuccess = CalculatePgaOffsets_OOPP(numCols, numRows, _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults);
 		if (!bSuccess)
@@ -302,7 +302,7 @@ int32_t Ts_Calibrate::OtpPgaVarianceTest(int8_t* pOtpPgaOffsets, int8_t* pCurPga
 
 	//Calculate the variance between OTP PGA offsets and current PGA offsets.
 	int32_t nVariance = 0, nDelta;
-	for (int i=0; i < NUM_PGA_OOPP_OTP_ROWS * (nNumCols-8); i++)
+	for (int i=0; i < NUM_PGA_OOPP_OTP_ROWS * (nNumCols-HEADER); i++)
 	{
 		nDelta = (int32_t)(pOtpPgaOffsets[i] - pCurPgaOffsets[i]);
 		nVariance += nDelta * nDelta;
