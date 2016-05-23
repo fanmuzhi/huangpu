@@ -439,6 +439,33 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	//InitlizationStep
 	fprintf(pFile, "\nInitialization,%s,%d ms\n", DutResults->_initResults.m_bPass ? "Pass" : "Fail", 0);
 
+	//Osc Trim
+	if (DutInfo->_OscTrimInfo.m_bExecuted)
+	{
+		if (DutResults->_OscTrimResults.m_bPass)
+		{
+			fprintf(pFile, "\nOsc Trim,Pass,%.0f ms,%s,%d", .0f, (DutInfo->_OscTrimInfo.m_bDefaultValueUsed) ? "Default Value Used" : "Generated", DutResults->_OscTrimResults.m_nOscTrim);
+		}
+		else //Failed Osc Trim
+		{
+			fprintf(pFile, "\nOsc Trim,Fail,%.0f ms", .0f);
+		}
+	}
+	
+	//SlowOsc Trim
+	if (DutInfo->_OscTrimInfo.m_bExecuted)
+	{
+		uint32_t nSlowOscFreq = (((DutResults->_SlowOscResults.m_nTrim) << 8) | DutResults->_SlowOscResults.m_nBias);
+		if (DutResults->_SlowOscResults.m_bPass)
+		{
+			fprintf(pFile, "\nSlow Osc Trim,Pass,%.0f ms,%s,%d",.0f,(DutResults->_SlowOscResults.m_bDefaultValueUsed) ? "Default Value Used" : "Generated",nSlowOscFreq);
+		}
+		else //Failed Osc Trim
+		{
+			fprintf(pFile, "\nSlow Osc Trim,Fail,%.0f ms", .0f);
+		}
+	}
+
 	//RAMTest
 	if (DutInfo->_RAMTestInfo.m_bExecuted)
 	{
