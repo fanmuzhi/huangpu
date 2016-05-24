@@ -18,6 +18,7 @@
 #include <string>
 #include <time.h>
 //#include <thread>
+#include <regex>
 
 //#define ELPP_STL_LOGGING
 //#define ELPP_THREAD_SAFE
@@ -198,8 +199,14 @@ uint32_t Syn_Site::Open()
 
 	//fill info
 	_pSyn_Dut->InitData(_SysConfig,_ADCInfo);
+	
 	size_t stringSize = _strConfigFilePath.size();
 	size_t lastBackslashIndex = _strConfigFilePath.find_last_of("/");
+	if (std::string::npos == lastBackslashIndex)
+	{
+		lastBackslashIndex = _strConfigFilePath.find_last_of("\\");
+		lastBackslashIndex += 1;
+	}
 	_pSyn_Dut->_sConfigFileName = _strConfigFilePath.substr(lastBackslashIndex + 1, stringSize - lastBackslashIndex-1);
 	
 	_siteState = Idle;

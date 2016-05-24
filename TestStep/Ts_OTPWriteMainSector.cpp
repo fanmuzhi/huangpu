@@ -1,5 +1,7 @@
 #include "Ts_OTPWriteMainSector.h"
 
+#include <regex>
+
 Ts_OTPWriteMainSector::Ts_OTPWriteMainSector(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
 , bBurnPGA_OOPP(false)
@@ -470,51 +472,19 @@ bool Ts_OTPWriteMainSector::GetMtAndConfigPartNumbers(MtAndConfigPnInfo* pInfo)
 
 bool Ts_OTPWriteMainSector::GetConfigFileArray(string sConfigFileName, uint8_t *pConfigFilerArray, int arrSize)
 {
-	size_t LeftParenthesisPosition = sConfigFileName.find_first_of("(");
-	size_t RightParenthesisPosition = sConfigFileName.find_first_of(")");
-	if (LeftParenthesisPosition < 0 || RightParenthesisPosition < 0)
+	const std::regex pattern("(\\d{1,3})-(\\d{1,6})-(\\d{1,2})r(\\d{1,2})");
+	std::smatch results;
+	if (std::regex_search(sConfigFileName, results, pattern))
+	{
+		std::string sFileName = results.str();
+		//std::cout << sFileName << std::endl;
+		TranslatePartNum(sFileName, pConfigFilerArray);
+	}
+	else
 	{
 		return false;
 	}
-
-	string sConfigFile = sConfigFileName.substr(LeftParenthesisPosition + 1, RightParenthesisPosition - LeftParenthesisPosition - 1);
-
-	/*size_t FirstDashPosition = sConfigFile.find_first_of("-");
-	if (FirstDashPosition < 0)
-	return false;
-	size_t SecondDashPosition = sConfigFile.find_first_of("-", FirstDashPosition + 1);
-	if (SecondDashPosition < 0)
-	return false;
-
-	if (arrSize < 8)
-	return false;
-
-	string sFirstInfo = sConfigFile.substr(0, FirstDashPosition);
-	string sSencondInfo = sConfigFile.substr(FirstDashPosition + 1, SecondDashPosition - FirstDashPosition-1);
-	string sThirdInfo = sConfigFile.substr(SecondDashPosition + 1, sConfigFile.size() - SecondDashPosition-1);
-	if (3!=sFirstInfo.size() || 6 != sSencondInfo.size() || 5 != sThirdInfo.size())
-	return false;
-
-	string s1 = sFirstInfo.substr(0, 1);
-	string s2 = sFirstInfo.substr(1, 2);
-	string s3 = sSencondInfo.substr(0, 2);
-	string s4 = sSencondInfo.substr(2, 2);
-	string s5 = sSencondInfo.substr(4, 2);
-	string s6 = sThirdInfo.substr(0, 2);
-	string s7 = sThirdInfo.substr(3, 1);
-	string s8 = sThirdInfo.substr(4, 1);
-
-	pConfigFilerArray[0] = std::stoul(s1, 0, 16);
-	pConfigFilerArray[1] = std::stoul(s2, 0, 16);
-	pConfigFilerArray[2] = std::stoul(s3, 0, 16);
-	pConfigFilerArray[3] = std::stoul(s4, 0, 16);
-	pConfigFilerArray[4] = std::stoul(s5, 0, 16);
-	pConfigFilerArray[5] = std::stoul(s6, 0, 16);
-	pConfigFilerArray[6] = std::stoul(s7, 0, 16);
-	pConfigFilerArray[7] = std::stoul(s8, 0, 16);*/
-
-	TranslatePartNum(sConfigFile, pConfigFilerArray);
-
+	
 	return true;
 }
 
