@@ -332,6 +332,14 @@ typedef struct
 	int			m_nVio;
 	int			m_nVddtx;
 	int			m_nVled;
+
+	int			m_bUseConfigGains;
+	uint8_t		m_nImageLnaGain;
+	uint8_t		m_nImagePgaGain;
+	uint16_t	m_nImagePgaRatio;
+	uint8_t		m_nNavLnaGain;
+	uint8_t		m_nNavPgaGain;
+	uint16_t	m_nNavPgaRatio;
 }InitializationInfo;
 
 typedef struct

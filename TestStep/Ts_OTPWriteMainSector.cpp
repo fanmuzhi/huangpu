@@ -1,5 +1,7 @@
 #include "Ts_OTPWriteMainSector.h"
 
+#include <regex>
+
 Ts_OTPWriteMainSector::Ts_OTPWriteMainSector(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
 , bBurnPGA_OOPP(false)
@@ -234,9 +236,9 @@ void Ts_OTPWriteMainSector::Execute()
 
 	//LNA_PGA_GAINS
 	nLNA_PGA_GAINS_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA_PGA_GAINS, arMS0, MS0_SIZE);
-	if (nLNA_PGA_GAINS_count == 0)
+	if (nLNA_PGA_GAINS_count == 0&&0!=_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_bUseConfigGains)
 	{
-		uint8_t LnaGainValue(0), PgaGainValue(0);
+		/*uint8_t LnaGainValue(0), PgaGainValue(0);
 		bool LnaResult(false), PgaResult(false);
 		LnaResult = FindGainInPrintFile(0x08, 0x21, LnaGainValue);
 		PgaResult = FindGainInPrintFile(0x48, 0x21, PgaGainValue);
@@ -256,7 +258,19 @@ void Ts_OTPWriteMainSector::Execute()
 
 			BurnToOTP(EXT_TAG_LNA_PGA_GAINS, arMS0, 8);
 			BurnToOTP(EXT_TAG_LNA_PGA_GAINS, arMS0, 8);
-		}
+		}*/
+
+		arMS0[0] = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nImageLnaGain;
+		arMS0[1] = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nImagePgaGain;
+		arMS0[2] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nImagePgaRatio & 0xFF);
+		arMS0[3] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nImagePgaRatio >> 8);
+		arMS0[4] = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nNavLnaGain;
+		arMS0[5] = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nNavPgaGain;
+		arMS0[6] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nNavPgaRatio & 0xFF);
+		arMS0[7] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nNavPgaRatio >> 8);
+
+		BurnToOTP(EXT_TAG_LNA_PGA_GAINS, arMS0, 8);
+		BurnToOTP(EXT_TAG_LNA_PGA_GAINS, arMS0, 8);
 	}
 
 	//PART_NUMBERS
@@ -470,51 +484,19 @@ bool Ts_OTPWriteMainSector::GetMtAndConfigPartNumbers(MtAndConfigPnInfo* pInfo)
 
 bool Ts_OTPWriteMainSector::GetConfigFileArray(string sConfigFileName, uint8_t *pConfigFilerArray, int arrSize)
 {
-	size_t LeftParenthesisPosition = sConfigFileName.find_first_of("(");
-	size_t RightParenthesisPosition = sConfigFileName.find_first_of(")");
-	if (LeftParenthesisPosition < 0 || RightParenthesisPosition < 0)
+	const std::regex pattern("(\\d{1,3})-(\\d{1,6})-(\\d{1,2})r(\\d{1,2})");
+	std::smatch results;
+	if (std::regex_search(sConfigFileName, results, pattern))
+	{
+		std::string sFileName = results.str();
+		//std::cout << sFileName << std::endl;
+		TranslatePartNum(sFileName, pConfigFilerArray);
+	}
+	else
 	{
 		return false;
 	}
-
-	string sConfigFile = sConfigFileName.substr(LeftParenthesisPosition + 1, RightParenthesisPosition - LeftParenthesisPosition - 1);
-
-	/*size_t FirstDashPosition = sConfigFile.find_first_of("-");
-	if (FirstDashPosition < 0)
-	return false;
-	size_t SecondDashPosition = sConfigFile.find_first_of("-", FirstDashPosition + 1);
-	if (SecondDashPosition < 0)
-	return false;
-
-	if (arrSize < 8)
-	return false;
-
-	string sFirstInfo = sConfigFile.substr(0, FirstDashPosition);
-	string sSencondInfo = sConfigFile.substr(FirstDashPosition + 1, SecondDashPosition - FirstDashPosition-1);
-	string sThirdInfo = sConfigFile.substr(SecondDashPosition + 1, sConfigFile.size() - SecondDashPosition-1);
-	if (3!=sFirstInfo.size() || 6 != sSencondInfo.size() || 5 != sThirdInfo.size())
-	return false;
-
-	string s1 = sFirstInfo.substr(0, 1);
-	string s2 = sFirstInfo.substr(1, 2);
-	string s3 = sSencondInfo.substr(0, 2);
-	string s4 = sSencondInfo.substr(2, 2);
-	string s5 = sSencondInfo.substr(4, 2);
-	string s6 = sThirdInfo.substr(0, 2);
-	string s7 = sThirdInfo.substr(3, 1);
-	string s8 = sThirdInfo.substr(4, 1);
-
-	pConfigFilerArray[0] = std::stoul(s1, 0, 16);
-	pConfigFilerArray[1] = std::stoul(s2, 0, 16);
-	pConfigFilerArray[2] = std::stoul(s3, 0, 16);
-	pConfigFilerArray[3] = std::stoul(s4, 0, 16);
-	pConfigFilerArray[4] = std::stoul(s5, 0, 16);
-	pConfigFilerArray[5] = std::stoul(s6, 0, 16);
-	pConfigFilerArray[6] = std::stoul(s7, 0, 16);
-	pConfigFilerArray[7] = std::stoul(s8, 0, 16);*/
-
-	TranslatePartNum(sConfigFile, pConfigFilerArray);
-
+	
 	return true;
 }
 
