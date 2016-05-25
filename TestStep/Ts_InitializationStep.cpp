@@ -58,9 +58,9 @@ void Ts_InitializationStep::SetUp()
 	std::vector<std::string> listOfArgValue;
 	ParseTestStepArgs(_strArgs, listOfArgValue);
 	size_t ilistSize = listOfArgValue.size();
-	if (ilistSize < 21)
+	if (ilistSize < 28)
 	{
-		for (size_t t = 1; t <= 21 - ilistSize; t++)
+		for (size_t t = 1; t <= 28 - ilistSize; t++)
 			listOfArgValue.push_back(std::string(""));
 	}
 
@@ -93,20 +93,20 @@ void Ts_InitializationStep::SetUp()
 	if (0 != listOfArgValue[13].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nProductId = strtoul(listOfArgValue[13].c_str(), NULL, 0);
 
-	if (0 != listOfArgValue[14].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_bUseConfigGains = atoi(listOfArgValue[14].c_str());
-	if (0 != listOfArgValue[15].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nImageLnaGain = atoi(listOfArgValue[15].c_str());
-	if (0 != listOfArgValue[16].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nImagePgaGain = atoi(listOfArgValue[16].c_str());
-	if (0 != listOfArgValue[17].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nImagePgaRatio = atoi(listOfArgValue[17].c_str());
-	if (0 != listOfArgValue[18].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nNavLnaGain = atoi(listOfArgValue[18].c_str());
-	if (0 != listOfArgValue[19].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nNavPgaGain = atoi(listOfArgValue[19].c_str());
-	if (0 != listOfArgValue[20].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nNavPgaRatio = atoi(listOfArgValue[20].c_str());
+	if (0 != listOfArgValue[21].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_bUseConfigGains = atoi(listOfArgValue[21].c_str());
+	if (0 != listOfArgValue[22].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nImageLnaGain = atoi(listOfArgValue[22].c_str());
+	if (0 != listOfArgValue[23].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nImagePgaGain = atoi(listOfArgValue[23].c_str());
+	if (0 != listOfArgValue[24].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nImagePgaRatio = atoi(listOfArgValue[24].c_str());
+	if (0 != listOfArgValue[25].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nNavLnaGain = atoi(listOfArgValue[25].c_str());
+	if (0 != listOfArgValue[26].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nNavPgaGain = atoi(listOfArgValue[26].c_str());
+	if (0 != listOfArgValue[27].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nNavPgaRatio = atoi(listOfArgValue[27].c_str());
 }
 
 void Ts_InitializationStep::Execute()
