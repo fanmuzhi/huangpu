@@ -236,9 +236,9 @@ void Ts_OTPWriteMainSector::Execute()
 
 	//LNA_PGA_GAINS
 	nLNA_PGA_GAINS_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA_PGA_GAINS, arMS0, MS0_SIZE);
-	if (nLNA_PGA_GAINS_count == 0)
+	if (nLNA_PGA_GAINS_count == 0&&0!=_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_bUseConfigGains)
 	{
-		uint8_t LnaGainValue(0), PgaGainValue(0);
+		/*uint8_t LnaGainValue(0), PgaGainValue(0);
 		bool LnaResult(false), PgaResult(false);
 		LnaResult = FindGainInPrintFile(0x08, 0x21, LnaGainValue);
 		PgaResult = FindGainInPrintFile(0x48, 0x21, PgaGainValue);
@@ -258,7 +258,19 @@ void Ts_OTPWriteMainSector::Execute()
 
 			BurnToOTP(EXT_TAG_LNA_PGA_GAINS, arMS0, 8);
 			BurnToOTP(EXT_TAG_LNA_PGA_GAINS, arMS0, 8);
-		}
+		}*/
+
+		arMS0[0] = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nImageLnaGain;
+		arMS0[1] = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nImagePgaGain;
+		arMS0[2] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nImagePgaRatio & 0xFF);
+		arMS0[3] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nImagePgaRatio >> 8);
+		arMS0[4] = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nNavLnaGain;
+		arMS0[5] = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nNavPgaGain;
+		arMS0[6] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nNavPgaRatio & 0xFF);
+		arMS0[7] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nNavPgaRatio >> 8);
+
+		BurnToOTP(EXT_TAG_LNA_PGA_GAINS, arMS0, 8);
+		BurnToOTP(EXT_TAG_LNA_PGA_GAINS, arMS0, 8);
 	}
 
 	//PART_NUMBERS
