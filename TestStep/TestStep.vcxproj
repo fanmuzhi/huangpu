@@ -112,6 +112,7 @@
     <ClInclude Include="Ts_Invalidate.h" />
     <ClInclude Include="Ts_LaplacianTest.h" />
     <ClInclude Include="Ts_OpensShortsTest.h" />
+    <ClInclude Include="Ts_OscTrim.h" />
     <ClInclude Include="Ts_OTPCheck.h" />
     <ClInclude Include="Ts_OTPWriteBootSector.h" />
     <ClInclude Include="Ts_OTPWriteMainSector.h" />
@@ -124,6 +125,7 @@
     <ClInclude Include="Ts_RxStandardDev.h" />
     <ClInclude Include="Ts_SCM_WOF.h" />
     <ClInclude Include="Ts_SharpnessTest.h" />
+    <ClInclude Include="Ts_SlowOscTrim.h" />
     <ClInclude Include="Ts_SNRTest.h" />
     <ClInclude Include="Ts_WaitStimulus.h" />
     <ClInclude Include="Ts_WOF.h" />
@@ -154,6 +156,7 @@
     <ClCompile Include="Ts_Invalidate.cpp" />
     <ClCompile Include="Ts_LaplacianTest.cpp" />
     <ClCompile Include="Ts_OpensShortsTest.cpp" />
+    <ClCompile Include="Ts_OscTrim.cpp" />
     <ClCompile Include="Ts_OTPCheck.cpp" />
     <ClCompile Include="Ts_OTPWriteBootSector.cpp" />
     <ClCompile Include="Ts_OTPWriteMainSector.cpp" />
@@ -166,6 +169,7 @@
     <ClCompile Include="Ts_RxStandardDev.cpp" />
     <ClCompile Include="Ts_SCM_WOF.cpp" />
     <ClCompile Include="Ts_SharpnessTest.cpp" />
+    <ClCompile Include="Ts_SlowOscTrim.cpp" />
     <ClCompile Include="Ts_SNRTest.cpp" />
     <ClCompile Include="Ts_WaitStimulus.cpp" />
     <ClCompile Include="Ts_WOF.cpp" />

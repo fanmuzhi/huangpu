@@ -84,6 +84,10 @@ public:
 
 	virtual void GpioPinWrite(uint16_t portId, uint32_t mskPins, uint32_t pMskPinState) = 0;
 
+	virtual void FpGpioGetFreq(uint16_t portId, uint32_t mskPins, uint32_t* pFreq_Hz) = 0;
+
+	virtual void GpioDirModSet(uint16_t portId, uint32_t mskPins, uint32_t direction) = 0;
+
 	virtual void UpdateMPC04Firmware() = 0;
 
 	virtual void SetLeds(bool bGreen, bool bRed, bool bAmber) {}

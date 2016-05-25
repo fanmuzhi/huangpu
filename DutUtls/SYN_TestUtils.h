@@ -55,7 +55,8 @@ typedef unsigned char UINT8; // UINT8 is created to handle MPC04 data
 #define	EXT_TAG_SCM_WOF_BOT		0x8000000DL
 #define	EXT_TAG_SCM_WOF_TOP		0x8000000EL
 #define EXT_TAG_PART_NUMBERS	0x8000000FL
-#define	NUM_EXT_TAGS			12
+#define EXT_TAG_LNA_PGA_GAINS	0x80000012L
+#define	NUM_EXT_TAGS			13
 
 #define	PGA_OOPP_OTP_ROW1					4
 #define	PGA_OOPP_OTP_ROW2					18
@@ -110,6 +111,7 @@ typedef struct
 	int		_bCheckTAG_PGA_OOPP;
 	int		_bCheckTAG_PRODUCT_ID;
 	int		_bCheckTAG_PART_NUMBERS;
+	int		_bCheckTAG_LNA_PGA_GAINS;
 
 }OTPCheckInfo;
 
@@ -375,6 +377,7 @@ typedef struct
 	int			m_nLNA_count, m_nPGA_OOPR_count, m_nPGA_OOPP_count, m_nSNR_count;
 	int			m_nFlexId_count, m_nWofBot_count, m_nWofTop_count, m_nDutTempAdc_count;
 	int			m_nScmWofTop_count, m_nScmWofBot_count, m_nProductId_count, m_nPartNumberId_count;
+	int			m_nLNAPGAGains_count;
 	uint8_t		m_arPgaOffsets[NUM_PGA_OOPP_OTP_ROWS * MAXCOL];
 	uint8_t     m_pPGAOtpArray[NUM_PGA_OOPP_OTP_ROWS * MAXCOL];
 	int			m_nStage2VarianceScore;

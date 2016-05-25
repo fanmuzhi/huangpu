@@ -71,6 +71,10 @@ public:
 
 	virtual void GpioPinWrite(uint16_t portId, uint32_t mskPins, uint32_t pMskPinState);
 
+	virtual void FpGpioGetFreq(uint16_t portId, uint32_t mskPins, uint32_t* pFreq_Hz);
+
+	virtual void GpioDirModSet(uint16_t portId, uint32_t mskPins, uint32_t direction);
+
 	virtual void UpdateMPC04Firmware();
 
 	virtual void FpMpcGetSelfTestResults(uint16_t overSamples, uint32_t arValues[MPC_SELF_TEST_BUFFER]);

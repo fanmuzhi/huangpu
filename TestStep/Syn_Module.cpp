@@ -4,9 +4,6 @@
 //
 #include "Syn_Exception.h"
 
-//windows API
-#include "windows.h"
-
 Syn_Module::Syn_Module()
 :_pSyn_DutCtrl(NULL)
 {
@@ -292,3 +289,232 @@ int8_t Syn_Module::CalcPgaOffset(uint8_t nPixelValue, float nRatio, float nConfi
 	return (int8_t)nOffset;
 }
 
+void Syn_Module::TrimOsc(OscTrimInfo &iOscTrimInfo, OscTrimResults &ioOscTrimResults, uint16_t Vdd_mV, uint16_t Vio_mV, uint16_t Vled_mV, uint16_t Vddh_mV)
+{
+	uint32_t	nSweepBegin;
+	uint8_t		pDst[10] = {0};
+	uint8_t		arHWRegAddr[5] = { 52, 3, 0, 128, 4 };//actual register addr is 0x80000334	
+	uint32_t	arPokeAddrOsc[NUM_REGISTERS_VIPER_TRIM_OSC] = { 0x80000350, 0x80000354, 0x80001500, 0x80001508, 0x80001510, 0x80000B00, 0x80001604 };
+	uint32_t	arPokeValueOsc[NUM_REGISTERS_VIPER_TRIM_OSC] = { 0xF0002, 0x0, 0x1, 0x7F, 0xAF, 0x2, 0x3FF };
+	uint32_t	nFreq_Hz;
+	uint32_t	nResultOscTrim;
+	int			timeout;
+
+	PowerOff();
+	PowerOn(Vdd_mV, Vio_mV, Vled_mV, Vddh_mV, true);
+	//Write SiOsc TC 
+	//WriteSiOsc_TempCompTrim(site);
+	//Cycle power again.
+	//PowerOn(Vdd_mV, Vio_mV, Vled_mV, Vddh_mV, true);
+
+	//set z as an input to read in the divided OSC Freq
+	_pSyn_DutCtrl->GpioSetPinType(6, 0x80, 5);
+
+	//Poke - note that there is an array of data values that are being poked.
+	_pSyn_DutCtrl->FpPokeRegister(0x80000350, 0x02);
+	_pSyn_DutCtrl->FpPokeRegister(0x80000354, 0x00);
+	_pSyn_DutCtrl->FpPokeRegister(0x80001500, 0x01);
+	_pSyn_DutCtrl->FpPokeRegister(0x80001508, 0x7F);
+	_pSyn_DutCtrl->FpPokeRegister(0x80001510, 0x1F);
+	_pSyn_DutCtrl->FpPokeRegister(0x80000B00, 0x02);
+	_pSyn_DutCtrl->FpPokeRegister(0x80001604, 0xFF);
+
+	::Sleep(25);
+	_pSyn_DutCtrl->FpGpioGetFreq(6, 0x80, &nFreq_Hz);
+
+	//MPC_GPIO_GET_FREQ
+	//used to start at 480
+	nSweepBegin = 0x380;
+	timeout = 700;
+	nResultOscTrim = 0;//(site.m_OscTrimInfo).nLowerLimit;	
+	while (timeout && (nResultOscTrim < iOscTrimInfo.nLowerLimit_Hz || nResultOscTrim >= iOscTrimInfo.nUpperLimit_Hz))
+	{
+		//FpPokeCmd(0x80000B08, nSweepBegin);
+		_pSyn_DutCtrl->FpPokeRegister(0x80000B08, nSweepBegin);
+		_pSyn_DutCtrl->FpGpioGetFreq(6, 0x80, &nFreq_Hz);
+		nResultOscTrim = nFreq_Hz / 1000;
+		nSweepBegin++;
+		timeout--;
+	}
+	if (timeout == 0)
+	{
+		Syn_Exception ex(0);
+		ex.SetDescription("Trim OscFreq Calibration Fail.");
+		throw(ex);
+	}
+	ioOscTrimResults.m_nOscTrim = nSweepBegin - 1;
+}
+
+void Syn_Module::FpWriteOscTrim(uint32_t nOscTrimValue)
+{
+	uint8_t pDataSector0[2] = { 0, 1 };
+	uint8_t pDataSector1[2] = { 1, 1 };
+	uint8_t arrOscTrimVal[2] = { ((nOscTrimValue & 0xFFFFF) >> 8) & 0xFF, ((nOscTrimValue & 0xFFFFF)) & 0xFF };
+	uint8_t arSiOscTrimValid[2] = { 0x0, 0x10 };
+	uint8_t arOscTrimWrite[68] = { 0 };
+	uint8_t	arBootSector0[BS0_SIZE];
+	for (int i = 8; i<sizeof(arOscTrimWrite); i = i + 8)
+		arOscTrimWrite[i] = arOscTrimWrite[i + 1] = arOscTrimWrite[i + 2] = arOscTrimWrite[i + 3] = 255;
+
+	//set upt the array to write.
+	arOscTrimWrite[1] = 0x1;
+	arOscTrimWrite[2] = 0xA;
+	arOscTrimWrite[20] = arOscTrimWrite[28] = arrOscTrimVal[0];
+	arOscTrimWrite[21] = arOscTrimWrite[29] = arrOscTrimVal[1];
+	arOscTrimWrite[22] = arOscTrimWrite[30] = arSiOscTrimValid[0];
+	arOscTrimWrite[23] = arOscTrimWrite[31] = arSiOscTrimValid[1];
+
+	//Modify boot sector to set SiOsc TC Trim Valid Secure bit
+	/*_pSyn_DutCtrl->FpUnloadPatch();
+	_pSyn_DutCtrl->FpLoadPatch(site.m_initResults.pModuleTestPatchPtr, site.m_initResults.nModuleTestPatchSize);*/
+	_pSyn_DutCtrl->FpOtpRomRead(BOOT_SEC, 0, arBootSector0, BS0_SIZE);
+	arBootSector0[19] |= 0x20;
+	arBootSector0[27] |= 0x20;
+	WriteBootSector(0, arBootSector0, NULL);
+
+	//send test patch
+	/*GetDutCtrl().FpUnloadPatch();
+	GetDutCtrl().FpLoadPatch(site.m_initResults.pModuleTestPatchPtr, site.m_initResults.nModuleTestPatchSize);
+	//Work-around for av-reg brown-out 
+	if (GetSysConfig().GetSize("ImageAcqPatch") != 0)
+		WriteImageAcqPatch(GetSysConfig().GetPtr("ImageAcqPatch"), GetSysConfig().GetSize("ImageAcqPatch"));*/
+
+	//Write Trim Value, sector 0
+	_pSyn_DutCtrl->FpWrite(1, 0x3B, pDataSector0, 2);
+	_pSyn_DutCtrl->FpWaitForCMDComplete(2);
+
+	//Write Trim Value, sector 1
+	_pSyn_DutCtrl->FpWrite(1, 0x3B, pDataSector1, 2);
+	_pSyn_DutCtrl->FpWaitForCMDComplete(10);
+
+	// VCSFW_CMD_TEST_OTP_WRITE_EX 
+	_pSyn_DutCtrl->FpWrite(1, 0x3C, arOscTrimWrite, sizeof(arOscTrimWrite));
+	::Sleep(50);
+	_pSyn_DutCtrl->FpWaitForCMDComplete(2);
+
+	//Cycle power at the end of write.
+	//CycleDutPower(GetSysConfig().GetPwrVdd(), GetSysConfig().GetPwrVio(),GetSysConfig().GetPwrVled(), GetSysConfig().GetPwrVddh(), true);
+}
+
+void Syn_Module::WriteBootSector(int nSection, uint8_t* pOtpBootSector, uint8_t* pBootSectorMask)
+{
+	uint8_t		arBootSectorWithCmd[BS0_SIZE + 4] = { 0 };
+	uint8_t		pSwapped[BS0_SIZE];
+	int			arrIncrement[4] = { 3, 1, -1, -3 };
+
+	//Put in 4 bytes of command-specific data.
+	arBootSectorWithCmd[0] = nSection;
+	arBootSectorWithCmd[1] = 1;
+	arBootSectorWithCmd[2] = 10;
+	arBootSectorWithCmd[3] = 0;
+	memcpy(&arBootSectorWithCmd[4], pOtpBootSector, BS0_SIZE);
+
+	if (pBootSectorMask != NULL)
+	{
+		//First, swap the bytes in the mask.
+		for (int i = 0; i < BS0_SIZE; i++)
+			pSwapped[i] = pBootSectorMask[i + arrIncrement[i % 4]];
+
+		//Remember, the boot sectors are OTP. For the even long words, we can only write a
+		//0 to a 1. For the odd long words, we can only write a 1 to a 0.
+		for (int i = 0; i<BS0_SIZE; i++)
+		{
+			//If this byte belongs to an odd long word.
+			if ((i / 4) & 0x01)
+				arBootSectorWithCmd[i + 4] = pSwapped[i] & pOtpBootSector[i];
+			else
+				arBootSectorWithCmd[i + 4] = pSwapped[i] | pOtpBootSector[i];
+		}
+	}
+
+	//Write the boot sector.  
+	_pSyn_DutCtrl->FpWrite(1, 0x3C, arBootSectorWithCmd, BS0_SIZE + 4);
+	_pSyn_DutCtrl->FpWaitForCMDComplete(2);
+}
+
+void Syn_Module::TrimSlowOsc(SlowOscInfo &iSlowOscInfo, SlowOscResults &ioSlowOscResults, uint16_t Vdd_mV, uint16_t Vio_mV, uint16_t Vled_mV, uint16_t Vddh_mV)
+{
+	uint8_t		pDst[4] = {0};
+	uint32_t	nFreq_Hz = 0;
+	uint16_t	nHvOscBias, nHvOscTrim;
+	int			timeout;
+
+	ioSlowOscResults.m_bPass = 0;
+	ioSlowOscResults.m_bDefaultValueUsed = 0;
+
+	//CycleDutPower(GetSysConfig().GetPwrVdd(), GetSysConfig().GetPwrVio(),GetSysConfig().GetPwrVled(), GetSysConfig().GetPwrVddh(), true);
+	PowerOff();
+	PowerOn(Vdd_mV, Vio_mV, Vled_mV, Vddh_mV, true);
+
+	_pSyn_DutCtrl->GpioDirModSet(6, 0x80, 0);//Set pin as direct input
+	_pSyn_DutCtrl->GpioSetPinType(6, 0x80, 5);
+
+	//Poke - note that there is an array of data values that are being poked.
+	_pSyn_DutCtrl->FpPokeRegister(0x80002050, 0x17);
+	_pSyn_DutCtrl->FpPokeRegister(0x8000036C, 0x0A);
+	_pSyn_DutCtrl->FpPokeRegister(0x80000338, 0x20);
+	_pSyn_DutCtrl->FpPokeRegister(0x8000034C, 0x20);
+	_pSyn_DutCtrl->FpPokeRegister(0x80000384, 0x03);
+	_pSyn_DutCtrl->FpPokeRegister(0x80001604, 0x02);
+
+	::Sleep(50);
+
+	timeout = 10;
+	nHvOscBias = 3;
+	nHvOscTrim = 0;
+	//Calculate optimal Trim and Bias values.
+	uint32_t nData = (((0x1F & nHvOscTrim) << 8) | nHvOscBias);
+	_pSyn_DutCtrl->FpPokeRegister(0x80000330, nData);
+
+	_pSyn_DutCtrl->FpGpioGetFreq(6, 0x80, &nFreq_Hz);
+	while (timeout && ((nFreq_Hz < iSlowOscInfo.nLowerLimit_Hz) || ((nFreq_Hz >= iSlowOscInfo.nUpperLimit_Hz))))
+	{
+		nHvOscTrim++;
+		nData = (((0x1F & nHvOscTrim) << 8) | nHvOscBias);
+		_pSyn_DutCtrl->FpPokeRegister(0x80000330, nData);
+		
+		_pSyn_DutCtrl->FpGpioGetFreq(6, 0x80, &nFreq_Hz);
+		timeout--;
+	}
+
+	//If trimming was successful
+	if (timeout != 0)
+	{
+		ioSlowOscResults.m_nTrim = nHvOscTrim;
+		ioSlowOscResults.m_nBias = nHvOscBias;
+		FpWriteSlowOscFreq(nHvOscTrim, nHvOscBias);
+		ioSlowOscResults.m_bPass = 1;
+	}
+	else //Trimming unsuccessful
+	{
+		//If default value specified in config file, use it.
+		if ((iSlowOscInfo.m_nDefaultTrim != 0) && (iSlowOscInfo.m_nDefaultBias != 0))
+		{
+			ioSlowOscResults.m_bDefaultValueUsed = 1;
+			ioSlowOscResults.m_nTrim = iSlowOscInfo.m_nDefaultTrim;
+			ioSlowOscResults.m_nBias = iSlowOscInfo.m_nDefaultBias;
+			FpWriteSlowOscFreq(ioSlowOscResults.m_nTrim, ioSlowOscResults.m_nBias);
+			ioSlowOscResults.m_bPass = 1;
+		}
+	}
+}
+
+void Syn_Module::FpWriteSlowOscFreq(uint32_t nHvOscTrim, uint32_t nHvOscBias)
+{
+	uint8_t arBs0[BS0_SIZE] = { 0 };
+
+	//Read Boot Sector 0
+	/*GetDutCtrl().FpUnloadPatch();
+	GetDutCtrl().FpLoadPatch(site.m_initResults.pModuleTestPatchPtr, site.m_initResults.nModuleTestPatchSize);*/
+	_pSyn_DutCtrl->FpOtpRomRead(BOOT_SEC, 0, arBs0, BS0_SIZE);
+
+	//Write HvOsc Trim and Bias values to BS0. 0x80 = Valid Trim, 0x40 = Valid Bias.
+	arBs0[18] = arBs0[26] = arBs0[18] | ((nHvOscTrim << 7) | (nHvOscBias << 4));
+	arBs0[19] = arBs0[27] = arBs0[19] | (0x0F & (nHvOscTrim >> 1)) | (0x80 | 0x40);
+	_pSyn_DutCtrl->FpOtpRomWrite(BOOT_SEC, 0, arBs0, BS0_SIZE);
+
+	//Read Boot Sector 0
+	/*GetDutCtrl().FpUnloadPatch();
+	GetDutCtrl().FpLoadPatch(site.m_initResults.pModuleTestPatchPtr, site.m_initResults.nModuleTestPatchSize);*/
+	_pSyn_DutCtrl->FpOtpRomRead(BOOT_SEC, 0, arBs0, BS0_SIZE);
+}

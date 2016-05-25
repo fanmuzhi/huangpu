@@ -25,6 +25,8 @@ public:
 
 	void TranslatePartNum(const string& sPN, uint8_t* pDst);
 
+	bool FindGainInPrintFile(uint8_t iFirstValue, uint8_t iSecondValue, uint8_t &oGainValue);
+
 private:
 	bool bBurnPGA_OOPP;
 };

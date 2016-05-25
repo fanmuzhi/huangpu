@@ -1,9 +1,9 @@
+//Local
 #include "Syn_MetallicaModule.h"
 
 Syn_MetallicaModule::Syn_MetallicaModule()
 {
 }
-
 
 Syn_MetallicaModule::~Syn_MetallicaModule()
 {
@@ -142,4 +142,144 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 
 	delete[] pTempOffsets;
 	return !bStage2AllEqual;
+}
+
+void Syn_MetallicaModule::TrimOsc(OscTrimInfo &iOscTrimInfo, OscTrimResults &ioOscTrimResults, uint16_t Vdd_mV, uint16_t Vio_mV, uint16_t Vled_mV, uint16_t Vddh_mV)
+{
+	uint8_t		pDst[4];
+	uint8_t		arHWRegAddr[5] = { 0x34, 0x03, 0x00, 0x80, 0x04 };
+	uint32_t	nFreq_Hz;
+	uint32_t	nTrimValue;
+	int			timeout;
+
+	ioOscTrimResults.m_bPass = 0;
+	iOscTrimInfo.m_bDefaultValueUsed = 0;
+
+	PowerOff();
+	PowerOn(Vdd_mV, Vio_mV, Vled_mV, Vddh_mV, true);
+	::Sleep(100);
+
+	//Check the Osc Value before writing.
+	_pSyn_DutCtrl->FpPeekRegister(0x80000334, pDst);
+
+	//Make sure the state of the sensor is such that, it will accept Osc to be trimmed
+	if (((pDst[1] & 0x3F) == 0) || ((pDst[1] & 0x3F) == 10))
+	{
+		//Set port as an input to read in the divided OSC Freq
+		_pSyn_DutCtrl->GpioDirModSet(6, 0x80, 0);//Set pin as direct input
+		_pSyn_DutCtrl->GpioSetPinType(6, 0x80, 5);//Set the pin to input.        
+
+		//Poke - note that there is an array of data values that are being poked.
+		_pSyn_DutCtrl->FpPokeRegister(0x8000034C, 0x02);
+		_pSyn_DutCtrl->FpPokeRegister(0x80000384, 0x00);
+		_pSyn_DutCtrl->FpPokeRegister(0x80001500, 0x01);
+		_pSyn_DutCtrl->FpPokeRegister(0x80001508, 0x7F);
+		_pSyn_DutCtrl->FpPokeRegister(0x80001510, 0x1F);
+		_pSyn_DutCtrl->FpPokeRegister(0x80001504, 0x02);
+		_pSyn_DutCtrl->FpPokeRegister(0x8000000B, 0x02);
+		_pSyn_DutCtrl->FpPokeRegister(0x80000334, 0x0E);
+
+		::Sleep(25);
+
+		//Calculate the optimal Trim value
+		nTrimValue = iOscTrimInfo.nInitialTrim;
+		timeout = 100;
+		_pSyn_DutCtrl->FpPokeRegister(0x80000B08, nTrimValue);
+		_pSyn_DutCtrl->FpGpioGetFreq(6, 0x80, &nFreq_Hz);
+		while (timeout && ((nFreq_Hz < iOscTrimInfo.nLowerLimit_Hz) || ((nFreq_Hz >= iOscTrimInfo.nUpperLimit_Hz))))
+		{
+			//Is the frequency less than approximately 1.5% of the lower limit.
+			if (nFreq_Hz < (iOscTrimInfo.nLowerLimit_Hz - (iOscTrimInfo.nLowerLimit_Hz >> 6)))
+				nTrimValue += 20;
+			else
+				nTrimValue++;
+
+			_pSyn_DutCtrl->FpPokeRegister(0x80000B08, nTrimValue);
+			_pSyn_DutCtrl->FpGpioGetFreq(6, 0x80, &nFreq_Hz);
+			timeout--;
+		}
+
+		//If trimming was successful
+		if (timeout != 0)
+		{
+			ioOscTrimResults.m_nOscTrim = nTrimValue;
+			FpWriteOscTrim(ioOscTrimResults.m_nOscTrim);
+			ioOscTrimResults.m_bPass = 1;
+		}
+		else //Trimming unsuccessful
+		{
+			//If default value specified in config file, use it.
+			if (0!=iOscTrimInfo.m_OscTrimDefault)
+			{
+				iOscTrimInfo.m_bDefaultValueUsed = 1;
+				ioOscTrimResults.m_nOscTrim = iOscTrimInfo.m_OscTrimDefault;
+				FpWriteOscTrim(ioOscTrimResults.m_nOscTrim);
+				ioOscTrimResults.m_bPass = 1;
+			}
+		}
+	}
+}
+
+void Syn_MetallicaModule::TrimSlowOsc(SlowOscInfo &iSlowOscInfo, SlowOscResults &ioSlowOscResults, uint16_t Vdd_mV, uint16_t Vio_mV, uint16_t Vled_mV, uint16_t Vddh_mV)
+{
+	uint8_t		pDst[4] = {0};
+	uint32_t	nFreq_Hz = 0;
+	uint16_t	nHvOscBias, nHvOscTrim;
+	int			timeout;
+	ioSlowOscResults.m_bPass = 0;
+	ioSlowOscResults.m_bDefaultValueUsed = 0;
+
+	PowerOff();
+	PowerOn(Vdd_mV, Vio_mV, Vled_mV, Vddh_mV, true);
+
+	_pSyn_DutCtrl->GpioDirModSet(6, 0x80, 0);//Set pin as direct input
+	_pSyn_DutCtrl->GpioSetPinType(6, 0x80, 5);
+
+	//Poke - note that there is an array of data values that are being poked.
+	_pSyn_DutCtrl->FpPokeRegister(0x80002050, 0x17);
+	_pSyn_DutCtrl->FpPokeRegister(0x8000036C, 0x0A);
+	_pSyn_DutCtrl->FpPokeRegister(0x80000338, 0x20);
+	_pSyn_DutCtrl->FpPokeRegister(0x8000034C, 0x20);
+	_pSyn_DutCtrl->FpPokeRegister(0x80000384, 0x03);
+	_pSyn_DutCtrl->FpPokeRegister(0x80001604, 0x02);
+
+	::Sleep(50);
+
+	timeout = 10;
+	nHvOscBias = 3;
+	nHvOscTrim = 0;
+	//Calculate optimal Trim and Bias values.
+	uint32_t nData = (((0x1F & nHvOscTrim) << 8) | nHvOscBias);
+	_pSyn_DutCtrl->FpPokeRegister(0x80000330, nData);
+
+	_pSyn_DutCtrl->FpGpioGetFreq(6, 0x80, &nFreq_Hz);
+	while (timeout && ((nFreq_Hz < iSlowOscInfo.nLowerLimit_Hz) || ((nFreq_Hz >= iSlowOscInfo.nUpperLimit_Hz))))
+	{
+		nHvOscTrim++;
+		nData = (((0x1F & nHvOscTrim) << 8) | nHvOscBias);
+		_pSyn_DutCtrl->FpPokeRegister(0x80000330, nData);
+		_pSyn_DutCtrl->FpGpioGetFreq(6, 0x80, &nFreq_Hz);
+		timeout--;
+	}
+
+	//If trimming was successful
+	if (timeout != 0)
+	{
+		ioSlowOscResults.m_nTrim = nHvOscTrim;
+		ioSlowOscResults.m_nBias = nHvOscBias;
+		FpWriteSlowOscFreq(nHvOscTrim, nHvOscBias);
+		ioSlowOscResults.m_bPass = 1;
+	}
+	else //Trimming unsuccessful
+	{
+		//If default value specified in config file, use it.
+		if ((iSlowOscInfo.m_nDefaultTrim != 0) && (iSlowOscInfo.m_nDefaultBias != 0))
+		{
+			ioSlowOscResults.m_bDefaultValueUsed = 1;
+			ioSlowOscResults.m_nTrim = iSlowOscInfo.m_nDefaultTrim;
+			ioSlowOscResults.m_nBias = iSlowOscInfo.m_nDefaultBias;
+			FpWriteSlowOscFreq(ioSlowOscResults.m_nTrim, ioSlowOscResults.m_nBias);
+			ioSlowOscResults.m_bPass = 1;
+		}
+	}
 }

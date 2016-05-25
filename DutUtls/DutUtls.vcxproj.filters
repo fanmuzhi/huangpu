@@ -36,13 +36,13 @@
     <ClInclude Include="Syn_Exception.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Syn_Vcsfw.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Syn_Config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Syn_TestUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Syn_Vcsfw.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

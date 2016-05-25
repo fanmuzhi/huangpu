@@ -646,6 +646,39 @@ void Syn_SPCCtrl::FpMpcGetSelfTestResults(uint16_t overSamples, uint32_t arValue
 	}
 }
 
+void Syn_SPCCtrl::FpGpioGetFreq(uint16_t portId, uint32_t mskPins, uint32_t* pFreq_Hz)
+{
+	uint16_t error;
+	error = MPC_GpioGetFreq(syn_DeviceHandle, portId, mskPins, pFreq_Hz, 2000);
+	Syn_Exception ex(error);
+	if (error == MpcApiError::ERR_COMMUNICATION_FAILED)
+	{
+		ex.SetDescription("FpGpioGetFreq() Controller communication failure.");
+		throw ex;
+	}
+	else if (error != MpcApiError::ERR_OK)
+	{
+		ex.SetDescription("FpGpioGetFreq() DUT communication failure.");
+		throw ex;
+	}
+}
+
+void Syn_SPCCtrl::GpioDirModSet(uint16_t portId, uint32_t mskPins, uint32_t direction)
+{
+	uint16_t error;
+	error = MPC_GpioDirModSet(syn_DeviceHandle, portId, mskPins, direction, 2000);
+	Syn_Exception ex(error);
+	if (error == MpcApiError::ERR_COMMUNICATION_FAILED)
+	{
+		ex.SetDescription("GpioDirModSet() Controller communication failure.");
+		throw ex;
+	}
+	else if (error != MpcApiError::ERR_OK)
+	{
+		ex.SetDescription("GpioDirModSet() DUT communication failure.");
+		throw ex;
+	}
+}
 
 void Syn_SPCCtrl::UpdateMPC04Firmware()
 {
