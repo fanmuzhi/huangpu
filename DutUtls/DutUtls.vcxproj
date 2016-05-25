@@ -91,9 +91,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Syn_BinCodes.h" />
     <ClInclude Include="Syn_Config.h" />
     <ClInclude Include="Syn_Dut.h" />
@@ -110,6 +107,9 @@
     <ClCompile Include="Syn_DutCtrl.cpp" />
     <ClCompile Include="Syn_MPC04Ctrl.cpp" />
     <ClCompile Include="Syn_SPCCtrl.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
