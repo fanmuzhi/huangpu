@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
-    <SysConfigFile>C:/Users/bqiling/Google Drive/Metallica 109A0/FM192/(580-006033-01r01)_OFilm_109A_Huangpu.xml</SysConfigFile>
+    <SysConfigFile>C:/Users/bqiling/Google Drive/Metallica 109A0/FM192/(580-006033-01r01)_OFilm_109A_Huangpu - UpdateFWPatch.xml</SysConfigFile>
     <LogFilePath>C:/logfiles/WOF</LogFilePath>
     <NumSites>1</NumSites>
-    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="714 715 714 715 714 715 715 715 714 715 714 715 708 715 699 714 ">1698597</Site1>
+    <Site1 AdcBaseLines="714 715 714 715 714 715 715 715 714 715 714 715 708 715 699 714 " Voltages="1800 1800 3300 3300">1894212</Site1>
     <AutoController></AutoController>
 </LocalSettings>

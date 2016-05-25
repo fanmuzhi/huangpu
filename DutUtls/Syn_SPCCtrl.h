@@ -82,5 +82,5 @@ public:
 protected:
 
 	static bool	_bDLLInitialized;
-	const uint32_t TIMEOUT = 500;
+	const uint32_t TIMEOUT = 2000;
 };

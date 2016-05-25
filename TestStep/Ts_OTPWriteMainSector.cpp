@@ -296,8 +296,21 @@ void Ts_OTPWriteMainSector::Execute()
 		//{
 		//	return;
 		//}
-		_pSyn_DutCtrl->FpOtpRomWrite(MAIN_SEC, 1, fmPatch._pArrayBuf, fmPatch._uiArraySize);
-
+		try
+		{
+			_pSyn_DutCtrl->FpOtpRomWrite(MAIN_SEC, 1, fmPatch._pArrayBuf, fmPatch._uiArraySize);
+		}
+		catch (exception ex)
+		{
+			try
+			{
+				//this is a work around.
+				_pSyn_DutCtrl->FpOtpRomWrite(MAIN_SEC, 1, fmPatch._pArrayBuf, fmPatch._uiArraySize);
+			}
+			catch (...)
+			{
+			}
+		}
 	}
 
 	//MT pass bit
