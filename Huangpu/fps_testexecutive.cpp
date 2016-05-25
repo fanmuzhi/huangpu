@@ -579,22 +579,25 @@ void FPS_TestExecutive::ReceiveTestResults(unsigned int iSiteNumber,const Syn_Du
 
 		iRowNumber = 7;
 
+		//SNR
 		QString strSNRValue = QString::number(pDutResult->_snrResults.SNR[6]);
-		Syn_DutTestInfo *pDutInfo = NULL;
-		_ListOfSitePtr[iPos]->GetTestInfo(pDutInfo);
-		if (NULL != pDutInfo)
+		Syn_DutTestInfo *pDutTestInfo = NULL;
+		_ListOfSitePtr[iPos]->GetTestInfo(pDutTestInfo);
+		if (NULL != pDutTestInfo)
 		{
-			if (pDutInfo->_huaweiIqTestInfo._bExecuted)
+			if (pDutTestInfo->_huaweiIqTestInfo._bExecuted)
 			{
 				strSNRValue += QString(" ") + QString::number(pDutResult->_huaweiIqTestResults.snr);
 			}
+
+			if (pDutTestInfo->_snrInfo.m_bExecuted)
+			{
+				QTableWidgetItem *itemSNR = new QTableWidgetItem(strSNRValue);
+				itemSNR->setTextAlignment(Qt::AlignCenter);
+				ui.TestTableWidget->setItem(4, iPos, itemSNR);
+			}
 		}
 		
-		//SNR
-		QTableWidgetItem *itemSNR = new QTableWidgetItem(strSNRValue);
-		itemSNR->setTextAlignment(Qt::AlignCenter);
-		ui.TestTableWidget->setItem(4, iPos, itemSNR);
-
 		//BinCode
 		QString qsBinCodes("");
 		for (size_t i = 1; i <= pDutResult->_binCodes.size(); i++)
@@ -731,6 +734,13 @@ void FPS_TestExecutive::DisplayImageInTime(unsigned int iSiteNumber, const Syn_D
 {
 	unsigned int iPos = iSiteNumber - 1;
 	if (NULL == pDutResult)
+		return;
+
+	Syn_DutTestInfo *pInfo = NULL;
+	_ListOfSitePtr[iPos]->GetTestInfo(pInfo);
+	if (NULL == pInfo)
+		return;
+	if (!pInfo->_calibrationInfo.m_bExecuted)
 		return;
 
 	int rowNumber = pDutResult->_WaitStimulusResults.iRealRowNumber;

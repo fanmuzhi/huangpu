@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
-    <SysConfigFile>D:/ConfigFile(xml)/Manhattan/(580-006033-01r01)_OFilm_Manhattan_Huangpu_HuaweiSNR.xml</SysConfigFile>
+    <SysConfigFile>D:/ConfigFile(xml)/Manhattan/(580-006033-01r01)_OFilm_109A_WOFTest_Huangpu.xml</SysConfigFile>
     <LogFilePath>C:/logfiles</LogFilePath>
     <NumSites>1</NumSites>
-    <Site1 AdcBaseLines="694 696 704 697 696 696 782 698 697 696 1562 697 728 696 3717 697 " Voltages="1800 1800 3300 3300">1684806</Site1>
+    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="694 696 704 697 696 696 782 698 697 696 1562 697 728 696 3717 697 ">1684806</Site1>
     <AutoController></AutoController>
 </LocalSettings>
