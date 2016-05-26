@@ -260,6 +260,7 @@ void Ts_OTPWriteMainSector::Execute()
 			BurnToOTP(EXT_TAG_LNA_PGA_GAINS, arMS0, 8);
 		}*/
 
+		memset(arMS0, 0, sizeof(arMS0));
 		arMS0[0] = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nImageLnaGain;
 		arMS0[1] = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nImagePgaGain;
 		arMS0[2] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nImagePgaRatio & 0xFF);

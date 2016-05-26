@@ -668,7 +668,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	{
 		if (_pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_bPass != 0)	//If passed.
 		{
-			fprintf(pFile, "\nSCM Bottom WakeOnFinger Test,%s,%d.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_BottomSCM_wofResults.m_elapsedtime);
+			fprintf(pFile, "\nSCM Bottom WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_BottomSCM_wofResults.m_elapsedtime);
 			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_BottomSCM_wofResults.m_nTriggerWithoutStim,
 					DutResults->_BottomSCM_wofResults.m_nTriggerWithStim,
 					DutResults->_BottomSCM_wofResults.m_nGain,

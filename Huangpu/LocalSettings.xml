@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LocalSettings>
-    <SysConfigFile>C:/Users/bqiling/Google Drive/Metallica 109A0/FM192/(580-006033-01r02)_OFilm_109A_Huangpu.xml</SysConfigFile>
-    <LogFilePath>C:/logfiles/WOF</LogFilePath>
+    <SysConfigFile>D:/ConfigFile(xml)/Manhattan/(580-006033-01r01)_OFilm_Manhattan_Huangpu_HuaweiSNR.xml</SysConfigFile>
+    <LogFilePath>C:/logfiles</LogFilePath>
     <NumSites>1</NumSites>
-    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="714 715 714 715 714 715 715 715 714 715 714 715 708 715 699 714 ">1894212</Site1>
+    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="696 696 703 697 696 696 778 697 700 696 1519 697 713 695 3731 697 ">1684806</Site1>
     <AutoController></AutoController>
 </LocalSettings>
