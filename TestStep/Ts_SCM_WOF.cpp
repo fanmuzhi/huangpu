@@ -258,7 +258,8 @@ int Ts_SCM_WOF::CalcScmWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf)
 
 void Ts_SCM_WOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_WofTestResults& pResults)
 {
-	int			nTgrIdx, nGainIdx;
+	std::vector<int>	scmWofValWithoutFinger, scmWofValWithFinger;
+	int	nGainIdx;
 
 	pResults.m_bPass = 0;				//Assume fail.
 	pResults.m_nTriggerWithoutStim = 0;
@@ -270,30 +271,47 @@ void Ts_SCM_WOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_WofTest
 	for (nGainIdx = 0; (nGainIdx < pResults.m_nNumGains) && (pResults.m_bPass == 0); nGainIdx++)
 	{
 		//If we got a good trigger at this gain (without stimulus).
-		nTgrIdx = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithoutStim[6 + (nGainIdx * pResults.m_nNumThresholds)]);
-		if ((nTgrIdx >= pInfo.m_nMinTriggerThreshold) && (nTgrIdx < pInfo.m_nMaxTriggerThreshold))
+		int temp = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithoutStim[6 + (nGainIdx * pResults.m_nNumThresholds)]);
+		scmWofValWithoutFinger.push_back(temp);
+
+		temp = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithStim[6 + (nGainIdx * pResults.m_nNumThresholds)]);
+		scmWofValWithFinger.push_back(temp);
+
+	}
+
+	int bestDelta = 0;
+	for (nGainIdx = 0; (nGainIdx < pResults.m_nNumGains) && (pResults.m_bPass == 0); nGainIdx++)
+	{
+		int nTgrIdex_withoutFinger = scmWofValWithoutFinger[nGainIdx];
+		int nTgrIdex_withFinger = scmWofValWithFinger[nGainIdx];
+
+		if (nTgrIdex_withoutFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
 		{
-			//If we got a good trigger at this gain (with stimulus).
-			pResults.m_nTriggerWithoutStim = nTgrIdx;
-			nTgrIdx = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithStim[6 + (nGainIdx * pResults.m_nNumThresholds)]);
-			if ((nTgrIdx >= pInfo.m_nMinTriggerThreshold) && (nTgrIdx < pInfo.m_nMaxTriggerThreshold))
-			{
-				//Success.
-				pResults.m_nTriggerWithStim = nTgrIdx;
-				pResults.m_bPass = 1;
-			}
+			pResults.m_bPass = 0;
+			return;
+		}
+		if (nTgrIdex_withFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
+		{
+			pResults.m_bPass = 0;
+			return;
 		}
 
-		if (pResults.m_bPass != 0)
+		int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
+		if (nDelta >= bestDelta)
 		{
-			int nDelta = pResults.m_nTriggerWithoutStim - pResults.m_nTriggerWithStim;
-			if (nDelta < pInfo.m_nDelta_100)
-				pResults.m_bPass = 0;
+			bestDelta = nDelta;
+			pResults.m_nGain = pResults.m_nGainStart + (pResults.m_nGainInc * nGainIdx);
+			pResults.m_nTriggerWithoutStim = nTgrIdex_withoutFinger;
+			pResults.m_nTriggerWithStim = nTgrIdex_withFinger;
 		}
-
-		//if (pResults.m_bPass == 0)
-		//	pResults.m_nGain += pResults.m_nGainInc;
-		pResults.m_nGain = pResults.m_nGainStart + (pResults.m_nGainInc * nGainIdx);
+	}
+	if (bestDelta < pInfo.m_nDelta_100)
+	{
+		pResults.m_bPass = 0;
+	}
+	else
+	{
+		pResults.m_bPass = 1;
 	}
 }
 

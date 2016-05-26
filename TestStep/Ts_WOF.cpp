@@ -426,7 +426,8 @@ bool Ts_WOF::GetZ1WofData(WofTestInfo &wofInfo, WofTestResults &wofResults)
 
 void Ts_WOF::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Results)
 {
-	int	nTgrIdx, nGainIdx;
+	std::vector<int>	wofValWithoutFinger, wofValWithFinger;
+	int	nGainIdx;
 
 	Results.m_bPass = 0;				//Assume fail.
 	Results.m_nTriggerWithoutStim = 0;
@@ -437,28 +438,53 @@ void Ts_WOF::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Results
 	Results.m_nGain = Results.m_nGainStart;
 	for (nGainIdx = 0; (nGainIdx < Results.m_nNumGains) && (Results.m_bPass == 0); nGainIdx++)
 	{
-		//Calc the gain.
-		Results.m_nGain = Results.m_nGainStart + (Results.m_nGainInc * nGainIdx);
+		//value without stimulus.
+		int temp = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithoutStim[6 + (nGainIdx * Results.m_nNumThresholds)]);
+		wofValWithoutFinger.push_back(temp);
 
-		//If we got a good trigger at this gain (without stimulus).
-		nTgrIdx = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithoutStim[6 + (nGainIdx * Results.m_nNumThresholds)]);
-		Results.m_nTriggerWithoutStim = nTgrIdx;
-		if ((nTgrIdx >= Info.m_nMinTriggerThreshold) && (nTgrIdx < Info.m_nMaxTriggerThreshold))
+		temp = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithStim[6 + (nGainIdx * Results.m_nNumThresholds)]);
+		wofValWithFinger.push_back(temp);
+	}
+	
+	int bestDelta = 0;
+	for (nGainIdx = 0; (nGainIdx < Results.m_nNumGains) && (Results.m_bPass == 0); nGainIdx++)
+	{
+		//Calc the gain.
+
+		int nTgrIdex_withoutFinger = wofValWithoutFinger[nGainIdx];
+		int nTgrIdex_withFinger = wofValWithFinger[nGainIdx];
+		if (nTgrIdex_withoutFinger >= Info.m_nMaxTriggerThreshold || nTgrIdex_withoutFinger < Info.m_nMinTriggerThreshold)
 		{
-			//If we got a good trigger at this gain (with stimulus).
-			nTgrIdx = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithStim[6 + (nGainIdx * Results.m_nNumThresholds)]);
-			Results.m_nTriggerWithStim = nTgrIdx;
-			if ((nTgrIdx >= Info.m_nMinTriggerThreshold) && (nTgrIdx < Info.m_nMaxTriggerThreshold))
-				Results.m_bPass = 1;
+			//if any Trigger value out of limition, fail
+			Results.m_bPass = 0;
+			return;
+		}
+		if (nTgrIdex_withFinger >= Info.m_nMaxTriggerThreshold || nTgrIdex_withFinger < Info.m_nMinTriggerThreshold)
+		{
+			//if any Trigger value out of limition, fail
+			Results.m_bPass = 0;
+			return;
 		}
 
-		if (Results.m_bPass != 0)
+		int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
+		if (nDelta >= bestDelta)
 		{
-			int nDelta = Results.m_nTriggerWithoutStim - Results.m_nTriggerWithStim;
-			if (nDelta < Info.m_nDelta_100)
-				Results.m_bPass = 0;
+			bestDelta = nDelta;
+			Results.m_nGain = Results.m_nGainStart + (Results.m_nGainInc * nGainIdx);
+			Results.m_nTriggerWithoutStim = nTgrIdex_withoutFinger;
+			Results.m_nTriggerWithStim = nTgrIdex_withFinger;
 		}
 	}
+
+	if (bestDelta < Info.m_nDelta_100)
+	{
+		Results.m_bPass = 0;
+	}
+	else
+	{
+		Results.m_bPass = 1;
+	}
+	
 }
 
 int Ts_WOF::CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf)
