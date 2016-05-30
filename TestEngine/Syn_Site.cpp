@@ -688,7 +688,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	{
 		if (DutResults->_TopSCM_wofResults.m_bPass != 0)	//If passed.
 		{
-			fprintf(pFile, "\nSCM Top WakeOnFinger Test,%s,%d ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_TopSCM_wofResults.m_elapsedtime);
+			fprintf(pFile, "\nSCM Top WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_TopSCM_wofResults.m_elapsedtime);
 			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_TopSCM_wofResults.m_nTriggerWithoutStim,
 					DutResults->_TopSCM_wofResults.m_nTriggerWithStim,
 					DutResults->_TopSCM_wofResults.m_nGain,
@@ -696,7 +696,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 		}
 		else	//Failed.
 		{
-			fprintf(pFile, "\nSCM Top WakeOnFinger Test,%s,%d ms,NoFinger,WithFinger,Gain,Delta", "Fail", DutResults->_TopSCM_wofResults.m_elapsedtime);
+			fprintf(pFile, "\nSCM Top WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Fail", DutResults->_TopSCM_wofResults.m_elapsedtime);
 			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_TopSCM_wofResults.m_nTriggerWithoutStim,
 					DutResults->_TopSCM_wofResults.m_nTriggerWithStim,
 					DutResults->_TopSCM_wofResults.m_nGain,
@@ -814,7 +814,6 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 		fprintf(pFile, "%f,", DutResults->_huaweiIqTestResults.nosieValue);
 		fprintf(pFile, "\n");
 	}
-
 
 	//Pixel Uniformity Test
 	if (DutInfo->_pixelInfo.m_bExecuted)
