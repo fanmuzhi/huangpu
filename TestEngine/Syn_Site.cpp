@@ -205,7 +205,7 @@ uint32_t Syn_Site::Open()
 	if (std::string::npos == lastBackslashIndex)
 	{
 		lastBackslashIndex = _strConfigFilePath.find_last_of("\\");
-		lastBackslashIndex += 1;
+		//lastBackslashIndex += 1;
 	}
 	_pSyn_Dut->_sConfigFileName = _strConfigFilePath.substr(lastBackslashIndex + 1, stringSize - lastBackslashIndex-1);
 	
