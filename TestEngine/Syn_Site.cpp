@@ -205,11 +205,14 @@ uint32_t Syn_Site::Open()
 	if (std::string::npos == lastBackslashIndex)
 	{
 		lastBackslashIndex = _strConfigFilePath.find_last_of("\\");
-		lastBackslashIndex += 1;
+		//lastBackslashIndex += 1;
 	}
 	_pSyn_Dut->_sConfigFileName = _strConfigFilePath.substr(lastBackslashIndex + 1, stringSize - lastBackslashIndex-1);
 	
 	_siteState = Idle;
+
+	_pSyn_Dut->_DeviceSerialNumber = _uiSerialNumber;
+	_pSyn_Dut->_iSiteNumber = _iSiteNumber;
 
 	return Syn_ExceptionCode::Syn_OK;
 }
@@ -668,7 +671,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	{
 		if (_pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_bPass != 0)	//If passed.
 		{
-			fprintf(pFile, "\nSCM Bottom WakeOnFinger Test,%s,%d.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_BottomSCM_wofResults.m_elapsedtime);
+			fprintf(pFile, "\nSCM Bottom WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_BottomSCM_wofResults.m_elapsedtime);
 			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_BottomSCM_wofResults.m_nTriggerWithoutStim,
 					DutResults->_BottomSCM_wofResults.m_nTriggerWithStim,
 					DutResults->_BottomSCM_wofResults.m_nGain,
@@ -688,7 +691,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	{
 		if (DutResults->_TopSCM_wofResults.m_bPass != 0)	//If passed.
 		{
-			fprintf(pFile, "\nSCM Top WakeOnFinger Test,%s,%d ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_TopSCM_wofResults.m_elapsedtime);
+			fprintf(pFile, "\nSCM Top WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_TopSCM_wofResults.m_elapsedtime);
 			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_TopSCM_wofResults.m_nTriggerWithoutStim,
 					DutResults->_TopSCM_wofResults.m_nTriggerWithStim,
 					DutResults->_TopSCM_wofResults.m_nGain,
@@ -696,7 +699,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 		}
 		else	//Failed.
 		{
-			fprintf(pFile, "\nSCM Top WakeOnFinger Test,%s,%d ms,NoFinger,WithFinger,Gain,Delta", "Fail", DutResults->_TopSCM_wofResults.m_elapsedtime);
+			fprintf(pFile, "\nSCM Top WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Fail", DutResults->_TopSCM_wofResults.m_elapsedtime);
 			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_TopSCM_wofResults.m_nTriggerWithoutStim,
 					DutResults->_TopSCM_wofResults.m_nTriggerWithStim,
 					DutResults->_TopSCM_wofResults.m_nGain,
@@ -815,7 +818,6 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 		fprintf(pFile, "\n");
 	}
 
-
 	//Pixel Uniformity Test
 	if (DutInfo->_pixelInfo.m_bExecuted)
 	{
@@ -879,6 +881,14 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 		fprintf(pFile, "\n");
 	}
 
+	//TAG Value
+	fprintf(pFile, "\nTAG Value\n");
+	for (std::map<std::string, std::string>::iterator iter = DutResults->_mapMainSectorInfo.begin(); iter != DutResults->_mapMainSectorInfo.end(); iter++)
+	{
+		fprintf(pFile, ",%s,%s\n", (iter->first).c_str(), (iter->second).c_str());
+	}
+
+	//BinCodes
 	fprintf(pFile, "\nBin Codes");
 	for (size_t i = 1; i <= DutResults->_binCodes.size(); i++)
 	{

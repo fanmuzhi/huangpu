@@ -232,8 +232,13 @@ void Syn_FingerprintTest::RemoveBaseline(FPSFrame *pImgFingerArr, FPSFrame *pImg
 	{
 		for (int col = 0; col < nNumCol; col++)
 		{
-			pImgFingerArr->arr[row][col] = pImgFingerArr->arr[row][col] - pImgNoFingerArr->arr[row][col] + 128;
+			//pImgFingerArr->arr[row][col] = pImgFingerArr->arr[row][col] -pImgNoFingerArr->arr[row][col] + 128;
+			int temp = pImgFingerArr->arr[row][col] -pImgNoFingerArr->arr[row][col] + 128;
+			temp = temp > 255 ? 255 : temp;
+			temp = temp < 0 ? 0 : temp;
+			pImgFingerArr->arr[row][col] = temp;
 			tempSum += pImgFingerArr->arr[row][col];
+			//tempSum += temp;
 		}
 
 		tempMean[row] = (float)(tempSum / nNumCol);

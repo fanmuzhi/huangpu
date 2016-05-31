@@ -17,6 +17,6 @@ public:
 
 protected:
 
-	void WriteBootSector(int nSection, uint8_t* pOtpBootSector, uint8_t* pBootSectorMask);
+	void Create_SN(uint8_t* SN, uint32_t nDutdSerNum, int nSiteNum, int nTestLocationId);
 };
 

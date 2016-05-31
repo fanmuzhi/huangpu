@@ -96,7 +96,7 @@ void Ts_WaitStimulus::Execute()
 	_pSyn_Dut->_pSyn_DutTestResult->_WaitStimulusResults.iRealRowNumber = iRealRowNumber;
 	_pSyn_Dut->_pSyn_DutTestResult->_WaitStimulusResults.iRealColumnNumber = iRealColumnNumber;
 
-	//RemoveBaseline(&_pSyn_Dut->_pSyn_DutTestResult->_WaitStimulusResults._ImagepFrame,&_pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.arr_ImageFPSFrame, iRealRowNumber, iRealColumnNumber);
+	RemoveBaseline(&_pSyn_Dut->_pSyn_DutTestResult->_WaitStimulusResults._ImagepFrame,&_pSyn_Dut->_pSyn_DutTestResult->_acqImgNoFingerResult.arr_ImageFPSFrame, iRealRowNumber, iRealColumnNumber);
 
 	delete pFrame;
 	pFrame = NULL;
