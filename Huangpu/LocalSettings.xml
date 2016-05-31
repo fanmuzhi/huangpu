@@ -3,6 +3,6 @@
     <SysConfigFile>D:/ConfigFile(xml)/Manhattan/(580-006033-01r01)_OFilm_Manhattan_Huangpu_HuaweiSNR.xml</SysConfigFile>
     <LogFilePath>C:/logfiles</LogFilePath>
     <NumSites>1</NumSites>
-    <Site1 AdcBaseLines="695 696 694 697 696 696 692 698 697 697 705 697 698 696 692 697 " Voltages="1800 1800 3300 3300">1684806</Site1>
+    <Site1 Voltages="1800 1800 3300 3300" AdcBaseLines="701 703 710 706 702 703 788 706 697 703 1567 706 647 704 3728 706 ">1550810</Site1>
     <AutoController></AutoController>
 </LocalSettings>

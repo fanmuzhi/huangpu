@@ -152,4 +152,7 @@ public:
 	ProjectType		_eProjectType;
 
 	string			_sConfigFileName;
+
+	uint32_t _DeviceSerialNumber;
+	unsigned int _iSiteNumber;
 };

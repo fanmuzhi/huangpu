@@ -211,6 +211,9 @@ uint32_t Syn_Site::Open()
 	
 	_siteState = Idle;
 
+	_pSyn_Dut->_DeviceSerialNumber = _uiSerialNumber;
+	_pSyn_Dut->_iSiteNumber = _iSiteNumber;
+
 	return Syn_ExceptionCode::Syn_OK;
 }
 
@@ -878,6 +881,14 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 		fprintf(pFile, "\n");
 	}
 
+	//TAG Value
+	fprintf(pFile, "\nTAG Value\n");
+	for (std::map<std::string, std::string>::iterator iter = DutResults->_mapMainSectorInfo.begin(); iter != DutResults->_mapMainSectorInfo.end(); iter++)
+	{
+		fprintf(pFile, ",%s,%s\n", (iter->first).c_str(), (iter->second).c_str());
+	}
+
+	//BinCodes
 	fprintf(pFile, "\nBin Codes");
 	for (size_t i = 1; i <= DutResults->_binCodes.size(); i++)
 	{
