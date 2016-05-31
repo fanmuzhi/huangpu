@@ -203,19 +203,21 @@ void Syn_MetallicaModule::TrimOsc(OscTrimInfo &iOscTrimInfo, OscTrimResults &ioO
 		if (timeout != 0)
 		{
 			ioOscTrimResults.m_nOscTrim = nTrimValue;
-			FpWriteOscTrim(ioOscTrimResults.m_nOscTrim);
+			//FpWriteOscTrim(ioOscTrimResults.m_nOscTrim);
 			ioOscTrimResults.m_bPass = 1;
 		}
 		else //Trimming unsuccessful
 		{
+			ioOscTrimResults.m_bPass = 0;
+
 			//If default value specified in config file, use it.
-			if (0!=iOscTrimInfo.m_OscTrimDefault)
-			{
-				iOscTrimInfo.m_bDefaultValueUsed = 1;
-				ioOscTrimResults.m_nOscTrim = iOscTrimInfo.m_OscTrimDefault;
-				FpWriteOscTrim(ioOscTrimResults.m_nOscTrim);
-				ioOscTrimResults.m_bPass = 1;
-			}
+			//if (0!=iOscTrimInfo.m_OscTrimDefault)
+			//{
+			//	iOscTrimInfo.m_bDefaultValueUsed = 1;
+			//	ioOscTrimResults.m_nOscTrim = iOscTrimInfo.m_OscTrimDefault;
+			//	FpWriteOscTrim(ioOscTrimResults.m_nOscTrim);
+			//	ioOscTrimResults.m_bPass = 1;
+			//}
 		}
 	}
 }
@@ -267,19 +269,21 @@ void Syn_MetallicaModule::TrimSlowOsc(SlowOscInfo &iSlowOscInfo, SlowOscResults 
 	{
 		ioSlowOscResults.m_nTrim = nHvOscTrim;
 		ioSlowOscResults.m_nBias = nHvOscBias;
-		FpWriteSlowOscFreq(nHvOscTrim, nHvOscBias);
+		//FpWriteSlowOscFreq(nHvOscTrim, nHvOscBias);
 		ioSlowOscResults.m_bPass = 1;
 	}
 	else //Trimming unsuccessful
 	{
+		ioSlowOscResults.m_bPass = 0;
+
 		//If default value specified in config file, use it.
-		if ((iSlowOscInfo.m_nDefaultTrim != 0) && (iSlowOscInfo.m_nDefaultBias != 0))
-		{
-			ioSlowOscResults.m_bDefaultValueUsed = 1;
-			ioSlowOscResults.m_nTrim = iSlowOscInfo.m_nDefaultTrim;
-			ioSlowOscResults.m_nBias = iSlowOscInfo.m_nDefaultBias;
-			FpWriteSlowOscFreq(ioSlowOscResults.m_nTrim, ioSlowOscResults.m_nBias);
-			ioSlowOscResults.m_bPass = 1;
-		}
+		//if ((iSlowOscInfo.m_nDefaultTrim != 0) && (iSlowOscInfo.m_nDefaultBias != 0))
+		//{
+		//	ioSlowOscResults.m_bDefaultValueUsed = 1;
+		//	ioSlowOscResults.m_nTrim = iSlowOscInfo.m_nDefaultTrim;
+		//	ioSlowOscResults.m_nBias = iSlowOscInfo.m_nDefaultBias;
+		//	FpWriteSlowOscFreq(ioSlowOscResults.m_nTrim, ioSlowOscResults.m_nBias);
+		//	ioSlowOscResults.m_bPass = 1;
+		//}
 	}
 }
