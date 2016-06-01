@@ -882,10 +882,13 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	}
 
 	//TAG Value
-	fprintf(pFile, "\nTAG Value\n");
-	for (std::map<std::string, std::string>::iterator iter = DutResults->_mapMainSectorInfo.begin(); iter != DutResults->_mapMainSectorInfo.end(); iter++)
+	if (DutInfo->_otpCheckInfo._bExecuted)
 	{
-		fprintf(pFile, ",%s,%s\n", (iter->first).c_str(), (iter->second).c_str());
+		fprintf(pFile, "\nTAG Value\n");
+		for (std::map<std::string, std::string>::iterator iter = DutResults->_mapMainSectorInfo.begin(); iter != DutResults->_mapMainSectorInfo.end(); iter++)
+		{
+			fprintf(pFile, ",%s,%s\n", (iter->first).c_str(), (iter->second).c_str());
+		}
 	}
 
 	//BinCodes

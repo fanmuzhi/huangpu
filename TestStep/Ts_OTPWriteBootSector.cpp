@@ -116,6 +116,9 @@ void Ts_OTPWriteBootSector::Execute()
 	//test
 	uint8_t snArray[DUT_SER_NUM_SIZE] = { 0 };
 	Create_SN(snArray, _pSyn_Dut->_DeviceSerialNumber, _pSyn_Dut->_iSiteNumber, 0);
+	SerialNumReverseBitFields(snArray, snArray);
+
+	return;
 }
 
 void Ts_OTPWriteBootSector::ProcessData()
@@ -162,4 +165,47 @@ void Ts_OTPWriteBootSector::Create_SN(uint8_t* SN, uint32_t nDutdSerNum, int nSi
 	SN[3] = (serial >> 16) & 0x00000000000000FF;
 	SN[4] = (serial >> 8) & 0x00000000000000FF;
 	SN[5] = serial & 0x00000000000000FF;
+}
+
+void Ts_OTPWriteBootSector::SerialNumReverseBitFields(uint8_t* pSrc, uint8_t* pDst)
+{
+	uint64_t	nTmp, nTmp2, nReversed;
+	uint8_t		arRev[16] = { 0x00, 0x08, 0x04, 0x0C, 0x02, 0x0A, 0x06, 0x0E,
+		0x01, 0x09, 0x05, 0x0D, 0x03, 0x0B, 0x07, 0x0F };
+
+	//Copy the ATE (bit 46) and MT (bit 47) bits.
+	nReversed = (pSrc[0] & 0x80) ? 0x800000000000L : 0;
+	nReversed |= (pSrc[0] & 0x40) ? 0x400000000000L : 0;
+
+	//Get the site number (bits 42-45) and reverse the bits.
+	nReversed |= ((uint64_t)(arRev[((pSrc[0] >> 2) & 0x0F)])) << 42;
+
+	//Get time (in seconds) since 1-1-2014 (bits 14-41) and reverse the bits.
+	nTmp = ((((uint64_t)pSrc[0]) << 32) | ((uint64_t)pSrc[1]) << 24) | (((uint64_t)pSrc[2]) << 16) | (((uint64_t)pSrc[3]) << 8) | pSrc[4];
+	nTmp = nTmp >> 6;
+	nTmp = nTmp & 0xFFFFFFF;
+	nTmp2 = (arRev[(nTmp >> 0) & 0x0F]) << 24;
+	nTmp2 |= (arRev[(nTmp >> 4) & 0x0F]) << 20;
+	nTmp2 |= (arRev[(nTmp >> 8) & 0x0F]) << 16;
+	nTmp2 |= (arRev[(nTmp >> 12) & 0x0F]) << 12;
+	nTmp2 |= (arRev[(nTmp >> 16) & 0x0F]) << 8;
+	nTmp2 |= (arRev[(nTmp >> 20) & 0x0F]) << 4;
+	nTmp2 |= (arRev[(nTmp >> 24) & 0x0F]) << 0;
+	nReversed |= nTmp2 << 14;
+
+	//Get the test location (bits 10-13) and reverse the bits.
+	nReversed |= ((uint64_t)(arRev[(pSrc[4] >> 2) & 0x0F])) << 10;
+
+	//Get the tester serial number (bits 0-9) and reverse the bits.
+	nReversed |= ((uint64_t)(arRev[(pSrc[5] >> 4) & 0x0F]) | ((uint64_t)(arRev[pSrc[5] & 0x0F] << 4))) << 2;
+	nReversed |= (pSrc[4] & 0x02) ? 0x01 : 0;
+	nReversed |= (pSrc[4] & 0x01) ? 0x02 : 0;
+
+	//Copy the result into the destination.
+	pDst[0] = (uint8_t)(nReversed >> 40);
+	pDst[1] = (uint8_t)(nReversed >> 32);
+	pDst[2] = (uint8_t)(nReversed >> 24);
+	pDst[3] = (uint8_t)(nReversed >> 16);
+	pDst[4] = (uint8_t)(nReversed >> 8);
+	pDst[5] = (uint8_t)(nReversed >> 0);
 }
