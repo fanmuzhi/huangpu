@@ -36,7 +36,7 @@ Syn_FingerprintTest::Syn_FingerprintTest(string &strName, string &strArgs, Syn_D
 	}
 
 	//_starttime = time(NULL);
-	_starttime = GetTickCount();
+	_starttime = GetTickCount64();
 }
 
 
@@ -205,7 +205,7 @@ void Syn_FingerprintTest::ComputeRunningTime(double &ioRunningTime)
 	//_finishtime = time(NULL);
 	//ioRunningTime = difftime(_finishtime, _starttime)*1000;
 
-	_finishtime = GetTickCount();
+	_finishtime = GetTickCount64();
 	ioRunningTime = (double)(_finishtime - _starttime);
 }
 

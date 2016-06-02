@@ -16,8 +16,8 @@ bool Syn_Viper1Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 	int	nNumRows = numRows;
 	int	nNumCols = numCols;
 	int	nPgaIdx = calInfo.m_nPgaIdx;
-	FPSFrame calFrameZeroOffsets;
-	FPSFrame calFrameNonZeroOffsets;
+	FPSFrame * calFrameZeroOffsets = new FPSFrame[MAXFRAMES];
+	FPSFrame * calFrameNonZeroOffsets = new FPSFrame[MAXFRAMES];
 	//int8_t *pOffsetArr = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx + 4];
 	int8_t *pOffsetArr = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx];
 	float nRatio;
@@ -38,7 +38,7 @@ bool Syn_Viper1Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 			for (int nFrame = 0; nFrame<nNumFrames; nFrame++)
 				nTotal += (int16_t)arFrames[nFrame].arr[nRow][nCol];
 
-			calFrameZeroOffsets.arr[nRow][nCol] = nTotal / nNumFrames;
+			calFrameZeroOffsets->arr[nRow][nCol] = nTotal / nNumFrames;
 		}
 	}
 
@@ -60,7 +60,7 @@ bool Syn_Viper1Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 				for (int nFrame = 0; nFrame<nNumFrames; nFrame++)
 					nTotal += (int16_t)arFrames[nFrame].arr[nRow][nCol];
 
-				calFrameNonZeroOffsets.arr[nRow][nCol] = nTotal / nNumFrames;
+				calFrameNonZeroOffsets->arr[nRow][nCol] = nTotal / nNumFrames;
 			}
 		}
 	}
@@ -78,10 +78,10 @@ bool Syn_Viper1Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 			nRatio = calInfo.m_nPgaOffsetRatio;
 			if (calInfo.m_bPgaFineTuning)
 			{
-				nRatio = ((int16_t)calFrameZeroOffsets.arr[nRow][nCol] -
-					(int16_t)calFrameNonZeroOffsets.arr[nRow][nCol]) / (float)nOffsetDelta;
+				nRatio = ((int16_t)calFrameZeroOffsets->arr[nRow][nCol] -
+					(int16_t)calFrameNonZeroOffsets->arr[nRow][nCol]) / (float)nOffsetDelta;
 			}
-			*pBuf++ = CalcPgaOffset(calFrameZeroOffsets.arr[nRow][nCol], nRatio, nConfigRatio);
+			*pBuf++ = CalcPgaOffset(calFrameZeroOffsets->arr[nRow][nCol], nRatio, nConfigRatio);
 		}
 	}
 
@@ -95,10 +95,10 @@ bool Syn_Viper1Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 				nRatio = calInfo.m_nPgaOffsetRatio;
 				if (calInfo.m_bPgaFineTuning)
 				{
-					nRatio = ((int16_t)calFrameZeroOffsets.arr[nRow][nBigCol + nCol] -
-						(int16_t)calFrameNonZeroOffsets.arr[nRow][nBigCol + nCol]) / (float)nOffsetDelta;
+					nRatio = ((int16_t)calFrameZeroOffsets->arr[nRow][nBigCol + nCol] -
+						(int16_t)calFrameNonZeroOffsets->arr[nRow][nBigCol + nCol]) / (float)nOffsetDelta;
 				}
-				*pOffsetArr++ = CalcPgaOffset(calFrameZeroOffsets.arr[nRow][nBigCol + nCol], nRatio, nConfigRatio);
+				*pOffsetArr++ = CalcPgaOffset(calFrameZeroOffsets->arr[nRow][nBigCol + nCol], nRatio, nConfigRatio);
 			}
 		}
 	}
@@ -115,6 +115,12 @@ bool Syn_Viper1Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 
 	delete[] arFrames;
 	arFrames = NULL;
+
+	delete[] calFrameNonZeroOffsets;
+	calFrameNonZeroOffsets = NULL;
+
+	delete[] calFrameZeroOffsets;
+	calFrameZeroOffsets = NULL;
 
 	return !bStage2AllEqual;
 }

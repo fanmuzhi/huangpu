@@ -21,8 +21,8 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 	int nNumRows = numRows;
 	int nNumCols = numCols;
 	int nPgaIdx = calInfo.m_nPgaIdx;
-	FPSFrame calFrameZeroOffsets;
-	FPSFrame calFrameNonZeroOffsets;
+	FPSFrame *calFrameZeroOffsets = new FPSFrame[MAXFRAMES];
+	FPSFrame *calFrameNonZeroOffsets = new FPSFrame[MAXFRAMES];
 	float nConfigRatio = calInfo.m_nPgaOffsetRatio;
 	int nNumFrames = calInfo.m_nNumPgaSamples;
 	int16_t nTotal;
@@ -47,7 +47,7 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 			nTotal = 0;
 			for (int nFrame = 0; nFrame<nNumFrames; nFrame++)
 				nTotal += (int16_t)arFrames[nFrame].arr[nRow][nCol];
-			calFrameZeroOffsets.arr[nRow][nCol] = nTotal / nNumFrames;
+			calFrameZeroOffsets->arr[nRow][nCol] = nTotal / nNumFrames;
 		}
 	}
 
@@ -56,7 +56,7 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 	for (int nRow = 0; nRow<nNumRows; nRow++)
 	{
 		for (int nCol = HEADER; nCol<nNumCols; nCol++)
-			*pTmp++ = CalcPgaOffset(calFrameZeroOffsets.arr[nRow][nCol], nConfigRatio, nConfigRatio);
+			*pTmp++ = CalcPgaOffset(calFrameZeroOffsets->arr[nRow][nCol], nConfigRatio, nConfigRatio);
 	}
 
 	//Put the PGA offsets into the print file. The ordering is a bit strange.
@@ -92,7 +92,7 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 				nTotal = 0;
 				for (int nFrame = 0; nFrame<nNumFrames; nFrame++)
 					nTotal += (int16_t)arFrames[nFrame].arr[nRow][nCol];
-				calFrameNonZeroOffsets.arr[nRow][nCol] = nTotal / nNumFrames;
+				calFrameNonZeroOffsets->arr[nRow][nCol] = nTotal / nNumFrames;
 			}
 		}
 
@@ -106,7 +106,7 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 				for (int nColIdx = 0; nColIdx<4; nColIdx++)
 				{
 					//Calculate fine tuned PGA offset.
-					int8_t nAdjustment = CalcPgaOffset(calFrameNonZeroOffsets.arr[nRow][nBigCol + nColIdx], nConfigRatio, nConfigRatio);
+					int8_t nAdjustment = CalcPgaOffset(calFrameNonZeroOffsets->arr[nRow][nBigCol + nColIdx], nConfigRatio, nConfigRatio);
 					if (((float)(*pTmp) + (float)nAdjustment) > 127)
 						*pPrtFileOffsets = 127;
 					else if (((float)(*pTmp) + (float)nAdjustment) < -128)
@@ -139,6 +139,10 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 
 	delete[] arFrames;
 	arFrames = NULL;
+	delete[] calFrameZeroOffsets;
+	calFrameZeroOffsets = NULL;
+	delete[] calFrameNonZeroOffsets;
+	calFrameNonZeroOffsets = NULL;
 
 	delete[] pTempOffsets;
 	return !bStage2AllEqual;
