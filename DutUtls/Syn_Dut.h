@@ -72,7 +72,7 @@ struct Syn_DutTestResult
 
 	map<string, string>			_mapMainSectorInfo;
 
-	std::string					_sSensorSerialNumber;
+	//std::string					_sSensorSerialNumber;
 
 	InitializationResults		_initResults;
 	CalibrationResults			_calibrationResults;

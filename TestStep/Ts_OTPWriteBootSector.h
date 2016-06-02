@@ -15,10 +15,5 @@ public:
 
 	virtual void	CleanUp();
 
-protected:
-
-	void Create_SN(uint8_t* SN, uint32_t nDutdSerNum, int nSiteNum, int nTestLocationId);
-
-	void SerialNumReverseBitFields(uint8_t* pSrc, uint8_t* pDst);
 };
 

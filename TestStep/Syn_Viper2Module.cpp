@@ -74,8 +74,8 @@ bool Syn_Viper2Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 	int	nNumRows = numRows;
 	int	nNumCols = numCols;
 	int	nPgaIdx = calInfo.m_nPgaIdx;
-	FPSFrame calFrameZeroOffsets;
-	FPSFrame calFrameNonZeroOffsets;
+	FPSFrame * calFrameZeroOffsets = new FPSFrame[MAXFRAMES];
+	FPSFrame * calFrameNonZeroOffsets = new FPSFrame[MAXFRAMES];
 	//int8_t * pOffsetArr = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx + 4];
 	int8_t * pOffsetArr = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx];
 	float nSetRatio = calInfo.m_nPgaOffsetRatio;
@@ -115,7 +115,7 @@ bool Syn_Viper2Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 			nTotal = 0;
 			for (int nFrame = 0; nFrame<nNumFrames; nFrame++)
 				nTotal += (int16_t)arFrames[nFrame].arr[nRow][nCol];
-			calFrameZeroOffsets.arr[nRow][nCol] = nTotal / nNumFrames;
+			calFrameZeroOffsets->arr[nRow][nCol] = nTotal / nNumFrames;
 		}
 	}
 
@@ -124,10 +124,10 @@ bool Syn_Viper2Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 	for (int nRow = 0; nRow<nNumRows; nRow++)
 	{
 		for (int nCol = HEADER; nCol<nNumCols; nCol++)
-		if (calFrameZeroOffsets.arr[nRow][nCol] >= 0xbb)
-			*pTmp++ = CalcPgaOffset(calFrameZeroOffsets.arr[nRow][nCol], nConfigRatio, nConfigRatio);
+		if (calFrameZeroOffsets->arr[nRow][nCol] >= 0xbb)
+			*pTmp++ = CalcPgaOffset(calFrameZeroOffsets->arr[nRow][nCol], nConfigRatio, nConfigRatio);
 		else
-			*pTmp++ = CalcPgaOffset(calFrameZeroOffsets.arr[nRow][nCol], nConfigRatio, nConfigRatio);
+			*pTmp++ = CalcPgaOffset(calFrameZeroOffsets->arr[nRow][nCol], nConfigRatio, nConfigRatio);
 	}
 
 	//Put the PGA offsets into the print file. The ordering is a bit strange.
@@ -174,7 +174,7 @@ bool Syn_Viper2Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 				for (int nFrame = 0; nFrame<nNumFrames; nFrame++)
 					nTotal += (int16_t)arFrames[nFrame].arr[nRow][nCol];
 
-				calFrameNonZeroOffsets.arr[nRow][nCol] = nTotal / nNumFrames;
+				calFrameNonZeroOffsets->arr[nRow][nCol] = nTotal / nNumFrames;
 			}
 		}
 
@@ -184,7 +184,7 @@ bool Syn_Viper2Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 		{
 			for (int nCol = HEADER; nCol<nNumCols; nCol++)
 			{
-				int8_t nAdjustment = CalcPgaOffset(calFrameNonZeroOffsets.arr[nRow][nCol], nConfigRatio, nConfigRatio);
+				int8_t nAdjustment = CalcPgaOffset(calFrameNonZeroOffsets->arr[nRow][nCol], nConfigRatio, nConfigRatio);
 				if (((float)(*pTmp) + (float)nAdjustment) > 127)
 					*pTmp++ = 127;
 				else if (((float)(*pTmp) + (float)nAdjustment) < -128)
@@ -237,6 +237,12 @@ bool Syn_Viper2Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 
 	delete[] arFrames;
 	arFrames = NULL;
+
+	delete[] calFrameNonZeroOffsets;
+	calFrameNonZeroOffsets = NULL;
+
+	delete[] calFrameZeroOffsets;
+	calFrameZeroOffsets = NULL;
 
 	delete[] pTempOffsets;
 	return !bStage2AllEqual;

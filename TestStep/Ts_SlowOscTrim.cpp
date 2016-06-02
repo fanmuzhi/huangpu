@@ -62,13 +62,14 @@ void Ts_SlowOscTrim::Execute()
 	_pSyn_Dut->_pSyn_DutTestInfo->_SlowOscInfo.m_bExecuted = true;
 	_pSyn_Dut->_pSyn_DutTestResult->_SlowOscResults.m_bPass = 1;
 
-	uint32_t nSlowTrim;
-	GetSlowOscValues(nSlowTrim);
-	if (nSlowTrim == 0x1F04)
-	{
-		//OscTrim has not been calibrated. Calibrate it.
-		TrimSlowOsc(_pSyn_Dut->_pSyn_DutTestInfo->_SlowOscInfo, _pSyn_Dut->_pSyn_DutTestResult->_SlowOscResults, _pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV);
-	}
+	//uint32_t nSlowTrim;
+	//GetSlowOscValues(nSlowTrim);
+	//if (nSlowTrim == 0x1F04)
+	//{
+	//	//OscTrim has not been calibrated. Calibrate it.
+	//	TrimSlowOsc(_pSyn_Dut->_pSyn_DutTestInfo->_SlowOscInfo, _pSyn_Dut->_pSyn_DutTestResult->_SlowOscResults, _pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV);
+	//}
+	TrimSlowOsc(_pSyn_Dut->_pSyn_DutTestInfo->_SlowOscInfo, _pSyn_Dut->_pSyn_DutTestResult->_SlowOscResults, _pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV);
 }
 
 void Ts_SlowOscTrim::ProcessData()

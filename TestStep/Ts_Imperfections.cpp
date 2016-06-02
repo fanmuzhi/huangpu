@@ -71,9 +71,9 @@ void Ts_Imperfections::ProcessData()
 	int failRowPegged, failRowFloored, countRow, countCol, failLimit; //these are filled out by structure from .cpp file.
 	int temp_sum = 0;
 	int temp_val = 0;
-	int temp_consecutive[MAXCOL];
-	int temp_col[MAXCOL];
-	int temp_row[MAXROW];
+	int temp_consecutive[MAXCOL] = { 0 };
+	int temp_col[MAXCOL] = { 0 };
+	int temp_row[MAXROW] = { 0 };
 	numFrames = _pSyn_Dut->_pSyn_DutTestInfo->_imperfectionsTestInfo.numFrames;
 
 	//initialize temp_consecutive

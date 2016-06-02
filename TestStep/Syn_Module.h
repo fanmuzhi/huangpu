@@ -40,15 +40,15 @@ public:
 
 	virtual bool CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRows, CalibrationInfo &calInfo, CalibrationResults &calResult) = 0;
 
-	virtual void TrimOsc(OscTrimInfo &iOscTrimInfo, OscTrimResults &ioOscTrimResults, uint16_t Vdd_mV, uint16_t Vio_mV, uint16_t Vled_mV, uint16_t Vddh_mV);
+	virtual void TrimOsc(OscTrimInfo &iOscTrimInfo, OscTrimResults &ioOscTrimResults, uint16_t Vdd_mV, uint16_t Vio_mV, uint16_t Vled_mV, uint16_t Vddh_mV) = 0;
 
-	virtual void FpWriteOscTrim(uint32_t nOscTrimValue);
+	virtual void TrimSlowOsc(SlowOscInfo &iSlowOscInfo, SlowOscResults &ioSlowOscResults, uint16_t Vdd_mV, uint16_t Vio_mV, uint16_t Vled_mV, uint16_t Vddh_mV) = 0;
 
-	virtual void WriteBootSector(int nSection, uint8_t* pOtpBootSector, uint8_t* pBootSectorMask);
+	//virtual void FpWriteOscTrim(uint32_t nOscTrimValue);
 
-	virtual void TrimSlowOsc(SlowOscInfo &iSlowOscInfo, SlowOscResults &ioSlowOscResults, uint16_t Vdd_mV, uint16_t Vio_mV, uint16_t Vled_mV, uint16_t Vddh_mV);
+	//virtual void WriteBootSector(int nSection, uint8_t* pOtpBootSector, uint8_t* pBootSectorMask);
 
-	virtual void FpWriteSlowOscFreq(uint32_t nHvOscTrim, uint32_t nHvOscBias);
+	//virtual void FpWriteSlowOscFreq(uint32_t nHvOscTrim, uint32_t nHvOscBias);
 
 	virtual void ModifySweepWofCmdData(uint8_t* pSweepCmd) {}
 

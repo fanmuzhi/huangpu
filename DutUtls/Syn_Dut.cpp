@@ -69,7 +69,7 @@ void Syn_Dut::InitData(Syn_SysConfig &sysConfig, AdcBaseLineInfo &iAdcBaseLineIn
 	{
 		_pSyn_DutTestResult = new Syn_DutTestResult();
 	}
-	_pSyn_DutTestResult->_sSensorSerialNumber.clear();
+	//_pSyn_DutTestResult->_sSensorSerialNumber.clear();
 	_pSyn_DutTestResult->_binCodes.clear();
 
 	int arrIncrement[4] = {3, 1, -1, -3};	//swap the value

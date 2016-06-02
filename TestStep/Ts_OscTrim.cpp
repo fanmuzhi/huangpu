@@ -64,14 +64,15 @@ void Ts_OscTrim::Execute()
 
 	uint32_t nOscTrim(0);
 	GetOscValues(nOscTrim);
-	if (0==nOscTrim)
-	{
-		TrimOsc(_pSyn_Dut->_pSyn_DutTestInfo->_OscTrimInfo, _pSyn_Dut->_pSyn_DutTestResult->_OscTrimResults, _pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV);
-	}
-	else
-	{
-		_pSyn_Dut->_pSyn_DutTestResult->_OscTrimResults.m_nOscTrim = nOscTrim;
-	}
+	//if (0==nOscTrim)
+	//{
+	//	TrimOsc(_pSyn_Dut->_pSyn_DutTestInfo->_OscTrimInfo, _pSyn_Dut->_pSyn_DutTestResult->_OscTrimResults, _pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV);
+	//}
+	//else
+	//{
+	//	_pSyn_Dut->_pSyn_DutTestResult->_OscTrimResults.m_nOscTrim = nOscTrim;
+	//}
+	TrimOsc(_pSyn_Dut->_pSyn_DutTestInfo->_OscTrimInfo, _pSyn_Dut->_pSyn_DutTestResult->_OscTrimResults, _pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV);
 }
 
 void Ts_OscTrim::ProcessData()

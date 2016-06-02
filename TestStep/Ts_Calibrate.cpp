@@ -276,18 +276,18 @@ bool Ts_Calibrate::VerifyPixelRanges()
 	int			nFirstRow = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimTopWithoutStim;
 	int			nFirstCol = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimLeftWithoutStim;
 
-	FPSFrame	arFrame = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.arr_ImageFPSFrame;
+	FPSFrame	*arFrame = &_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.arr_ImageFPSFrame;
 
-	GetFingerprintImage(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults, &arFrame, _pSyn_Dut->_RowNumber, _pSyn_Dut->_ColumnNumber);
+	GetFingerprintImage(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults, arFrame, _pSyn_Dut->_RowNumber, _pSyn_Dut->_ColumnNumber);
 
 	//Scan through all rows and columns. Apply trim values specified in Initialization step.
 	for (int nRow = nFirstRow; nRow < nLastRow; nRow++)
 	{
 		for (int nCol = (nFirstCol + HEADER); nCol < nLastCol; nCol++)
 		{
-			if ((arFrame.arr[nRow][nCol] < _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nPgaLimitLow) || (arFrame.arr[nRow][nCol] > _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nPgaLimitHigh))
+			if ((arFrame->arr[nRow][nCol] < _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nPgaLimitLow) || (arFrame->arr[nRow][nCol] > _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nPgaLimitHigh))
 			{
-				int failPixel = arFrame.arr[nRow][nCol];
+				int failPixel = arFrame->arr[nRow][nCol];
 				bSuccess = false;
 			}
 		}
