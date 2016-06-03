@@ -136,7 +136,7 @@ void Ts_SNRTest::ProcessData()
 	int overall_passed = 1;
 
 	//debug
-	for (i = 0; i < 7; i++)
+	for (i = 0; i < REGIONS; i++)
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_snrResults.SNR[i] = 0;
 		_pSyn_Dut->_pSyn_DutTestResult->_snrResults.SIGNAL[i] = 0;

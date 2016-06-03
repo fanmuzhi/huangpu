@@ -613,7 +613,8 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 					fprintf(pFile, ",%02X", DutResults->_calibrationResults.m_pPGAOtpArray[i]);
 				}
 
-				fprintf(pFile, "\n,,,Stage2 Variance Score,N/A\n");
+				//fprintf(pFile, "\n,,,Stage2 Variance Score,N/A\n");
+				fprintf(pFile, "\n,,,Stage2 Variance Score,%d\n", DutResults->_calibrationResults.m_nStage2VarianceScore);
 			}
 			else
 			{
