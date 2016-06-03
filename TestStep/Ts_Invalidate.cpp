@@ -52,12 +52,14 @@ void Ts_Invalidate::Execute()
 										EXT_TAG_SNR,
 										EXT_TAG_PGA_OOPR,
 										EXT_TAG_FlexId,
-										EXT_TAG_WOF_BOT,
+										EXT_TAG_WOF_FD_ZONE0,
+										EXT_TAG_WOF_FD_ZONE1,
+										EXT_TAG_WOF_FU_ZONE0,
+										EXT_TAG_WOF_FU_ZONE1,
 										EXT_TAG_DutTempAdc,
-										EXT_TAG_WOF_TOP,
 										EXT_TAG_PGA_OOPP,
-										EXT_TAG_SCM_WOF_BOT,
-										EXT_TAG_SCM_WOF_TOP,
+										EXT_TAG_SCM_WOF_ZONE0,
+										EXT_TAG_SCM_WOF_ZONE1,
 										EXT_TAG_PART_NUMBERS,
 										EXT_TAG_LNA_PGA_GAINS };
 
@@ -126,7 +128,7 @@ void Ts_Invalidate::get_invalidate_arguments(uint32_t tagId, char* outString, in
 			extended_tag[0] = 0x08;
 			break;
 
-		case EXT_TAG_WOF_BOT:
+		case EXT_TAG_WOF_FD_ZONE0:
 			extended_tag[0] = 0x09;
 			break;
 
@@ -134,7 +136,7 @@ void Ts_Invalidate::get_invalidate_arguments(uint32_t tagId, char* outString, in
 			extended_tag[0] = 0x0A;
 			break;
 
-		case EXT_TAG_WOF_TOP:
+		case EXT_TAG_WOF_FD_ZONE1:
 			extended_tag[0] = 0x0B;
 			break;
 
@@ -142,11 +144,11 @@ void Ts_Invalidate::get_invalidate_arguments(uint32_t tagId, char* outString, in
 			extended_tag[0] = 0x0C;
 			break;
 
-		case EXT_TAG_SCM_WOF_BOT:
+		case EXT_TAG_SCM_WOF_ZONE0:
 			extended_tag[0] = 0x0D;
 			break;
 			
-		case EXT_TAG_SCM_WOF_TOP:
+		case EXT_TAG_SCM_WOF_ZONE1:
 			extended_tag[0] = 0x0E;
 			break;
 
@@ -156,6 +158,14 @@ void Ts_Invalidate::get_invalidate_arguments(uint32_t tagId, char* outString, in
 
 		case EXT_TAG_LNA_PGA_GAINS:
 			extended_tag[0] = 0x12;
+			break;
+
+		case EXT_TAG_WOF_FU_ZONE0:
+			extended_tag[0] = 0x13;
+			break;
+
+		case EXT_TAG_WOF_FU_ZONE1:
+			extended_tag[0] = 0x14;
 			break;
 
 		default:

@@ -159,6 +159,22 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	{
 		opTestStepInstance = new Ts_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
+	else if (std::string("WOF_FD_WithoutStimulus") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("WOF_FD_WithStimulus") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("WOF_FU_WithoutStimulus") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("WOF_FU_WithStimulus") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
 	else if (std::string("WOF-LowPower") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_WOFLowPower(strTestStepName, strTestArgs, pDutCtrl, pDut);

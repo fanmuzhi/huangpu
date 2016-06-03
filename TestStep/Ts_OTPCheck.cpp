@@ -186,10 +186,10 @@ void Ts_OTPCheck::Execute()
 	}
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_BOT)
 	{
-		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_BOT, pDst, MS0_SIZE);
+		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FD_ZONE0, pDst, MS0_SIZE);
 		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofBot_count = count;
 
-		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_WOF_BOT", HexToString(pDst, 4, 7)));
+		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_WOF_FD_ZONE0", HexToString(pDst, 4, 7)));
 	}
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_DutTempAdc)
 	{
@@ -201,10 +201,10 @@ void Ts_OTPCheck::Execute()
 	}
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_TOP)
 	{
-		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_TOP, pDst, MS0_SIZE);
+		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FD_ZONE1, pDst, MS0_SIZE);
 		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofTop_count= count;
 
-		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_WOF_TOP", HexToString(pDst, 4, 7)));
+		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_WOF_FD_ZONE1", HexToString(pDst, 4, 7)));
 	}
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PGA_OOPP)
 	{
@@ -215,17 +215,17 @@ void Ts_OTPCheck::Execute()
 	}
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_BOT)
 	{
-		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_BOT, pDst, MS0_SIZE);
+		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_ZONE0, pDst, MS0_SIZE);
 		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nScmWofBot_count= count;
 
-		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_SCM_WOF_BOT", HexToString(pDst,4,7)));
+		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_SCM_WOF_ZONE0", HexToString(pDst,4,7)));
 	}
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_TOP)
 	{
-		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_TOP, pDst, MS0_SIZE);
+		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_ZONE1, pDst, MS0_SIZE);
 		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nScmWofTop_count= count;
 
-		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_SCM_WOF_TOP", HexToString(pDst, 4,7)));
+		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_SCM_WOF_ZONE1", HexToString(pDst, 4,7)));
 	}
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PART_NUMBERS)
 	{

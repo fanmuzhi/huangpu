@@ -145,31 +145,6 @@ void Ts_WOF::Execute()
 		return;
 	}
 
-	/*if (_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bWithStimulus)
-	{
-		//3.3V
-		_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_nWithStimCount = 0;
-		ExecuteWofTest();
-		WofTestProcessData();
-
-		if (_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_bPass == 0)
-		{
-			//3.7V
-			ExecuteWofTest();
-			WofTestProcessData();
-		}
-		_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bExecutedWithStimulus = true;
-
-	}
-	else
-	{
-		_pSyn_Dut->_pSyn_DutTestResult->_wofResults.m_nWithStimCount = 0;
-		//3.3V
-		ExecuteWofTest();
-		WofTestProcessData();
-		_pSyn_Dut->_pSyn_DutTestInfo->_wofInfo.m_bExecutedWithoutStimulus = true;
-	}*/
-
 	// WofPatch is not empty, and either/both Zone0 or Zone1 are used.
 	Syn_PatchInfo WofPatchInfo;
 	bool rc = _pSyn_Dut->FindPatch("WofPatch", WofPatchInfo);

@@ -145,7 +145,7 @@ void Ts_OTPWriteMainSector::Execute()
 	//If WOF(zone 0) values have not been stored in the OTP.
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_bExecutedWithStimulus)
 	{
-		nWofBot_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_BOT, arMS0, MS0_SIZE);
+		nWofBot_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FD_ZONE0, arMS0, MS0_SIZE);
 		if (nWofBot_count == 0)
 		{
 			memset(arMS0, 0, sizeof(arMS0));
@@ -154,14 +154,14 @@ void Ts_OTPWriteMainSector::Execute()
 			arMS0[2] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nGain & 0xFF);
 			arMS0[3] = 0;
 
-			BurnToOTP(EXT_TAG_WOF_BOT, arMS0, 4);
-			BurnToOTP(EXT_TAG_WOF_BOT, arMS0, 4);
+			BurnToOTP(EXT_TAG_WOF_FD_ZONE0, arMS0, 4);
+			BurnToOTP(EXT_TAG_WOF_FD_ZONE0, arMS0, 4);
 		}
 	}
 	//If WOF(zone 1) values have not been stored in the OTP.
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_bExecutedWithStimulus)
 	{
-		nWofTop_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_TOP, arMS0, MS0_SIZE);
+		nWofTop_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FD_ZONE1, arMS0, MS0_SIZE);
 		if (nWofTop_count == 0)
 		{
 			memset(arMS0, 0, sizeof(arMS0));
@@ -170,15 +170,15 @@ void Ts_OTPWriteMainSector::Execute()
 			arMS0[2] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_z1WofResults.m_nGain & 0xFF);
 			arMS0[3] = 0;
 
-			BurnToOTP(EXT_TAG_WOF_TOP, arMS0, 4);
-			BurnToOTP(EXT_TAG_WOF_TOP, arMS0, 4);
+			BurnToOTP(EXT_TAG_WOF_FD_ZONE1, arMS0, 4);
+			BurnToOTP(EXT_TAG_WOF_FD_ZONE1, arMS0, 4);
 		}
 	}
 
 	//SCM WOF(zone1 top) 
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo.m_bExecutedWithStimulus)
 	{
-		nScmWofTop_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_TOP, arMS0, MS0_SIZE);
+		nScmWofTop_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_ZONE1, arMS0, MS0_SIZE);
 		if (nScmWofTop_count == 0)
 		{	
 			memset(arMS0, 0, sizeof(arMS0));
@@ -186,15 +186,15 @@ void Ts_OTPWriteMainSector::Execute()
 			arMS0[1] = _pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults.m_nTriggerWithStim;
             arMS0[2] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults.m_nGain & 0xFF);
             arMS0[3] = 0;
-			BurnToOTP(EXT_TAG_SCM_WOF_TOP, arMS0, 4);
-			BurnToOTP(EXT_TAG_SCM_WOF_TOP, arMS0, 4);
+			BurnToOTP(EXT_TAG_SCM_WOF_ZONE1, arMS0, 4);
+			BurnToOTP(EXT_TAG_SCM_WOF_ZONE1, arMS0, 4);
 		}
 	}
 
 	//SCM WOF(zone0 bottom)
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_bExecutedWithStimulus)
 	{
-		nScmWofBot_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_BOT, arMS0, MS0_SIZE);
+		nScmWofBot_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_ZONE0, arMS0, MS0_SIZE);
 		if (nScmWofBot_count == 0)
 		{	
 			memset(arMS0, 0, sizeof(arMS0));
@@ -202,8 +202,8 @@ void Ts_OTPWriteMainSector::Execute()
 			arMS0[1] = _pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_nTriggerWithStim;
             arMS0[2] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_nGain & 0xFF);
             arMS0[3] = 0;
-			BurnToOTP(EXT_TAG_SCM_WOF_BOT, arMS0, 4);
-			BurnToOTP(EXT_TAG_SCM_WOF_BOT, arMS0, 4);
+			BurnToOTP(EXT_TAG_SCM_WOF_ZONE0, arMS0, 4);
+			BurnToOTP(EXT_TAG_SCM_WOF_ZONE0, arMS0, 4);
 		}
 	}
 
@@ -425,7 +425,9 @@ void Ts_OTPWriteMainSector::BurnToOTP(long nRecType, uint8_t* pSrc, int numBytes
 	arOutBuf[18] = 0x0E;
 
 	if ((nRecType == EXT_TAG_PGA_OOPR) || (nRecType == EXT_TAG_PGA_OOPP) ||(nRecType == EXT_TAG_LNA) || 
-		(nRecType == EXT_TAG_WOF_BOT) || (nRecType == EXT_TAG_SCM_WOF_BOT) || (nRecType == EXT_TAG_SCM_WOF_TOP) || (nRecType == EXT_TAG_WOF_TOP) || (nRecType == EXT_TAG_LNA_PGA_GAINS))
+		(nRecType == EXT_TAG_WOF_FD_ZONE0) || (nRecType == EXT_TAG_WOF_FD_ZONE1) ||
+		(nRecType == EXT_TAG_WOF_FU_ZONE0) || (nRecType == EXT_TAG_WOF_FU_ZONE1) ||
+		(nRecType == EXT_TAG_SCM_WOF_ZONE0) || (nRecType == EXT_TAG_SCM_WOF_ZONE1)|| (nRecType == EXT_TAG_LNA_PGA_GAINS))
 	{
 		//PGA and LNA records have an extra 4 bytes (0x00000007).
 		arOutBuf[24] = 0x07;
