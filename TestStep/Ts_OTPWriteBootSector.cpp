@@ -119,8 +119,10 @@ void Ts_OTPWriteBootSector::Execute()
 	otpBs1[33] = otpBs1[33+8] = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number[2];
 	otpBs1[32] = otpBs1[32+8] = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number[3];
 
+
 	_pSyn_DutCtrl->FpOtpRomWrite(BOOT_SEC, 0, otpBs0, BS0_SIZE);
 	_pSyn_DutCtrl->FpOtpRomWrite(BOOT_SEC, 1, otpBs1, BS0_SIZE);
+
 }
 
 void Ts_OTPWriteBootSector::ProcessData()
