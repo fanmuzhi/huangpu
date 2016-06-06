@@ -34,10 +34,12 @@ struct Syn_DutTestInfo
 	PixelInfo					_pixelInfo;
 	PixelPatchInfo				_pixelPatchInfo;
 	SNRInfo						_snrInfo;
-	WofTestInfo					_z0WofInfo;
-	WofTestInfo					_z1WofInfo;
-	SCM_WofTestInfo				_BottomSCM_wofInfo;
-	SCM_WofTestInfo				_TopSCM_wofInfo;
+	WofTestInfo					_z0FDWofInfo;
+	WofTestInfo					_z1FDWofInfo;
+	WofTestInfo					_z0FUWofInfo;
+	WofTestInfo					_z1FUWofInfo;
+	SCM_WofTestInfo				_z0SCM_wofInfo;  //Bottom
+	SCM_WofTestInfo				_z1SCM_wofInfo;  //Top
 	WoVarInfo					_woVarInfo;
 	DRdyInfo					_DRdyInfo;
 	UsbCommInfo					_usbCommInfo;
@@ -87,10 +89,12 @@ struct Syn_DutTestResult
 	PixelResults				_pixelResults;
 	PixelPatchResults			_pixelPatchResults;
 	SNRResults					_snrResults;
-	WofTestResults				_z0WofResults;
-	WofTestResults				_z1WofResults;
-	SCM_WofTestResults			_BottomSCM_wofResults;
-	SCM_WofTestResults			_TopSCM_wofResults;
+	WofTestResults				_z0FDWofResults;
+	WofTestResults				_z1FDWofResults;
+	WofTestResults				_z0FUWofResults;
+	WofTestResults				_z1FUWofResults;
+	SCM_WofTestResults			_z0SCM_wofResults;  //Bottom
+	SCM_WofTestResults			_z1SCM_wofResults;  //Top
 	WoVarResults				_woVarResults;
 	DRdyResults					_DRdyResults;
 	UsbCommResults				_usbCommResults;
