@@ -143,48 +143,78 @@ void Ts_OTPWriteMainSector::Execute()
 	}
 
 	//If WOF(zone 0) values have not been stored in the OTP.
-	if (_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_bExecutedWithStimulus)
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_bExecutedWithStimulus)
 	{
 		nWofBot_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FD_ZONE0, arMS0, MS0_SIZE);
 		if (nWofBot_count == 0)
 		{
 			memset(arMS0, 0, sizeof(arMS0));
-			arMS0[0] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithoutStim;
-			arMS0[1] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithStim;
-			arMS0[2] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nGain & 0xFF);
+			arMS0[0] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nTriggerWithoutStim;
+			arMS0[1] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nTriggerWithStim;
+			arMS0[2] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nGain & 0xFF);
 			arMS0[3] = 0;
 
 			BurnToOTP(EXT_TAG_WOF_FD_ZONE0, arMS0, 4);
 			BurnToOTP(EXT_TAG_WOF_FD_ZONE0, arMS0, 4);
 		}
 	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_bExecutedWithStimulus)
+	{
+		nWofBot_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FU_ZONE0, arMS0, MS0_SIZE);
+		if (nWofBot_count == 0)
+		{
+			memset(arMS0, 0, sizeof(arMS0));
+			arMS0[0] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_z0FUWofResults.m_nTriggerWithoutStim;
+			arMS0[1] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_z0FUWofResults.m_nTriggerWithStim;
+			arMS0[2] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_z0FUWofResults.m_nGain & 0xFF);
+			arMS0[3] = 0;
+
+			BurnToOTP(EXT_TAG_WOF_FU_ZONE0, arMS0, 4);
+			BurnToOTP(EXT_TAG_WOF_FU_ZONE0, arMS0, 4);
+		}
+	}
 	//If WOF(zone 1) values have not been stored in the OTP.
-	if (_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_bExecutedWithStimulus)
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_bExecutedWithStimulus)
 	{
 		nWofTop_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FD_ZONE1, arMS0, MS0_SIZE);
 		if (nWofTop_count == 0)
 		{
 			memset(arMS0, 0, sizeof(arMS0));
-			arMS0[0] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_z1WofResults.m_nTriggerWithoutStim;
-			arMS0[1] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_z1WofResults.m_nTriggerWithStim;
-			arMS0[2] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_z1WofResults.m_nGain & 0xFF);
+			arMS0[0] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_z1FDWofResults.m_nTriggerWithoutStim;
+			arMS0[1] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_z1FDWofResults.m_nTriggerWithStim;
+			arMS0[2] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_z1FDWofResults.m_nGain & 0xFF);
 			arMS0[3] = 0;
 
 			BurnToOTP(EXT_TAG_WOF_FD_ZONE1, arMS0, 4);
 			BurnToOTP(EXT_TAG_WOF_FD_ZONE1, arMS0, 4);
 		}
 	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_bExecutedWithStimulus)
+	{
+		nWofTop_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FU_ZONE1, arMS0, MS0_SIZE);
+		if (nWofTop_count == 0)
+		{
+			memset(arMS0, 0, sizeof(arMS0));
+			arMS0[0] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_z1FUWofResults.m_nTriggerWithoutStim;
+			arMS0[1] = (uint8_t)_pSyn_Dut->_pSyn_DutTestResult->_z1FUWofResults.m_nTriggerWithStim;
+			arMS0[2] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_z1FUWofResults.m_nGain & 0xFF);
+			arMS0[3] = 0;
+
+			BurnToOTP(EXT_TAG_WOF_FU_ZONE1, arMS0, 4);
+			BurnToOTP(EXT_TAG_WOF_FU_ZONE1, arMS0, 4);
+		}
+	}
 
 	//SCM WOF(zone1 top) 
-	if (_pSyn_Dut->_pSyn_DutTestInfo->_TopSCM_wofInfo.m_bExecutedWithStimulus)
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_z1SCM_wofInfo.m_bExecutedWithStimulus)
 	{
 		nScmWofTop_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_ZONE1, arMS0, MS0_SIZE);
 		if (nScmWofTop_count == 0)
 		{	
 			memset(arMS0, 0, sizeof(arMS0));
-			arMS0[0] = _pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults.m_nTriggerWithoutStim;
-			arMS0[1] = _pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults.m_nTriggerWithStim;
-            arMS0[2] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_TopSCM_wofResults.m_nGain & 0xFF);
+			arMS0[0] = _pSyn_Dut->_pSyn_DutTestResult->_z1SCM_wofResults.m_nTriggerWithoutStim;
+			arMS0[1] = _pSyn_Dut->_pSyn_DutTestResult->_z1SCM_wofResults.m_nTriggerWithStim;
+			arMS0[2] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_z1SCM_wofResults.m_nGain & 0xFF);
             arMS0[3] = 0;
 			BurnToOTP(EXT_TAG_SCM_WOF_ZONE1, arMS0, 4);
 			BurnToOTP(EXT_TAG_SCM_WOF_ZONE1, arMS0, 4);
@@ -192,15 +222,15 @@ void Ts_OTPWriteMainSector::Execute()
 	}
 
 	//SCM WOF(zone0 bottom)
-	if (_pSyn_Dut->_pSyn_DutTestInfo->_BottomSCM_wofInfo.m_bExecutedWithStimulus)
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo.m_bExecutedWithStimulus)
 	{
 		nScmWofBot_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_ZONE0, arMS0, MS0_SIZE);
 		if (nScmWofBot_count == 0)
 		{	
 			memset(arMS0, 0, sizeof(arMS0));
-			arMS0[0] = _pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_nTriggerWithoutStim;
-			arMS0[1] = _pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_nTriggerWithStim;
-            arMS0[2] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_nGain & 0xFF);
+			arMS0[0] = _pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults.m_nTriggerWithoutStim;
+			arMS0[1] = _pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults.m_nTriggerWithStim;
+			arMS0[2] = (uint8_t)(_pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults.m_nGain & 0xFF);
             arMS0[3] = 0;
 			BurnToOTP(EXT_TAG_SCM_WOF_ZONE0, arMS0, 4);
 			BurnToOTP(EXT_TAG_SCM_WOF_ZONE0, arMS0, 4);
@@ -289,27 +319,26 @@ void Ts_OTPWriteMainSector::Execute()
 	Syn_PatchInfo fmPatch;
 	if (_pSyn_Dut->FindPatch("FirmwareUpdate", fmPatch))
 	{
-		if (NULL == fmPatch._pArrayBuf)
+		if (NULL != fmPatch._pArrayBuf)
 		{
-			return;
-		}
-		//if (!RegCheckBitSet())
-		//{
-		//	return;
-		//}
-		try
-		{
-			_pSyn_DutCtrl->FpOtpRomWrite(MAIN_SEC, 1, fmPatch._pArrayBuf, fmPatch._uiArraySize);
-		}
-		catch (exception ex)
-		{
+			//if (!RegCheckBitSet())
+			//{
+			//	return;
+			//}
 			try
 			{
-				//this is a work around.
 				_pSyn_DutCtrl->FpOtpRomWrite(MAIN_SEC, 1, fmPatch._pArrayBuf, fmPatch._uiArraySize);
 			}
-			catch (...)
+			catch (exception ex)
 			{
+				try
+				{
+					//this is a work around.
+					_pSyn_DutCtrl->FpOtpRomWrite(MAIN_SEC, 1, fmPatch._pArrayBuf, fmPatch._uiArraySize);
+				}
+				catch (...)
+				{
+				}
 			}
 		}
 	}

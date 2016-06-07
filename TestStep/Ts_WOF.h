@@ -17,9 +17,11 @@ public:
 
 	virtual void	CleanUp();
 
-	bool GetZ0WofData(WofTestInfo &wofInfo, WofTestResults &wofResults);
+	//bool GetZ0WofData(WofTestInfo &wofInfo, WofTestResults &wofResults);
+	bool GetZ0WofData(WofTestInfo &wofInfo, WofTestResults &wofResults, Syn_PatchInfo &WofCmd1Patch, Syn_PatchInfo &WofCmd2Patch);
 
-	bool GetZ1WofData(WofTestInfo &wofInfo, WofTestResults &wofResults);
+	//bool GetZ1WofData(WofTestInfo &wofInfo, WofTestResults &wofResults);
+	bool GetZ1WofData(WofTestInfo &wofInfo, WofTestResults &wofResults, Syn_PatchInfo &WofCmd3Patch, Syn_PatchInfo &WofCmd4Patch);
 
 	void SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Results);
 

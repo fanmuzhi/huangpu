@@ -30,105 +30,168 @@ void Ts_WOF::SetUp()
 	//parse args
 	//_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_bExecutedWithoutStimulus = false;
 	//_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_bExecutedWithStimulus = false;
-	_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_bWithStimulus = 0;
-	_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nDelta_100 = 7;
-	_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nMinTriggerThreshold = 25;
-	_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nMaxTriggerThreshold = 60;
-	_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nNumResponseBytes = 2000;
-	_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nNumNoiseSamples = 10;
-	_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nThresholdOffsetHigh = 3;
-	_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nThresholdOffsetLow = 3;
-	_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nStdDevThreshold = (float)0.9;
-	_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nDelta_200 = 20;
-	_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nDelta_200_3p7 = 13;
-	_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nVCC = (float)3.7;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_bWithStimulus = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_nDelta_100 = 7;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_nMinTriggerThreshold = 25;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_nMaxTriggerThreshold = 60;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_nNumResponseBytes = 2000;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_nNumNoiseSamples = 10;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_nThresholdOffsetHigh = 3;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_nThresholdOffsetLow = 3;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_nStdDevThreshold = (float)0.9;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_nDelta_200 = 20;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_nDelta_200_3p7 = 13;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_nVCC = (float)3.7;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_FingerMode = 0;
 
-	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_bWithStimulus = 0;
-	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nDelta_100 = 7;
-	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nMinTriggerThreshold = 25;
-	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nMaxTriggerThreshold = 60;
-	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nNumResponseBytes = 2000;
-	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nNumNoiseSamples = 10;
-	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nThresholdOffsetHigh = 3;
-	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nThresholdOffsetLow = 3;
-	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nStdDevThreshold = (float)0.9;
-	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nDelta_200 = 20;
-	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nDelta_200_3p7 = 13;
-	_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nVCC = (float)3.7;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_bWithStimulus = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_nDelta_100 = 7;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_nMinTriggerThreshold = 25;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_nMaxTriggerThreshold = 60;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_nNumResponseBytes = 2000;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_nNumNoiseSamples = 10;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_nThresholdOffsetHigh = 3;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_nThresholdOffsetLow = 3;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_nStdDevThreshold = (float)0.9;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_nDelta_200 = 20;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_nDelta_200_3p7 = 13;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_nVCC = (float)3.7;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_FingerMode = 0;
+
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_bWithStimulus = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_nDelta_100 = 7;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_nMinTriggerThreshold = 25;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_nMaxTriggerThreshold = 60;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_nNumResponseBytes = 2000;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_nNumNoiseSamples = 10;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_nThresholdOffsetHigh = 3;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_nThresholdOffsetLow = 3;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_nStdDevThreshold = (float)0.9;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_nDelta_200 = 20;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_nDelta_200_3p7 = 13;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_nVCC = (float)3.7;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_FingerMode = 0;
+
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_bWithStimulus = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_nDelta_100 = 7;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_nMinTriggerThreshold = 25;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_nMaxTriggerThreshold = 60;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_nNumResponseBytes = 2000;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_nNumNoiseSamples = 10;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_nThresholdOffsetHigh = 3;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_nThresholdOffsetLow = 3;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_nStdDevThreshold = (float)0.9;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_nDelta_200 = 20;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_nDelta_200_3p7 = 13;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_nVCC = (float)3.7;
+	_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_FingerMode = 0;
 	
 	std::vector<std::string> listOfArgValue;
 	ParseTestStepArgs(_strArgs, listOfArgValue);
 	size_t ilistSize = listOfArgValue.size();
-	if (ilistSize < 18)
+	if (ilistSize < 13)
 	{
-		for (size_t t = 1; t <= 18 - ilistSize; t++)
+		for (size_t t = 1; t <= 13 - ilistSize; t++)
 			listOfArgValue.push_back(std::string(""));
 	}
 
 	if (0 != listOfArgValue[0].length())
 	{
-		_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_bWithStimulus = atoi(listOfArgValue[0].c_str());
-		_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_bWithStimulus = atoi(listOfArgValue[0].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_bWithStimulus = atoi(listOfArgValue[0].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_bWithStimulus = atoi(listOfArgValue[0].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_bWithStimulus = atoi(listOfArgValue[0].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_bWithStimulus = atoi(listOfArgValue[0].c_str());
 	}
 	if (0 != listOfArgValue[1].length())
 	{
-		_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nDelta_100 = atoi(listOfArgValue[1].c_str());
-		_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nDelta_100 = atoi(listOfArgValue[1].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_nDelta_100 = atoi(listOfArgValue[1].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_nDelta_100 = atoi(listOfArgValue[1].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_nDelta_100 = atoi(listOfArgValue[1].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_nDelta_100 = atoi(listOfArgValue[1].c_str());
 	}
 	if (0 != listOfArgValue[2].length())
 	{
-		_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nMinTriggerThreshold = atoi(listOfArgValue[2].c_str());
-		_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nMinTriggerThreshold = atoi(listOfArgValue[2].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_nMinTriggerThreshold = atoi(listOfArgValue[2].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_nMinTriggerThreshold = atoi(listOfArgValue[2].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_nMinTriggerThreshold = atoi(listOfArgValue[2].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_nMinTriggerThreshold = atoi(listOfArgValue[2].c_str());
 	}
 	if (0 != listOfArgValue[3].length())
 	{
-		_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nMaxTriggerThreshold = atoi(listOfArgValue[3].c_str());
-		_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nMaxTriggerThreshold = atoi(listOfArgValue[3].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_nMaxTriggerThreshold = atoi(listOfArgValue[3].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_nMaxTriggerThreshold = atoi(listOfArgValue[3].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_nMaxTriggerThreshold = atoi(listOfArgValue[3].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_nMaxTriggerThreshold = atoi(listOfArgValue[3].c_str());
 	}
 	if (0 != listOfArgValue[4].length())
 	{
-		_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nNumResponseBytes = atoi(listOfArgValue[4].c_str());
-		_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nNumResponseBytes = atoi(listOfArgValue[4].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_nNumResponseBytes = atoi(listOfArgValue[4].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_nNumResponseBytes = atoi(listOfArgValue[4].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_nNumResponseBytes = atoi(listOfArgValue[4].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_nNumResponseBytes = atoi(listOfArgValue[4].c_str());
 	}
 	if (0 != listOfArgValue[5].length())
 	{
-		_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nNumNoiseSamples = atoi(listOfArgValue[5].c_str());
-		_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nNumNoiseSamples = atoi(listOfArgValue[5].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_nNumNoiseSamples = atoi(listOfArgValue[5].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_nNumNoiseSamples = atoi(listOfArgValue[5].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_nNumNoiseSamples = atoi(listOfArgValue[5].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_nNumNoiseSamples = atoi(listOfArgValue[5].c_str());
 	}
 	if (0 != listOfArgValue[6].length())
 	{
-		_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nThresholdOffsetHigh = atoi(listOfArgValue[6].c_str());
-		_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nThresholdOffsetHigh = atoi(listOfArgValue[6].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_nThresholdOffsetHigh = atoi(listOfArgValue[6].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_nThresholdOffsetHigh = atoi(listOfArgValue[6].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_nThresholdOffsetHigh = atoi(listOfArgValue[6].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_nThresholdOffsetHigh = atoi(listOfArgValue[6].c_str());
 	}
 	if (0 != listOfArgValue[7].length())
 	{
-		_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nThresholdOffsetLow = atoi(listOfArgValue[7].c_str());
-		_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nThresholdOffsetLow = atoi(listOfArgValue[7].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_nThresholdOffsetLow = atoi(listOfArgValue[7].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_nThresholdOffsetLow = atoi(listOfArgValue[7].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_nThresholdOffsetLow = atoi(listOfArgValue[7].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_nThresholdOffsetLow = atoi(listOfArgValue[7].c_str());
 	}
 	if (0 != listOfArgValue[8].length())
 	{
-		_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nStdDevThreshold = stof(listOfArgValue[8]);
-		_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nStdDevThreshold = stof(listOfArgValue[8]);
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_nStdDevThreshold = stof(listOfArgValue[8]);
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_nStdDevThreshold = stof(listOfArgValue[8]);
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_nStdDevThreshold = stof(listOfArgValue[8]);
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_nStdDevThreshold = stof(listOfArgValue[8]);
 	}
 	if (0 != listOfArgValue[9].length())
 	{
-		_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nDelta_200 = atoi(listOfArgValue[9].c_str());
-		_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nDelta_200 = atoi(listOfArgValue[9].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_nDelta_200 = atoi(listOfArgValue[9].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_nDelta_200 = atoi(listOfArgValue[9].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_nDelta_200 = atoi(listOfArgValue[9].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_nDelta_200 = atoi(listOfArgValue[9].c_str());
 	}
 	if (0 != listOfArgValue[10].length())
 	{
-		_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nDelta_200_3p7 = atoi(listOfArgValue[10].c_str());
-		_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nDelta_200_3p7 = atoi(listOfArgValue[10].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_nDelta_200_3p7 = atoi(listOfArgValue[10].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_nDelta_200_3p7 = atoi(listOfArgValue[10].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_nDelta_200_3p7 = atoi(listOfArgValue[10].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_nDelta_200_3p7 = atoi(listOfArgValue[10].c_str());
 	}
 	if (0 != listOfArgValue[11].length())
 	{
-		_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_nVCC = stof(listOfArgValue[11]);
-		_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_nVCC = stof(listOfArgValue[11]);
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_nVCC = stof(listOfArgValue[11]);
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_nVCC = stof(listOfArgValue[11]);
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_nVCC = stof(listOfArgValue[11]);
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_nVCC = stof(listOfArgValue[11]);
+	}
+	if (0 != listOfArgValue[12].length())
+	{
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_FingerMode = stoi(listOfArgValue[12]);
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_FingerMode = stoi(listOfArgValue[12]);
+		_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_FingerMode = stoi(listOfArgValue[12]);
+		_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_FingerMode = stoi(listOfArgValue[12]);
 	}
 }
 
 void Ts_WOF::Execute()
 {
+	bool rc(false);
+
 	Syn_Exception ex(0);
 	if (NULL == _pSyn_DutCtrl)
 	{
@@ -147,7 +210,7 @@ void Ts_WOF::Execute()
 
 	// WofPatch is not empty, and either/both Zone0 or Zone1 are used.
 	Syn_PatchInfo WofPatchInfo;
-	bool rc = _pSyn_Dut->FindPatch("WofPatch", WofPatchInfo);
+	rc = _pSyn_Dut->FindPatch("WofPatch", WofPatchInfo);
 	if (!rc||NULL == WofPatchInfo._pArrayBuf)
 	{
 		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
@@ -159,56 +222,136 @@ void Ts_WOF::Execute()
 	double dCurrentElapsedTime(0);
 	ComputeRunningTime(dCurrentElapsedTime);
 
-	//Zone 0 bottom
-	if (_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_bWithStimulus == 0)
+	Syn_PatchInfo WofFdCmd1Patch, WofFdCmd2Patch, WofFdCmd3Patch, WofFdCmd4Patch;
+	Syn_PatchInfo WofFuCmd1Patch, WofFuCmd2Patch, WofFuCmd3Patch, WofFuCmd4Patch;
+	rc = _pSyn_Dut->FindPatch("WofFdCmd1", WofFdCmd1Patch);
+	rc = _pSyn_Dut->FindPatch("WofFdCmd2", WofFdCmd2Patch);
+	rc = _pSyn_Dut->FindPatch("WofFdCmd3", WofFdCmd3Patch);
+	rc = _pSyn_Dut->FindPatch("WofFdCmd4", WofFdCmd4Patch);
+
+	rc = _pSyn_Dut->FindPatch("WofFuCmd1", WofFuCmd1Patch);
+	rc = _pSyn_Dut->FindPatch("WofFuCmd2", WofFuCmd2Patch);
+	rc = _pSyn_Dut->FindPatch("WofFuCmd3", WofFuCmd3Patch);
+	rc = _pSyn_Dut->FindPatch("WofFuCmd4", WofFuCmd4Patch);
+
+	//zone0 bottom
+	if (0==_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_bWithStimulus)
 	{
-		if (GetZ0WofData(_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults))
+		//_z0FUWofInfo.m_bWithStimulus==0
+		if (0==_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_FingerMode)
 		{
-			_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_bExecutedWithoutStimulus = 1;
+			//zone0 finger down
+			if (GetZ0WofData(_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults, WofFdCmd1Patch, WofFdCmd2Patch))
+			{
+				_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_bExecutedWithoutStimulus = 1;
+			}
+		}
+		else
+		{
+			//zone0 finger up
+			if (GetZ0WofData(_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0FUWofResults, WofFuCmd1Patch, WofFuCmd2Patch))
+			{
+				_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_bExecutedWithoutStimulus = 1;
+			}
 		}
 
-		_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_elapsedtime += dCurrentElapsedTime;
+		//_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_elapsedtime += dCurrentElapsedTime;
 	}
 	else	//Execute with stimulus.
 	{
-		if (GetZ0WofData(_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults))
+		//_z0FUWofInfo.m_bWithStimulus==1
+		if (0 == _pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_FingerMode)
 		{
-			_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_bExecutedWithStimulus = 1;
-			SYN_WofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults);
+			//zone0 finger down
+			if (GetZ0WofData(_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults, WofFdCmd1Patch, WofFdCmd2Patch))
+			{
+				_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_bExecutedWithStimulus = 1;
+			}
+
+			SYN_WofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults);
+
+			if (_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_bPass == 0)
+			{
+				_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
+			}
+		}
+		else
+		{
+			//zone0 finger up
+			if (GetZ0WofData(_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0FUWofResults, WofFuCmd1Patch, WofFuCmd2Patch))
+			{
+				_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_bExecutedWithStimulus = 1;
+			}
+
+			SYN_WofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0FUWofResults);
+
+			if (_pSyn_Dut->_pSyn_DutTestResult->_z0FUWofResults.m_bPass == 0)
+			{
+				_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
+			}
 		}
 
-		_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_elapsedtime += dCurrentElapsedTime;
-
-		if (_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_bPass == 0)
-		{
-			_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
-		}
+		//_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_elapsedtime += dCurrentElapsedTime;
 	}
 
 	//zone1 top
-	if (_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_bWithStimulus == 0)
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_bWithStimulus == 0)
 	{
-		if (GetZ1WofData(_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z1WofResults))
+		//_z1FUWofInfo.m_bWithStimulus==0
+		if (0 == _pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_FingerMode)
 		{
-			_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_bExecutedWithoutStimulus = 1;
+			//zone1 finger down
+			if (GetZ1WofData(_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z1FDWofResults, WofFdCmd3Patch, WofFdCmd4Patch))
+			{
+				_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_bExecutedWithoutStimulus = 1;
+			}
+		}
+		else
+		{
+			//zone1 finger up
+			if (GetZ1WofData(_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z1FUWofResults, WofFuCmd3Patch, WofFuCmd4Patch))
+			{
+				_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_bExecutedWithoutStimulus = 1;
+			}
 		}
 
-		_pSyn_Dut->_pSyn_DutTestResult->_z1WofResults.m_elapsedtime += dCurrentElapsedTime;
+		//_pSyn_Dut->_pSyn_DutTestResult->_z1WofResults.m_elapsedtime += dCurrentElapsedTime;
 	}
 	else	//Execute with stimulus.
 	{
-		if (GetZ1WofData(_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z1WofResults))
+		//_z1FUWofInfo.m_bWithStimulus==1
+		if (0 == _pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_FingerMode)
 		{
-			_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_bExecutedWithStimulus = 1;
-			SYN_WofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z1WofResults);
+			//zone1 finger down
+			if (GetZ1WofData(_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z1FDWofResults,WofFdCmd3Patch,WofFdCmd4Patch))
+			{
+				_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_bExecutedWithStimulus = 1;
+				SYN_WofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z1FDWofResults);
+			}
+
+			if (_pSyn_Dut->_pSyn_DutTestResult->_z1FDWofResults.m_bPass == 0)
+			{
+				_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
+			}
+		}
+		else
+		{
+			//zone1 finger up
+			if (GetZ1WofData(_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z1FUWofResults, WofFuCmd3Patch, WofFuCmd4Patch))
+			{
+				_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_bExecutedWithStimulus = 1;
+				SYN_WofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z1FUWofResults);
+			}
+
+
+			if (_pSyn_Dut->_pSyn_DutTestResult->_z1FUWofResults.m_bPass == 0)
+			{
+				_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
+			}
 		}
 
-		_pSyn_Dut->_pSyn_DutTestResult->_z1WofResults.m_elapsedtime += dCurrentElapsedTime;
+		//_pSyn_Dut->_pSyn_DutTestResult->_z1WofResults.m_elapsedtime += dCurrentElapsedTime;
 
-		if (_pSyn_Dut->_pSyn_DutTestResult->_z1WofResults.m_bPass == 0)
-		{
-			_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
-		}
 	}
 }
 
@@ -230,28 +373,51 @@ void Ts_WOF::ProcessData()
 		return;
 	}
 
-	if (_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_bWithStimulus)  // WithStimulus
+	Syn_DutTestInfo *pDutTestInfo = _pSyn_Dut->_pSyn_DutTestInfo;
+	Syn_DutTestResult *pDutTestResult = _pSyn_Dut->_pSyn_DutTestResult;
+
+	if (pDutTestInfo->_z0FDWofInfo.m_bWithStimulus)
 	{
-		if ((_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_bExecutedWithStimulus && _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_bPass == 0)
-			|| (_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_bExecutedWithStimulus && _pSyn_Dut->_pSyn_DutTestResult->_z1WofResults.m_bPass == 0))
+		if ((pDutTestInfo->_z0FDWofInfo.m_bExecutedWithStimulus && pDutTestResult->_z0FDWofResults.m_bPass == 0)
+			|| (pDutTestInfo->_z1FDWofInfo.m_bExecutedWithStimulus && pDutTestResult->_z1FDWofResults.m_bPass == 0))
 		{
-			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOFWithStimulus", "Fail"));
+			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOF_FD_WithStimulus", "Fail"));
 		}
 		else
 		{
-			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOFWithStimulus", "Pass"));
+			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOF_FD_WithStimulus", "Pass"));
+		}
+
+		if ((pDutTestInfo->_z0FUWofInfo.m_bExecutedWithStimulus && pDutTestResult->_z0FUWofResults.m_bPass == 0)
+			|| (pDutTestInfo->_z1FUWofInfo.m_bExecutedWithStimulus && pDutTestResult->_z1FUWofResults.m_bPass == 0))
+		{
+			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOF_FU_WithStimulus", "Fail"));
+		}
+		else
+		{
+			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOF_FU_WithStimulus", "Fail"));
 		}
 	}
-	else //without Stimulus
+	else
 	{
-		if ((_pSyn_Dut->_pSyn_DutTestInfo->_z0WofInfo.m_bExecutedWithoutStimulus && _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_bPass == 0)
-			|| (_pSyn_Dut->_pSyn_DutTestInfo->_z1WofInfo.m_bExecutedWithoutStimulus && _pSyn_Dut->_pSyn_DutTestResult->_z1WofResults.m_bPass == 0))
+		if ((pDutTestInfo->_z0FDWofInfo.m_bExecutedWithoutStimulus && pDutTestResult->_z0FDWofResults.m_bPass == 0)
+			|| (pDutTestInfo->_z1FDWofInfo.m_bExecutedWithoutStimulus && pDutTestResult->_z1FDWofResults.m_bPass == 0))
 		{
-			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOFWithoutStimulus", "Fail"));
+			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOF_FD_WithoutStimulus", "Fail"));
 		}
 		else
 		{
-			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOFWithoutStimulus", "Pass"));
+			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOF_FD_WithoutStimulus", "Pass"));
+		}
+
+		if ((pDutTestInfo->_z0FUWofInfo.m_bExecutedWithoutStimulus && pDutTestResult->_z0FUWofResults.m_bPass == 0)
+			|| (pDutTestInfo->_z1FUWofInfo.m_bExecutedWithoutStimulus && pDutTestResult->_z1FUWofResults.m_bPass == 0))
+		{
+			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOF_FU_WithoutStimulus", "Fail"));
+		}
+		else
+		{
+			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOF_FU_WithoutStimulus", "Pass"));
 		}
 	}
 }
@@ -261,7 +427,7 @@ void Ts_WOF::CleanUp()
 	PowerOff();
 }
 
-bool Ts_WOF::GetZ0WofData(WofTestInfo &wofInfo,WofTestResults &wofResults)
+bool Ts_WOF::GetZ0WofData(WofTestInfo &wofInfo, WofTestResults &wofResults, Syn_PatchInfo &WofCmd1Patch, Syn_PatchInfo &WofCmd2Patch)
 {
 	bool rc(false);
 
@@ -274,11 +440,9 @@ bool Ts_WOF::GetZ0WofData(WofTestInfo &wofInfo,WofTestResults &wofResults)
 	//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, nVcc, nVcc, true);
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 
-	Syn_PatchInfo WofPatchInfo, WofCmd1PathInfo, WofCmd2PathInfo;
+	Syn_PatchInfo WofPatchInfo;
 	rc = _pSyn_Dut->FindPatch("WofPatch", WofPatchInfo);
-	rc = _pSyn_Dut->FindPatch("WofCmd1", WofCmd1PathInfo);
-	rc = _pSyn_Dut->FindPatch("WofCmd2", WofCmd2PathInfo);
-	if (NULL == WofPatchInfo._pArrayBuf || NULL == WofCmd1PathInfo._pArrayBuf || NULL == WofCmd2PathInfo._pArrayBuf)
+	if (NULL == WofPatchInfo._pArrayBuf || NULL == WofCmd1Patch._pArrayBuf || NULL == WofCmd2Patch._pArrayBuf)
 	{
 		return false;
 	}
@@ -286,24 +450,24 @@ bool Ts_WOF::GetZ0WofData(WofTestInfo &wofInfo,WofTestResults &wofResults)
 	//Load the patch, execute and wait for cmd1 to complete.
 	_pSyn_DutCtrl->FpLoadPatch(WofPatchInfo._pArrayBuf, WofPatchInfo._uiArraySize);
 	
-	_pSyn_DutCtrl->FpWrite(1, WofCmd1PathInfo._pArrayBuf[0], &WofCmd1PathInfo._pArrayBuf[1], WofCmd1PathInfo._uiArraySize - 1);
+	_pSyn_DutCtrl->FpWrite(1, WofCmd1Patch._pArrayBuf[0], &WofCmd1Patch._pArrayBuf[1], WofCmd1Patch._uiArraySize - 1);
 	_pSyn_DutCtrl->FpWaitForCMDComplete();
 	_pSyn_DutCtrl->FpReadAndCheckStatus(0);
 
 	//Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.
-	ModifySweepWofCmdData(WofCmd2PathInfo._pArrayBuf);
-	wofResults.m_nThreshStart = WofCmd2PathInfo._pArrayBuf[0x1E];
-	wofResults.m_nThreshInc = WofCmd2PathInfo._pArrayBuf[0x22];
-	wofResults.m_nThreshStop = WofCmd2PathInfo._pArrayBuf[0x26];
+	ModifySweepWofCmdData(WofCmd2Patch._pArrayBuf);
+	wofResults.m_nThreshStart = WofCmd2Patch._pArrayBuf[0x1E];
+	wofResults.m_nThreshInc = WofCmd2Patch._pArrayBuf[0x22];
+	wofResults.m_nThreshStop = WofCmd2Patch._pArrayBuf[0x26];
 	wofResults.m_nNumThresholds = ((wofResults.m_nThreshStop - wofResults.m_nThreshStart) / wofResults.m_nThreshInc) + 1;
-	wofResults.m_nGainStart = WofCmd2PathInfo._pArrayBuf[0x0C];
-	wofResults.m_nGainInc = WofCmd2PathInfo._pArrayBuf[0x10];
-	wofResults.m_nGainStop = WofCmd2PathInfo._pArrayBuf[0x14];
+	wofResults.m_nGainStart = WofCmd2Patch._pArrayBuf[0x0C];
+	wofResults.m_nGainInc = WofCmd2Patch._pArrayBuf[0x10];
+	wofResults.m_nGainStop = WofCmd2Patch._pArrayBuf[0x14];
 	wofResults.m_nNumGains = ((wofResults.m_nGainStop - wofResults.m_nGainStart) / wofResults.m_nGainInc) + 1;
 	wofResults.m_nResponseSize = (wofResults.m_nNumThresholds * wofResults.m_nNumGains) + 6;
 
 	//Execute and wait for sweep command to complete.
-	_pSyn_DutCtrl->FpWrite(1, WofCmd2PathInfo._pArrayBuf[0], &WofCmd2PathInfo._pArrayBuf[1], WofCmd2PathInfo._uiArraySize - 1);
+	_pSyn_DutCtrl->FpWrite(1, WofCmd2Patch._pArrayBuf[0], &WofCmd2Patch._pArrayBuf[1], WofCmd2Patch._uiArraySize - 1);
 	_pSyn_DutCtrl->FpWaitForCMDComplete();
 	_pSyn_DutCtrl->FpReadAndCheckStatus(0);
 
@@ -330,7 +494,7 @@ bool Ts_WOF::GetZ0WofData(WofTestInfo &wofInfo,WofTestResults &wofResults)
 	return true;
 }
 
-bool Ts_WOF::GetZ1WofData(WofTestInfo &wofInfo, WofTestResults &wofResults)
+bool Ts_WOF::GetZ1WofData(WofTestInfo &wofInfo, WofTestResults &wofResults, Syn_PatchInfo &WofCmd3Patch, Syn_PatchInfo &WofCmd4Patch)
 {
 	bool rc(false);
 
@@ -338,11 +502,11 @@ bool Ts_WOF::GetZ1WofData(WofTestInfo &wofInfo, WofTestResults &wofResults)
 	uint8_t*	pResponseBuf = bWithStim ? wofResults.m_arDataWithStim : wofResults.m_arDataWithoutStim;
 	int nVcc = (int)(wofInfo.m_nVCC * 1000);
 
-	Syn_PatchInfo WofPatchInfo, WofCmd3PathInfo, WofCmd4PathInfo;
+	Syn_PatchInfo WofPatchInfo;
 	rc = _pSyn_Dut->FindPatch("WofPatch", WofPatchInfo);
-	rc = _pSyn_Dut->FindPatch("WofCmd3", WofCmd3PathInfo);
-	rc = _pSyn_Dut->FindPatch("WofCmd4", WofCmd4PathInfo);
-	if (NULL == WofPatchInfo._pArrayBuf || NULL == WofCmd3PathInfo._pArrayBuf || NULL == WofCmd4PathInfo._pArrayBuf)
+	//rc = _pSyn_Dut->FindPatch("WofCmd3", WofCmd3PathInfo);
+	//rc = _pSyn_Dut->FindPatch("WofCmd4", WofCmd4PathInfo);
+	if (NULL == WofPatchInfo._pArrayBuf || NULL == WofCmd3Patch._pArrayBuf || NULL == WofCmd4Patch._pArrayBuf)
 	{
 		return false;
 	}
@@ -354,24 +518,24 @@ bool Ts_WOF::GetZ1WofData(WofTestInfo &wofInfo, WofTestResults &wofResults)
 	//Load the patch, execute and wait for cmd3 to complete.
 	_pSyn_DutCtrl->FpLoadPatch(WofPatchInfo._pArrayBuf, WofPatchInfo._uiArraySize);
 
-	_pSyn_DutCtrl->FpWrite(1, WofCmd3PathInfo._pArrayBuf[0], &WofCmd3PathInfo._pArrayBuf[1], WofCmd3PathInfo._uiArraySize - 1);
+	_pSyn_DutCtrl->FpWrite(1, WofCmd3Patch._pArrayBuf[0], &WofCmd3Patch._pArrayBuf[1], WofCmd3Patch._uiArraySize - 1);
 	_pSyn_DutCtrl->FpWaitForCMDComplete();
 	_pSyn_DutCtrl->FpReadAndCheckStatus(0);
 
 	//Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.
-	ModifySweepWofCmdData(WofCmd4PathInfo._pArrayBuf);
-	wofResults.m_nThreshStart = WofCmd4PathInfo._pArrayBuf[0x1F];
-	wofResults.m_nThreshInc = WofCmd4PathInfo._pArrayBuf[0x23];
-	wofResults.m_nThreshStop = WofCmd4PathInfo._pArrayBuf[0x27];
+	ModifySweepWofCmdData(WofCmd4Patch._pArrayBuf);
+	wofResults.m_nThreshStart = WofCmd4Patch._pArrayBuf[0x1F];
+	wofResults.m_nThreshInc = WofCmd4Patch._pArrayBuf[0x23];
+	wofResults.m_nThreshStop = WofCmd4Patch._pArrayBuf[0x27];
 	wofResults.m_nNumThresholds = ((wofResults.m_nThreshStop - wofResults.m_nThreshStart) / wofResults.m_nThreshInc) + 1;
-	wofResults.m_nGainStart = WofCmd4PathInfo._pArrayBuf[0x0A];
-	wofResults.m_nGainInc = WofCmd4PathInfo._pArrayBuf[0x0E];
-	wofResults.m_nGainStop = WofCmd4PathInfo._pArrayBuf[0x12];
+	wofResults.m_nGainStart = WofCmd4Patch._pArrayBuf[0x0A];
+	wofResults.m_nGainInc = WofCmd4Patch._pArrayBuf[0x0E];
+	wofResults.m_nGainStop = WofCmd4Patch._pArrayBuf[0x12];
 	wofResults.m_nNumGains = ((wofResults.m_nGainStop - wofResults.m_nGainStart) / wofResults.m_nGainInc) + 1;
 	wofResults.m_nResponseSize = (wofResults.m_nNumThresholds * wofResults.m_nNumGains) + 6;
 
 	//Execute and wait for sweep command to complete.
-	_pSyn_DutCtrl->FpWrite(1, WofCmd4PathInfo._pArrayBuf[0], &WofCmd4PathInfo._pArrayBuf[1], WofCmd4PathInfo._uiArraySize - 1);
+	_pSyn_DutCtrl->FpWrite(1, WofCmd4Patch._pArrayBuf[0], &WofCmd4Patch._pArrayBuf[1], WofCmd4Patch._uiArraySize - 1);
 	_pSyn_DutCtrl->FpWaitForCMDComplete();
 	_pSyn_DutCtrl->FpReadAndCheckStatus(0);
 
@@ -388,7 +552,7 @@ bool Ts_WOF::GetZ1WofData(WofTestInfo &wofInfo, WofTestResults &wofResults)
 	if (timeout == 0)
 	{
 		Syn_Exception ex(0);
-		ex.SetDescription("SCM WOF: Status never complete.");
+		ex.SetDescription("WOF: Status never complete.");
 		throw(ex);
 		return false;
 	}

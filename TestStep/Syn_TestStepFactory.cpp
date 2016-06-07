@@ -151,14 +151,14 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	{
 		opTestStepInstance = new Ts_AFETest(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
-	else if (std::string("WOFWithoutStimulus") == strTestStepName)
+	/*else if (std::string("WOFWithoutStimulus") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else if (std::string("WOFWithStimulus") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
-	}
+	}*/
 	else if (std::string("WOF_FD_WithoutStimulus") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);

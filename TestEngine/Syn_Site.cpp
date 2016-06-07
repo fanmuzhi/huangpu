@@ -626,85 +626,117 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	}
 
 	//WakeOnFinger Test
-	if (DutInfo->_z0WofInfo.m_bExecutedWithoutStimulus == 1 || DutInfo->_z0WofInfo.m_bExecutedWithStimulus == 1)
+	if (DutInfo->_z0FDWofInfo.m_bExecutedWithoutStimulus == 1 || DutInfo->_z0FDWofInfo.m_bExecutedWithStimulus == 1)
 	{
-		if (_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_bPass != 0)	//If passed.
+		if (_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_bPass != 0)	//If passed.
 		{
-			fprintf(pFile, "\nWOF Zone 0,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_elapsedtime);
-			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithoutStim,
-					_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithStim,
-					_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nGain,
-					_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithoutStim - _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithStim);
+			fprintf(pFile, "\nWOF Zone0 FingerDown,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_elapsedtime);
+			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nTriggerWithoutStim,
+					_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nTriggerWithStim,
+					_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nGain,
+					_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nTriggerWithoutStim - _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nTriggerWithStim);
 		}
 		else	//Failed.
 		{
-			fprintf(pFile, "\nWOF Zone 0,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Fail", _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_elapsedtime);
-			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithoutStim,
-					_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithStim,
-					_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nGain,
-					_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithoutStim - _pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_nTriggerWithStim);
+			fprintf(pFile, "\nWOF Zone0 FingerDown,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Fail", _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_elapsedtime);
+			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nTriggerWithoutStim,
+				_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nTriggerWithStim,
+				_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nGain,
+				_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nTriggerWithoutStim - _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nTriggerWithStim);
 		}
+	}
+	if (DutInfo->_z0FUWofInfo.m_bExecutedWithoutStimulus == 1 || DutInfo->_z0FUWofInfo.m_bExecutedWithStimulus == 1)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestResult->_z0FUWofResults.m_bPass != 0)	//If passed.
+		{
+			fprintf(pFile, "\nWOF Zone0 FingerUp,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_z0FUWofResults.m_elapsedtime);
+		}
+		else
+		{
+			fprintf(pFile, "\nWOF Zone0 FingerUp,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Fail", DutResults->_z0FUWofResults.m_elapsedtime);
+		}
+
+		fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_z0FUWofResults.m_nTriggerWithoutStim,
+				DutResults->_z0FUWofResults.m_nTriggerWithStim,
+				DutResults->_z0FUWofResults.m_nGain,
+				DutResults->_z0FUWofResults.m_nTriggerWithoutStim - DutResults->_z0FUWofResults.m_nTriggerWithStim);
 	}
 
 	//If the user has not skipped testing zone 1.
-	if (DutInfo->_z1WofInfo.m_bExecutedWithoutStimulus == 1 || DutInfo->_z1WofInfo.m_bExecutedWithStimulus == 1)
+	if (DutInfo->_z1FDWofInfo.m_bExecutedWithoutStimulus == 1 || DutInfo->_z1FDWofInfo.m_bExecutedWithStimulus == 1)
 	{
-		if (DutResults->_z1WofResults.m_bPass != 0)	//If passed.
+		if (DutResults->_z1FDWofResults.m_bPass != 0)	//If passed.
 		{
-			fprintf(pFile, "\nWOF Zone 1,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_z1WofResults.m_elapsedtime);
-			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_z1WofResults.m_nTriggerWithoutStim,
-					DutResults->_z1WofResults.m_nTriggerWithStim,
-					DutResults->_z1WofResults.m_nGain,
-					DutResults->_z1WofResults.m_nTriggerWithoutStim - DutResults->_z1WofResults.m_nTriggerWithStim);
+			fprintf(pFile, "\nWOF Zone1  FingerDown,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_z1FDWofResults.m_elapsedtime);
+			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_z1FDWofResults.m_nTriggerWithoutStim,
+				DutResults->_z1FDWofResults.m_nTriggerWithStim,
+					DutResults->_z1FDWofResults.m_nGain,
+					DutResults->_z1FDWofResults.m_nTriggerWithoutStim - DutResults->_z1FDWofResults.m_nTriggerWithStim);
 		}
 		else	//Failed.
 		{
-			fprintf(pFile, "\nWOF Zone 1,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Fail", DutResults->_z1WofResults.m_elapsedtime);
-			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_z1WofResults.m_nTriggerWithoutStim,
-					DutResults->_z1WofResults.m_nTriggerWithStim,
-					DutResults->_z1WofResults.m_nGain,
-					DutResults->_z1WofResults.m_nTriggerWithoutStim - DutResults->_z1WofResults.m_nTriggerWithStim);
+			fprintf(pFile, "\nWOF Zone1 FingerDown,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Fail", DutResults->_z1FDWofResults.m_elapsedtime);
+			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_z1FDWofResults.m_nTriggerWithoutStim,
+				DutResults->_z1FDWofResults.m_nTriggerWithStim,
+				DutResults->_z1FDWofResults.m_nGain,
+				DutResults->_z1FDWofResults.m_nTriggerWithoutStim - DutResults->_z1FDWofResults.m_nTriggerWithStim);
 		}
+	}
+	if (DutInfo->_z1FUWofInfo.m_bExecutedWithoutStimulus == 1 || DutInfo->_z1FUWofInfo.m_bExecutedWithStimulus == 1)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestResult->_z1FUWofResults.m_bPass != 0)	//If passed.
+		{
+			fprintf(pFile, "\nWOF Zone1 FingerUp,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_z1FUWofResults.m_elapsedtime);
+		}
+		else
+		{
+			fprintf(pFile, "\nWOF Zone1 FingerUp,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Fail", DutResults->_z1FUWofResults.m_elapsedtime);
+		}
+
+		fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_z1FUWofResults.m_nTriggerWithoutStim,
+				DutResults->_z1FUWofResults.m_nTriggerWithStim,
+				DutResults->_z1FUWofResults.m_nGain,
+				DutResults->_z1FUWofResults.m_nTriggerWithoutStim - DutResults->_z1FUWofResults.m_nTriggerWithStim);
 	}
 	
 	//SCM WakeOnFinger Test
-	if (DutInfo->_BottomSCM_wofInfo.m_bExecutedWithoutStimulus == 1 || DutInfo->_BottomSCM_wofInfo.m_bExecutedWithStimulus == 1)
+	if (DutInfo->_z0SCM_wofInfo.m_bExecutedWithoutStimulus == 1 || DutInfo->_z0SCM_wofInfo.m_bExecutedWithStimulus == 1)
 	{
-		if (_pSyn_Dut->_pSyn_DutTestResult->_BottomSCM_wofResults.m_bPass != 0)	//If passed.
+		if (_pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults.m_bPass != 0)	//If passed.
 		{
-			fprintf(pFile, "\nSCM Bottom WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_BottomSCM_wofResults.m_elapsedtime);
-			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_BottomSCM_wofResults.m_nTriggerWithoutStim,
-					DutResults->_BottomSCM_wofResults.m_nTriggerWithStim,
-					DutResults->_BottomSCM_wofResults.m_nGain,
-					DutResults->_BottomSCM_wofResults.m_nTriggerWithoutStim - DutResults->_BottomSCM_wofResults.m_nTriggerWithStim);
+			fprintf(pFile, "\nSCM Bottom WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_z0SCM_wofResults.m_elapsedtime);
+			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_z0SCM_wofResults.m_nTriggerWithoutStim,
+					DutResults->_z0SCM_wofResults.m_nTriggerWithStim,
+					DutResults->_z0SCM_wofResults.m_nGain,
+					DutResults->_z0SCM_wofResults.m_nTriggerWithoutStim - DutResults->_z0SCM_wofResults.m_nTriggerWithStim);
 		}
 		else	//Failed.
 		{
-			fprintf(pFile, "\nSCM Bottom WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Fail", DutResults->_BottomSCM_wofResults.m_elapsedtime);
-			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_BottomSCM_wofResults.m_nTriggerWithoutStim,
-					DutResults->_BottomSCM_wofResults.m_nTriggerWithStim,
-					DutResults->_BottomSCM_wofResults.m_nGain,
-					DutResults->_BottomSCM_wofResults.m_nTriggerWithoutStim - DutResults->_BottomSCM_wofResults.m_nTriggerWithStim);
+			fprintf(pFile, "\nSCM Bottom WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Fail", DutResults->_z0SCM_wofResults.m_elapsedtime);
+			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_z0SCM_wofResults.m_nTriggerWithoutStim,
+					DutResults->_z0SCM_wofResults.m_nTriggerWithStim,
+					DutResults->_z0SCM_wofResults.m_nGain,
+					DutResults->_z0SCM_wofResults.m_nTriggerWithoutStim - DutResults->_z0SCM_wofResults.m_nTriggerWithStim);
 		}
 	}
 
-	if (DutInfo->_TopSCM_wofInfo.m_bExecutedWithoutStimulus == 1 || DutInfo->_TopSCM_wofInfo.m_bExecutedWithStimulus == 1)
+	if (DutInfo->_z1SCM_wofInfo.m_bExecutedWithoutStimulus == 1 || DutInfo->_z1SCM_wofInfo.m_bExecutedWithStimulus == 1)
 	{
-		if (DutResults->_TopSCM_wofResults.m_bPass != 0)	//If passed.
+		if (DutResults->_z1SCM_wofResults.m_bPass != 0)	//If passed.
 		{
-			fprintf(pFile, "\nSCM Top WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_TopSCM_wofResults.m_elapsedtime);
-			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_TopSCM_wofResults.m_nTriggerWithoutStim,
-					DutResults->_TopSCM_wofResults.m_nTriggerWithStim,
-					DutResults->_TopSCM_wofResults.m_nGain,
-					DutResults->_TopSCM_wofResults.m_nTriggerWithoutStim - DutResults->_TopSCM_wofResults.m_nTriggerWithStim);
+			fprintf(pFile, "\nSCM Top WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_z1SCM_wofResults.m_elapsedtime);
+			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_z1SCM_wofResults.m_nTriggerWithoutStim,
+					DutResults->_z1SCM_wofResults.m_nTriggerWithStim,
+					DutResults->_z1SCM_wofResults.m_nGain,
+					DutResults->_z1SCM_wofResults.m_nTriggerWithoutStim - DutResults->_z1SCM_wofResults.m_nTriggerWithStim);
 		}
 		else	//Failed.
 		{
-			fprintf(pFile, "\nSCM Top WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Fail", DutResults->_TopSCM_wofResults.m_elapsedtime);
-			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_TopSCM_wofResults.m_nTriggerWithoutStim,
-					DutResults->_TopSCM_wofResults.m_nTriggerWithStim,
-					DutResults->_TopSCM_wofResults.m_nGain,
-					DutResults->_TopSCM_wofResults.m_nTriggerWithoutStim - DutResults->_TopSCM_wofResults.m_nTriggerWithStim);
+			fprintf(pFile, "\nSCM Top WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Fail", DutResults->_z1SCM_wofResults.m_elapsedtime);
+			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_z1SCM_wofResults.m_nTriggerWithoutStim,
+					DutResults->_z1SCM_wofResults.m_nTriggerWithStim,
+					DutResults->_z1SCM_wofResults.m_nGain,
+					DutResults->_z1SCM_wofResults.m_nTriggerWithoutStim - DutResults->_z1SCM_wofResults.m_nTriggerWithStim);
 		}
 	}
 

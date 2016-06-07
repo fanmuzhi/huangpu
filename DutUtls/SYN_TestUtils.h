@@ -436,6 +436,8 @@ typedef struct
 	float		m_nVCC;
 	uint8_t		m_arWofData[MAX_WOF_DATA];
 	uint8_t		m_arThreshGains[MAX_THRESHOLD_GAINS];
+
+	int			m_FingerMode;//1:Finger Up,0:Finger Down
 }WofTestInfo;
 
 typedef struct
