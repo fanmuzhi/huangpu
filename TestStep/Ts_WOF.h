@@ -26,5 +26,9 @@ public:
 	void SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Results);
 
 	int CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf);
+
+	bool GetZone0FingerUpData(WofTestInfo &wofInfo, WofTestResults &wofResults, Syn_PatchInfo &WofCmd1Patch, Syn_PatchInfo &WofCmd2Patch);
+
+	bool GetZone1FingerUpData(WofTestInfo &wofInfo, WofTestResults &wofResults, Syn_PatchInfo &WofCmd3Patch, Syn_PatchInfo &WofCmd4Patch);
 };
 

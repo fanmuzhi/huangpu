@@ -432,7 +432,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	fprintf(pFile, "MTLog,%d,%d\n", _iSiteNumber, _uiSerialNumber);
 
 	//Put in part number.
-	//fprintf(pFile, "Part Number,%s\n", "");//DebugVersion
+	fprintf(pFile, "Version,1.0.9\n");//Version
 
 	//Config file path
 	fprintf(pFile, "Config file,%s\n", _strConfigFilePath.c_str());
