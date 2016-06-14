@@ -266,9 +266,10 @@ void Ts_WOF::Execute()
 			if (GetZ0WofData(_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults, WofFdCmd1Patch, WofFdCmd2Patch))
 			{
 				_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_bExecutedWithStimulus = 1;
+				SYN_WofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults);
 			}
 
-			SYN_WofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults);
+			
 
 			if (_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_bPass == 0)
 			{
@@ -281,9 +282,10 @@ void Ts_WOF::Execute()
 			if (GetZone0FingerUpData(_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0FUWofResults, WofFuCmd1Patch, WofFuCmd2Patch))
 			{
 				_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_bExecutedWithStimulus = 1;
+				SYN_WofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0FUWofResults);
 			}
 
-			SYN_WofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0FUWofResults);
+			
 
 			if (_pSyn_Dut->_pSyn_DutTestResult->_z0FUWofResults.m_bPass == 0)
 			{
@@ -395,7 +397,7 @@ void Ts_WOF::ProcessData()
 		}
 		else
 		{
-			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOF_FU_WithStimulus", "Fail"));
+			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOF_FU_WithStimulus", "Pass"));
 		}
 	}
 	else
@@ -632,9 +634,10 @@ int Ts_WOF::CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf)
 
 	//Find the first occurence of 1.
 	int nTgrIdx = 3000;
+	int iExpected = pTriggerBuf[0];
 	for (i = 0; i<nNumThresholds; i++)
 	{
-		if (((pTriggerBuf[i] & 0x01) == 1) && (nTgrIdx == 3000))
+		if (((pTriggerBuf[i] & 0x01) != iExpected) && (nTgrIdx == 3000))
 			nTgrIdx = i;
 	}
 	return nTgrIdx;
