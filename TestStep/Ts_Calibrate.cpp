@@ -215,11 +215,11 @@ void Ts_Calibrate::Execute()
 			if ((_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_bPass != 0) && (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bPgaFineTuning != 0))
 			{
 				//If any of the pixels are out of range.
-				if ((!VerifyPixelRanges()))
-				{
-					_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sStages1Or2CalFail);
-					_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_bPass = 0;
-				}
+				//if ((!VerifyPixelRanges()))
+				//{
+				//	_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sStages1Or2CalFail);
+				//	_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_bPass = 0;
+				//}
 			}
 		}
 	}
