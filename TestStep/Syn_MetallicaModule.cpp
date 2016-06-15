@@ -35,6 +35,10 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 	int8_t* pTmp;
 	int8_t* pPrtFileOffsets;
 	int8_t* pOtpOffsets;
+    int32_t min_corr_limit = (int32_t) (-128 / nConfigRatio);
+	min_corr_limit = min_corr_limit < -128 ? -128 : min_corr_limit;
+    int32_t max_corr_limit = (int32_t) (127 / nConfigRatio);
+	max_corr_limit = max_corr_limit > 127 ? 127 : max_corr_limit;
 
 	//These are the rows we save to OTP for calculating the variance score.
 	for (int i = 0; i < NUM_PGA_OOPP_OTP_ROWS; i++)
@@ -110,8 +114,24 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 		{
 			for (int nCol = HEADER; nCol < nNumCols; nCol++)
 			{
-				float new_ratio = (float)(calFrameZeroOffsets->arr[nRow][nCol] - calFrameNonZeroOffsets->arr[nRow][nCol]) / vPGAOffsets[index];
-				vPGAFineOffsets.push_back(vPixelError[index] / new_ratio);
+				float new_ratio = nConfigRatio;
+				float delta = (float)(calFrameZeroOffsets->arr[nRow][nCol] - calFrameNonZeroOffsets->arr[nRow][nCol]);
+				if (vPGAOffsets[index] != 0)
+				{
+					new_ratio = delta / vPGAOffsets[index];
+				}
+				if (new_ratio < 0)
+					new_ratio = nConfigRatio;
+				if ((((calFrameNonZeroOffsets->arr[nRow][nCol] - 128) * (calFrameZeroOffsets->arr[nRow][nCol] - 128)) > 0)
+					&& (new_ratio < min_corr_limit || new_ratio > max_corr_limit))
+					new_ratio = nConfigRatio;
+				if (abs(delta) < 10)
+					new_ratio = nConfigRatio;
+
+				int temp = vPixelError[index] / new_ratio;
+				temp = temp > 127 ? 127 : temp;
+				temp = temp < -128 ? -128 : temp;
+				vPGAFineOffsets.push_back(temp);
 				index++;
 			}
 		}
