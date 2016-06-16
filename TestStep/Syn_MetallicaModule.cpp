@@ -80,7 +80,8 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 
 	if (calInfo.m_bPgaFineTuning)
 	{
-		pTmp = pTempOffsets;
+		//pTmp = pTempOffsets;
+		//pTmp = pPrtFileOffsets;
 
 		//Get user-specified number of images with new PGA offsets, then calculate the average.
 		for (int nFrame = 0; nFrame<nNumFrames; nFrame++)
@@ -107,12 +108,9 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 				{
 					//Calculate fine tuned PGA offset.
 					int8_t nAdjustment = CalcPgaOffset(calFrameNonZeroOffsets->arr[nRow][nBigCol + nColIdx], nConfigRatio, nConfigRatio);
-					if (((float)(*pTmp) + (float)nAdjustment) > 127)
-						*pPrtFileOffsets = 127;
-					else if (((float)(*pTmp) + (float)nAdjustment) < -128)
-						*pPrtFileOffsets = -128;
-					else
-						*pPrtFileOffsets += nAdjustment;
+					*pPrtFileOffsets += nAdjustment;
+					*pPrtFileOffsets = *pPrtFileOffsets > 127 ? 127 : *pPrtFileOffsets;
+					*pPrtFileOffsets = *pPrtFileOffsets < -128 ? -128 : *pPrtFileOffsets;
 					pOtpOffsets[nRow + (nBigCol + nColIdx)] = *pPrtFileOffsets++;
 				}
 			}
