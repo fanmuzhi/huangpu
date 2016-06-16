@@ -1,5 +1,6 @@
 //Local
 #include "Syn_MetallicaModule.h"
+#include <vector>
 
 Syn_MetallicaModule::Syn_MetallicaModule()
 {
@@ -27,10 +28,17 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 	int nNumFrames = calInfo.m_nNumPgaSamples;
 	int16_t nTotal;
 	int arRowNums[NUM_PGA_OOPP_OTP_ROWS];
-	int8_t* pTempOffsets = new int8_t[nNumRows * nNumCols];
+	//int8_t* pTempOffsets = new int8_t[nNumRows * nNumCols];
+	std::vector<int8_t> vPixelError;
+	std::vector<int8_t> vPGAOffsets;
+	std::vector<int8_t> vPGAFineOffsets;
 	int8_t* pTmp;
 	int8_t* pPrtFileOffsets;
 	int8_t* pOtpOffsets;
+    int32_t min_corr_limit = (int32_t) (-128 / nConfigRatio);
+	min_corr_limit = min_corr_limit < -128 ? -128 : min_corr_limit;
+    int32_t max_corr_limit = (int32_t) (127 / nConfigRatio);
+	max_corr_limit = max_corr_limit > 127 ? 127 : max_corr_limit;
 
 	//These are the rows we save to OTP for calculating the variance score.
 	for (int i = 0; i < NUM_PGA_OOPP_OTP_ROWS; i++)
@@ -51,12 +59,18 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 		}
 	}
 
-	//Calculate the PGA offsets (no fine tuning).
-	pTmp = pTempOffsets;
+	//Calculate the PixelError.
 	for (int nRow = 0; nRow<nNumRows; nRow++)
 	{
-		for (int nCol = HEADER; nCol<nNumCols; nCol++)
-			*pTmp++ = CalcPgaOffset(calFrameZeroOffsets->arr[nRow][nCol], nConfigRatio, nConfigRatio);
+		for (int nCol = HEADER; nCol < nNumCols; nCol++)
+			//*pTmp++ = CalcPgaOffset(calFrameZeroOffsets->arr[nRow][nCol], nConfigRatio, nConfigRatio);
+			vPixelError.push_back(calFrameZeroOffsets->arr[nRow][nCol] - 128);
+	}
+
+	//Calculate the PGA offsets (no fine tuning).
+	for (int i = 0; i < nNumRows * (nNumCols - HEADER); i++)
+	{
+		vPGAOffsets.push_back(vPixelError[i] / nConfigRatio);
 	}
 
 	//Put the PGA offsets into the print file. The ordering is a bit strange.
@@ -66,7 +80,7 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 		for (int nRow = 0; nRow<nNumRows; nRow++)
 		{
 			for (int nColIdx = 0; nColIdx<4; nColIdx++)
-				*pPrtFileOffsets++ = pTempOffsets[(nRow * (nNumCols - HEADER)) + (nBigCol + nColIdx)];
+				*pPrtFileOffsets++ = vPGAOffsets[(nRow * (nNumCols - HEADER)) + (nBigCol + nColIdx)];
 		}
 	}
 
@@ -75,14 +89,11 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 	for (int nSelRowIdx = 0; nSelRowIdx < NUM_PGA_OOPP_OTP_ROWS; nSelRowIdx++)
 	{
 		for (int nCol = 0; nCol < nNumCols - HEADER; nCol++)
-			*pOtpOffsets++ = pTempOffsets[(arRowNums[nSelRowIdx] * (nNumCols - HEADER)) + nCol];
+			*pOtpOffsets++ = vPGAOffsets[(arRowNums[nSelRowIdx] * (nNumCols - HEADER)) + nCol];
 	}
 
 	if (calInfo.m_bPgaFineTuning)
 	{
-		//pTmp = pTempOffsets;
-		//pTmp = pPrtFileOffsets;
-
 		//Get user-specified number of images with new PGA offsets, then calculate the average.
 		for (int nFrame = 0; nFrame<nNumFrames; nFrame++)
 			GetFingerprintImage(calResult, &arFrames[nFrame], nNumRows, nNumCols);
@@ -96,23 +107,53 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 				calFrameNonZeroOffsets->arr[nRow][nCol] = nTotal / nNumFrames;
 			}
 		}
+		
+		//Get per pixel ratio
+		int index = 0;
+		for (int nRow = 0; nRow<nNumRows; nRow++)
+		{
+			for (int nCol = HEADER; nCol < nNumCols; nCol++)
+			{
+				float new_ratio = nConfigRatio;
+				float delta = (float)(calFrameZeroOffsets->arr[nRow][nCol] - calFrameNonZeroOffsets->arr[nRow][nCol]);
+				if (vPGAOffsets[index] != 0)
+				{
+					new_ratio = delta / vPGAOffsets[index];
+				}
+				if (abs(delta) < 10)
+					new_ratio = nConfigRatio;
+				if (new_ratio <= 0)
+					new_ratio = nConfigRatio;
+				if ((((calFrameNonZeroOffsets->arr[nRow][nCol] - 128) * (calFrameZeroOffsets->arr[nRow][nCol] - 128)) > 0)
+					&& (vPGAOffsets[index] <= min_corr_limit || vPGAOffsets[index] >= max_corr_limit))
+				{
+					new_ratio = nConfigRatio;
 
-		//Put the fine tuned PGA offsets into the print file. The order is a bit strange.
+					//calculate new pGA offsets with Dane's formula
+					int temp = (vPGAOffsets[index] - (delta / nConfigRatio)) + vPGAOffsets[index];
+					temp = temp > 127 ? 127 : temp;
+					temp = temp < -128 ? -128 : temp;
+					vPGAFineOffsets.push_back(temp);
+				}
+				else
+				{
+					int temp = vPixelError[index] / new_ratio;
+					temp = temp > 127 ? 127 : temp;
+					temp = temp < -128 ? -128 : temp;
+					vPGAFineOffsets.push_back(temp);
+				}
+				index++;
+			}
+		}
+
+		//Put the PGA offsets into the print file. The ordering is a bit strange.
 		pPrtFileOffsets = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx];
-		pOtpOffsets = (int8_t*)calResult.m_arPgaOffsets;
-		for (int nBigCol = HEADER; nBigCol<nNumCols; nBigCol = nBigCol + 4)
+		for (int nBigCol = 0; nBigCol<(nNumCols - HEADER); nBigCol = nBigCol + 4)
 		{
 			for (int nRow = 0; nRow<nNumRows; nRow++)
 			{
 				for (int nColIdx = 0; nColIdx<4; nColIdx++)
-				{
-					//Calculate fine tuned PGA offset.
-					int8_t nAdjustment = CalcPgaOffset(calFrameNonZeroOffsets->arr[nRow][nBigCol + nColIdx], nConfigRatio, nConfigRatio);
-					*pPrtFileOffsets += nAdjustment;
-					*pPrtFileOffsets = *pPrtFileOffsets > 127 ? 127 : *pPrtFileOffsets;
-					*pPrtFileOffsets = *pPrtFileOffsets < -128 ? -128 : *pPrtFileOffsets;
-					pOtpOffsets[nRow + (nBigCol + nColIdx)] = *pPrtFileOffsets++;
-				}
+					*pPrtFileOffsets++ = vPGAFineOffsets[(nRow * (nNumCols - HEADER)) + (nBigCol + nColIdx)];
 			}
 		}
 
@@ -120,10 +161,74 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 		pOtpOffsets = (int8_t*)calResult.m_arPgaOffsets;
 		for (int nSelRowIdx = 0; nSelRowIdx < NUM_PGA_OOPP_OTP_ROWS; nSelRowIdx++)
 		{
-			int nRow = arRowNums[nSelRowIdx];
 			for (int nCol = 0; nCol < nNumCols - HEADER; nCol++)
-				*pOtpOffsets++ = pTempOffsets[(nRow * (nNumCols - HEADER)) + nCol];
+				*pOtpOffsets++ = vPGAFineOffsets[(arRowNums[nSelRowIdx] * (nNumCols - HEADER)) + nCol];
 		}
+
+		//print file for debug
+		/*
+		std::string sFileName("PixelValue.csv");
+		FILE *pFile = fopen(sFileName.c_str(), "a");
+		if (NULL != pFile)
+		{
+			int k = 0;
+			fprintf(pFile, "vPixelError\n");
+			for (int nRow = 0; nRow < nNumRows; nRow++)
+			{
+				for (int nCol = HEADER; nCol < nNumCols; nCol++)
+				{
+					fprintf(pFile, "%d,", vPixelError[k]);
+					k++;
+				}
+				fprintf(pFile, "\n");
+			}
+
+			k = 0;
+			fprintf(pFile, "\nvPGAOffsets\n");
+			for (int nRow = 0; nRow < nNumRows; nRow++)
+			{
+				for (int nCol = HEADER; nCol < nNumCols; nCol++)
+				{
+					fprintf(pFile, "%d,", vPGAOffsets[k]);
+					k++;
+				}
+				fprintf(pFile, "\n");
+			}
+
+			k = 0;
+			fprintf(pFile, "\nvPGAFineOffsets\n");
+			for (int nRow = 0; nRow < nNumRows; nRow++)
+			{
+				for (int nCol = HEADER; nCol < nNumCols; nCol++)
+				{
+					fprintf(pFile, "%d,", vPGAFineOffsets[k]);
+					k++;
+				}
+				fprintf(pFile, "\n");
+			}
+
+			fprintf(pFile, "\ncalFrameZeroOffsets\n");
+			for (int nRow = 0; nRow < nNumRows; nRow++)
+			{
+				for (int nCol = HEADER; nCol < nNumCols; nCol++)
+				{
+					fprintf(pFile, "%d,", calFrameZeroOffsets->arr[nRow][nCol]);
+				}
+				fprintf(pFile, "\n");
+			}
+
+			fprintf(pFile, "\ncalFrameNonZeroOffsets\n");
+			for (int nRow = 0; nRow < nNumRows; nRow++)
+			{
+				for (int nCol = HEADER; nCol < nNumCols; nCol++)
+				{
+					fprintf(pFile, "%d,", calFrameNonZeroOffsets->arr[nRow][nCol]);
+				}
+				fprintf(pFile, "\n");
+			}
+
+			fclose(pFile);
+		}*/
 	}
 
 	//Check if Stage 2 array is all the same.
@@ -142,7 +247,6 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 	delete[] calFrameNonZeroOffsets;
 	calFrameNonZeroOffsets = NULL;
 
-	delete[] pTempOffsets;
 	return !bStage2AllEqual;
 }
 
