@@ -123,7 +123,7 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 				if (new_ratio <= 0)
 					new_ratio = nConfigRatio;
 				if ((((calFrameNonZeroOffsets->arr[nRow][nCol] - 128) * (calFrameZeroOffsets->arr[nRow][nCol] - 128)) > 0)
-					&& (vPGAOffsets[index] < min_corr_limit || vPGAOffsets[index] > max_corr_limit))
+					&& (vPGAOffsets[index] <= min_corr_limit || vPGAOffsets[index] >= max_corr_limit))
 					new_ratio = nConfigRatio;
 				if (abs(delta) < 10)
 					new_ratio = nConfigRatio;
