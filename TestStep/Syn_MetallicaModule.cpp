@@ -154,6 +154,50 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 			for (int nCol = 0; nCol < nNumCols - HEADER; nCol++)
 				*pOtpOffsets++ = vPGAFineOffsets[(arRowNums[nSelRowIdx] * (nNumCols - HEADER)) + nCol];
 		}
+
+		//print file
+		std::string sFileName("PixelValue.csv");
+		FILE *pFile = fopen(sFileName.c_str(), "a");
+		if (NULL != pFile)
+		{
+			int k = 0;
+			fprintf(pFile, "vPixelError\n");
+			for (int nRow = 0; nRow < nNumRows; nRow++)
+			{
+				for (int nCol = HEADER; nCol < nNumCols; nCol++)
+				{
+					fprintf(pFile, "%d,", vPixelError[k]);
+					k++;
+				}
+				fprintf(pFile, "\n");
+			}
+
+			k = 0;
+			fprintf(pFile, "\nvPGAOffsets\n");
+			for (int nRow = 0; nRow < nNumRows; nRow++)
+			{
+				for (int nCol = HEADER; nCol < nNumCols; nCol++)
+				{
+					fprintf(pFile, "%d,", vPGAOffsets[k]);
+					k++;
+				}
+				fprintf(pFile, "\n");
+			}
+
+			k = 0;
+			fprintf(pFile, "\nvPGAFineOffsets\n");
+			for (int nRow = 0; nRow < nNumRows; nRow++)
+			{
+				for (int nCol = HEADER; nCol < nNumCols; nCol++)
+				{
+					fprintf(pFile, "%d,", vPGAFineOffsets[k]);
+					k++;
+				}
+				fprintf(pFile, "\n");
+			}
+
+			fclose(pFile);
+		}
 	}
 
 	//Check if Stage 2 array is all the same.
