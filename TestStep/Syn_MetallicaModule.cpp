@@ -196,6 +196,26 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 				fprintf(pFile, "\n");
 			}
 
+			fprintf(pFile, "\ncalFrameZeroOffsets\n");
+			for (int nRow = 0; nRow < nNumRows; nRow++)
+			{
+				for (int nCol = HEADER; nCol < nNumCols; nCol++)
+				{
+					fprintf(pFile, "%d,", calFrameZeroOffsets->arr[nRow][nCol]);
+				}
+				fprintf(pFile, "\n");
+			}
+
+			fprintf(pFile, "\ncalFrameNonZeroOffsets\n");
+			for (int nRow = 0; nRow < nNumRows; nRow++)
+			{
+				for (int nCol = HEADER; nCol < nNumCols; nCol++)
+				{
+					fprintf(pFile, "%d,", calFrameNonZeroOffsets->arr[nRow][nCol]);
+				}
+				fprintf(pFile, "\n");
+			}
+
 			fclose(pFile);
 		}
 	}
