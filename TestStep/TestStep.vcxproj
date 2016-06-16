@@ -132,8 +132,8 @@
     <ClInclude Include="Ts_SlowOscTrim.h" />
     <ClInclude Include="Ts_SNRTest.h" />
     <ClInclude Include="Ts_WaitStimulus.h" />
-    <ClInclude Include="Ts_WOF.h" />
     <ClInclude Include="Ts_WOFFD.h" />
+    <ClInclude Include="Ts_WOFFU.h" />
     <ClInclude Include="Ts_WOFLowPower.h" />
     <ClInclude Include="Ts_WoVarTest.h" />
   </ItemGroup>
@@ -177,8 +177,8 @@
     <ClCompile Include="Ts_SlowOscTrim.cpp" />
     <ClCompile Include="Ts_SNRTest.cpp" />
     <ClCompile Include="Ts_WaitStimulus.cpp" />
-    <ClCompile Include="Ts_WOF.cpp" />
     <ClCompile Include="Ts_WOFFD.cpp" />
+    <ClCompile Include="Ts_WOFFU.cpp" />
     <ClCompile Include="Ts_WOFLowPower.cpp" />
     <ClCompile Include="Ts_WoVarTest.cpp" />
   </ItemGroup>

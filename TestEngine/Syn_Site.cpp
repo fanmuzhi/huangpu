@@ -432,7 +432,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	fprintf(pFile, "MTLog,%d,%d\n", _iSiteNumber, _uiSerialNumber);
 
 	//Put in part number.
-	fprintf(pFile, "Version,1.0.9\n");//Version
+	//fprintf(pFile, "Version,1.0.9\n");//Version
 
 	//Config file path
 	fprintf(pFile, "Config file,%s\n", _strConfigFilePath.c_str());
@@ -616,7 +616,14 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 					fprintf(pFile, ",%02X", DutResults->_calibrationResults.m_pPGAOtpArray[i]);
 				}
 
-				//fprintf(pFile, "\n,,,Stage2 Variance Score,N/A\n");
+				/*if (255 == DutResults->_calibrationResults.m_pPGAOtpArray[0])
+				{
+					fprintf(pFile, "\n,,,Stage2 Variance Score,N/A\n");
+				}
+				else
+				{
+					fprintf(pFile, "\n,,,Stage2 Variance Score,%d\n", DutResults->_calibrationResults.m_nStage2VarianceScore);
+				}*/
 				fprintf(pFile, "\n,,,Stage2 Variance Score,%d\n", DutResults->_calibrationResults.m_nStage2VarianceScore);
 			}
 			else
