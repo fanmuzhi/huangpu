@@ -120,18 +120,28 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 				{
 					new_ratio = delta / vPGAOffsets[index];
 				}
+				if (abs(delta) < 10)
+					new_ratio = nConfigRatio;
 				if (new_ratio <= 0)
 					new_ratio = nConfigRatio;
 				if ((((calFrameNonZeroOffsets->arr[nRow][nCol] - 128) * (calFrameZeroOffsets->arr[nRow][nCol] - 128)) > 0)
 					&& (vPGAOffsets[index] <= min_corr_limit || vPGAOffsets[index] >= max_corr_limit))
+				{
 					new_ratio = nConfigRatio;
-				if (abs(delta) < 10)
-					new_ratio = nConfigRatio;
+					//calculate new pGA offsets
 
-				int temp = vPixelError[index] / new_ratio;
-				temp = temp > 127 ? 127 : temp;
-				temp = temp < -128 ? -128 : temp;
-				vPGAFineOffsets.push_back(temp);
+					int temp = (vPGAOffsets[index] - (delta / nConfigRatio)) + vPGAOffsets[index];
+					temp = temp > 127 ? 127 : temp;
+					temp = temp < -128 ? -128 : temp;
+					vPGAFineOffsets.push_back(temp);
+				}
+				else
+				{
+					int temp = vPixelError[index] / new_ratio;
+					temp = temp > 127 ? 127 : temp;
+					temp = temp < -128 ? -128 : temp;
+					vPGAFineOffsets.push_back(temp);
+				}
 				index++;
 			}
 		}
