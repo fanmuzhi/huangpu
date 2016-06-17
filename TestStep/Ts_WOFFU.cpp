@@ -174,7 +174,7 @@ void Ts_WOFFU::Execute()
 			_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_bExecutedWithoutStimulus = 1;
 		}
 
-		//_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_elapsedtime += dCurrentElapsedTime;
+		_pSyn_Dut->_pSyn_DutTestResult->_z0FUWofResults.m_elapsedtime += dCurrentElapsedTime;
 	}
 	else	//Execute with stimulus.
 	{
@@ -190,7 +190,7 @@ void Ts_WOFFU::Execute()
 			_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
 		}
 
-		//_pSyn_Dut->_pSyn_DutTestResult->_z0WofResults.m_elapsedtime += dCurrentElapsedTime;
+		_pSyn_Dut->_pSyn_DutTestResult->_z0FUWofResults.m_elapsedtime += dCurrentElapsedTime;
 	}
 
 	//zone1 top
@@ -202,7 +202,7 @@ void Ts_WOFFU::Execute()
 			_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_bExecutedWithoutStimulus = 1;
 		}
 
-		//_pSyn_Dut->_pSyn_DutTestResult->_z1WofResults.m_elapsedtime += dCurrentElapsedTime;
+		_pSyn_Dut->_pSyn_DutTestResult->_z1FUWofResults.m_elapsedtime += dCurrentElapsedTime;
 	}
 	else	//Execute with stimulus.
 	{
@@ -218,7 +218,7 @@ void Ts_WOFFU::Execute()
 			_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
 		}
 
-		//_pSyn_Dut->_pSyn_DutTestResult->_z1WofResults.m_elapsedtime += dCurrentElapsedTime;
+		_pSyn_Dut->_pSyn_DutTestResult->_z1FUWofResults.m_elapsedtime += dCurrentElapsedTime;
 
 	}
 }
@@ -432,6 +432,14 @@ void Ts_WOFFU::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Resul
 		wofValWithFinger.push_back(temp);
 	}
 
+	//Print
+	/*FILE *pFile = fopen("WOF_FU.csv", "a");
+	if (NULL != pFile)
+	{
+		fprintf(pFile, "\nSerial Number:,%s\n", _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber);
+		fprintf(pFile, "Gain,TgrIdex_withoutFinger,TgrIdex_withFinger,Delta\n");
+	}*/
+
 	int bestDelta = 0;
 	for (nGainIdx = 0; (nGainIdx < Results.m_nNumGains) && (Results.m_bPass == 0); nGainIdx++)
 	{
@@ -445,6 +453,12 @@ void Ts_WOFFU::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Resul
 			Results.m_bPass = 0;
 			return;
 		}
+
+		/*if (NULL != pFile)
+		{
+			fprintf(pFile, "%d,%d,%d,%d\n", Results.m_nGainStart + (Results.m_nGainInc * nGainIdx), nTgrIdex_withoutFinger, nTgrIdex_withFinger, nTgrIdex_withoutFinger - nTgrIdex_withFinger);			
+		}*/
+
 		if (nTgrIdex_withFinger >= Info.m_nMaxTriggerThreshold || nTgrIdex_withFinger < Info.m_nMinTriggerThreshold)
 		{
 			//if any Trigger value out of limition, fail
@@ -453,7 +467,7 @@ void Ts_WOFFU::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Resul
 		}
 
 		int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
-		if (nDelta >= bestDelta)
+		if (nDelta > bestDelta)
 		{
 			bestDelta = nDelta;
 			Results.m_nGain = Results.m_nGainStart + (Results.m_nGainInc * nGainIdx);
@@ -461,6 +475,11 @@ void Ts_WOFFU::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Resul
 			Results.m_nTriggerWithStim = nTgrIdex_withFinger;
 		}
 	}
+
+	/*if (NULL != pFile)
+	{
+		fclose(pFile);
+	}*/
 
 	if (bestDelta < Info.m_nDelta_100)
 	{

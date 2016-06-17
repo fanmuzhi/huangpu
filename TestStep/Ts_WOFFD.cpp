@@ -217,7 +217,7 @@ void Ts_WOFFD::Execute()
 			_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_bExecutedWithoutStimulus = 1;
 		}
 
-		//_pSyn_Dut->_pSyn_DutTestResult->_z1WofResults.m_elapsedtime += dCurrentElapsedTime;
+		_pSyn_Dut->_pSyn_DutTestResult->_z1FDWofResults.m_elapsedtime += dCurrentElapsedTime;
 	}
 	else	//Execute with stimulus.
 	{
@@ -233,7 +233,7 @@ void Ts_WOFFD::Execute()
 			_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
 		}
 
-		//_pSyn_Dut->_pSyn_DutTestResult->_z1WofResults.m_elapsedtime += dCurrentElapsedTime;
+		_pSyn_Dut->_pSyn_DutTestResult->_z1FDWofResults.m_elapsedtime += dCurrentElapsedTime;
 
 	}
 }
@@ -468,7 +468,7 @@ void Ts_WOFFD::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Resul
 		}
 
 		int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
-		if (nDelta >= bestDelta)
+		if (nDelta > bestDelta)
 		{
 			bestDelta = nDelta;
 			Results.m_nGain = Results.m_nGainStart + (Results.m_nGainInc * nGainIdx);

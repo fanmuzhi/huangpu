@@ -477,7 +477,7 @@ void Ts_OTPWriteMainSector::BurnToOTP(long nRecType, uint8_t* pSrc, int numBytes
 	uint8_t arExtendedTag[2] = { 0 };
 	uint8_t arNumBytes[2] = { 0 };
 
-	//_pSyn_DutCtrl->FpOtpRomTagWrite(arOutBuf, nSize);
+	_pSyn_DutCtrl->FpOtpRomTagWrite(arOutBuf, nSize);
 
 }
 
