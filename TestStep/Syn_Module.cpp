@@ -286,7 +286,7 @@ int8_t Syn_Module::CalcPgaOffset(uint8_t nPixelValue, float nRatio, float nConfi
 	if (nOffset < -128)
 		nOffset = -128;
 
-	return (int8_t)nOffset;
+	return (int8_t)nOffset;		//pixel error
 }
 
 

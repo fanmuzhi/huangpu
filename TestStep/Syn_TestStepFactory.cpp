@@ -24,7 +24,8 @@
 #include "Ts_OpensShortsTest.h"
 #include "Ts_RAMTest.h"
 #include "Ts_AFETest.h"
-#include "Ts_WOF.h"
+#include "Ts_WOFFD.h"
+#include "Ts_WOFFU.h"
 #include "Ts_WOFLowPower.h"
 #include "Ts_SCM_WOF.h"
 #include "Ts_ReadDutAdc.h"
@@ -161,19 +162,19 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	}*/
 	else if (std::string("WOF_FD_WithoutStimulus") == strTestStepName)
 	{
-		opTestStepInstance = new Ts_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
+		opTestStepInstance = new Ts_WOFFD(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else if (std::string("WOF_FD_WithStimulus") == strTestStepName)
 	{
-		opTestStepInstance = new Ts_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
+		opTestStepInstance = new Ts_WOFFD(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else if (std::string("WOF_FU_WithoutStimulus") == strTestStepName)
 	{
-		opTestStepInstance = new Ts_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
+		opTestStepInstance = new Ts_WOFFU(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else if (std::string("WOF_FU_WithStimulus") == strTestStepName)
 	{
-		opTestStepInstance = new Ts_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
+		opTestStepInstance = new Ts_WOFFU(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else if (std::string("WOF-LowPower") == strTestStepName)
 	{

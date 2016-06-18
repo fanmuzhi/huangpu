@@ -103,9 +103,6 @@
     <ClCompile Include="Ts_ReadDutAdc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Ts_WOF.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Ts_SCM_WOF.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -125,6 +122,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Ts_SlowOscTrim.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_WOFFD.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_WOFFU.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -234,9 +237,6 @@
     <ClInclude Include="Ts_ReadDutAdc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Ts_WOF.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Ts_SCM_WOF.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -256,6 +256,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ts_SlowOscTrim.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_WOFFD.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_WOFFU.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
