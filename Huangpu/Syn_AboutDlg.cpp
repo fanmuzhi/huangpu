@@ -1,5 +1,7 @@
 #include "Syn_AboutDlg.h"
 
+#include "Syn_TestUtils.h"
+
 Syn_AboutDlg::Syn_AboutDlg(QWidget *parent)
 	: QWidget(parent)
 	, ui(NULL)
@@ -30,9 +32,9 @@ void Syn_AboutDlg::SetInfo()
 
 	ui->NameLabel->setText("Huangpu");
 
-	ui->VersionLabel->setText("Version:1.0.9");
+	ui->VersionLabel->setText(QString("Version:") + SW_VERSION);
 	
-	ui->DateLabel->setText("Release Date:2016-06-03");
+	ui->DateLabel->setText("Release Date:2016-06-20");
 
 	ui->CopyrightLabel->setText("Copyright@2016 Synaptics");
 }
