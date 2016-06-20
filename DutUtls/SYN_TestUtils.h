@@ -87,6 +87,7 @@ typedef unsigned char UINT8; // UINT8 is created to handle MPC04 data
 
 #define MAX_PART_NUMBER_LENGTH 8
 
+#define SW_VERSION "1.1.0"
 
 typedef struct
 {
@@ -101,17 +102,19 @@ typedef struct
 	uint8_t _UserSpecifiedBS0[BS0_SIZE];
 	uint8_t _UserSpecifiedBS1[BS1_SIZE];
 
-	int		_bCheckTAG_LNA;
-	int		_bCheckTAG_PGA_OOPR;
-	int		_bCheckTAG_SNR;
-	int		_bCheckTAG_FlexId;
-	int		_bCheckTAG_WOF_BOT;
-	int		_bCheckTAG_DutTempAdc;
-	int		_bCheckTAG_WOF_TOP;
-	int		_bCheckTAG_SCM_WOF_BOT;
-	int		_bCheckTAG_SCM_WOF_TOP;
-	int		_bCheckTAG_PGA_OOPP;
 	int		_bCheckTAG_PRODUCT_ID;
+	int		_bCheckTAG_LNA;
+	int		_bCheckTAG_SNR;
+	int		_bCheckTAG_PGA_OOPR;
+	int		_bCheckTAG_FlexId;
+	int		_bCheckTAG_WOF_FD_ZONE0;
+	int		_bCheckTAG_WOF_FD_ZONE1;
+	int		_bCheckTAG_WOF_FU_ZONE0;
+	int		_bCheckTAG_WOF_FU_ZONE1;
+	int		_bCheckTAG_DutTempAdc;
+	int		_bCheckTAG_PGA_OOPP;
+	int		_bCheckTAG_SCM_WOF_ZONE0;
+	int		_bCheckTAG_SCM_WOF_ZONE1;
 	int		_bCheckTAG_PART_NUMBERS;
 	int		_bCheckTAG_LNA_PGA_GAINS;
 
@@ -385,7 +388,7 @@ typedef struct
 	int			m_nPrintPatchSize;
 	uint8_t		m_pPrintPatch[MAX_PRINTFILE_SIZE + 4];
 	int			m_nLNA_count, m_nPGA_OOPR_count, m_nPGA_OOPP_count, m_nSNR_count;
-	int			m_nFlexId_count, m_nWofBot_count, m_nWofTop_count, m_nDutTempAdc_count;
+	int			m_nFlexId_count, m_nWofZONE0_FD_count, m_nWofZONE0_FU_count, m_nWofZONE1_FD_count, m_nWofZONE1_FU_count, m_nDutTempAdc_count;
 	int			m_nScmWofTop_count, m_nScmWofBot_count, m_nProductId_count, m_nPartNumberId_count;
 	int			m_nLNAPGAGains_count;
 	uint8_t		m_arPgaOffsets[NUM_PGA_OOPP_OTP_ROWS * MAXCOL];
