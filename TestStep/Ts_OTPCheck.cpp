@@ -303,15 +303,32 @@ void Ts_OTPCheck::ProcessData()
 	// check last 4 byts
 	for (auto i = 48; i < 52; i++)
 	{
-		if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._BootSector0Array[i]
-			!= _pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._UserSpecifiedBS0[i])
+		//ignore the regcheck bit
+		if (i == 49)
 		{
-			bPass = false;
+			int temp = _pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._BootSector0Array[i] ^ _pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._UserSpecifiedBS0[i];
+			int temp2 = _pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._BootSector0Array[i + 8] ^ _pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._UserSpecifiedBS0[i + 8];
+			if ( (temp != 0x40) && (temp != 0))
+			{
+				bPass = false;
+			}
+			if ( (temp2 != 0x40) && (temp2 != 0))
+			{
+				bPass = false;
+			}
 		}
-		if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._BootSector0Array[i + 8]		
-			!= _pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._UserSpecifiedBS0[i + 8])	// the second row
+		else
 		{
-			bPass = false;
+			if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._BootSector0Array[i]
+				!= _pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._UserSpecifiedBS0[i])
+			{
+				bPass = false;
+			}
+			if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._BootSector0Array[i + 8]
+				!= _pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._UserSpecifiedBS0[i + 8])	// the second row
+			{
+				bPass = false;
+			}
 		}
 	}
 
