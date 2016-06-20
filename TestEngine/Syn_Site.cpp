@@ -616,15 +616,15 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 					fprintf(pFile, ",%02X", DutResults->_calibrationResults.m_pPGAOtpArray[i]);
 				}
 
-				/*if (255 == DutResults->_calibrationResults.m_pPGAOtpArray[0])
+				if (-0x300 == DutResults->_calibrationResults.m_nStage2VarianceScore)
 				{
 					fprintf(pFile, "\n,,,Stage2 Variance Score,N/A\n");
 				}
 				else
 				{
 					fprintf(pFile, "\n,,,Stage2 Variance Score,%d\n", DutResults->_calibrationResults.m_nStage2VarianceScore);
-				}*/
-				fprintf(pFile, "\n,,,Stage2 Variance Score,%d\n", DutResults->_calibrationResults.m_nStage2VarianceScore);
+				}
+				//fprintf(pFile, "\n,,,Stage2 Variance Score,%d\n", DutResults->_calibrationResults.m_nStage2VarianceScore);
 			}
 			else
 			{
