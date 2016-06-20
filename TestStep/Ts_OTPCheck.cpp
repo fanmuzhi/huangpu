@@ -36,12 +36,14 @@ void Ts_OTPCheck::SetUp()
 	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SNR = 1;
 	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PGA_OOPR = 0;
 	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_FlexId = 1;
-	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_BOT = 1;
+	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_FD_ZONE0 = 1;
+	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_FD_ZONE1 = 1;
+	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_FU_ZONE0 = 1;
+	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_FU_ZONE1 = 1;
+	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_ZONE0 = 1;
+	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_ZONE1 = 1;
 	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_DutTempAdc = 0;
-	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_TOP = 1;
 	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PGA_OOPP = 1;
-	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_BOT = 1;
-	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_TOP = 1;
 	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PART_NUMBERS = 0;
 	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_LNA_PGA_GAINS = 1;
 
@@ -49,9 +51,9 @@ void Ts_OTPCheck::SetUp()
 	_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bExecuted = false;
 	ParseTestStepArgs(_strArgs, listOfArgValue);
 	size_t ilistSize = listOfArgValue.size();
-	if (ilistSize < 13)
+	if (ilistSize < 15)
 	{
-		for (size_t t = 1; t <= 13 - ilistSize; t++)
+		for (size_t t = 1; t <= 15 - ilistSize; t++)
 			listOfArgValue.push_back(std::string(""));
 	}
 	if (0 != listOfArgValue[0].length())
@@ -65,21 +67,25 @@ void Ts_OTPCheck::SetUp()
 	if (0 != listOfArgValue[4].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_FlexId= atoi(listOfArgValue[4].c_str());
 	if (0 != listOfArgValue[5].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_BOT= atoi(listOfArgValue[5].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_FD_ZONE0 = atoi(listOfArgValue[5].c_str());
 	if (0 != listOfArgValue[6].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_DutTempAdc= atoi(listOfArgValue[6].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_FD_ZONE1 = atoi(listOfArgValue[6].c_str());
 	if (0 != listOfArgValue[7].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_TOP= atoi(listOfArgValue[7].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_FU_ZONE0 = atoi(listOfArgValue[7].c_str());
 	if (0 != listOfArgValue[8].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PGA_OOPP= atoi(listOfArgValue[8].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_FU_ZONE1 = atoi(listOfArgValue[8].c_str());
 	if (0 != listOfArgValue[9].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_BOT= atoi(listOfArgValue[9].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_DutTempAdc= atoi(listOfArgValue[9].c_str());
 	if (0 != listOfArgValue[10].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_TOP= atoi(listOfArgValue[10].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PGA_OOPP= atoi(listOfArgValue[10].c_str());
+	if (0 != listOfArgValue[9].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_ZONE0= atoi(listOfArgValue[11].c_str());
+	if (0 != listOfArgValue[10].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_ZONE1= atoi(listOfArgValue[12].c_str());
 	if (0 != listOfArgValue[11].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PART_NUMBERS= atoi(listOfArgValue[11].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PART_NUMBERS= atoi(listOfArgValue[13].c_str());
 	if (0 != listOfArgValue[12].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_LNA_PGA_GAINS = atoi(listOfArgValue[12].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_LNA_PGA_GAINS = atoi(listOfArgValue[14].c_str());
 
 	//Power On
 	PowerOff();
@@ -184,12 +190,33 @@ void Ts_OTPCheck::Execute()
 
 		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_FlexId", HexToString(pDst, 0, 1)));
 	}
-	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_BOT)
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_FD_ZONE0)
 	{
 		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FD_ZONE0, pDst, MS0_SIZE);
-		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofBot_count = count;
+		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofZONE0_FD_count = count;
 
 		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_WOF_FD_ZONE0", HexToString(pDst, 4, 7)));
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_FD_ZONE1)
+	{
+		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FD_ZONE1, pDst, MS0_SIZE);
+		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofZONE1_FD_count = count;
+
+		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_WOF_FD_ZONE1", HexToString(pDst, 4, 7)));
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_FU_ZONE0)
+	{
+		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FU_ZONE0, pDst, MS0_SIZE);
+		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofZONE0_FU_count = count;
+
+		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_WOF_FU_ZONE0", HexToString(pDst, 4, 7)));
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_FU_ZONE1)
+	{
+		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FU_ZONE1, pDst, MS0_SIZE);
+		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofZONE1_FU_count = count;
+
+		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_WOF_FU_ZONE1", HexToString(pDst, 4, 7)));
 	}
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_DutTempAdc)
 	{
@@ -199,13 +226,6 @@ void Ts_OTPCheck::Execute()
 		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_DutTempAdc", HexToString(pDst, 0, 1)));
 
 	}
-	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_TOP)
-	{
-		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FD_ZONE1, pDst, MS0_SIZE);
-		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofTop_count= count;
-
-		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_WOF_FD_ZONE1", HexToString(pDst, 4, 7)));
-	}
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PGA_OOPP)
 	{
 		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPP, pDst, MS0_SIZE);
@@ -213,14 +233,14 @@ void Ts_OTPCheck::Execute()
 
 		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_PGA_OOPP", HexToString(pDst, 0,NUM_PGA_OOPP_OTP_ROWS * (_pSyn_Dut->_ColumnNumber - 8)-1)));
 	}
-	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_BOT)
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_ZONE0)
 	{
 		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_ZONE0, pDst, MS0_SIZE);
 		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nScmWofBot_count= count;
 
 		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_SCM_WOF_ZONE0", HexToString(pDst,4,7)));
 	}
-	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_TOP)
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_ZONE1)
 	{
 		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_ZONE1, pDst, MS0_SIZE);
 		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nScmWofTop_count= count;
@@ -322,9 +342,24 @@ void Ts_OTPCheck::ProcessData()
 		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nFlexId_count < count_threshold)
 			bPass = false;
 	}
-	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_BOT)
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_FD_ZONE0)
 	{
-		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofBot_count < count_threshold)
+		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofZONE0_FD_count < count_threshold)
+			bPass = false;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_FD_ZONE1)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofZONE1_FD_count < count_threshold)
+			bPass = false;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_FU_ZONE0)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofZONE0_FU_count < count_threshold)
+			bPass = false;
+	}
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_FU_ZONE1)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofZONE1_FU_count < count_threshold)
 			bPass = false;
 	}
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_DutTempAdc)
@@ -332,22 +367,17 @@ void Ts_OTPCheck::ProcessData()
 		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nDutTempAdc_count < count_threshold)
 			bPass = false;
 	}
-	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_WOF_TOP)
-	{
-		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofTop_count < count_threshold)
-			bPass = false;
-	}
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_PGA_OOPP)
 	{
 		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPGA_OOPP_count < count_threshold)
 			bPass = false;
 	}
-	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_BOT)
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_ZONE0)
 	{
 		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nScmWofBot_count < count_threshold)
 			bPass = false;
 	}
-	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_TOP)
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_ZONE1)
 	{
 		if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nScmWofTop_count < count_threshold)
 			bPass = false;
