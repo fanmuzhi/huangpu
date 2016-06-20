@@ -156,7 +156,6 @@ void Ts_WOFFU::Execute()
 	}
 
 	double dCurrentElapsedTime(0);
-	ComputeRunningTime(dCurrentElapsedTime);
 
 	Syn_PatchInfo WofFuCmd1Patch, WofFuCmd2Patch, WofFuCmd3Patch, WofFuCmd4Patch;
 
@@ -174,6 +173,7 @@ void Ts_WOFFU::Execute()
 			_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_bExecutedWithoutStimulus = 1;
 		}
 
+		ComputeRunningTime(dCurrentElapsedTime);
 		_pSyn_Dut->_pSyn_DutTestResult->_z0FUWofResults.m_elapsedtime += dCurrentElapsedTime;
 	}
 	else	//Execute with stimulus.
@@ -190,6 +190,7 @@ void Ts_WOFFU::Execute()
 			_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
 		}
 
+		ComputeRunningTime(dCurrentElapsedTime);
 		_pSyn_Dut->_pSyn_DutTestResult->_z0FUWofResults.m_elapsedtime += dCurrentElapsedTime;
 	}
 
@@ -202,6 +203,7 @@ void Ts_WOFFU::Execute()
 			_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_bExecutedWithoutStimulus = 1;
 		}
 
+		ComputeRunningTime(dCurrentElapsedTime);
 		_pSyn_Dut->_pSyn_DutTestResult->_z1FUWofResults.m_elapsedtime += dCurrentElapsedTime;
 	}
 	else	//Execute with stimulus.
@@ -218,6 +220,7 @@ void Ts_WOFFU::Execute()
 			_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
 		}
 
+		ComputeRunningTime(dCurrentElapsedTime);
 		_pSyn_Dut->_pSyn_DutTestResult->_z1FUWofResults.m_elapsedtime += dCurrentElapsedTime;
 
 	}

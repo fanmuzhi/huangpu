@@ -146,7 +146,6 @@ void Ts_SCM_WOF::Execute()
 	}
 
 	double dCurrentElapsedTime(0);
-	ComputeRunningTime(dCurrentElapsedTime);
 
 	//Top SCM_WOF
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_z1SCM_wofInfo.m_bWithStimulus)  // WithStimulus
@@ -159,6 +158,7 @@ void Ts_SCM_WOF::Execute()
 			_pSyn_Dut->_pSyn_DutTestInfo->_z1SCM_wofInfo.m_bExecutedWithStimulus = true;
 		}
 
+		ComputeRunningTime(dCurrentElapsedTime);
 		_pSyn_Dut->_pSyn_DutTestResult->_z1SCM_wofResults.m_elapsedtime += dCurrentElapsedTime;
 
 		if (_pSyn_Dut->_pSyn_DutTestResult->_z1SCM_wofResults.m_bPass == 0)
@@ -175,6 +175,7 @@ void Ts_SCM_WOF::Execute()
 			_pSyn_Dut->_pSyn_DutTestResult->_z1SCM_wofResults.m_bPass = 1;
 		}
 
+		ComputeRunningTime(dCurrentElapsedTime);
 		_pSyn_Dut->_pSyn_DutTestResult->_z1SCM_wofResults.m_elapsedtime += dCurrentElapsedTime;
 	}
 
@@ -189,9 +190,9 @@ void Ts_SCM_WOF::Execute()
 			_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo.m_bExecutedWithStimulus = true;
 		}
 
+		ComputeRunningTime(dCurrentElapsedTime);
 		_pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults.m_elapsedtime += dCurrentElapsedTime;
 
-		
 		if (_pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults.m_bPass == 0)
 		{
 			_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
@@ -206,6 +207,7 @@ void Ts_SCM_WOF::Execute()
 			_pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults.m_bPass = 1;
 		}
 
+		ComputeRunningTime(dCurrentElapsedTime);
 		_pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults.m_elapsedtime += dCurrentElapsedTime;
 	}
 
