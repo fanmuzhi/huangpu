@@ -529,7 +529,7 @@ bool Ts_OTPWriteMainSector::GetMtAndConfigPartNumbers(MtAndConfigPnInfo* pInfo)
 
 bool Ts_OTPWriteMainSector::GetConfigFileArray(string sConfigFileName, uint8_t *pConfigFilerArray, int arrSize)
 {
-	const std::regex pattern("(\\d{1,3})-(\\d{1,6})-(\\d{1,2})r(\\d{1,2})");
+	const std::regex pattern("(\\d{3})-(\\d{6})-(\\d{2})r(\\d{1,2})");
 	std::smatch results;
 	if (std::regex_search(sConfigFileName, results, pattern))
 	{
