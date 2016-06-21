@@ -91,6 +91,28 @@ typedef unsigned char UINT8; // UINT8 is created to handle MPC04 data
 
 typedef struct
 {
+	int	_bExecuted;
+
+	int	_bInvalidateTAG_PRODUCT_ID;
+	int	_bInvalidateTAG_LNA;
+	int	_bInvalidateTAG_SNR;
+	int	_bInvalidateTAG_PGA_OOPR;
+	int	_bInvalidateTAG_FlexId;
+	int	_bInvalidateTAG_WOF_FD_ZONE0;
+	int	_bInvalidateTAG_WOF_FD_ZONE1;
+	int	_bInvalidateTAG_WOF_FU_ZONE0;
+	int	_bInvalidateTAG_WOF_FU_ZONE1;
+	int	_bInvalidateTAG_DutTempAdc;
+	int	_bInvalidateTAG_PGA_OOPP;
+	int	_bInvalidateTAG_SCM_WOF_ZONE0;
+	int	_bInvalidateTAG_SCM_WOF_ZONE1;
+	int	_bInvalidateTAG_PART_NUMBERS;
+	int	_bInvalidateTAG_LNA_PGA_GAINS;
+
+}InvalidateInfo;
+
+typedef struct
+{
 	int		_bExecuted;
 
 	uint8_t _BootSector0Array[BS0_SIZE];

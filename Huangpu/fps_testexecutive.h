@@ -79,7 +79,6 @@ public Q_SLOTS:
 	//Debug
 	void GetVersionForDutDump();
 	void ReadOTPForDutDump();
-	void Invalidate();
 
 	void CreateDebugModeDlg();
 	void StartDebugMode();

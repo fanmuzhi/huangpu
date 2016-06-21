@@ -29,7 +29,7 @@ Syn_DebugModeDlg::~Syn_DebugModeDlg()
 void Syn_DebugModeDlg::OKPushButtonClick()
 {
 	QString qsPassword = ui->DebugModeLineEdit->text();
-	if (QString("SYNABPDTest") == qsPassword)
+	if (QString("SYNABPDTEST") == qsPassword.toUpper())
 	{
 		emit sendPass();
 		this->close();

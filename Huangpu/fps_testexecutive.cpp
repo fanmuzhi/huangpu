@@ -65,9 +65,6 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	//OTP Dump
 	QObject::connect(ui.pushButtonGetVer, SIGNAL(clicked()), this, SLOT(GetVersionForDutDump()));
 	QObject::connect(ui.pushButtonReadOTP, SIGNAL(clicked()), this, SLOT(ReadOTPForDutDump()));
-
-	//Invalidate sensor
-	QObject::connect(ui.pushButtonInvalidate, SIGNAL(clicked()), this, SLOT(Invalidate()));
 }
 
 FPS_TestExecutive::~FPS_TestExecutive()
@@ -1169,63 +1166,6 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 	}
 
 	pSelectedSite->Close();
-}
-
-void FPS_TestExecutive::Invalidate()
-{
-	int iSiteCurrentIndex = ui.comboBox->currentIndex();
-	if (iSiteCurrentIndex<0)
-	{
-		cout << "Error:FPS_TestExecutive - iSiteCurrentIndex is less than 0!" << endl;
-		return;
-	}
-
-	size_t iSiteCounts = _ListOfSitePtr.size();
-	if (0 == iSiteCounts)
-	{
-		cout << "Error:FPS_TestExecutive - iSiteCounts is 0!" << endl;
-		return;
-	}
-
-	if (iSiteCurrentIndex > iSiteCounts)
-	{
-		cout << "Error:FPS_TestExecutive - iSiteCounts is less than iSiteCurrentIndex!" << endl;
-		return;
-	}
-
-	Syn_Site *pSelectedSite = _ListOfSitePtr[iSiteCurrentIndex];
-	if (NULL == pSelectedSite)
-	{
-		cout << "Error:FPS_TestExecutive - pSelectedSite is NULL!" << endl;
-		return;
-	}
-
-	QMessageBox::StandardButton ret = QMessageBox::warning(this, QString("Warning"), QString("The Selected Sensor will be invalidate,click \"Yes\" to continue,\"No\" to exit!"), QMessageBox::Yes | QMessageBox::No);
-	if (QMessageBox::Yes != ret)
-	{
-		return;
-	}
-
-	uint32_t rc = pSelectedSite->Open();
-	if (rc != 0)
-	{
-		QMessageBox::information(this, QString("Error"), QString::number(rc, 16).toUpper());
-		return;
-	}
-
-	Syn_DutTestResult *oDutTestResult = NULL;
-	rc = pSelectedSite->ExecuteTestStep("Invalidate");
-	pSelectedSite->GetTestResult(oDutTestResult);
-	if (rc != 0)
-	{
-		QMessageBox::information(this, QString("Error"), QString("Invalidate is failed,error code is ") + QString::number(rc, 16).toUpper());
-		return;
-	}
-
-	pSelectedSite->Close();
-
-	//OTP Check
-	ReadOTPForDutDump();
 }
 
 void FPS_TestExecutive::Display(uint8_t* pDst, unsigned int StartPos, unsigned int EndPos)

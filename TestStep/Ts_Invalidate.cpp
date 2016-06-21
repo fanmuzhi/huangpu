@@ -27,6 +27,63 @@ void Ts_Invalidate::SetUp()
 		return;
 	}
 
+	//Parse Args
+	_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_PRODUCT_ID = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_LNA = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_SNR = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_PGA_OOPR = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_FlexId = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_WOF_FD_ZONE0 = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_WOF_FD_ZONE1 = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_WOF_FU_ZONE0 = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_WOF_FU_ZONE1 = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_SCM_WOF_ZONE0 = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_SCM_WOF_ZONE1 = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_DutTempAdc = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_PGA_OOPP = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_PART_NUMBERS = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_LNA_PGA_GAINS = 0;
+
+	std::vector<std::string> listOfArgValue;
+	_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bExecuted = false;
+	ParseTestStepArgs(_strArgs, listOfArgValue);
+	size_t ilistSize = listOfArgValue.size();
+	if (ilistSize < 15)
+	{
+		for (size_t t = 1; t <= 15 - ilistSize; t++)
+			listOfArgValue.push_back(std::string(""));
+	}
+	if (0 != listOfArgValue[0].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_PRODUCT_ID = atoi(listOfArgValue[0].c_str());
+	if (0 != listOfArgValue[1].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_LNA = atoi(listOfArgValue[1].c_str());
+	if (0 != listOfArgValue[2].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_SNR = atoi(listOfArgValue[2].c_str());
+	if (0 != listOfArgValue[3].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_PGA_OOPR = atoi(listOfArgValue[3].c_str());
+	if (0 != listOfArgValue[4].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_FlexId = atoi(listOfArgValue[4].c_str());
+	if (0 != listOfArgValue[5].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_WOF_FD_ZONE0 = atoi(listOfArgValue[5].c_str());
+	if (0 != listOfArgValue[6].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_WOF_FD_ZONE1 = atoi(listOfArgValue[6].c_str());
+	if (0 != listOfArgValue[7].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_WOF_FU_ZONE0 = atoi(listOfArgValue[7].c_str());
+	if (0 != listOfArgValue[8].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_WOF_FU_ZONE1 = atoi(listOfArgValue[8].c_str());
+	if (0 != listOfArgValue[9].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_DutTempAdc = atoi(listOfArgValue[9].c_str());
+	if (0 != listOfArgValue[10].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_PGA_OOPP = atoi(listOfArgValue[10].c_str());
+	if (0 != listOfArgValue[9].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_SCM_WOF_ZONE0 = atoi(listOfArgValue[11].c_str());
+	if (0 != listOfArgValue[10].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_SCM_WOF_ZONE1 = atoi(listOfArgValue[12].c_str());
+	if (0 != listOfArgValue[11].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_PART_NUMBERS = atoi(listOfArgValue[13].c_str());
+	if (0 != listOfArgValue[12].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_LNA_PGA_GAINS = atoi(listOfArgValue[14].c_str());
+
 	//power on
 	PowerOff();
 	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
@@ -47,25 +104,42 @@ void Ts_Invalidate::SetUp()
 
 void Ts_Invalidate::Execute()
 {
-	uint32_t tag_array[NUM_EXT_TAGS] = {EXT_TAG_PRODUCT_ID,
-										EXT_TAG_LNA,
-										EXT_TAG_SNR,
-										EXT_TAG_PGA_OOPR,
-										EXT_TAG_FlexId,
-										EXT_TAG_WOF_FD_ZONE0,
-										EXT_TAG_WOF_FD_ZONE1,
-										EXT_TAG_WOF_FU_ZONE0,
-										EXT_TAG_WOF_FU_ZONE1,
-										EXT_TAG_DutTempAdc,
-										EXT_TAG_PGA_OOPP,
-										EXT_TAG_SCM_WOF_ZONE0,
-										EXT_TAG_SCM_WOF_ZONE1,
-										EXT_TAG_PART_NUMBERS,
-										EXT_TAG_LNA_PGA_GAINS };
+	std::vector<uint32_t> listOfTag;
 
-	for (int i = 0; i < NUM_EXT_TAGS; i++)
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_PRODUCT_ID)
+		listOfTag.push_back(EXT_TAG_PRODUCT_ID);
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_LNA)
+		listOfTag.push_back(EXT_TAG_LNA);
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_SNR)
+		listOfTag.push_back(EXT_TAG_SNR);
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_PGA_OOPR)
+		listOfTag.push_back(EXT_TAG_PGA_OOPR);
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_FlexId)
+		listOfTag.push_back(EXT_TAG_FlexId);
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_WOF_FD_ZONE0)
+		listOfTag.push_back(EXT_TAG_WOF_FD_ZONE0);
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_WOF_FD_ZONE1)
+		listOfTag.push_back(EXT_TAG_WOF_FD_ZONE1);
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_WOF_FU_ZONE0)
+		listOfTag.push_back(EXT_TAG_WOF_FU_ZONE0);
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_WOF_FU_ZONE1)
+		listOfTag.push_back(EXT_TAG_WOF_FU_ZONE1);
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_DutTempAdc)
+		listOfTag.push_back(EXT_TAG_DutTempAdc);
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_PGA_OOPP)
+		listOfTag.push_back(EXT_TAG_PGA_OOPP);
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_SCM_WOF_ZONE0)
+		listOfTag.push_back(EXT_TAG_SCM_WOF_ZONE0);
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_SCM_WOF_ZONE1)
+		listOfTag.push_back(EXT_TAG_SCM_WOF_ZONE1);
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_PART_NUMBERS)
+		listOfTag.push_back(EXT_TAG_PART_NUMBERS);
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bInvalidateTAG_LNA_PGA_GAINS)
+		listOfTag.push_back(EXT_TAG_LNA_PGA_GAINS);
+
+	for (int i = 1; i <= listOfTag.size(); i++)
 	{
-		Invalidate(tag_array[i]);
+		Invalidate(listOfTag[i-1]);
 	}
 }
 
