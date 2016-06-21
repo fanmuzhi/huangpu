@@ -145,6 +145,7 @@ void Ts_Invalidate::Execute()
 
 void Ts_Invalidate::ProcessData()
 {
+	_pSyn_Dut->_pSyn_DutTestInfo->_invalidateInfo._bExecuted = true;
 }
 
 void Ts_Invalidate::CleanUp()
