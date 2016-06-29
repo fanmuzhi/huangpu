@@ -446,7 +446,7 @@ void Syn_SPCCtrl::FpPokeRegister(uint32_t nHwRegAddr, uint32_t nData)
 	//poke the register
 	this->FpWrite(1,VCSFW_CMD::POKE,pDataWrite,9);
 	this->FpRead(1, 0xFF, pDst, 2);
-	//this->FpWaitDeviceReady();
+	this->FpWaitDeviceReady();
 }
 
 //void Syn_SPCCtrl::FpPeekRegister(uint32_t nHwRegAddr, uint32_t& nData)
