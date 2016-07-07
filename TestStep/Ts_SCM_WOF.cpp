@@ -315,12 +315,12 @@ void Ts_SCM_WOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_WofTest
 		if (nTgrIdex_withoutFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
 		{
 			pResults.m_bPass = 0;
-			return;
+			continue;
 		}
 		if (nTgrIdex_withFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
 		{
 			pResults.m_bPass = 0;
-			return;
+			continue;
 		}
 
 		int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
