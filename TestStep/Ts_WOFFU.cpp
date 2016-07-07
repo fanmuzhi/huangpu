@@ -501,7 +501,8 @@ int Ts_WOFFU::CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf)
 
 	//Find the first occurence of 1.
 	int nTgrIdx = 3000;
-	int iExpected = pTriggerBuf[nNumThresholds-1];
+	//int iExpected = pTriggerBuf[nNumThresholds-1];
+	int iExpected = 0;
 	for (i = nNumThresholds-1; i>=0; i--)
 	{
 		if (((pTriggerBuf[i] & 0x01) != iExpected) && (nTgrIdx == 3000))

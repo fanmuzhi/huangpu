@@ -119,7 +119,44 @@ void Ts_OTPWriteBootSector::Execute()
 	otpBs1[33] = otpBs1[33+8] = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number[2];
 	otpBs1[32] = otpBs1[32+8] = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number[3];
 
+	//OSC trim
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_OscTrimInfo.m_bExecuted)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestResult->_OscTrimResults.m_bPass)
+		{
+			uint8_t trimVal1 = ((_pSyn_Dut->_pSyn_DutTestResult->_OscTrimResults.m_nOscTrim & 0xFFFFF) >> 8) & 0xFF;
+			uint8_t trimVal2 = ((_pSyn_Dut->_pSyn_DutTestResult->_OscTrimResults.m_nOscTrim & 0xFFFFF)) & 0xFF;
+			//uint8_t arSiOscTrimValid[2]	= {0x0, 0x10};
+			otpBs0[20] = otpBs0[28]	= trimVal1;
+			otpBs0[21] = otpBs0[29]	= trimVal2;
+			otpBs0[22] = otpBs0[30]	= 0x0;
+			otpBs0[23] = otpBs0[31]	= 0x10;
+		}
+	}
 
+	//TC trim
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_OscTrimInfo.m_bExecuted)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestResult->_OscTrimResults.m_bPass)
+		{
+			otpBs0[19] |= 0x20;
+			otpBs0[27] |= 0x20;
+		}
+	}
+
+	//slow OSC trim
+	if (_pSyn_Dut->_pSyn_DutTestInfo->_SlowOscInfo.m_bExecuted)
+	{
+		if (_pSyn_Dut->_pSyn_DutTestResult->_SlowOscResults.m_bPass)
+		{
+			uint8_t hvTrimValue1 =  ((_pSyn_Dut->_pSyn_DutTestResult->_SlowOscResults.m_nTrim << 7) | (_pSyn_Dut->_pSyn_DutTestResult->_SlowOscResults.m_nBias << 4));
+			uint8_t hvTrimValue2 =  (0x0F & (_pSyn_Dut->_pSyn_DutTestResult->_SlowOscResults.m_nTrim >> 1)) | (0x80 | 0x40);
+			otpBs0[18] = otpBs0[26] = otpBs0[18] | hvTrimValue1;
+			otpBs0[19] = otpBs0[27] = otpBs0[19] | hvTrimValue2;
+		}
+	}
+
+	//write to boot secotr
 	_pSyn_DutCtrl->FpOtpRomWrite(BOOT_SEC, 0, otpBs0, BS0_SIZE);
 	_pSyn_DutCtrl->FpOtpRomWrite(BOOT_SEC, 1, otpBs1, BS0_SIZE);
 
