@@ -470,7 +470,7 @@ void Ts_WOFFD::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Resul
 		}
 
 		int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
-		if (nDelta > bestDelta)
+		if (nDelta >= bestDelta)
 		{
 			bestDelta = nDelta;
 			Results.m_nGain = Results.m_nGainStart + (Results.m_nGainInc * nGainIdx);
@@ -495,11 +495,11 @@ int Ts_WOFFD::CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf)
 	int i;
 
 	//Find the first occurence of 1.
-	int nTgrIdx = 3000;
+	int nTgrIdx = nNumThresholds;
 	int iExpected = pTriggerBuf[0];
 	for (i = 0; i<nNumThresholds; i++)
 	{
-		if (((pTriggerBuf[i] & 0x01) != iExpected) && (nTgrIdx == 3000))
+		if (((pTriggerBuf[i] & 0x01) != iExpected) && (nTgrIdx == nNumThresholds))
 		{
 			nTgrIdx = i;
 			break;
