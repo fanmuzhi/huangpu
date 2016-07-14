@@ -246,7 +246,7 @@ void Syn_LocalSettingsDlg::ConfirmSite()
 
 void Syn_LocalSettingsDlg::SelectConfigFile()
 {
-	QString strConfigFilePath = QFileDialog::getOpenFileName(this, "Select Config File", "./", "xml file(*.xml)");
+	QString strConfigFilePath = QFileDialog::getOpenFileName(this, "Select Config File", "", "xml file(*.xml)");
 	if (QString("") != strConfigFilePath)
 	{
 		QFile TempFile(strConfigFilePath);
