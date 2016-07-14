@@ -268,20 +268,6 @@ void Ts_SCM_WOF::CleanUp()
 	PowerOff();
 }
 
-int Ts_SCM_WOF::CalcScmWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf)
-{
-	int i;
-
-	//Find the first occurence of 1.
-	int nTgrIdx = 3000;
-	for (i=0; i<nNumThresholds; i++)
-	{
-		if (((pTriggerBuf[i] & 0x01) == 0) && (nTgrIdx == 3000))
-			nTgrIdx = i;
-	}
-	return nTgrIdx;
-}
-
 
 void Ts_SCM_WOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_WofTestResults& pResults)
 {
@@ -519,4 +505,18 @@ bool Ts_SCM_WOF::ExecuteTopSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults&
 
 	PowerOff();
 	return true;
+}
+
+int Ts_SCM_WOF::CalcScmWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf)
+{
+	int i;
+
+	//Find the first occurence of 1.
+	int nTgrIdx = nNumThresholds;
+	for (i=0; i<nNumThresholds; i++)
+	{
+		if (((pTriggerBuf[i] & 0x01) == 0) && (nTgrIdx == nNumThresholds))
+			nTgrIdx = i;
+	}
+	return nTgrIdx;
 }
