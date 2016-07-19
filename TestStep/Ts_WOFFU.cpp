@@ -454,7 +454,7 @@ void Ts_WOFFU::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Resul
 		{
 			//if any Trigger value out of limition, fail
 			Results.m_bPass = 0;
-			continue;
+			return;
 		}
 
 		/*if (NULL != pFile)
@@ -466,7 +466,7 @@ void Ts_WOFFU::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Resul
 		{
 			//if any Trigger value out of limition, fail
 			Results.m_bPass = 0;
-			continue;
+			return;
 		}
 
 		int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;

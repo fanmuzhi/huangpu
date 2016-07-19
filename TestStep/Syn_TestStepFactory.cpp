@@ -36,6 +36,8 @@
 #include "Ts_HuaweiImageQualityTest.h"
 #include "Ts_OscTrim.h"
 #include "Ts_SlowOscTrim.h"
+#include "Ts_Viper_SCMWOF.h"
+#include "Ts_ViperWOF.h"
 
 Syn_TestStepFactory::Syn_TestStepFactory()
 {
@@ -160,6 +162,22 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	{
 		opTestStepInstance = new Ts_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}*/
+	else if (std::string("Viper_WOF_WithoutStimulus") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_ViperWOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("Viper_WOF_WithStimulus") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_ViperWOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("Viper_SCM_WOFWithoutStimulus") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_Viper_SCMWOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("Viper_SCM_WOFWithStimulus") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_Viper_SCMWOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
 	else if (std::string("WOF_FD_WithoutStimulus") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_WOFFD(strTestStepName, strTestArgs, pDutCtrl, pDut);

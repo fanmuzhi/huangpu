@@ -269,66 +269,6 @@ void Ts_SCM_WOF::CleanUp()
 }
 
 
-void Ts_SCM_WOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_WofTestResults& pResults)
-{
-	std::vector<int>	scmWofValWithoutFinger, scmWofValWithFinger;
-	int	nGainIdx;
-
-	pResults.m_bPass = 0;				//Assume fail.
-	pResults.m_nTriggerWithoutStim = 0;
-	pResults.m_nTriggerWithStim = 0;
-	pResults.m_nGain = 0;
-
-	//Find the gain that produced the best SCM WOF trigger data (with stimulus).
-	pResults.m_nGain = pResults.m_nGainStart;
-	for (nGainIdx = 0; (nGainIdx < pResults.m_nNumGains) && (pResults.m_bPass == 0); nGainIdx++)
-	{
-		//If we got a good trigger at this gain (without stimulus).
-		int temp = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithoutStim[6 + (nGainIdx * pResults.m_nNumThresholds)]);
-		scmWofValWithoutFinger.push_back(temp);
-
-		temp = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithStim[6 + (nGainIdx * pResults.m_nNumThresholds)]);
-		scmWofValWithFinger.push_back(temp);
-
-	}
-
-	int bestDelta = 0;
-	for (nGainIdx = 0; (nGainIdx < pResults.m_nNumGains) && (pResults.m_bPass == 0); nGainIdx++)
-	{
-		int nTgrIdex_withoutFinger = scmWofValWithoutFinger[nGainIdx];
-		int nTgrIdex_withFinger = scmWofValWithFinger[nGainIdx];
-
-		if (nTgrIdex_withoutFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
-		{
-			pResults.m_bPass = 0;
-			continue;
-		}
-		if (nTgrIdex_withFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
-		{
-			pResults.m_bPass = 0;
-			continue;
-		}
-
-		int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
-		if (nDelta >= bestDelta)
-		{
-			bestDelta = nDelta;
-			pResults.m_nGain = pResults.m_nGainStart + (pResults.m_nGainInc * nGainIdx);
-			pResults.m_nTriggerWithoutStim = nTgrIdex_withoutFinger;
-			pResults.m_nTriggerWithStim = nTgrIdex_withFinger;
-		}
-	}
-	if (bestDelta < pInfo.m_nDelta_100)
-	{
-		pResults.m_bPass = 0;
-	}
-	else
-	{
-		pResults.m_bPass = 1;
-	}
-}
-
-
 bool Ts_SCM_WOF::ExecuteBottomSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults& results)
 {	
 	Syn_PatchInfo ScmWofPatchInfo, Cmd1ScmWofPlotInfo, Cmd2ScmWofBinInfo, Cmd3SweepTagInfo;// WofCmd2Info;
@@ -506,6 +446,67 @@ bool Ts_SCM_WOF::ExecuteTopSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults&
 	PowerOff();
 	return true;
 }
+
+
+void Ts_SCM_WOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_WofTestResults& pResults)
+{
+	std::vector<int>	scmWofValWithoutFinger, scmWofValWithFinger;
+	int	nGainIdx;
+
+	pResults.m_bPass = 0;				//Assume fail.
+	pResults.m_nTriggerWithoutStim = 0;
+	pResults.m_nTriggerWithStim = 0;
+	pResults.m_nGain = 0;
+
+	//Find the gain that produced the best SCM WOF trigger data (with stimulus).
+	pResults.m_nGain = pResults.m_nGainStart;
+	for (nGainIdx = 0; (nGainIdx < pResults.m_nNumGains) && (pResults.m_bPass == 0); nGainIdx++)
+	{
+		//If we got a good trigger at this gain (without stimulus).
+		int temp = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithoutStim[6 + (nGainIdx * pResults.m_nNumThresholds)]);
+		scmWofValWithoutFinger.push_back(temp);
+
+		temp = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithStim[6 + (nGainIdx * pResults.m_nNumThresholds)]);
+		scmWofValWithFinger.push_back(temp);
+
+	}
+
+	int bestDelta = 0;
+	for (nGainIdx = 0; (nGainIdx < pResults.m_nNumGains) && (pResults.m_bPass == 0); nGainIdx++)
+	{
+		int nTgrIdex_withoutFinger = scmWofValWithoutFinger[nGainIdx];
+		int nTgrIdex_withFinger = scmWofValWithFinger[nGainIdx];
+
+		if (nTgrIdex_withoutFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
+		{
+			pResults.m_bPass = 0;
+			return;
+		}
+		if (nTgrIdex_withFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
+		{
+			pResults.m_bPass = 0;
+			return;
+		}
+
+		int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
+		if (nDelta >= bestDelta)
+		{
+			bestDelta = nDelta;
+			pResults.m_nGain = pResults.m_nGainStart + (pResults.m_nGainInc * nGainIdx);
+			pResults.m_nTriggerWithoutStim = nTgrIdex_withoutFinger;
+			pResults.m_nTriggerWithStim = nTgrIdex_withFinger;
+		}
+	}
+	if (bestDelta < pInfo.m_nDelta_100)
+	{
+		pResults.m_bPass = 0;
+	}
+	else
+	{
+		pResults.m_bPass = 1;
+	}
+}
+
 
 int Ts_SCM_WOF::CalcScmWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf)
 {

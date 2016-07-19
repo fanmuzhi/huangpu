@@ -460,13 +460,13 @@ void Ts_WOFFD::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Resul
 		{
 			//if any Trigger value out of limition, fail
 			Results.m_bPass = 0;
-			continue;
+			return;
 		}
 		if (nTgrIdex_withFinger >= Info.m_nMaxTriggerThreshold || nTgrIdex_withFinger < Info.m_nMinTriggerThreshold)
 		{
 			//if any Trigger value out of limition, fail
 			Results.m_bPass = 0;
-			continue;
+			return;
 		}
 
 		int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;

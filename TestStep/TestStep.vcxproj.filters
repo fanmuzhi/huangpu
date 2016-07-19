@@ -130,6 +130,12 @@
     <ClCompile Include="Ts_WOFFU.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Ts_ViperWOF.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ts_Viper_SCMWOF.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Syn_FingerprintTest.h">
@@ -262,6 +268,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ts_WOFFU.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_ViperWOF.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_Viper_SCMWOF.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
