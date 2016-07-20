@@ -14,11 +14,10 @@ public:
 
 	virtual void CleanUp();
 
-	bool ExecuteZone0SCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults& results);
+	bool ExecuteZone0SCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults& results, bool UseConfigVotage);
 
 	void SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_WofTestResults& pResults);
 
-	int CalcScmWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf);
-
+	bool CalcScmWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf, int &oTgrIdx);
 };
 

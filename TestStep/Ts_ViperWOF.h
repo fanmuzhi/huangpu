@@ -15,12 +15,10 @@ public:
 
 	virtual void	CleanUp();
 
-	bool GetZ0WofData(WofTestInfo &wofInfo, WofTestResults &wofResults, Syn_PatchInfo &WofCmd1Patch, Syn_PatchInfo &WofCmd2Patch);
-
-	//bool GetZ1WofData(WofTestInfo &wofInfo, WofTestResults &wofResults, Syn_PatchInfo &WofCmd3Patch, Syn_PatchInfo &WofCmd4Patch);
+	bool GetZ0WofData(WofTestInfo &wofInfo, WofTestResults &wofResults, bool UseConfigVoltage);
 
 	void SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Results);
 
-	int CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf);
+	bool CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf, int &oTgrIdx);
 };
 

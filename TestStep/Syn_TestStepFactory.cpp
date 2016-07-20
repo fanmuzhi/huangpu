@@ -171,7 +171,7 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 			//Metallica WOF
 			opTestStepInstance = new Ts_WOFFD(strTestStepName, strTestArgs, pDutCtrl, pDut);
 		else
-			return;
+			return false;
 	}
 	else if (std::string("WOF_FU_WithoutStimulus") == strTestStepName || std::string("WOF_FU_WithStimulus") == strTestStepName)
 	{
@@ -191,7 +191,7 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 			//Metallica WOF
 			opTestStepInstance = new Ts_SCM_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
 		else
-			return;
+			return false;
 	}
 	else if (std::string("ReadDutAdc") == strTestStepName)
 	{

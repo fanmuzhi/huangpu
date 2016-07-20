@@ -677,7 +677,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	{
 		if (DutResults->_z1FDWofResults.m_bPass != 0)	//If passed.
 		{
-			fprintf(pFile, "\nWOF Zone1  FingerDown,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_z1FDWofResults.m_elapsedtime);
+			fprintf(pFile, "\nWOF Zone1 FingerDown,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_z1FDWofResults.m_elapsedtime);
 			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_z1FDWofResults.m_nTriggerWithoutStim,
 				DutResults->_z1FDWofResults.m_nTriggerWithStim,
 					DutResults->_z1FDWofResults.m_nGain,
@@ -714,7 +714,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	{
 		if (_pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults.m_bPass != 0)	//If passed.
 		{
-			fprintf(pFile, "\nSCM Bottom WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_z0SCM_wofResults.m_elapsedtime);
+			fprintf(pFile, "\nSCM Zone0 WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_z0SCM_wofResults.m_elapsedtime);
 			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_z0SCM_wofResults.m_nTriggerWithoutStim,
 					DutResults->_z0SCM_wofResults.m_nTriggerWithStim,
 					DutResults->_z0SCM_wofResults.m_nGain,
@@ -722,7 +722,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 		}
 		else	//Failed.
 		{
-			fprintf(pFile, "\nSCM Bottom WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Fail", DutResults->_z0SCM_wofResults.m_elapsedtime);
+			fprintf(pFile, "\nSCM Zone0 WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Fail", DutResults->_z0SCM_wofResults.m_elapsedtime);
 			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_z0SCM_wofResults.m_nTriggerWithoutStim,
 					DutResults->_z0SCM_wofResults.m_nTriggerWithStim,
 					DutResults->_z0SCM_wofResults.m_nGain,
@@ -734,7 +734,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	{
 		if (DutResults->_z1SCM_wofResults.m_bPass != 0)	//If passed.
 		{
-			fprintf(pFile, "\nSCM Top WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_z1SCM_wofResults.m_elapsedtime);
+			fprintf(pFile, "\nSCM Zone1 WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Pass", DutResults->_z1SCM_wofResults.m_elapsedtime);
 			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_z1SCM_wofResults.m_nTriggerWithoutStim,
 					DutResults->_z1SCM_wofResults.m_nTriggerWithStim,
 					DutResults->_z1SCM_wofResults.m_nGain,
@@ -742,7 +742,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 		}
 		else	//Failed.
 		{
-			fprintf(pFile, "\nSCM Top WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Fail", DutResults->_z1SCM_wofResults.m_elapsedtime);
+			fprintf(pFile, "\nSCM Zone1 WakeOnFinger Test,%s,%.0f ms,NoFinger,WithFinger,Gain,Delta", "Fail", DutResults->_z1SCM_wofResults.m_elapsedtime);
 			fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_z1SCM_wofResults.m_nTriggerWithoutStim,
 					DutResults->_z1SCM_wofResults.m_nTriggerWithStim,
 					DutResults->_z1SCM_wofResults.m_nGain,
