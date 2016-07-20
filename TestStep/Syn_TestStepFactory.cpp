@@ -162,49 +162,36 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	{
 		opTestStepInstance = new Ts_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}*/
-	else if (std::string("Viper_WOF_WithoutStimulus") == strTestStepName)
+	else if (std::string("WOF_FD_WithoutStimulus") == strTestStepName || std::string("WOF_FD_WithStimulus") == strTestStepName)
 	{
-		opTestStepInstance = new Ts_ViperWOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
+		if (pDut->_eProjectType == ProjectType::Viper1 || pDut->_eProjectType == ProjectType::Viper2)
+			//Viper WOF
+			opTestStepInstance = new Ts_ViperWOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
+		else if (pDut->_eProjectType == ProjectType::Metallica)
+			//Metallica WOF
+			opTestStepInstance = new Ts_WOFFD(strTestStepName, strTestArgs, pDutCtrl, pDut);
+		else
+			return;
 	}
-	else if (std::string("Viper_WOF_WithStimulus") == strTestStepName)
+	else if (std::string("WOF_FU_WithoutStimulus") == strTestStepName || std::string("WOF_FU_WithStimulus") == strTestStepName)
 	{
-		opTestStepInstance = new Ts_ViperWOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
-	}
-	else if (std::string("Viper_SCM_WOFWithoutStimulus") == strTestStepName)
-	{
-		opTestStepInstance = new Ts_Viper_SCMWOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
-	}
-	else if (std::string("Viper_SCM_WOFWithStimulus") == strTestStepName)
-	{
-		opTestStepInstance = new Ts_Viper_SCMWOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
-	}
-	else if (std::string("WOF_FD_WithoutStimulus") == strTestStepName)
-	{
-		opTestStepInstance = new Ts_WOFFD(strTestStepName, strTestArgs, pDutCtrl, pDut);
-	}
-	else if (std::string("WOF_FD_WithStimulus") == strTestStepName)
-	{
-		opTestStepInstance = new Ts_WOFFD(strTestStepName, strTestArgs, pDutCtrl, pDut);
-	}
-	else if (std::string("WOF_FU_WithoutStimulus") == strTestStepName)
-	{
-		opTestStepInstance = new Ts_WOFFU(strTestStepName, strTestArgs, pDutCtrl, pDut);
-	}
-	else if (std::string("WOF_FU_WithStimulus") == strTestStepName)
-	{
+		//Metallica Only Now
 		opTestStepInstance = new Ts_WOFFU(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else if (std::string("WOF-LowPower") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_WOFLowPower(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
-	else if (std::string("SCM_WOFWithoutStimulus") == strTestStepName)
+	else if (std::string("SCM_WOFWithoutStimulus") == strTestStepName || std::string("SCM_WOFWithStimulus") == strTestStepName)
 	{
-		opTestStepInstance = new Ts_SCM_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
-	}
-	else if (std::string("SCM_WOFWithStimulus") == strTestStepName)
-	{
-		opTestStepInstance = new Ts_SCM_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
+		if (pDut->_eProjectType == ProjectType::Viper1 || pDut->_eProjectType == ProjectType::Viper2)
+			//Viper SCM WOF
+			opTestStepInstance = new Ts_Viper_SCMWOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
+		else if (pDut->_eProjectType == ProjectType::Metallica)
+			//Metallica WOF
+			opTestStepInstance = new Ts_SCM_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
+		else
+			return;
 	}
 	else if (std::string("ReadDutAdc") == strTestStepName)
 	{
