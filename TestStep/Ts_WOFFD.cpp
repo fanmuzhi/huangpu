@@ -449,6 +449,7 @@ void Ts_WOFFD::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Resul
 		wofValWithFinger.push_back(temp);
 	}
 
+	LOG(DEBUG) << "WOFFD:";
 	int bestDelta = 0;
 	for (nGainIdx = 0; (nGainIdx < Results.m_nNumGains) && (Results.m_bPass == 0); nGainIdx++)
 	{
@@ -456,6 +457,7 @@ void Ts_WOFFD::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Resul
 
 		int nTgrIdex_withoutFinger = wofValWithoutFinger[nGainIdx];
 		int nTgrIdex_withFinger = wofValWithFinger[nGainIdx];
+		LOG(DEBUG) << "Gain:" << Results.m_nGainStart + (Results.m_nGainInc * nGainIdx) << ",NoFinger:" << nTgrIdex_withoutFinger << ",WithFinger:" << nTgrIdex_withFinger;
 		if (nTgrIdex_withoutFinger >= Info.m_nMaxTriggerThreshold || nTgrIdex_withoutFinger < Info.m_nMinTriggerThreshold)
 		{
 			//if any Trigger value out of limition, fail
@@ -479,6 +481,7 @@ void Ts_WOFFD::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Resul
 		}
 	}
 
+	LOG(DEBUG) << "bestDelta:" << bestDelta;
 	if (bestDelta < Info.m_nDelta_100)
 	{
 		Results.m_bPass = 0;

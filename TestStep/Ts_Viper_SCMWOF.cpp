@@ -313,6 +313,7 @@ void Ts_Viper_SCMWOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_Wo
 		throw(ex); return;
 	}
 
+	LOG(DEBUG) << "Viper SCMWOF:";
 	for (int nGainIdx = 0; nGainIdx < pResults.m_nNumGains; nGainIdx++)
 	{
 		int nTgrIdex_withoutFinger(0);
@@ -322,6 +323,7 @@ void Ts_Viper_SCMWOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_Wo
 		pResults.m_nGain = pResults.m_nGainStart + (pResults.m_nGainInc * nGainIdx);
 		pResults.m_nTriggerWithoutStim = nTgrIdex_withoutFinger;
 		pResults.m_nTriggerWithStim = nTgrIdex_withFinger;
+		LOG(DEBUG) << "Gain:" << pResults.m_nGain << ",NoFinger:" << nTgrIdex_withoutFinger << ",WithFinger:" << nTgrIdex_withFinger;
 		if (!rc1 || !rc2)
 			continue;
 		if (nTgrIdex_withoutFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
@@ -363,6 +365,7 @@ void Ts_Viper_SCMWOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_Wo
 	int nTgrIdex_withFinger(0);
 	bool rc1 = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithoutStim[6 + (1 * pResults.m_nNumThresholds)], nTgrIdex_withoutFinger);
 	bool rc2 = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithStim[6 + (1 * pResults.m_nNumThresholds)], nTgrIdex_withFinger);
+	LOG(DEBUG) << "(3.6V) - NoFinger:" << nTgrIdex_withoutFinger << ",WithFinger:" << nTgrIdex_withFinger;
 	if (!rc1 || !rc2)
 		return;
 	if (nTgrIdex_withoutFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)

@@ -1,5 +1,7 @@
 #include "Syn_Viper2Module.h"
 
+//third-party
+#include "easylogging++.h"
 
 Syn_Viper2Module::Syn_Viper2Module()
 {

@@ -13,8 +13,7 @@
 //#include "afx.h"
 
 //third-party
-//#include "easylogging++.h"
-
+#include "easylogging++.h"
 
 bool Syn_SPCCtrl::_bDLLInitialized = false;
 

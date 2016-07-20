@@ -10,6 +10,9 @@
 //windows
 #include <windows.h>
 
+//third-party
+#include "easylogging++.h"
+
 class Syn_FingerprintTest :public Syn_TestStep
 {
 

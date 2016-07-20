@@ -471,11 +471,14 @@ void Ts_SCM_WOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_WofTest
 
 	}
 
+	LOG(DEBUG) << "SCMWOF:";
 	int bestDelta = 0;
 	for (nGainIdx = 0; (nGainIdx < pResults.m_nNumGains) && (pResults.m_bPass == 0); nGainIdx++)
 	{
 		int nTgrIdex_withoutFinger = scmWofValWithoutFinger[nGainIdx];
 		int nTgrIdex_withFinger = scmWofValWithFinger[nGainIdx];
+
+		LOG(DEBUG) << "Gain:" << pResults.m_nGainStart + (pResults.m_nGainInc * nGainIdx) << ",NoFinger:" << nTgrIdex_withoutFinger << ",WithFinger:" << nTgrIdex_withFinger;
 
 		if (nTgrIdex_withoutFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
 		{
@@ -497,6 +500,8 @@ void Ts_SCM_WOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_WofTest
 			pResults.m_nTriggerWithStim = nTgrIdex_withFinger;
 		}
 	}
+
+	LOG(DEBUG) << "bestDelta:" << bestDelta;
 	if (bestDelta < pInfo.m_nDelta_100)
 	{
 		pResults.m_bPass = 0;

@@ -2,6 +2,9 @@
 #include "Syn_MetallicaModule.h"
 #include <vector>
 
+//third-party
+#include "easylogging++.h"
+
 Syn_MetallicaModule::Syn_MetallicaModule()
 {
 }
@@ -32,7 +35,7 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 	std::vector<int8_t> vPixelError;
 	std::vector<int8_t> vPGAOffsets;
 	std::vector<int8_t> vPGAFineOffsets;
-	int8_t* pTmp;
+	//int8_t* pTmp;
 	int8_t* pPrtFileOffsets;
 	int8_t* pOtpOffsets;
     int32_t min_corr_limit = (int32_t) (-128 / nConfigRatio);

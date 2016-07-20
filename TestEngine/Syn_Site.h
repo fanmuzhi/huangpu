@@ -14,7 +14,6 @@
 //stat
 #include <sys/stat.h>
 
-
 class Syn_Site
 {
 

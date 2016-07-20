@@ -20,10 +20,10 @@
 //#include <thread>
 #include <regex>
 
-//#define ELPP_STL_LOGGING
-//#define ELPP_THREAD_SAFE
-//#include "easylogging++.h"
-//INITIALIZE_EASYLOGGINGPP
+#define ELPP_STL_LOGGING
+#define ELPP_THREAD_SAFE
+#include "easylogging++.h"
+INITIALIZE_EASYLOGGINGPP
 
 Syn_Site::Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath)
 :_pSyn_Dut(NULL)
