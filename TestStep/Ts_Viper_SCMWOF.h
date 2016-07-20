@@ -16,7 +16,7 @@ public:
 
 	bool ExecuteZone0SCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults& results, bool UseConfigVotage);
 
-	void SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_WofTestResults& pResults);
+	void SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_WofTestResults& pResults, bool UseConfigVotage);
 
 	bool CalcScmWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf, int &oTgrIdx);
 };

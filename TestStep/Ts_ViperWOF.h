@@ -17,7 +17,7 @@ public:
 
 	bool GetZ0WofData(WofTestInfo &wofInfo, WofTestResults &wofResults, bool UseConfigVoltage);
 
-	void SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Results);
+	void SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Results, bool useConfigVolts);
 
 	bool CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf, int &oTgrIdx);
 };

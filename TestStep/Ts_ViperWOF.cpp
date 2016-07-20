@@ -141,7 +141,7 @@ void Ts_ViperWOF::Execute()
 	//zone0 bottom
 	if (0 == _pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_bWithStimulus)
 	{
-		//zone0 finger down
+		//zone0 without stimulus
 		if (GetZ0WofData(_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults, false))
 		{
 			_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_bExecutedWithoutStimulus = 1;
@@ -152,13 +152,18 @@ void Ts_ViperWOF::Execute()
 	}
 	else	//Execute with stimulus.
 	{
-		//zone0 finger down
+		//zone0 with stimulus
 		if (GetZ0WofData(_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults, false))
 		{
 			_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_bExecutedWithStimulus = 1;
-			SYN_WofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults);
+			SYN_WofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults, false);
+			if (_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_bPass == 0)
+			{
+				//zone0 finger down with 3.6V
+				GetZ0WofData(_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults, true);
+				SYN_WofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults, true);
+			}
 		}
-
 		if (_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_bPass == 0)
 		{
 			_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
@@ -297,13 +302,13 @@ bool Ts_ViperWOF::GetZ0WofData(WofTestInfo &wofInfo, WofTestResults &wofResults,
 	return true;
 }
 
-void Ts_ViperWOF::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Results)
+void Ts_ViperWOF::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Results, bool useConfigVolts)
 {
 	Results.m_bPass = 0;				//Assume fail.
 	Results.m_nTriggerWithoutStim = 0;
 	Results.m_nTriggerWithStim = 0;
 	Results.m_nGain = 0;
-	int TempGain200(0), TempTriggerWithoutStimGain200(0), TempTriggerWithStimGain200(0);
+	//int TempGain200(0), TempTriggerWithoutStimGain200(0), TempTriggerWithStimGain200(0);
 
 	if (Results.m_nNumGains < 2)
 	{
@@ -312,60 +317,56 @@ void Ts_ViperWOF::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Re
 		throw(ex); return;
 	}
 
-	LOG(DEBUG) << "Viper WOF:";
-	//Gain100 and Gain200
-	for (int nGainIdx = 0; (nGainIdx < Results.m_nNumGains) && (Results.m_bPass == 0); nGainIdx++)
+	if (!useConfigVolts)
 	{
-		//Calc the gain.
-		int nTgrIdex_withoutFinger(0), nTgrIdex_withFinger(0);
-		bool rc1 = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithoutStim[6 + (nGainIdx * Results.m_nNumThresholds)], nTgrIdex_withoutFinger);
-		bool rc2 = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithStim[6 + (nGainIdx * Results.m_nNumThresholds)], nTgrIdex_withFinger);
-		Results.m_nGain = Results.m_nGainStart + (Results.m_nGainInc * nGainIdx);
-		Results.m_nTriggerWithoutStim = nTgrIdex_withoutFinger;
-		Results.m_nTriggerWithStim = nTgrIdex_withFinger;
-		LOG(DEBUG) << "Gain:" << Results.m_nGain << ",NoFinger:" << nTgrIdex_withoutFinger << ",WithFinger:" << nTgrIdex_withFinger;
-		if (!rc1 || !rc2)
-			continue;
-		if (nTgrIdex_withoutFinger >= Info.m_nMaxTriggerThreshold || nTgrIdex_withoutFinger < Info.m_nMinTriggerThreshold)
-			continue;
-		if (nTgrIdex_withFinger >= Info.m_nMaxTriggerThreshold || nTgrIdex_withFinger < Info.m_nMinTriggerThreshold)
-			continue;
-
-		if (0 == nGainIdx)
+		//Gain100 and Gain200
+		for (int nGainIdx = 0; (nGainIdx < Results.m_nNumGains) && (Results.m_bPass == 0); nGainIdx++)
 		{
-			//Gain100
-			int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
-			if (nDelta > Info.m_nDelta_100)
+			//Calc the gain.
+			int nTgrIdex_withoutFinger(0), nTgrIdex_withFinger(0);
+			bool rc1 = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithoutStim[6 + (nGainIdx * Results.m_nNumThresholds)], nTgrIdex_withoutFinger);
+			bool rc2 = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithStim[6 + (nGainIdx * Results.m_nNumThresholds)], nTgrIdex_withFinger);
+			Results.m_nGain = Results.m_nGainStart + (Results.m_nGainInc * nGainIdx);
+			Results.m_nTriggerWithoutStim = nTgrIdex_withoutFinger;
+			Results.m_nTriggerWithStim = nTgrIdex_withFinger;
+			LOG(DEBUG) << "WOF Gain:" << Results.m_nGain << ",NoFinger:" << nTgrIdex_withoutFinger << ",WithFinger:" << nTgrIdex_withFinger;
+			if (!rc1 || !rc2)
+				continue;
+			if (nTgrIdex_withoutFinger >= Info.m_nMaxTriggerThreshold || nTgrIdex_withoutFinger < Info.m_nMinTriggerThreshold)
+				continue;
+			if (nTgrIdex_withFinger >= Info.m_nMaxTriggerThreshold || nTgrIdex_withFinger < Info.m_nMinTriggerThreshold)
+				continue;
+
+			if (0 == nGainIdx)
 			{
-				Results.m_bPass = 1;
-				return;
+				//Gain100
+				int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
+				if (nDelta > Info.m_nDelta_100)
+				{
+					Results.m_bPass = 1;
+					return;
+				}
 			}
-		}
-		else
-		{
-			//Temp value
-			TempGain200 = Results.m_nGainStart + (Results.m_nGainInc * nGainIdx);
-			TempTriggerWithoutStimGain200 = nTgrIdex_withoutFinger;
-			TempTriggerWithStimGain200 = nTgrIdex_withFinger;
-
-			//Gain200
-			int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
-			if (nDelta > Info.m_nDelta_200)
+			else
 			{
-				Results.m_bPass = 1;
-				return;
+				//Gain200
+				int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
+				if (nDelta > Info.m_nDelta_200)
+				{
+					Results.m_bPass = 1;
+					return;
+				}
 			}
 		}
 	}
-
-	//3.6V
-	if (0 == Results.m_bPass)
+	else
 	{
-		GetZ0WofData(_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults, true);
+		//3.6V
+		//GetZ0WofData(_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults, true);
 		int nTgrIdex_withoutFinger(0), nTgrIdex_withFinger(0);
 		bool rc1 = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithoutStim[6 + (1 * Results.m_nNumThresholds)], nTgrIdex_withoutFinger);
 		bool rc2 = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithStim[6 + (1 * Results.m_nNumThresholds)], nTgrIdex_withFinger);
-		LOG(DEBUG) << "(3.6V) - NoFinger:" << nTgrIdex_withoutFinger << ",WithFinger:" << nTgrIdex_withFinger;
+		LOG(DEBUG) << "WOF Gain:"<< Results.m_nGain << "(3.6V) - NoFinger:" << nTgrIdex_withoutFinger << ",WithFinger:" << nTgrIdex_withFinger;
 		if (!rc1 || !rc2)
 			return;
 		if (nTgrIdex_withoutFinger >= Info.m_nMaxTriggerThreshold || nTgrIdex_withoutFinger < Info.m_nMinTriggerThreshold)
@@ -375,9 +376,6 @@ void Ts_ViperWOF::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Re
 		int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
 		if (nDelta > Info.m_nDelta_200_3p7)
 		{
-			Results.m_nGain = TempGain200;
-			Results.m_nTriggerWithoutStim = TempTriggerWithoutStimGain200;
-			Results.m_nTriggerWithStim = TempTriggerWithStimGain200;
 			Results.m_bPass = 1;
 			return;
 		}

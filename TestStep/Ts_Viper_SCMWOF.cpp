@@ -129,8 +129,15 @@ void Ts_Viper_SCMWOF::Execute()
 		bool bWithStimulus = _pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo.m_bWithStimulus;
 		if (this->ExecuteZone0SCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults,false))
 		{
-			this->SYN_SCMWofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults);
+			this->SYN_SCMWofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults, false);
 			_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo.m_bExecutedWithStimulus = true;
+
+			if (_pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults.m_bPass == 0)
+			{
+				// run WOF test with stimulus at 3.7V
+				this->ExecuteZone0SCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults, true);
+				this->SYN_SCMWofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults, true);
+			}
 		}
 
 		ComputeRunningTime(dCurrentElapsedTime);
@@ -298,7 +305,7 @@ bool Ts_Viper_SCMWOF::ExecuteZone0SCMWofTest(SCM_WofTestInfo& info, SCM_WofTestR
 	return true;
 }
 
-void Ts_Viper_SCMWOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_WofTestResults& pResults)
+void Ts_Viper_SCMWOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_WofTestResults& pResults, bool UseConfigVotage)
 {
 	pResults.m_bPass = 0;				//Assume fail.
 	pResults.m_nTriggerWithoutStim = 0;
@@ -313,73 +320,68 @@ void Ts_Viper_SCMWOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_Wo
 		throw(ex); return;
 	}
 
-	LOG(DEBUG) << "Viper SCMWOF:";
-	for (int nGainIdx = 0; nGainIdx < pResults.m_nNumGains; nGainIdx++)
+	if (!UseConfigVotage)
 	{
-		int nTgrIdex_withoutFinger(0);
-		int nTgrIdex_withFinger(0);
-		bool rc1 = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithoutStim[6 + (nGainIdx * pResults.m_nNumThresholds)], nTgrIdex_withoutFinger);
-		bool rc2 = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithStim[6 + (nGainIdx * pResults.m_nNumThresholds)], nTgrIdex_withFinger);
-		pResults.m_nGain = pResults.m_nGainStart + (pResults.m_nGainInc * nGainIdx);
-		pResults.m_nTriggerWithoutStim = nTgrIdex_withoutFinger;
-		pResults.m_nTriggerWithStim = nTgrIdex_withFinger;
-		LOG(DEBUG) << "Gain:" << pResults.m_nGain << ",NoFinger:" << nTgrIdex_withoutFinger << ",WithFinger:" << nTgrIdex_withFinger;
-		if (!rc1 || !rc2)
-			continue;
-		if (nTgrIdex_withoutFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
-			continue;
-		if (nTgrIdex_withFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
-			continue;
-
-		int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
-		if (0 == nGainIdx)
+		for (int nGainIdx = 0; nGainIdx < pResults.m_nNumGains; nGainIdx++)
 		{
-			//Gain100
+			int nTgrIdex_withoutFinger(0);
+			int nTgrIdex_withFinger(0);
+			bool rc1 = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithoutStim[6 + (nGainIdx * pResults.m_nNumThresholds)], nTgrIdex_withoutFinger);
+			bool rc2 = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithStim[6 + (nGainIdx * pResults.m_nNumThresholds)], nTgrIdex_withFinger);
+			pResults.m_nGain = pResults.m_nGainStart + (pResults.m_nGainInc * nGainIdx);
+			pResults.m_nTriggerWithoutStim = nTgrIdex_withoutFinger;
+			pResults.m_nTriggerWithStim = nTgrIdex_withFinger;
+			LOG(DEBUG) << "SCM_WOF Gain:" << pResults.m_nGain << ",NoFinger:" << nTgrIdex_withoutFinger << ",WithFinger:" << nTgrIdex_withFinger;
+			if (!rc1 || !rc2)
+				continue;
+			if (nTgrIdex_withoutFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
+				continue;
+			if (nTgrIdex_withFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
+				continue;
+
 			int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
-			if (nDelta > pInfo.m_nDelta_100)
+			if (0 == nGainIdx)
 			{
-				pResults.m_bPass = 1;
-				return;
+				//Gain100
+				int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
+				if (nDelta > pInfo.m_nDelta_100)
+				{
+					pResults.m_bPass = 1;
+					return;
+				}
 			}
-		}
-		else
-		{
-			//Temp value
-			TempGain200 = pResults.m_nGainStart + (pResults.m_nGainInc * nGainIdx);
-			TempTriggerWithoutStimGain200 = nTgrIdex_withoutFinger;
-			TempTriggerWithStimGain200 = nTgrIdex_withFinger;
-
-			//Gain200
-			int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
-			if (nDelta > pInfo.m_nDelta_200)
+			else
 			{
-				pResults.m_bPass = 1;
-				return;
+				//Gain200
+				int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
+				if (nDelta > pInfo.m_nDelta_200)
+				{
+					pResults.m_bPass = 1;
+					return;
+				}
 			}
 		}
 	}
-
-	//3.6V
-	this->ExecuteZone0SCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults, true);
-	int nTgrIdex_withoutFinger(0);
-	int nTgrIdex_withFinger(0);
-	bool rc1 = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithoutStim[6 + (1 * pResults.m_nNumThresholds)], nTgrIdex_withoutFinger);
-	bool rc2 = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithStim[6 + (1 * pResults.m_nNumThresholds)], nTgrIdex_withFinger);
-	LOG(DEBUG) << "(3.6V) - NoFinger:" << nTgrIdex_withoutFinger << ",WithFinger:" << nTgrIdex_withFinger;
-	if (!rc1 || !rc2)
-		return;
-	if (nTgrIdex_withoutFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
-		return;
-	if (nTgrIdex_withFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
-		return;
-	int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
-	if (nDelta > pInfo.m_nDelta_200_3p7)
+	else
 	{
-		pResults.m_nGain = TempGain200;
-		pResults.m_nTriggerWithoutStim = TempTriggerWithoutStimGain200;
-		pResults.m_nTriggerWithStim = TempTriggerWithStimGain200;
-		pResults.m_bPass = 1;
-		return;
+		//3.6V
+		int nTgrIdex_withoutFinger(0);
+		int nTgrIdex_withFinger(0);
+		bool rc1 = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithoutStim[6 + (1 * pResults.m_nNumThresholds)], nTgrIdex_withoutFinger);
+		bool rc2 = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithStim[6 + (1 * pResults.m_nNumThresholds)], nTgrIdex_withFinger);
+		LOG(DEBUG) << "SCM_WOF Gain:" << pResults.m_nGain << "(3.6V) - NoFinger:" << nTgrIdex_withoutFinger << ",WithFinger:" << nTgrIdex_withFinger;
+		if (!rc1 || !rc2)
+			return;
+		if (nTgrIdex_withoutFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
+			return;
+		if (nTgrIdex_withFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
+			return;
+		int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
+		if (nDelta > pInfo.m_nDelta_200_3p7)
+		{
+			pResults.m_bPass = 1;
+			return;
+		}
 	}
 }
 

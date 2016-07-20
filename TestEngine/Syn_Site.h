@@ -57,7 +57,7 @@ public:
 		return _uiErrorFlag;
 	};
 
-	//static bool RegisterLoggingConfig();
+	static bool RegisterLoggingConfig();
 
 	inline void SetSiteNumber(unsigned int iSiteNumber){ _iSiteNumber = iSiteNumber; };
 	inline void GetSiteNumber(unsigned int &oSiteNumber){ oSiteNumber = _iSiteNumber; };
