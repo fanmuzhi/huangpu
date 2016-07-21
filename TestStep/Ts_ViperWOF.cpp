@@ -330,8 +330,8 @@ void Ts_ViperWOF::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Re
 			Results.m_nTriggerWithoutStim = nTgrIdex_withoutFinger;
 			Results.m_nTriggerWithStim = nTgrIdex_withFinger;
 			LOG(DEBUG) << "WOF Gain:" << dec << Results.m_nGain << ",NoFinger:" << dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger;
-			if (!rc1 || !rc2)
-				continue;
+			//if (!rc1 || !rc2)
+			//	continue;
 			if (nTgrIdex_withoutFinger >= Info.m_nMaxTriggerThreshold || nTgrIdex_withoutFinger < Info.m_nMinTriggerThreshold)
 				continue;
 			if (nTgrIdex_withFinger >= Info.m_nMaxTriggerThreshold || nTgrIdex_withFinger < Info.m_nMinTriggerThreshold)
@@ -367,12 +367,12 @@ void Ts_ViperWOF::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Re
 		bool rc1 = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithoutStim[6 + (1 * Results.m_nNumThresholds)], nTgrIdex_withoutFinger);
 		bool rc2 = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithStim[6 + (1 * Results.m_nNumThresholds)], nTgrIdex_withFinger);
 		LOG(DEBUG) << "WOF Gain:"<< dec << Results.m_nGain << "(3.6V) - NoFinger:" << dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger;
-		if (!rc1 || !rc2)
-			return;
-		if (nTgrIdex_withoutFinger >= Info.m_nMaxTriggerThreshold || nTgrIdex_withoutFinger < Info.m_nMinTriggerThreshold)
-			return;
-		if (nTgrIdex_withFinger >= Info.m_nMaxTriggerThreshold || nTgrIdex_withFinger < Info.m_nMinTriggerThreshold)
-			return;
+		//if (!rc1 || !rc2)
+		//	return;
+		//if (nTgrIdex_withoutFinger >= Info.m_nMaxTriggerThreshold || nTgrIdex_withoutFinger < Info.m_nMinTriggerThreshold)
+		//	return;
+		//if (nTgrIdex_withFinger >= Info.m_nMaxTriggerThreshold || nTgrIdex_withFinger < Info.m_nMinTriggerThreshold)
+		//	return;
 		int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
 		if (nDelta > Info.m_nDelta_200_3p7)
 		{
@@ -382,24 +382,23 @@ void Ts_ViperWOF::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Re
 	}
 }
 
+
 bool Ts_ViperWOF::CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf, int &oTgrIdx)
 {
-	bool bFound = false;
+	int bFound = 0;
+	int i;
 
 	//Find the first occurence of 1.
 	oTgrIdx = 0;
-	for (int i = 0; (i < nNumThresholds) && (false == bFound); i++)
+	for (i=0; (i < nNumThresholds) && (bFound == 0); i++)
 	{
+		oTgrIdx = i;
 		if ((pTriggerBuf[i] & 0x01) == 1)
 		{
 			if (i > 0)
-			{
-				oTgrIdx = i;
-				bFound = true;
-				//break;
-			}
+				oTgrIdx -= 1;
+			bFound = 1;
 		}
 	}
-
 	return bFound;
 }

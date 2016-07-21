@@ -332,8 +332,8 @@ void Ts_Viper_SCMWOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_Wo
 			pResults.m_nTriggerWithoutStim = nTgrIdex_withoutFinger;
 			pResults.m_nTriggerWithStim = nTgrIdex_withFinger;
 			LOG(DEBUG) << "SCM_WOF Gain:" << dec << pResults.m_nGain << ",NoFinger:" << dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger;
-			if (!rc1 || !rc2)
-				continue;
+			//if (!rc1 || !rc2)
+			//	continue;
 			if (nTgrIdex_withoutFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
 				continue;
 			if (nTgrIdex_withFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
@@ -370,12 +370,12 @@ void Ts_Viper_SCMWOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_Wo
 		bool rc1 = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithoutStim[6 + (1 * pResults.m_nNumThresholds)], nTgrIdex_withoutFinger);
 		bool rc2 = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithStim[6 + (1 * pResults.m_nNumThresholds)], nTgrIdex_withFinger);
 		LOG(DEBUG) << "SCM_WOF Gain:" << dec << pResults.m_nGain << "(3.6V) - NoFinger:" << dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger;
-		if (!rc1 || !rc2)
-			return;
-		if (nTgrIdex_withoutFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
-			return;
-		if (nTgrIdex_withFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
-			return;
+		//if (!rc1 || !rc2)
+		//	return;
+		//if (nTgrIdex_withoutFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
+		//	return;
+		//if (nTgrIdex_withFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
+		//	return;
 		int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
 		if (nDelta > pInfo.m_nDelta_200_3p7)
 		{
@@ -387,18 +387,20 @@ void Ts_Viper_SCMWOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_Wo
 
 bool Ts_Viper_SCMWOF::CalcScmWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf, int &oTgrIdx)
 {
-	bool bFound(false);
-	oTgrIdx = 0;
+	int bFound = 0;
+	int i;
 
 	//Find the first occurence of 1.
-	for (int i = 0; i<nNumThresholds; i++)
+	oTgrIdx = 0;
+	for (i=0; (i < nNumThresholds) && (bFound == 0); i++)
 	{
-		if (((pTriggerBuf[i] & 0x01) == 0) && (false == bFound))
+		oTgrIdx = i;
+		if ((pTriggerBuf[i] & 0x01) == 1)
 		{
-			oTgrIdx = i;
-			bFound = true;
+			if (i > 0)
+				oTgrIdx -= 1;
+			bFound = 1;
 		}
 	}
-
 	return bFound;
 }

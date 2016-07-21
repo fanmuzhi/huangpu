@@ -98,7 +98,7 @@ void Ts_Invalidate::Invalidate(uint32_t tagId)
 
 void Ts_Invalidate::get_invalidate_arguments(uint32_t tagId, char* outString, int &oNumBytes)
 {
-	char extended_tag[4];
+	uint8_t extended_tag[4];
 	extended_tag[1] = 0x00;
 	extended_tag[2] = 0x00;
 	extended_tag[3] = 0x80;
