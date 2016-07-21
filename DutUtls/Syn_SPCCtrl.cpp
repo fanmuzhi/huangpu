@@ -181,7 +181,7 @@ void Syn_SPCCtrl::FpGetStatus(uint8_t* pDst, int numBytes)
 
 	this->FpRead(endpoint, cmd, pDst, numBytes);
 
-	//LOG(INFO) << "0x" << hex << *((uint32_t*)pDst);
+	LOG(DEBUG) << "EP0 status: 0x" << hex << *((uint32_t*)pDst);
 }
 
 void Syn_SPCCtrl::FpWaitForCMDComplete(const uint32_t timeout)
@@ -212,7 +212,7 @@ void Syn_SPCCtrl::FpReadBuff(uint8_t *pDst, int numBytes)
 
 	this->FpRead(1, 0xFF, pDst, numBytes);
 	uint16_t returnValue = *((uint16_t*)pDst);
-	//LOG(INFO) << "0x" << hex << returnValue;
+	LOG(DEBUG) << "EP1 Read: 0x" << hex << returnValue;
 	while (timeout && (*((uint16_t*)pDst) == 0xFFFF))
 	{
 		this->FpRead(1, 0xFF, pDst, numBytes);
@@ -270,7 +270,7 @@ void Syn_SPCCtrl::FpRunPatchTest(uint8_t *pDst, int numBytes)
 
 void Syn_SPCCtrl::FpWaitDeviceReady()
 {
-	//LOG(INFO) << "Wait Device Ready";
+	LOG(DEBUG) << "Wait Device Ready";
 
 	uint8_t pDst[4];
 	uint32_t timeout = TIMEOUT;
@@ -291,7 +291,7 @@ void Syn_SPCCtrl::FpWaitDeviceReady()
 
 void Syn_SPCCtrl::FpDisableSleep()
 {
-	//LOG(INFO) << "Disable Sleep";
+	LOG(DEBUG) << "Disable Sleep";
 
 	uint8_t pSrc[2] = { 0 };
 	this->FpWrite(1, VCSFW_CMD::TIDLE_SET, pSrc, sizeof(pSrc));
@@ -301,7 +301,7 @@ void Syn_SPCCtrl::FpDisableSleep()
 
 void Syn_SPCCtrl::FpEnterSleep()
 {
-	//LOG(INFO) << "Enable Sleep";
+	LOG(DEBUG) << "Enable Sleep";
 
 	uint8_t pSrc[2] = { 0xE8, 0x03 };	//delay time to enter into retain mode.
 	this->FpWrite(1, VCSFW_CMD::TIDLE_SET, pSrc, sizeof(pSrc));
@@ -312,7 +312,7 @@ void Syn_SPCCtrl::FpEnterSleep()
 
 void Syn_SPCCtrl::FpNoop()
 {
-	//LOG(INFO) << "No Op";
+	LOG(DEBUG) << "No Op";
 
 	uint8_t pSrc[2] = { 0 };
 	this->FpWaitDeviceReady();
@@ -323,7 +323,7 @@ void Syn_SPCCtrl::FpNoop()
 
 void Syn_SPCCtrl::FpLoadRamPatch(uint8_t* pPatch, int patchSize, uint8_t* pDst, int numBytes)
 {
-	//LOG(INFO) << "Load RAM Patch";
+	LOG(DEBUG) << "Load RAM Patch";
 
 	this->FpWrite(1, VCSFW_CMD::PATCH, pPatch, patchSize);
 	this->FpWaitForCMDComplete();
@@ -332,7 +332,7 @@ void Syn_SPCCtrl::FpLoadRamPatch(uint8_t* pPatch, int patchSize, uint8_t* pDst, 
 
 void Syn_SPCCtrl::FpLoadPatch(uint8_t* pPatch, int numBytes)
 {
-	//LOG(INFO) << "Load Patch";
+	LOG(DEBUG) << "Load Patch";
 
 	this->FpWrite(1, VCSFW_CMD::PATCH, pPatch, numBytes);
 	this->FpWaitForCMDComplete();
@@ -341,7 +341,7 @@ void Syn_SPCCtrl::FpLoadPatch(uint8_t* pPatch, int numBytes)
 
 void Syn_SPCCtrl::FpUnloadPatch()
 {
-	//LOG(INFO) << "Unload Patch";
+	LOG(DEBUG) << "Unload Patch";
 
 	this->FpWrite(1, VCSFW_CMD::UNLOAD_PATCH, (uint8_t*)0, 0);
 	this->FpWaitForCMDComplete();
@@ -350,7 +350,7 @@ void Syn_SPCCtrl::FpUnloadPatch()
 
 void Syn_SPCCtrl::FpOtpRomRead(int section, int sector, uint8_t* pDst, int numBytes)
 {
-	//LOG(INFO) << "OTPRom Read";
+	LOG(DEBUG) << "OTPRom Read";
 
 	uint32_t err;
 
@@ -377,7 +377,7 @@ void Syn_SPCCtrl::FpOtpRomWrite(int section, int sector, uint8_t* pDst, int numB
 	//e.g. [0, 0] for main sector 0, [0, 1] for main sector 1 
 	//     [1, 0] for boot sector 0, [1, 1] for boot sector 1
 
-	//LOG(INFO) << "OTPRom Write";
+	LOG(DEBUG) << "OTPRom Write";
 
 	uint32_t err;
 	err = MPC_FpOtpRomWrite(syn_DeviceHandle, section, sector, pDst, numBytes, TIMEOUT);
@@ -399,7 +399,7 @@ void Syn_SPCCtrl::FpOtpRomWrite(int section, int sector, uint8_t* pDst, int numB
 uint8_t Syn_SPCCtrl::FpOtpRomTagRead(uint32_t nExtTag, uint8_t* pDst, int numBytes)
 {
 	uint8_t nRecCount = 0;
-	//LOG(INFO) << "OTPRom Tag Read";
+	LOG(DEBUG) << "OTPRom Tag Read";
 
 	uint8_t arReadMs0Args[8] = { 0 };
 	arReadMs0Args[1] = TAG_CAL;
@@ -418,7 +418,7 @@ uint8_t Syn_SPCCtrl::FpOtpRomTagRead(uint32_t nExtTag, uint8_t* pDst, int numByt
 
 void Syn_SPCCtrl::FpOtpRomTagWrite(uint8_t* pDst, int numBytes)
 {
-	//LOG(INFO) << "OTPRom Tag Write";
+	LOG(DEBUG) << "OTPRom Tag Write";
 
 	this->FpWrite(1, VCSFW_CMD::TEST_OTPROM_TAG_WRITE, pDst,numBytes);
 	::Sleep(50);
@@ -428,8 +428,10 @@ void Syn_SPCCtrl::FpOtpRomTagWrite(uint8_t* pDst, int numBytes)
 
 
 
-void Syn_SPCCtrl::FpPokeRegister(uint32_t nHwRegAddr, uint32_t nData)
+void Syn_SPCCtrl::FpPokeRegister(uint32_t nHwRegAddr, uint32_t nData, bool checkStatus)
 {
+	LOG(DEBUG) << "Poke Register 0x" << hex << nHwRegAddr << " value 0x" << hex << nData;
+
 	uint8_t pDst[10];
 	//set up data to write:
 	uint32_t nAddrHi_Lo = (((nHwRegAddr >> 16) & 0xFFFF)) & 0xFF;
@@ -444,13 +446,19 @@ void Syn_SPCCtrl::FpPokeRegister(uint32_t nHwRegAddr, uint32_t nData)
 
 	//poke the register
 	this->FpWrite(1,VCSFW_CMD::POKE,pDataWrite,9);
-	this->FpRead(1, 0xFF, pDst, 2);
-	//this->FpWaitDeviceReady();
+
+	if (checkStatus)	//to prevent to fail when go to sleep or retain mode.
+	{
+		this->FpWaitForCMDComplete();
+		this->FpReadAndCheckStatus(0);
+	}
 }
 
 //void Syn_SPCCtrl::FpPeekRegister(uint32_t nHwRegAddr, uint32_t& nData)
 void Syn_SPCCtrl::FpPeekRegister(uint32_t nHwRegAddr, uint8_t pDst[])
 {
+	LOG(DEBUG) << "Peek Register 0x" << hex << nHwRegAddr;
+
 	//uint8_t pDst[10];
 	//set up data to write:
 	uint32_t nAddrHi_Lo = (((nHwRegAddr >> 16) & 0xFFFF)) & 0xFF;
@@ -461,6 +469,7 @@ void Syn_SPCCtrl::FpPeekRegister(uint32_t nHwRegAddr, uint8_t pDst[])
 
 	//poke the register
 	this->FpWrite(1,VCSFW_CMD::PEEK,pDataWrite,5);
+	this->FpWaitForCMDComplete();
 	this->FpRead(1, 0xFF, pDst, 6);
 	//this->FpWaitDeviceReady();
 
@@ -470,7 +479,7 @@ void Syn_SPCCtrl::FpPeekRegister(uint32_t nHwRegAddr, uint8_t pDst[])
 
 void Syn_SPCCtrl::FpGetVersion(uint8_t *pDst, int numBytes)
 {
-	//LOG(INFO) << "Get Version";
+	LOG(DEBUG) << "Get Version";
 
 	uint32_t err;
 	err = MPC_FpGetVersion(syn_DeviceHandle, pDst, numBytes, TIMEOUT);
@@ -491,7 +500,7 @@ void Syn_SPCCtrl::FpGetVersion(uint8_t *pDst, int numBytes)
 
 void Syn_SPCCtrl::FpWritePrintFile(uint8_t *pPrintPatch, int numBytes)
 {
-	//LOG(INFO) << "Write Print File";
+	LOG(DEBUG) << "Write Print File";
 
 	this->FpWrite(1, VCSFW_CMD::GET_PRINT, pPrintPatch, numBytes);
 	this->FpWaitForCMDComplete();
@@ -504,7 +513,7 @@ void Syn_SPCCtrl::FpWritePrintFile(uint8_t *pPrintPatch, int numBytes)
 //
 void Syn_SPCCtrl::FpGetImage(uint8_t *pDst, int numBytes)
 {
-	//LOG(INFO) << "Get Image";
+	LOG(DEBUG) << "Get Image";
 
 	uint32_t err;
 	//this->FpNoop();
@@ -529,7 +538,7 @@ void Syn_SPCCtrl::FpGetImage(uint8_t *pDst, int numBytes)
 //
 void Syn_SPCCtrl::FpGetImage2(uint16_t nRows, uint16_t nCols, uint8_t *pDst, uint16_t nBlobSize, uint8_t *pBlob)
 {
-	//LOG(INFO) << "Get Image 2";
+	LOG(DEBUG) << "Get Image 2";
 	
 	uint32_t err;
 	this->FpNoop();
@@ -557,7 +566,7 @@ void Syn_SPCCtrl::FpGetImage2(uint16_t nRows, uint16_t nCols, uint8_t *pDst, uin
 //
 void Syn_SPCCtrl::GpioSetPinType(uint16_t portId, uint32_t mskPins, uint16_t pinType)
 {
-	//LOG(INFO) << "GPIO Set Pin Type";
+	LOG(DEBUG) << "GPIO Set Pin Type";
 
 	uint32_t err;
 	err = MPC_GpioSetPinType(syn_DeviceHandle, portId, mskPins, pinType, TIMEOUT);
@@ -600,7 +609,7 @@ void Syn_SPCCtrl::GpioPinRead(uint16_t portID, uint32_t mskPins, uint32_t* pMskP
 	}
 
 	int result = (*pMskPinState & mskPins) ? 1 : 0;
-	//LOG(INFO) << "Read from GPIO:" << result;
+	LOG(DEBUG) << "Read from GPIO:" << result;
 }
 
 
@@ -609,7 +618,7 @@ void Syn_SPCCtrl::GpioPinRead(uint16_t portID, uint32_t mskPins, uint32_t* pMskP
 //
 void Syn_SPCCtrl::GpioPinWrite(uint16_t portID, uint32_t mskPins, uint32_t mskPinState)
 {
-	//LOG(INFO) << "Write GPIO";
+	LOG(DEBUG) << "Write GPIO";
 
 	uint32_t err;
 	err = MPC_GpioPinWrite(syn_DeviceHandle, portID, mskPins, mskPinState, TIMEOUT);
@@ -631,7 +640,7 @@ void Syn_SPCCtrl::GpioPinWrite(uint16_t portID, uint32_t mskPins, uint32_t mskPi
 
 void Syn_SPCCtrl::FpMpcGetSelfTestResults(uint16_t overSamples, uint32_t arValues[MPC_SELF_TEST_BUFFER])
 {
-	//LOG(INFO) << "MPC04 Self Test";
+	LOG(DEBUG) << "MPC04 Self Test";
 	
 	uint32_t err(0);
 	Syn_Exception ex(err);
@@ -647,6 +656,8 @@ void Syn_SPCCtrl::FpMpcGetSelfTestResults(uint16_t overSamples, uint32_t arValue
 
 void Syn_SPCCtrl::FpGpioGetFreq(uint16_t portId, uint32_t mskPins, uint32_t* pFreq_Hz)
 {
+	LOG(DEBUG) << "GPIO Get Frequence";
+
 	uint16_t error;
 	error = MPC_GpioGetFreq(syn_DeviceHandle, portId, mskPins, pFreq_Hz, 2000);
 	Syn_Exception ex(error);
@@ -664,6 +675,8 @@ void Syn_SPCCtrl::FpGpioGetFreq(uint16_t portId, uint32_t mskPins, uint32_t* pFr
 
 void Syn_SPCCtrl::GpioDirModSet(uint16_t portId, uint32_t mskPins, uint32_t direction)
 {
+	LOG(DEBUG) << "GPIO Dir Mod Set";
+
 	uint16_t error;
 	error = MPC_GpioDirModSet(syn_DeviceHandle, portId, mskPins, direction, 2000);
 	Syn_Exception ex(error);
@@ -701,12 +714,12 @@ void Syn_SPCCtrl::UpdateMPC04Firmware()
 		MPC_Disconnect(syn_DeviceHandle);
 		MPC_CloseMpcDeviceHandle(syn_DeviceHandle);
 		syn_DeviceHandle = NULL;
-		//LOG(ERROR) << "Cannot Get Identity of MPC04: " << syn_SerialNumber;
+		LOG(ERROR) << "Cannot Get Identity of MPC04: " << syn_SerialNumber;
 		ex.SetError(error);
 		ex.SetDescription("Cannot Get Identity of MPC04: " + to_string(syn_SerialNumber));
 		throw ex;
 	}
-	//LOG(INFO) << "MPC04 BootLoader Rev: " << nRevBootLoader << " Application Rev: " << nRevApplication;
+	LOG(DEBUG) << "MPC04 BootLoader Rev: " << nRevBootLoader << " Application Rev: " << nRevApplication;
 
 	sprintf_s(filename_application, "Mpc04Application.hex");
 	sprintf_s(filename_bootloader, "Mpc04BootloaderLoader.hex");
@@ -714,7 +727,7 @@ void Syn_SPCCtrl::UpdateMPC04Firmware()
 	pFileBootloader = fopen(filename_bootloader, "r");
 	if ((pFileApplication == NULL) || ((pFileBootloader == NULL)))
 	{
-		//LOG(ERROR) << "Mpc04Application.hex or Mpc04BootloaderLoader.hex is null: " << syn_SerialNumber;
+		LOG(ERROR) << "Mpc04Application.hex or Mpc04BootloaderLoader.hex is null: " << syn_SerialNumber;
 		return;
 	}
 	else
@@ -746,7 +759,7 @@ void Syn_SPCCtrl::UpdateMPC04Firmware()
 					str.push_back(line[9]);
 					str.push_back(line[10]);
 					sscanf(str.c_str(), "%x", &fileBootloaderRev);
-					//LOG(INFO) << "File BootLoader Rev: " << fileBootloaderRev;
+					LOG(DEBUG) << "File BootLoader Rev: " << fileBootloaderRev;
 					if (((int)nRevBootLoader != fileBootloaderRev))
 						BootloaderUpdate = true;
 					break;
@@ -777,7 +790,7 @@ void Syn_SPCCtrl::UpdateMPC04Firmware()
 					str.push_back(line[9]);
 					str.push_back(line[10]);
 					sscanf(str.c_str(), "%x", &fileAppRev);
-					//LOG(INFO) << "File Application Rev: " << fileAppRev;
+					LOG(DEBUG) << "File Application Rev: " << fileAppRev;
 					if (((int)nRevApplication != fileAppRev))
 						AppUpdate = true;
 					break;
@@ -790,11 +803,11 @@ void Syn_SPCCtrl::UpdateMPC04Firmware()
 	error = MPC_GetDeviceSerialNumber(syn_DeviceHandle, &serNum);
 	if (error != MpcApiError::ERR_OK)
 	{
-		//LOG(ERROR) << "Cannot get device serial number";
+		LOG(ERROR) << "Cannot get device serial number";
 	}
 	if ((BootloaderUpdate))
 	{
-		//LOG(INFO) << "MPC04 Bootloader will be update,Please wait...: " << syn_SerialNumber;
+		LOG(DEBUG) << "MPC04 Bootloader will be update,Please wait...: " << syn_SerialNumber;
 
 		//Asynchronously, start the update.
 		error = MPC_AsyncUpdateFirmware(syn_DeviceHandle, (LPCTSTR)filename_bootloader, NULL, NULL, NULL);
@@ -806,7 +819,7 @@ void Syn_SPCCtrl::UpdateMPC04Firmware()
 			error = MPC_GetUpdateFirmwareProgress(syn_DeviceHandle, &nPercent);
 			if (error != MpcApiError::ERR_OK)
 			{
-				//LOG(ERROR) << "MPC04 Bootloader update failure!: " << syn_SerialNumber;
+				LOG(ERROR) << "MPC04 Bootloader update failure!: " << syn_SerialNumber;
 				ex.SetError(error);
 				ex.SetDescription("MPC04 Bootloader update failure!: " + to_string(syn_SerialNumber));
 				throw ex;
@@ -822,15 +835,15 @@ void Syn_SPCCtrl::UpdateMPC04Firmware()
 		if (error == MpcApiError::ERR_OK)
 			error = MPC_Connect(syn_DeviceHandle);
 
-		//if (error == MpcApiError::ERR_OK)
-			//LOG(INFO) << "Bootloader update completed sucessfully!: " << syn_SerialNumber;
-		//else
-			//LOG(ERROR) << "Bootloader update failure!: " << syn_SerialNumber;
+		if (error == MpcApiError::ERR_OK)
+			LOG(DEBUG) << "Bootloader update completed sucessfully!: " << syn_SerialNumber;
+		else
+			LOG(ERROR) << "Bootloader update failure!: " << syn_SerialNumber;
 	}
 
 	if (AppUpdate || BootloaderUpdate)
 	{
-		//LOG(INFO) << "MPC04 Firmware will be updated.Please wait...: " << syn_SerialNumber;
+		LOG(DEBUG) << "MPC04 Firmware will be updated.Please wait...: " << syn_SerialNumber;
 
 		//Asynchronously, start the update.
 		error = MPC_AsyncUpdateFirmware(syn_DeviceHandle, (LPCTSTR)filename_application, NULL, NULL, NULL);
@@ -848,7 +861,7 @@ void Syn_SPCCtrl::UpdateMPC04Firmware()
 			error = MPC_GetUpdateFirmwareProgress(syn_DeviceHandle, &nPercent);
 			if (error != MpcApiError::ERR_OK)
 			{
-				//LOG(ERROR) << "MPC04 Application update failure!: " << syn_SerialNumber;
+				LOG(ERROR) << "MPC04 Application update failure!: " << syn_SerialNumber;
 				ex.SetError(error);
 				ex.SetDescription("MPC04 Application update failure!: " + to_string(syn_SerialNumber));
 				throw ex;
@@ -872,11 +885,11 @@ void Syn_SPCCtrl::UpdateMPC04Firmware()
 
 		if (error == MpcApiError::ERR_OK)
 		{
-			//LOG(INFO) << "Firmware update completed sucessfully!: " << syn_SerialNumber;
+			LOG(DEBUG) << "Firmware update completed sucessfully!: " << syn_SerialNumber;
 		}
 		else
 		{
-			//LOG(ERROR) << "Firmware update failure!: " << syn_SerialNumber;
+			LOG(ERROR) << "Firmware update failure!: " << syn_SerialNumber;
 			ex.SetError(error);
 			ex.SetDescription("Firmware update failure!: " + to_string(syn_SerialNumber));
 			throw ex;

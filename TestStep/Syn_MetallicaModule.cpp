@@ -255,8 +255,7 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 
 void Syn_MetallicaModule::TrimOsc(OscTrimInfo &iOscTrimInfo, OscTrimResults &ioOscTrimResults, uint16_t Vdd_mV, uint16_t Vio_mV, uint16_t Vled_mV, uint16_t Vddh_mV)
 {
-	uint8_t		pDst[4];
-	uint8_t		arHWRegAddr[5] = { 0x34, 0x03, 0x00, 0x80, 0x04 };
+	uint8_t		pDst[6];
 	uint32_t	nFreq_Hz;
 	uint32_t	nTrimValue;
 	int			timeout;
@@ -264,9 +263,9 @@ void Syn_MetallicaModule::TrimOsc(OscTrimInfo &iOscTrimInfo, OscTrimResults &ioO
 	ioOscTrimResults.m_bPass = 0;
 	iOscTrimInfo.m_bDefaultValueUsed = 0;
 
-	PowerOff();
-	PowerOn(Vdd_mV, Vio_mV, Vled_mV, Vddh_mV, true);
-	::Sleep(100);
+	//PowerOff();
+	//PowerOn(Vdd_mV, Vio_mV, Vled_mV, Vddh_mV, true);
+	//::Sleep(100);
 
 	//Check the Osc Value before writing.
 	_pSyn_DutCtrl->FpPeekRegister(0x80000334, pDst);
@@ -279,13 +278,13 @@ void Syn_MetallicaModule::TrimOsc(OscTrimInfo &iOscTrimInfo, OscTrimResults &ioO
 		_pSyn_DutCtrl->GpioSetPinType(6, 0x80, 5);//Set the pin to input.        
 
 		//Poke - note that there is an array of data values that are being poked.
-		_pSyn_DutCtrl->FpPokeRegister(0x8000034C, 0x02);
+		_pSyn_DutCtrl->FpPokeRegister(0x8000034C, 0xF0002);
 		_pSyn_DutCtrl->FpPokeRegister(0x80000384, 0x00);
 		_pSyn_DutCtrl->FpPokeRegister(0x80001500, 0x01);
 		_pSyn_DutCtrl->FpPokeRegister(0x80001508, 0x7F);
 		_pSyn_DutCtrl->FpPokeRegister(0x80001510, 0x1F);
-		_pSyn_DutCtrl->FpPokeRegister(0x80001504, 0x02);
-		_pSyn_DutCtrl->FpPokeRegister(0x8000000B, 0x02);
+		_pSyn_DutCtrl->FpPokeRegister(0x80001604, 0x02);
+		_pSyn_DutCtrl->FpPokeRegister(0x80000B00, 0x02);
 		_pSyn_DutCtrl->FpPokeRegister(0x80000334, 0x0E);
 
 		::Sleep(25);
@@ -333,15 +332,15 @@ void Syn_MetallicaModule::TrimOsc(OscTrimInfo &iOscTrimInfo, OscTrimResults &ioO
 
 void Syn_MetallicaModule::TrimSlowOsc(SlowOscInfo &iSlowOscInfo, SlowOscResults &ioSlowOscResults, uint16_t Vdd_mV, uint16_t Vio_mV, uint16_t Vled_mV, uint16_t Vddh_mV)
 {
-	uint8_t		pDst[4] = {0};
+	uint8_t		pDst[6] = {0};
 	uint32_t	nFreq_Hz = 0;
 	uint16_t	nHvOscBias, nHvOscTrim;
 	int			timeout;
 	ioSlowOscResults.m_bPass = 0;
 	ioSlowOscResults.m_bDefaultValueUsed = 0;
 
-	PowerOff();
-	PowerOn(Vdd_mV, Vio_mV, Vled_mV, Vddh_mV, true);
+	//PowerOff();
+	//PowerOn(Vdd_mV, Vio_mV, Vled_mV, Vddh_mV, true);
 
 	_pSyn_DutCtrl->GpioDirModSet(6, 0x80, 0);//Set pin as direct input
 	_pSyn_DutCtrl->GpioSetPinType(6, 0x80, 5);
@@ -349,9 +348,9 @@ void Syn_MetallicaModule::TrimSlowOsc(SlowOscInfo &iSlowOscInfo, SlowOscResults 
 	//Poke - note that there is an array of data values that are being poked.
 	_pSyn_DutCtrl->FpPokeRegister(0x80002050, 0x17);
 	_pSyn_DutCtrl->FpPokeRegister(0x8000036C, 0x0A);
-	_pSyn_DutCtrl->FpPokeRegister(0x80000338, 0x20);
-	_pSyn_DutCtrl->FpPokeRegister(0x8000034C, 0x20);
-	_pSyn_DutCtrl->FpPokeRegister(0x80000384, 0x03);
+	_pSyn_DutCtrl->FpPokeRegister(0x80000338, 0x3300F20);
+	_pSyn_DutCtrl->FpPokeRegister(0x8000034C, 0xF0020);
+	_pSyn_DutCtrl->FpPokeRegister(0x80000384, 0x8003);
 	_pSyn_DutCtrl->FpPokeRegister(0x80001604, 0x02);
 
 	::Sleep(50);

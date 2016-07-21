@@ -30,7 +30,7 @@ public:
 
 	virtual void FpOtpRomWrite(int section, int sector, uint8_t* pDst, int numBytes);
 
-	virtual void FpPokeRegister(uint32_t nHwRegAddr, uint32_t nData);
+	virtual void FpPokeRegister(uint32_t nHwRegAddr, uint32_t nData, bool checkStatus = true);
 
 	virtual void FpPeekRegister(uint32_t nHwRegAddr, uint8_t pDst[]);
 
@@ -81,5 +81,5 @@ public:
 protected:
 
 	static bool	_bDLLInitialized;
-	const uint32_t TIMEOUT = 2000;
+	const uint32_t TIMEOUT = 500;
 };

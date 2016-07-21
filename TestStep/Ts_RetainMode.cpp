@@ -121,7 +121,7 @@ void Ts_RetainMode::Execute()
 	_pSyn_DutCtrl->FpPokeRegister(0x8000038C, 0x401008);
 	_pSyn_DutCtrl->FpPokeRegister(0x80000390, 0xFFFF00C4);
 	_pSyn_DutCtrl->FpPokeRegister(0x80000394, 0x0);
-	_pSyn_DutCtrl->FpPokeRegister(0x80000300, 0x19);
+	_pSyn_DutCtrl->FpPokeRegister(0x80000300, 0x19, false);
 
 
 	::Sleep(_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nDelay);

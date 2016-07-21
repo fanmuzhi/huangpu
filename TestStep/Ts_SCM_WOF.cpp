@@ -64,7 +64,6 @@ void Ts_SCM_WOF::SetUp()
 			listOfArgValue.push_back(std::string(""));
 	}
 
-	//TOP WOF
 	if (0 != listOfArgValue[0].length())
 	{
 		_pSyn_Dut->_pSyn_DutTestInfo->_z1SCM_wofInfo.m_bWithStimulus = atoi(listOfArgValue[0].c_str());
@@ -147,12 +146,12 @@ void Ts_SCM_WOF::Execute()
 
 	double dCurrentElapsedTime(0);
 
-	//Top SCM_WOF
+	//Zone1 SCM_WOF
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_z1SCM_wofInfo.m_bWithStimulus)  // WithStimulus
 	{
 		// run WOF test with stimulus at normal voltage
 		bool bWithStimulus = _pSyn_Dut->_pSyn_DutTestInfo->_z1SCM_wofInfo.m_bWithStimulus;
-		if (this->ExecuteTopSCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_z1SCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z1SCM_wofResults))
+		if (this->ExecuteZone1SCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_z1SCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z1SCM_wofResults))
 		{
 			this->SYN_SCMWofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_z1SCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z1SCM_wofResults);
 			_pSyn_Dut->_pSyn_DutTestInfo->_z1SCM_wofInfo.m_bExecutedWithStimulus = true;
@@ -169,7 +168,7 @@ void Ts_SCM_WOF::Execute()
 	else  // Without Stimulus
 	{
 		//only execute
-		if (this->ExecuteTopSCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_z1SCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z1SCM_wofResults))
+		if (this->ExecuteZone1SCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_z1SCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z1SCM_wofResults))
 		{
 			_pSyn_Dut->_pSyn_DutTestInfo->_z1SCM_wofInfo.m_bExecutedWithoutStimulus = true;
 			_pSyn_Dut->_pSyn_DutTestResult->_z1SCM_wofResults.m_bPass = 1;
@@ -179,12 +178,12 @@ void Ts_SCM_WOF::Execute()
 		_pSyn_Dut->_pSyn_DutTestResult->_z1SCM_wofResults.m_elapsedtime += dCurrentElapsedTime;
 	}
 
-	//Bottom SCM_WOF
+	//Zone0 SCM_WOF
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo.m_bWithStimulus)  // WithStimulus
 	{
 		// run WOF test with stimulus at normal voltage
 		bool bWithStimulus = _pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo.m_bWithStimulus;
-		if (this->ExecuteBottomSCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults))
+		if (this->ExecuteZone0SCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults))
 		{
 			this->SYN_SCMWofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults);
 			_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo.m_bExecutedWithStimulus = true;
@@ -201,7 +200,7 @@ void Ts_SCM_WOF::Execute()
 	else  // Without Stimulus
 	{
 		//only execute
-		if (this->ExecuteBottomSCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults))
+		if (this->ExecuteZone0SCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults))
 		{
 			_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo.m_bExecutedWithoutStimulus = true;
 			_pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults.m_bPass = 1;
@@ -269,7 +268,7 @@ void Ts_SCM_WOF::CleanUp()
 }
 
 
-bool Ts_SCM_WOF::ExecuteBottomSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults& results)
+bool Ts_SCM_WOF::ExecuteZone0SCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults& results)
 {	
 	Syn_PatchInfo ScmWofPatchInfo, Cmd1ScmWofPlotInfo, Cmd2ScmWofBinInfo, Cmd3SweepTagInfo;// WofCmd2Info;
 	_pSyn_Dut->FindPatch("ScmWofPatch", ScmWofPatchInfo);
@@ -358,7 +357,7 @@ bool Ts_SCM_WOF::ExecuteBottomSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResul
 	return true;
 }
 
-bool Ts_SCM_WOF::ExecuteTopSCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults& results)
+bool Ts_SCM_WOF::ExecuteZone1SCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults& results)
 {	
 	Syn_PatchInfo ScmWofPatchInfo, Cmd1ScmWofPlotInfo, Cmd2ScmWofBinInfo, Cmd4SweepTagInfo;//, WofCmd2Info;
 	_pSyn_Dut->FindPatch("ScmWofPatch", ScmWofPatchInfo);
@@ -478,7 +477,7 @@ void Ts_SCM_WOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_WofTest
 		int nTgrIdex_withoutFinger = scmWofValWithoutFinger[nGainIdx];
 		int nTgrIdex_withFinger = scmWofValWithFinger[nGainIdx];
 
-		LOG(DEBUG) << "Gain:" << pResults.m_nGainStart + (pResults.m_nGainInc * nGainIdx) << ",NoFinger:" << nTgrIdex_withoutFinger << ",WithFinger:" << nTgrIdex_withFinger;
+		LOG(DEBUG) << "Gain:" << dec << pResults.m_nGainStart + (pResults.m_nGainInc * nGainIdx) << ",NoFinger:" << dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger;
 
 		if (nTgrIdex_withoutFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
 		{
@@ -501,7 +500,7 @@ void Ts_SCM_WOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_WofTest
 		}
 	}
 
-	LOG(DEBUG) << "bestDelta:" << bestDelta;
+	LOG(DEBUG) << "bestDelta:" << dec << bestDelta;
 	if (bestDelta < pInfo.m_nDelta_100)
 	{
 		pResults.m_bPass = 0;

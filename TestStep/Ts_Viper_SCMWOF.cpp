@@ -122,7 +122,7 @@ void Ts_Viper_SCMWOF::Execute()
 
 	double dCurrentElapsedTime(0);
 
-	//Bottom SCM_WOF
+	//Zone0 SCM_WOF
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo.m_bWithStimulus)  // WithStimulus
 	{
 		// run WOF test with stimulus at normal voltage
@@ -331,7 +331,7 @@ void Ts_Viper_SCMWOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_Wo
 			pResults.m_nGain = pResults.m_nGainStart + (pResults.m_nGainInc * nGainIdx);
 			pResults.m_nTriggerWithoutStim = nTgrIdex_withoutFinger;
 			pResults.m_nTriggerWithStim = nTgrIdex_withFinger;
-			LOG(DEBUG) << "SCM_WOF Gain:" << pResults.m_nGain << ",NoFinger:" << nTgrIdex_withoutFinger << ",WithFinger:" << nTgrIdex_withFinger;
+			LOG(DEBUG) << "SCM_WOF Gain:" << dec << pResults.m_nGain << ",NoFinger:" << dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger;
 			if (!rc1 || !rc2)
 				continue;
 			if (nTgrIdex_withoutFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
@@ -369,7 +369,7 @@ void Ts_Viper_SCMWOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_Wo
 		int nTgrIdex_withFinger(0);
 		bool rc1 = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithoutStim[6 + (1 * pResults.m_nNumThresholds)], nTgrIdex_withoutFinger);
 		bool rc2 = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithStim[6 + (1 * pResults.m_nNumThresholds)], nTgrIdex_withFinger);
-		LOG(DEBUG) << "SCM_WOF Gain:" << pResults.m_nGain << "(3.6V) - NoFinger:" << nTgrIdex_withoutFinger << ",WithFinger:" << nTgrIdex_withFinger;
+		LOG(DEBUG) << "SCM_WOF Gain:" << dec << pResults.m_nGain << "(3.6V) - NoFinger:" << dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger;
 		if (!rc1 || !rc2)
 			return;
 		if (nTgrIdex_withoutFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)

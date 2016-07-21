@@ -12,6 +12,9 @@ Syn_FingerprintTest::Syn_FingerprintTest(string &strName, string &strArgs, Syn_D
 :Syn_TestStep(strName, strArgs, pDutCtrl, pDut)
 , _pSyn_Module(NULL)
 {
+
+	LOG(DEBUG) << "============================== " << strName << " ==============================";
+
 	switch (_pSyn_Dut->_eProjectType)
 	{
 		case Metallica:
