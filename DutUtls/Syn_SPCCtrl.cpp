@@ -270,7 +270,7 @@ void Syn_SPCCtrl::FpRunPatchTest(uint8_t *pDst, int numBytes)
 
 void Syn_SPCCtrl::FpWaitDeviceReady()
 {
-	LOG(DEBUG) << "Wait Device Ready";
+	LOG(DEBUG) << "Syn_SPCCtrl::FpWaitDeviceReady()";
 
 	uint8_t pDst[4];
 	uint32_t timeout = TIMEOUT;
@@ -291,7 +291,7 @@ void Syn_SPCCtrl::FpWaitDeviceReady()
 
 void Syn_SPCCtrl::FpDisableSleep()
 {
-	LOG(DEBUG) << "Disable Sleep";
+	LOG(DEBUG) << "Syn_SPCCtrl::FpDisableSleep()";
 
 	uint8_t pSrc[2] = { 0 };
 	this->FpWrite(1, VCSFW_CMD::TIDLE_SET, pSrc, sizeof(pSrc));
@@ -301,7 +301,7 @@ void Syn_SPCCtrl::FpDisableSleep()
 
 void Syn_SPCCtrl::FpEnterSleep()
 {
-	LOG(DEBUG) << "Enable Sleep";
+	LOG(DEBUG) << "Syn_SPCCtrl::FpEnableSleep()";
 
 	uint8_t pSrc[2] = { 0xE8, 0x03 };	//delay time to enter into retain mode.
 	this->FpWrite(1, VCSFW_CMD::TIDLE_SET, pSrc, sizeof(pSrc));
@@ -312,7 +312,7 @@ void Syn_SPCCtrl::FpEnterSleep()
 
 void Syn_SPCCtrl::FpNoop()
 {
-	LOG(DEBUG) << "No Op";
+	LOG(DEBUG) << "Syn_SPCCtrl::FpNoop()";
 
 	uint8_t pSrc[2] = { 0 };
 	this->FpWaitDeviceReady();
@@ -323,7 +323,7 @@ void Syn_SPCCtrl::FpNoop()
 
 void Syn_SPCCtrl::FpLoadRamPatch(uint8_t* pPatch, int patchSize, uint8_t* pDst, int numBytes)
 {
-	LOG(DEBUG) << "Load RAM Patch";
+	LOG(DEBUG) << "Syn_SPCCtrl::FpLoadRamPatch()";
 
 	this->FpWrite(1, VCSFW_CMD::PATCH, pPatch, patchSize);
 	this->FpWaitForCMDComplete();
@@ -332,7 +332,7 @@ void Syn_SPCCtrl::FpLoadRamPatch(uint8_t* pPatch, int patchSize, uint8_t* pDst, 
 
 void Syn_SPCCtrl::FpLoadPatch(uint8_t* pPatch, int numBytes)
 {
-	LOG(DEBUG) << "Load Patch";
+	LOG(DEBUG) << "Syn_SPCCtrl::FpLoadPatch()";
 
 	this->FpWrite(1, VCSFW_CMD::PATCH, pPatch, numBytes);
 	this->FpWaitForCMDComplete();
@@ -341,7 +341,7 @@ void Syn_SPCCtrl::FpLoadPatch(uint8_t* pPatch, int numBytes)
 
 void Syn_SPCCtrl::FpUnloadPatch()
 {
-	LOG(DEBUG) << "Unload Patch";
+	LOG(DEBUG) << "Syn_SPCCtrl::FpUnloadPatch()";
 
 	this->FpWrite(1, VCSFW_CMD::UNLOAD_PATCH, (uint8_t*)0, 0);
 	this->FpWaitForCMDComplete();
@@ -350,7 +350,7 @@ void Syn_SPCCtrl::FpUnloadPatch()
 
 void Syn_SPCCtrl::FpOtpRomRead(int section, int sector, uint8_t* pDst, int numBytes)
 {
-	LOG(DEBUG) << "OTPRom Read";
+	LOG(DEBUG) << "Syn_SPCCtrl::FpOTPRomRead()";
 
 	uint32_t err;
 
@@ -377,7 +377,7 @@ void Syn_SPCCtrl::FpOtpRomWrite(int section, int sector, uint8_t* pDst, int numB
 	//e.g. [0, 0] for main sector 0, [0, 1] for main sector 1 
 	//     [1, 0] for boot sector 0, [1, 1] for boot sector 1
 
-	LOG(DEBUG) << "OTPRom Write";
+	LOG(DEBUG) << "Syn_SPCCtrl::FpOTPRomWrite()";
 
 	uint32_t err;
 	err = MPC_FpOtpRomWrite(syn_DeviceHandle, section, sector, pDst, numBytes, TIMEOUT);
@@ -399,7 +399,7 @@ void Syn_SPCCtrl::FpOtpRomWrite(int section, int sector, uint8_t* pDst, int numB
 uint8_t Syn_SPCCtrl::FpOtpRomTagRead(uint32_t nExtTag, uint8_t* pDst, int numBytes)
 {
 	uint8_t nRecCount = 0;
-	LOG(DEBUG) << "OTPRom Tag Read";
+	LOG(DEBUG) << "Syn_SPCCtrl::FpOTPRomTagRead()";
 
 	uint8_t arReadMs0Args[8] = { 0 };
 	arReadMs0Args[1] = TAG_CAL;
@@ -418,7 +418,7 @@ uint8_t Syn_SPCCtrl::FpOtpRomTagRead(uint32_t nExtTag, uint8_t* pDst, int numByt
 
 void Syn_SPCCtrl::FpOtpRomTagWrite(uint8_t* pDst, int numBytes)
 {
-	LOG(DEBUG) << "OTPRom Tag Write";
+	LOG(DEBUG) << "Syn_SPCCtrl::FpOTPRomTagWrite()";
 
 	this->FpWrite(1, VCSFW_CMD::TEST_OTPROM_TAG_WRITE, pDst,numBytes);
 	::Sleep(50);
@@ -430,6 +430,7 @@ void Syn_SPCCtrl::FpOtpRomTagWrite(uint8_t* pDst, int numBytes)
 
 void Syn_SPCCtrl::FpPokeRegister(uint32_t nHwRegAddr, uint32_t nData, bool checkStatus)
 {
+	LOG(DEBUG) << "Syn_SPCCtrl::FpPokeRegister()";
 	LOG(DEBUG) << "Poke Register 0x" << hex << nHwRegAddr << " value 0x" << hex << nData;
 
 	uint8_t pDst[10];
@@ -457,6 +458,7 @@ void Syn_SPCCtrl::FpPokeRegister(uint32_t nHwRegAddr, uint32_t nData, bool check
 //void Syn_SPCCtrl::FpPeekRegister(uint32_t nHwRegAddr, uint32_t& nData)
 void Syn_SPCCtrl::FpPeekRegister(uint32_t nHwRegAddr, uint8_t pDst[])
 {
+	LOG(DEBUG) << "Syn_SPCCtrl::FpPeekRegister()";
 	LOG(DEBUG) << "Peek Register 0x" << hex << nHwRegAddr;
 
 	//uint8_t pDst[10];
@@ -479,7 +481,7 @@ void Syn_SPCCtrl::FpPeekRegister(uint32_t nHwRegAddr, uint8_t pDst[])
 
 void Syn_SPCCtrl::FpGetVersion(uint8_t *pDst, int numBytes)
 {
-	LOG(DEBUG) << "Get Version";
+	LOG(DEBUG) << "Syn_SPCCtrl::FpGetVersion()";
 
 	uint32_t err;
 	err = MPC_FpGetVersion(syn_DeviceHandle, pDst, numBytes, TIMEOUT);
@@ -500,7 +502,7 @@ void Syn_SPCCtrl::FpGetVersion(uint8_t *pDst, int numBytes)
 
 void Syn_SPCCtrl::FpWritePrintFile(uint8_t *pPrintPatch, int numBytes)
 {
-	LOG(DEBUG) << "Write Print File";
+	LOG(DEBUG) << "Syn_SPCCtrl::FpWritePrintFile()";
 
 	this->FpWrite(1, VCSFW_CMD::GET_PRINT, pPrintPatch, numBytes);
 	this->FpWaitForCMDComplete();
@@ -513,7 +515,7 @@ void Syn_SPCCtrl::FpWritePrintFile(uint8_t *pPrintPatch, int numBytes)
 //
 void Syn_SPCCtrl::FpGetImage(uint8_t *pDst, int numBytes)
 {
-	LOG(DEBUG) << "Get Image";
+	LOG(DEBUG) << "Syn_SPCCtrl::FpGetImage()";
 
 	uint32_t err;
 	//this->FpNoop();
@@ -538,7 +540,7 @@ void Syn_SPCCtrl::FpGetImage(uint8_t *pDst, int numBytes)
 //
 void Syn_SPCCtrl::FpGetImage2(uint16_t nRows, uint16_t nCols, uint8_t *pDst, uint16_t nBlobSize, uint8_t *pBlob)
 {
-	LOG(DEBUG) << "Get Image 2";
+	LOG(DEBUG) << "Syn_SPCCtrl::FpGetImage2()";
 	
 	uint32_t err;
 	this->FpNoop();
@@ -566,7 +568,7 @@ void Syn_SPCCtrl::FpGetImage2(uint16_t nRows, uint16_t nCols, uint8_t *pDst, uin
 //
 void Syn_SPCCtrl::GpioSetPinType(uint16_t portId, uint32_t mskPins, uint16_t pinType)
 {
-	LOG(DEBUG) << "GPIO Set Pin Type";
+	LOG(DEBUG) << "Syn_SPCCtrl::GpioSetPinType()";
 
 	uint32_t err;
 	err = MPC_GpioSetPinType(syn_DeviceHandle, portId, mskPins, pinType, TIMEOUT);
@@ -591,6 +593,7 @@ void Syn_SPCCtrl::GpioSetPinType(uint16_t portId, uint32_t mskPins, uint16_t pin
 //
 void Syn_SPCCtrl::GpioPinRead(uint16_t portID, uint32_t mskPins, uint32_t* pMskPinState)
 {
+	LOG(DEBUG) << "Syn_SPCCtrl::GpioPinRead()";
 
 	uint32_t err;
 	err = MPC_GpioPinRead(syn_DeviceHandle, portID, mskPins, pMskPinState, TIMEOUT);
@@ -618,7 +621,7 @@ void Syn_SPCCtrl::GpioPinRead(uint16_t portID, uint32_t mskPins, uint32_t* pMskP
 //
 void Syn_SPCCtrl::GpioPinWrite(uint16_t portID, uint32_t mskPins, uint32_t mskPinState)
 {
-	LOG(DEBUG) << "Write GPIO";
+	LOG(DEBUG) << "Syn_SPCCtrl::GpioPinWrite()";
 
 	uint32_t err;
 	err = MPC_GpioPinWrite(syn_DeviceHandle, portID, mskPins, mskPinState, TIMEOUT);
@@ -640,7 +643,7 @@ void Syn_SPCCtrl::GpioPinWrite(uint16_t portID, uint32_t mskPins, uint32_t mskPi
 
 void Syn_SPCCtrl::FpMpcGetSelfTestResults(uint16_t overSamples, uint32_t arValues[MPC_SELF_TEST_BUFFER])
 {
-	LOG(DEBUG) << "MPC04 Self Test";
+	LOG(DEBUG) << "Syn_SPCCtrl::FpMpcGetSelfTestResults()";
 	
 	uint32_t err(0);
 	Syn_Exception ex(err);
@@ -656,7 +659,7 @@ void Syn_SPCCtrl::FpMpcGetSelfTestResults(uint16_t overSamples, uint32_t arValue
 
 void Syn_SPCCtrl::FpGpioGetFreq(uint16_t portId, uint32_t mskPins, uint32_t* pFreq_Hz)
 {
-	LOG(DEBUG) << "GPIO Get Frequence";
+	LOG(DEBUG) << "Syn_SPCCtrl::FpGpioGetFreq()";
 
 	uint16_t error;
 	error = MPC_GpioGetFreq(syn_DeviceHandle, portId, mskPins, pFreq_Hz, 2000);
@@ -675,7 +678,7 @@ void Syn_SPCCtrl::FpGpioGetFreq(uint16_t portId, uint32_t mskPins, uint32_t* pFr
 
 void Syn_SPCCtrl::GpioDirModSet(uint16_t portId, uint32_t mskPins, uint32_t direction)
 {
-	LOG(DEBUG) << "GPIO Dir Mod Set";
+	LOG(DEBUG) << "Syn_SPCCtrl::GpioDirModSet()";
 
 	uint16_t error;
 	error = MPC_GpioDirModSet(syn_DeviceHandle, portId, mskPins, direction, 2000);
@@ -694,6 +697,7 @@ void Syn_SPCCtrl::GpioDirModSet(uint16_t portId, uint32_t mskPins, uint32_t dire
 
 void Syn_SPCCtrl::UpdateMPC04Firmware()
 {
+	LOG(DEBUG) << "Syn_SPCCtrl::UpdateMPC04Firmware()";
 	uint32_t error = 0;
 	Syn_Exception ex(error);
 

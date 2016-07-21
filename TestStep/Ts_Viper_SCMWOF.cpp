@@ -308,10 +308,6 @@ bool Ts_Viper_SCMWOF::ExecuteZone0SCMWofTest(SCM_WofTestInfo& info, SCM_WofTestR
 void Ts_Viper_SCMWOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_WofTestResults& pResults, bool UseConfigVotage)
 {
 	pResults.m_bPass = 0;				//Assume fail.
-	pResults.m_nTriggerWithoutStim = 0;
-	pResults.m_nTriggerWithStim = 0;
-	pResults.m_nGain = 0;
-	int TempGain200(0), TempTriggerWithoutStimGain200(0), TempTriggerWithStimGain200(0);
 
 	if (pResults.m_nNumGains < 2)
 	{
@@ -322,6 +318,9 @@ void Ts_Viper_SCMWOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_Wo
 
 	if (!UseConfigVotage)
 	{
+		pResults.m_nTriggerWithoutStim = 0;
+		pResults.m_nTriggerWithStim = 0;
+		pResults.m_nGain = 0;
 		for (int nGainIdx = 0; nGainIdx < pResults.m_nNumGains; nGainIdx++)
 		{
 			int nTgrIdex_withoutFinger(0);

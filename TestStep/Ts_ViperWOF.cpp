@@ -304,11 +304,8 @@ bool Ts_ViperWOF::GetZ0WofData(WofTestInfo &wofInfo, WofTestResults &wofResults,
 
 void Ts_ViperWOF::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Results, bool useConfigVolts)
 {
-	Results.m_bPass = 0;				//Assume fail.
-	Results.m_nTriggerWithoutStim = 0;
-	Results.m_nTriggerWithStim = 0;
-	Results.m_nGain = 0;
 	//int TempGain200(0), TempTriggerWithoutStimGain200(0), TempTriggerWithStimGain200(0);
+	Results.m_bPass = 0;				//Assume fail.
 
 	if (Results.m_nNumGains < 2)
 	{
@@ -319,6 +316,9 @@ void Ts_ViperWOF::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Re
 
 	if (!useConfigVolts)
 	{
+		Results.m_nTriggerWithoutStim = 0;
+		Results.m_nTriggerWithStim = 0;
+		Results.m_nGain = 0;
 		//Gain100 and Gain200
 		for (int nGainIdx = 0; (nGainIdx < Results.m_nNumGains) && (Results.m_bPass == 0); nGainIdx++)
 		{

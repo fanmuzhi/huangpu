@@ -435,13 +435,6 @@ void Ts_WOFFU::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Resul
 		wofValWithFinger.push_back(temp);
 	}
 
-	//Print
-	/*FILE *pFile = fopen("WOF_FU.csv", "a");
-	if (NULL != pFile)
-	{
-		fprintf(pFile, "\nSerial Number:,%s\n", _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber);
-		fprintf(pFile, "Gain,TgrIdex_withoutFinger,TgrIdex_withFinger,Delta\n");
-	}*/
 	LOG(DEBUG) << "WOFFU:";
 
 	int bestDelta = 0;
@@ -458,11 +451,6 @@ void Ts_WOFFU::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Resul
 			Results.m_bPass = 0;
 			return;
 		}
-
-		/*if (NULL != pFile)
-		{
-			fprintf(pFile, "%d,%d,%d,%d\n", Results.m_nGainStart + (Results.m_nGainInc * nGainIdx), nTgrIdex_withoutFinger, nTgrIdex_withFinger, nTgrIdex_withoutFinger - nTgrIdex_withFinger);			
-		}*/
 
 		if (nTgrIdex_withFinger >= Info.m_nMaxTriggerThreshold || nTgrIdex_withFinger < Info.m_nMinTriggerThreshold)
 		{
@@ -502,7 +490,7 @@ int Ts_WOFFU::CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf)
 {
 	int i;
 
-	//Find the first occurence of 1.
+	//Find the first occurence of 0.
 	int nTgrIdx = nNumThresholds;
 	int iExpected = pTriggerBuf[nNumThresholds-1];
 	for (i = nNumThresholds-1; i>=0; i--)
