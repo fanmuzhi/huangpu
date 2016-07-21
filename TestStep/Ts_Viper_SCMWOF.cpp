@@ -395,7 +395,7 @@ bool Ts_Viper_SCMWOF::CalcScmWofTriggerIdx(int nNumThresholds, uint8_t* pTrigger
 	for (i=0; (i < nNumThresholds) && (bFound == 0); i++)
 	{
 		oTgrIdx = i;
-		if ((pTriggerBuf[i] & 0x01) == 1)
+		if ((pTriggerBuf[i] & 0x01) == 0)
 		{
 			if (i > 0)
 				oTgrIdx -= 1;
