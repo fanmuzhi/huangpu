@@ -20,10 +20,12 @@
 //#include <thread>
 #include <regex>
 
+#ifdef _DEBUG
 #define ELPP_STL_LOGGING
 #define ELPP_THREAD_SAFE
 #include "easylogging++.h"
 INITIALIZE_EASYLOGGINGPP
+#endif
 
 Syn_Site::Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath)
 :_pSyn_Dut(NULL)
@@ -36,9 +38,7 @@ Syn_Site::Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string str
 , _uiErrorFlag(Syn_ExceptionCode::Syn_OK)
 ,_strErrorMessage("")
 {
-#ifdef _DEBUG
 	RegisterLoggingConfig();
-#endif
 }
 
 Syn_Site::~Syn_Site()
@@ -957,6 +957,7 @@ bool Syn_Site::FileExists(const std::string& name)
 
 bool Syn_Site::RegisterLoggingConfig()
 {
+#ifdef _DEBUG
 	el::Configurations defaultConf;
 	//defaultConf.setToDefault();
 	const time_t t = time(NULL);
@@ -971,6 +972,7 @@ bool Syn_Site::RegisterLoggingConfig()
 	//defaultConf.parseFromText("*GLOBAL:\n FORMAT = [%datetime] [%thread] [%level] [%func] %msg");
 	defaultConf.parseFromText("*GLOBAL:\n FORMAT = [%datetime] [%level] %msg");
 	el::Loggers::reconfigureLogger("default", defaultConf);
-
+#endif
+	
 	return true;
 }

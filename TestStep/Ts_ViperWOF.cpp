@@ -329,7 +329,9 @@ void Ts_ViperWOF::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Re
 			Results.m_nGain = Results.m_nGainStart + (Results.m_nGainInc * nGainIdx);
 			Results.m_nTriggerWithoutStim = nTgrIdex_withoutFinger;
 			Results.m_nTriggerWithStim = nTgrIdex_withFinger;
+#ifdef _DEBUG
 			LOG(DEBUG) << "WOF Gain:" << dec << Results.m_nGain << ",NoFinger:" << dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger;
+#endif
 			//if (!rc1 || !rc2)
 			//	continue;
 			if (nTgrIdex_withoutFinger >= Info.m_nMaxTriggerThreshold || nTgrIdex_withoutFinger < Info.m_nMinTriggerThreshold)
@@ -366,7 +368,9 @@ void Ts_ViperWOF::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Re
 		int nTgrIdex_withoutFinger(0), nTgrIdex_withFinger(0);
 		bool rc1 = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithoutStim[6 + (1 * Results.m_nNumThresholds)], nTgrIdex_withoutFinger);
 		bool rc2 = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithStim[6 + (1 * Results.m_nNumThresholds)], nTgrIdex_withFinger);
+#ifdef _DEBUG
 		LOG(DEBUG) << "WOF Gain:"<< dec << Results.m_nGain << "(3.6V) - NoFinger:" << dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger;
+#endif
 		//if (!rc1 || !rc2)
 		//	return;
 		//if (nTgrIdex_withoutFinger >= Info.m_nMaxTriggerThreshold || nTgrIdex_withoutFinger < Info.m_nMinTriggerThreshold)

@@ -466,7 +466,9 @@ void Ts_SCM_WOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_WofTest
 		int nTgrIdex_withFinger = 0;
 		bool rc1 = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithoutStim[6 + (nGainIdx * pResults.m_nNumThresholds)], nTgrIdex_withoutFinger);
 		bool rc2 = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithStim[6 + (nGainIdx * pResults.m_nNumThresholds)], nTgrIdex_withFinger);
+#ifdef _DEBUG
 		LOG(DEBUG) << "SCMWOF Gain:" << dec << pResults.m_nGainStart + (pResults.m_nGainInc * nGainIdx) << ",NoFinger:" << dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger << ",Delta:" << nTgrIdex_withoutFinger - nTgrIdex_withFinger;
+#endif
 		if (!rc1 || !rc2)
 		{
 			return;
@@ -498,7 +500,9 @@ void Ts_SCM_WOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_WofTest
 			pResults.m_nTriggerWithoutStim = nTgrIdex_withoutFinger;
 			pResults.m_nTriggerWithStim = nTgrIdex_withFinger;
 			pResults.m_bPass = 1;
+#ifdef _DEBUG
 			LOG(DEBUG) << "SCMWOF(PASS) Gain:" << dec << pResults.m_nGain << ",NoFinger:" << dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger << ",Delta:" << nTgrIdex_withoutFinger - nTgrIdex_withFinger;
+#endif
 			return;
 		}
 	}

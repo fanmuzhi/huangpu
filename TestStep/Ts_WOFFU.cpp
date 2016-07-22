@@ -431,7 +431,11 @@ void Ts_WOFFU::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Resul
 		int nTgrIdex_withoutFinger(0), nTgrIdex_withFinger(0);
 		bool rc1 = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithoutStim[6 + (nGainIdx * Results.m_nNumThresholds)], nTgrIdex_withoutFinger);
 		bool rc2 = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithStim[6 + (nGainIdx * Results.m_nNumThresholds)], nTgrIdex_withFinger);
+		
+#ifdef _DEBUG
 		LOG(DEBUG) << "WOFFU Gain:" << dec << Results.m_nGainStart + (Results.m_nGainInc * nGainIdx) << ",NoFinger:" << dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger << ",Delta:" << nTgrIdex_withoutFinger - nTgrIdex_withFinger;
+#endif
+		
 		if (!rc1 || !rc2)
 			return;
 		if (nTgrIdex_withoutFinger >= Info.m_nMaxTriggerThreshold || nTgrIdex_withoutFinger < Info.m_nMinTriggerThreshold)
@@ -467,7 +471,9 @@ void Ts_WOFFU::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Resul
 			Results.m_nTriggerWithoutStim = nTgrIdex_withoutFinger;
 			Results.m_nTriggerWithStim = nTgrIdex_withFinger;
 			Results.m_bPass = 1;
+#ifdef _DEBUG
 			LOG(DEBUG) << "WOFFU(PASS) Gain:" << dec << Results.m_nGain << ",NoFinger:" << dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger << ",Delta:" << nTgrIdex_withoutFinger - nTgrIdex_withFinger;
+#endif
 			return;
 		}
 	}

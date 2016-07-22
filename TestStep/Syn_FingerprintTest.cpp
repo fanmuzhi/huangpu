@@ -12,8 +12,9 @@ Syn_FingerprintTest::Syn_FingerprintTest(string &strName, string &strArgs, Syn_D
 :Syn_TestStep(strName, strArgs, pDutCtrl, pDut)
 , _pSyn_Module(NULL)
 {
-
+#ifdef _DEBUG
 	LOG(DEBUG) << "============================== " << strName << " ==============================";
+#endif
 
 	switch (_pSyn_Dut->_eProjectType)
 	{

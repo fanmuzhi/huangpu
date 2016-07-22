@@ -11,7 +11,9 @@
 #include <windows.h>
 
 //third-party
+#ifdef _DEBUG
 #include "easylogging++.h"
+#endif
 
 class Syn_FingerprintTest :public Syn_TestStep
 {
