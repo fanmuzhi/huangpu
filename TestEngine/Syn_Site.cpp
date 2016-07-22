@@ -36,7 +36,9 @@ Syn_Site::Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string str
 , _uiErrorFlag(Syn_ExceptionCode::Syn_OK)
 ,_strErrorMessage("")
 {
+#ifdef _DEBUG
 	RegisterLoggingConfig();
+#endif
 }
 
 Syn_Site::~Syn_Site()
@@ -963,7 +965,7 @@ bool Syn_Site::RegisterLoggingConfig()
 	if (1 == strMonthValue.length())
 		strMonthValue = "0" + strMonthValue;
 	std::string strTimeValue = to_string(current_time->tm_year + 1900) + "_" + strMonthValue + "_" + to_string(current_time->tm_mday);
-	std::string strLogFilePath = std::string(".\\logs\\") + strTimeValue + std::string(".log");
+	std::string strLogFilePath = std::string("./logs/") + strTimeValue + std::string(".log");
 	el::Configuration confFilenameInfo(el::Level::Global, el::ConfigurationType::Filename, strLogFilePath);
 	defaultConf.set(&confFilenameInfo);
 	//defaultConf.parseFromText("*GLOBAL:\n FORMAT = [%datetime] [%thread] [%level] [%func] %msg");

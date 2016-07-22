@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-#define SW_VERSION "1.1.3"
+#define SW_VERSION "1.1.4"
 
 #define SYN_FALSE							0
 #define SYN_TRUE							!SYN_FALSE

@@ -2,9 +2,6 @@
 #include "Syn_MetallicaModule.h"
 #include <vector>
 
-//third-party
-#include "easylogging++.h"
-
 Syn_MetallicaModule::Syn_MetallicaModule()
 {
 }

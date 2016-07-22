@@ -1,17 +1,12 @@
 #include "Syn_Viper2Module.h"
 
-//third-party
-#include "easylogging++.h"
-
 Syn_Viper2Module::Syn_Viper2Module()
 {
 }
 
-
 Syn_Viper2Module::~Syn_Viper2Module()
 {
 }
-
 
 void Syn_Viper2Module::ImageDecode(FPSFrame *pDecodeFrame, FPSFrame *pEncodeFrame, int nNumRow, int nNumCol, int nNumFrames)
 {
