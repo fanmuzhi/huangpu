@@ -441,72 +441,69 @@ void Ts_WOFFD::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Resul
 	Results.m_nGain = Results.m_nGainStart;
 	for (nGainIdx = 0; (nGainIdx < Results.m_nNumGains) && (Results.m_bPass == 0); nGainIdx++)
 	{
+		int nTgrIdex_withoutFinger(0),nTgrIdex_withFinger(0);
 		//value without stimulus.
-		int temp = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithoutStim[6 + (nGainIdx * Results.m_nNumThresholds)]);
-		wofValWithoutFinger.push_back(temp);
-
-		temp = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithStim[6 + (nGainIdx * Results.m_nNumThresholds)]);
-		wofValWithFinger.push_back(temp);
-	}
-
-	LOG(DEBUG) << "WOFFD:";
-	int bestDelta = 0;
-	for (nGainIdx = 0; (nGainIdx < Results.m_nNumGains) && (Results.m_bPass == 0); nGainIdx++)
-	{
-		//Calc the gain.
-
-		int nTgrIdex_withoutFinger = wofValWithoutFinger[nGainIdx];
-		int nTgrIdex_withFinger = wofValWithFinger[nGainIdx];
-		LOG(DEBUG) << "Gain:" << dec << Results.m_nGainStart + (Results.m_nGainInc * nGainIdx) << ",NoFinger:" <<  dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger;
+		bool rc1 = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithoutStim[6 + (nGainIdx * Results.m_nNumThresholds)], nTgrIdex_withoutFinger);
+		bool rc2 = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithStim[6 + (nGainIdx * Results.m_nNumThresholds)], nTgrIdex_withFinger);
+		//LOG(DEBUG) << "WOFFD TgrIdex_withoutFinger:" << dec << nTgrIdex_withoutFinger << ",TgrIdex_withFinger:" << dec << nTgrIdex_withFinger;
+		LOG(DEBUG) << "WOFFD Gain:" << dec << Results.m_nGainStart + (Results.m_nGainInc * nGainIdx) << ",NoFinger:" << dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger << ",Delta:" << nTgrIdex_withoutFinger - nTgrIdex_withFinger;
+		if (!rc1 || !rc2)
+		{
+			return;
+		}
 		if (nTgrIdex_withoutFinger >= Info.m_nMaxTriggerThreshold || nTgrIdex_withoutFinger < Info.m_nMinTriggerThreshold)
 		{
 			//if any Trigger value out of limition, fail
-			Results.m_bPass = 0;
 			return;
 		}
 		if (nTgrIdex_withFinger >= Info.m_nMaxTriggerThreshold || nTgrIdex_withFinger < Info.m_nMinTriggerThreshold)
 		{
 			//if any Trigger value out of limition, fail
-			Results.m_bPass = 0;
 			return;
 		}
 
+		wofValWithoutFinger.push_back(nTgrIdex_withoutFinger);
+		wofValWithFinger.push_back(nTgrIdex_withFinger);
+	}
+
+	//LOG(DEBUG) << "WOFFD:";
+	//int bestDelta = 0;
+	for (nGainIdx = 0; (nGainIdx < Results.m_nNumGains) && (Results.m_bPass == 0); nGainIdx++)
+	{
+		//Calc the gain.
+		int nTgrIdex_withoutFinger = wofValWithoutFinger[nGainIdx];
+		int nTgrIdex_withFinger = wofValWithFinger[nGainIdx];
+		//LOG(DEBUG) << "WOFFD Gain:" << dec << Results.m_nGainStart + (Results.m_nGainInc * nGainIdx) << ",NoFinger:" <<  dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger;
 		int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
-		if (nDelta >= bestDelta)
+		if (nDelta >= Info.m_nDelta_100)
 		{
-			bestDelta = nDelta;
+			//bestDelta = nDelta;
 			Results.m_nGain = Results.m_nGainStart + (Results.m_nGainInc * nGainIdx);
 			Results.m_nTriggerWithoutStim = nTgrIdex_withoutFinger;
 			Results.m_nTriggerWithStim = nTgrIdex_withFinger;
+			Results.m_bPass = 1;
+			LOG(DEBUG) << "WOFFD(PASS) Gain:" << dec << Results.m_nGain << ",NoFinger:" << dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger << ",Delta:" << nTgrIdex_withoutFinger - nTgrIdex_withFinger;
+			return;
 		}
 	}
-
-	LOG(DEBUG) << "bestDelta:" << dec << bestDelta;
-	if (bestDelta < Info.m_nDelta_100)
-	{
-		Results.m_bPass = 0;
-	}
-	else
-	{
-		Results.m_bPass = 1;
-	}
-
 }
 
-int Ts_WOFFD::CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf)
+bool Ts_WOFFD::CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf, int &oTgrIdx)
 {
-	int i;
+	bool bFound(false);
 
 	//Find the first occurence of 1.
-	int nTgrIdx = nNumThresholds;
+	oTgrIdx = nNumThresholds;
 	int iExpected = pTriggerBuf[0];
-	for (i = 0; i<nNumThresholds; i++)
+	for (int i = 0; i<nNumThresholds; i++)
 	{
-		if (((pTriggerBuf[i] & 0x01) != iExpected) && (nTgrIdx == nNumThresholds))
+		if (((pTriggerBuf[i] & 0x01) != iExpected) && (oTgrIdx == nNumThresholds))
 		{
-			nTgrIdx = i;
+			oTgrIdx = i;
+			bFound = true;
 			break;
 		}
 	}
-	return nTgrIdx;
+
+	return bFound;
 }

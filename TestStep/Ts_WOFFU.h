@@ -23,6 +23,6 @@ public:
 
 	void SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Results);
 
-	int CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf);
+	bool CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf, int &oTgrIdx);
 };
 

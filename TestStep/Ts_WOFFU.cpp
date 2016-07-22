@@ -428,23 +428,12 @@ void Ts_WOFFU::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Resul
 	for (nGainIdx = 0; (nGainIdx < Results.m_nNumGains) && (Results.m_bPass == 0); nGainIdx++)
 	{
 		//value without stimulus.
-		int temp = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithoutStim[6 + (nGainIdx * Results.m_nNumThresholds)]);
-		wofValWithoutFinger.push_back(temp);
-
-		temp = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithStim[6 + (nGainIdx * Results.m_nNumThresholds)]);
-		wofValWithFinger.push_back(temp);
-	}
-
-	LOG(DEBUG) << "WOFFU:";
-
-	int bestDelta = 0;
-	for (nGainIdx = 0; (nGainIdx < Results.m_nNumGains) && (Results.m_bPass == 0); nGainIdx++)
-	{
-		//Calc the gain.
-
-		int nTgrIdex_withoutFinger = wofValWithoutFinger[nGainIdx];
-		int nTgrIdex_withFinger = wofValWithFinger[nGainIdx];
-		LOG(DEBUG) << "Gain:" << dec << Results.m_nGainStart + (Results.m_nGainInc * nGainIdx) << ",NoFinger:" << dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger;
+		int nTgrIdex_withoutFinger(0), nTgrIdex_withFinger(0);
+		bool rc1 = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithoutStim[6 + (nGainIdx * Results.m_nNumThresholds)], nTgrIdex_withoutFinger);
+		bool rc2 = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithStim[6 + (nGainIdx * Results.m_nNumThresholds)], nTgrIdex_withFinger);
+		LOG(DEBUG) << "WOFFU Gain:" << dec << Results.m_nGainStart + (Results.m_nGainInc * nGainIdx) << ",NoFinger:" << dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger << ",Delta:" << nTgrIdex_withoutFinger - nTgrIdex_withFinger;
+		if (!rc1 || !rc2)
+			return;
 		if (nTgrIdex_withoutFinger >= Info.m_nMaxTriggerThreshold || nTgrIdex_withoutFinger < Info.m_nMinTriggerThreshold)
 		{
 			//if any Trigger value out of limition, fail
@@ -459,47 +448,47 @@ void Ts_WOFFU::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Resul
 			return;
 		}
 
+		wofValWithFinger.push_back(nTgrIdex_withFinger);
+		wofValWithoutFinger.push_back(nTgrIdex_withoutFinger);
+	}
+
+	//int bestDelta = 0;
+	for (nGainIdx = 0; (nGainIdx < Results.m_nNumGains) && (Results.m_bPass == 0); nGainIdx++)
+	{
+		//Calc the gain.
+		int nTgrIdex_withoutFinger = wofValWithoutFinger[nGainIdx];
+		int nTgrIdex_withFinger = wofValWithFinger[nGainIdx];
+		//LOG(DEBUG) << "WOFFU Gain:" << dec << Results.m_nGainStart + (Results.m_nGainInc * nGainIdx) << ",NoFinger:" << dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger;
+
 		int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
-		if (nDelta > bestDelta)
+		if (nDelta >= Info.m_nDelta_100)
 		{
-			bestDelta = nDelta;
 			Results.m_nGain = Results.m_nGainStart + (Results.m_nGainInc * nGainIdx);
 			Results.m_nTriggerWithoutStim = nTgrIdex_withoutFinger;
 			Results.m_nTriggerWithStim = nTgrIdex_withFinger;
+			Results.m_bPass = 1;
+			LOG(DEBUG) << "WOFFU(PASS) Gain:" << dec << Results.m_nGain << ",NoFinger:" << dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger << ",Delta:" << nTgrIdex_withoutFinger - nTgrIdex_withFinger;
+			return;
 		}
 	}
-
-	/*if (NULL != pFile)
-	{
-		fclose(pFile);
-	}*/
-
-	LOG(DEBUG) << "bestDelta:" << dec << bestDelta;
-	if (bestDelta < Info.m_nDelta_100)
-	{
-		Results.m_bPass = 0;
-	}
-	else
-	{
-		Results.m_bPass = 1;
-	}
-
 }
 
-int Ts_WOFFU::CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf)
+bool Ts_WOFFU::CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf, int &oTgrIdx)
 {
-	int i;
+	bool bFound(false);
 
 	//Find the first occurence of 0.
-	int nTgrIdx = nNumThresholds;
+	oTgrIdx = nNumThresholds;
 	int iExpected = pTriggerBuf[nNumThresholds-1];
-	for (i = nNumThresholds-1; i>=0; i--)
+	for (int i = nNumThresholds-1; i>=0; i--)
 	{
-		if (((pTriggerBuf[i] & 0x01) != iExpected) && (nTgrIdx == nNumThresholds))
+		if (((pTriggerBuf[i] & 0x01) != iExpected) && (oTgrIdx == nNumThresholds))
 		{
-			nTgrIdx = i;
+			oTgrIdx = i;
+			bFound = true;
 			break;
 		}
 	}
-	return nTgrIdx;
+
+	return bFound;
 }

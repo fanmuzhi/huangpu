@@ -433,7 +433,7 @@ void Syn_SPCCtrl::FpPokeRegister(uint32_t nHwRegAddr, uint32_t nData, bool check
 	LOG(DEBUG) << "Syn_SPCCtrl::FpPokeRegister()";
 	LOG(DEBUG) << "Poke Register 0x" << hex << nHwRegAddr << " value 0x" << hex << nData;
 
-	uint8_t pDst[10];
+	//uint8_t pDst[10];
 	//set up data to write:
 	uint32_t nAddrHi_Lo = (((nHwRegAddr >> 16) & 0xFFFF)) & 0xFF;
 	uint32_t nAddrHi_Hi = ((((nHwRegAddr >> 16) & 0xFFFF)) >> 8) & 0xFF;

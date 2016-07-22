@@ -462,23 +462,15 @@ void Ts_SCM_WOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_WofTest
 	for (nGainIdx = 0; (nGainIdx < pResults.m_nNumGains) && (pResults.m_bPass == 0); nGainIdx++)
 	{
 		//If we got a good trigger at this gain (without stimulus).
-		int temp = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithoutStim[6 + (nGainIdx * pResults.m_nNumThresholds)]);
-		scmWofValWithoutFinger.push_back(temp);
-
-		temp = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithStim[6 + (nGainIdx * pResults.m_nNumThresholds)]);
-		scmWofValWithFinger.push_back(temp);
-
-	}
-
-	LOG(DEBUG) << "SCMWOF:";
-	int bestDelta = 0;
-	for (nGainIdx = 0; (nGainIdx < pResults.m_nNumGains) && (pResults.m_bPass == 0); nGainIdx++)
-	{
-		int nTgrIdex_withoutFinger = scmWofValWithoutFinger[nGainIdx];
-		int nTgrIdex_withFinger = scmWofValWithFinger[nGainIdx];
-
-		LOG(DEBUG) << "Gain:" << dec << pResults.m_nGainStart + (pResults.m_nGainInc * nGainIdx) << ",NoFinger:" << dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger;
-
+		int nTgrIdex_withoutFinger = 0;
+		int nTgrIdex_withFinger = 0;
+		bool rc1 = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithoutStim[6 + (nGainIdx * pResults.m_nNumThresholds)], nTgrIdex_withoutFinger);
+		bool rc2 = CalcScmWofTriggerIdx(pResults.m_nNumThresholds, &pResults.m_arDataWithStim[6 + (nGainIdx * pResults.m_nNumThresholds)], nTgrIdex_withFinger);
+		LOG(DEBUG) << "SCMWOF Gain:" << dec << pResults.m_nGainStart + (pResults.m_nGainInc * nGainIdx) << ",NoFinger:" << dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger << ",Delta:" << nTgrIdex_withoutFinger - nTgrIdex_withFinger;
+		if (!rc1 || !rc2)
+		{
+			return;
+		}
 		if (nTgrIdex_withoutFinger >= pInfo.m_nMaxTriggerThreshold || nTgrIdex_withFinger < pInfo.m_nMinTriggerThreshold)
 		{
 			pResults.m_bPass = 0;
@@ -490,38 +482,44 @@ void Ts_SCM_WOF::SYN_SCMWofTestExecute(const SCM_WofTestInfo& pInfo, SCM_WofTest
 			return;
 		}
 
+		scmWofValWithoutFinger.push_back(nTgrIdex_withoutFinger);
+		scmWofValWithFinger.push_back(nTgrIdex_withFinger);
+	}
+
+	for (nGainIdx = 0; (nGainIdx < pResults.m_nNumGains) && (pResults.m_bPass == 0); nGainIdx++)
+	{
+		int nTgrIdex_withoutFinger = scmWofValWithoutFinger[nGainIdx];
+		int nTgrIdex_withFinger = scmWofValWithFinger[nGainIdx];
+
 		int nDelta = nTgrIdex_withoutFinger - nTgrIdex_withFinger;
-		if (nDelta >= bestDelta)
+		if (nDelta >= pInfo.m_nDelta_100)
 		{
-			bestDelta = nDelta;
 			pResults.m_nGain = pResults.m_nGainStart + (pResults.m_nGainInc * nGainIdx);
 			pResults.m_nTriggerWithoutStim = nTgrIdex_withoutFinger;
 			pResults.m_nTriggerWithStim = nTgrIdex_withFinger;
+			pResults.m_bPass = 1;
+			LOG(DEBUG) << "SCMWOF(PASS) Gain:" << dec << pResults.m_nGain << ",NoFinger:" << dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger << ",Delta:" << nTgrIdex_withoutFinger - nTgrIdex_withFinger;
+			return;
 		}
-	}
-
-	LOG(DEBUG) << "bestDelta:" << dec << bestDelta;
-	if (bestDelta < pInfo.m_nDelta_100)
-	{
-		pResults.m_bPass = 0;
-	}
-	else
-	{
-		pResults.m_bPass = 1;
 	}
 }
 
 
-int Ts_SCM_WOF::CalcScmWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf)
+bool Ts_SCM_WOF::CalcScmWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf, int &oTgrIdx)
 {
-	int i;
+	bool bFound(false);
 
 	//Find the first occurence of 1.
-	int nTgrIdx = nNumThresholds;
-	for (i=0; i<nNumThresholds; i++)
+	oTgrIdx = nNumThresholds;
+	for (int i = 0; i<nNumThresholds; i++)
 	{
-		if (((pTriggerBuf[i] & 0x01) == 0) && (nTgrIdx == nNumThresholds))
-			nTgrIdx = i;
+		if (((pTriggerBuf[i] & 0x01) == 0) && (oTgrIdx == nNumThresholds))
+		{
+			oTgrIdx = i;
+			bFound = true;
+			break;
+		}
 	}
-	return nTgrIdx;
+
+	return bFound;
 }
