@@ -34,7 +34,7 @@ void Syn_AboutDlg::SetInfo()
 
 	ui->VersionLabel->setText(QString("Version:") + SW_VERSION);
 	
-	ui->DateLabel->setText("Release Date:2016-07-22");
+	ui->DateLabel->setText("Release Date:2016-07-25");
 
 	ui->CopyrightLabel->setText("Copyright@2016 Synaptics");
 }

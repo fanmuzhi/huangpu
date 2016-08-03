@@ -1,12 +1,12 @@
 #include "Ts_OTPCheck.h"
 
+#include <regex>
 
 Ts_OTPCheck::Ts_OTPCheck(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
 , bPass(true)
 {
 }
-
 
 Ts_OTPCheck::~Ts_OTPCheck()
 {
@@ -252,6 +252,20 @@ void Ts_OTPCheck::Execute()
 		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PART_NUMBERS, pDst, MS0_SIZE);
 		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPartNumberId_count= count;
 
+		//Compare PartNumber
+		std::string strExistsPartNumber = HexToString(pDst,8,14);
+		if ("05,80,00,60,33,01,00" == strExistsPartNumber)
+		{
+			std::string strConfigFileName = _pSyn_Dut->_sConfigFileName;
+			uint8_t pConfigFile[MAX_PART_NUMBER_LENGTH] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+			if (GetConfigFileArray(strConfigFileName, pConfigFile))
+			{
+				if (pConfigFile[7] > pDst[15])
+				{
+					_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPartNumberId_count = 0;
+				}
+			}
+		}
 		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_PART_NUMBERS", HexToString(pDst, 0, 19)));
 	}
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_LNA_PGA_GAINS)
@@ -446,4 +460,66 @@ string Ts_OTPCheck::HexToString(uint8_t arrValue[],int stratPos,int endPos)
 	}
 
 	return strValue;
+}
+
+bool Ts_OTPCheck::GetConfigFileArray(string sConfigFileName, uint8_t *pConfigFilerArray, int arrSize)
+{
+	const std::regex pattern("(\\d{3})-(\\d{6})-(\\d{2})r(\\d{1,2})");
+	std::smatch results;
+	if (std::regex_search(sConfigFileName, results, pattern))
+	{
+		std::string sFileName = results.str();
+		//std::cout << sFileName << std::endl;
+		TranslatePartNum(sFileName, pConfigFilerArray);
+	}
+	else
+	{
+		return false;
+	}
+
+	return true;
+}
+
+void Ts_OTPCheck::TranslatePartNum(const string& sPN, uint8_t* pDst)
+{
+	string        sTemp;
+
+	memset(pDst, 0, MAX_PART_NUMBER_LENGTH);
+
+	//With one character following the 'r', valid PNs have at least 15 characters.
+	if (sPN.length() >= 15)
+	{
+		//Remove all '-' characters up to the 'r'.
+		sTemp = "0";
+		sTemp += sPN.substr(0, 3);
+		sTemp += sPN.substr(4, 6);
+		sTemp += sPN.substr(11, 2);
+
+		//The 1 or 2 characters following the 'r' can be either 0-99 or A-Z.
+		char   nChr1 = (sPN.substr(14)).at(0);
+		if ((nChr1 >= 'A') && (nChr1 <= 'Z'))
+		{
+			pDst[7] = 0x9A + (nChr1 - 'A');
+		}
+		else
+		{
+			if ((nChr1 >= '0') && (nChr1 <= '9'))
+			{
+				pDst[7] = nChr1 - '0';
+				if (sPN.length() >= 16)    //If there are two revision characters.
+				{
+					char   nChr2 = (sPN.substr(15)).at(0);
+					if ((nChr2 >= '0') && (nChr2 <= '9'))
+						pDst[7] = (pDst[7] << 4) + nChr2 - '0';
+				}
+			}
+		}
+
+		//Put the translated part number into given buffer. Convert to BCD.
+		for (int i = 0; i < (MAX_PART_NUMBER_LENGTH - 2); i++)
+		{
+			pDst[i] = sTemp.at(i * 2) << 4;
+			pDst[i] += sTemp.at((i * 2) + 1) & 0x0F;
+		}
+	}
 }
