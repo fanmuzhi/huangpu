@@ -34,12 +34,14 @@ void Ts_HuaweiImageQualityTest::SetUp()
 	_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._highLimit = 100;
 	_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._lowLimit = 30;
 	_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._numSamples = 30;
+	_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._fCrop = 0.2;
+	//_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._fGrav = 0.1;
 	
 	ParseTestStepArgs(_strArgs, listOfArgValue);
 	size_t ilistSize = listOfArgValue.size();
-	if (ilistSize < 3)
+	if (ilistSize < 4)
 	{
-		for (size_t t = 1; t <= 3 - ilistSize; t++)
+		for (size_t t = 1; t <= 4 - ilistSize; t++)
 			listOfArgValue.push_back(std::string(""));
 	}
 
@@ -49,6 +51,10 @@ void Ts_HuaweiImageQualityTest::SetUp()
 		_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._lowLimit = atoi(listOfArgValue[1].c_str());
 	if (0 != listOfArgValue[2].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._numSamples = atoi(listOfArgValue[2].c_str());
+	if (0 != listOfArgValue[3].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._fCrop = std::stof(listOfArgValue[3].c_str());
+	/*if (0 != listOfArgValue[4].length())
+		_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._fGrav = std::stof(listOfArgValue[4].c_str());*/
 }
 
 void Ts_HuaweiImageQualityTest::Execute()
@@ -103,12 +109,13 @@ void Ts_HuaweiImageQualityTest::Execute()
 		}
 	}
 
+	//SNR
 	float snrValue(0);
 	int singalvalue(0);
 	float noisevalue(0);
 	try
 	{
-		snrValue = testSNR(arrImageNoFinger, arrImageFinger, _uiNumCols, _uiNumRows, NumberOfIamge, &singalvalue, &noisevalue);
+		snrValue = testSNR(arrImageNoFinger, arrImageFinger, _uiNumCols, _uiNumRows, NumberOfIamge, &singalvalue, &noisevalue, _pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._fCrop);
 	}
 	catch (...)
 	{
@@ -118,9 +125,54 @@ void Ts_HuaweiImageQualityTest::Execute()
 		return;
 	}
 
+	//SNRUG
+	/*float snrUGValue(0);
+	try
+	{
+		snrUGValue = testSNRUG(arrImageNoFinger, arrImageFinger, _uiNumCols, _uiNumRows, NumberOfIamge);
+	}
+	catch (...)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_SystemError);
+		ex.SetDescription("testSNRUG is failed!");
+		throw ex;
+		return;
+	}
+
+	//calchuaidian
+	int calchuaidianValue(0);
+	int num_of_bubble(0);
+	try
+	{
+		uint8_t *ImageFinger = new uint8_t[_pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.iRealColumnNumber * _pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.iRealRowNumber];
+		int t = 0;
+		for (int m = 0; m < _pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.iRealRowNumber; m++)
+		{
+			for (int n = 0; n < _pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.iRealColumnNumber; n++)
+			{
+				ImageFinger[t] = _pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.arr_ImageFPSFrame.arr[m][n];
+				t++;
+			}
+		}
+
+		calchuaidianValue = calchuaidian(ImageFinger, _pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.iRealColumnNumber, _pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.iRealRowNumber, &num_of_bubble, _pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._fGrav);
+
+		delete[] ImageFinger;
+		ImageFinger = NULL;
+	}
+	catch (...)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_SystemError);
+		ex.SetDescription("calchuaidian is failed!");
+		throw ex;
+		return;
+	}*/
+
 	_pSyn_Dut->_pSyn_DutTestResult->_huaweiIqTestResults.snr = snrValue;
 	_pSyn_Dut->_pSyn_DutTestResult->_huaweiIqTestResults.singalValue = singalvalue;
 	_pSyn_Dut->_pSyn_DutTestResult->_huaweiIqTestResults.nosieValue = noisevalue;
+	//_pSyn_Dut->_pSyn_DutTestResult->_huaweiIqTestResults.snrUG = snrUGValue;
+	//_pSyn_Dut->_pSyn_DutTestResult->_huaweiIqTestResults.calchuaidian = calchuaidianValue;
 
 	delete[] arrImageNoFinger;
 	arrImageNoFinger = NULL;
@@ -138,8 +190,23 @@ void Ts_HuaweiImageQualityTest::ProcessData()
 	int highLimit = _pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._highLimit;
 	int lowLimit = _pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._lowLimit;
 	int snr = _pSyn_Dut->_pSyn_DutTestResult->_huaweiIqTestResults.snr;
+	//int snrUG = _pSyn_Dut->_pSyn_DutTestResult->_huaweiIqTestResults.snrUG;
+	//int calchuaidian = _pSyn_Dut->_pSyn_DutTestResult->_huaweiIqTestResults.calchuaidian;
 
-	if (highLimit >= snr && snr >= lowLimit)
+	if (highLimit < snr || snr < lowLimit)
+	{
+		bPass = 0;
+	}
+	/*if (highLimit < snrUG || snrUG < lowLimit)
+	{
+		bPass = 0;
+	}
+	if (0 != calchuaidian)
+	{
+		bPass = 0;
+	}*/
+
+	if (bPass)
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_huaweiIqTestResults._bPass = true;
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("HuaweiImageQualityTest", "Pass"));

@@ -585,10 +585,10 @@ void FPS_TestExecutive::ReceiveTestResults(unsigned int iSiteNumber,const Syn_Du
 		_ListOfSitePtr[iPos]->GetTestInfo(pDutTestInfo);
 		if (NULL != pDutTestInfo)
 		{
-			if (pDutTestInfo->_huaweiIqTestInfo._bExecuted)
+			/*if (pDutTestInfo->_huaweiIqTestInfo._bExecuted)
 			{
 				strSNRValue += QString(" ") + QString::number(pDutResult->_huaweiIqTestResults.snr);
-			}
+			}*/
 
 			if (pDutTestInfo->_snrInfo.m_bExecuted)
 			{

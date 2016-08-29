@@ -858,9 +858,11 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	{
 		fprintf(pFile, "\nHuaWei ImageQuality Test,%s,%.0f ms,", DutResults->_huaweiIqTestResults._bPass ? "Pass" : "Fail", DutResults->_huaweiIqTestResults.m_elapsedtime);
 		fprintf(pFile, "Signal,Noise,SNR");
-		fprintf(pFile, "\n,,,%f,", DutResults->_huaweiIqTestResults.snr);
-		fprintf(pFile, "%d,", DutResults->_huaweiIqTestResults.singalValue);
+		fprintf(pFile, "\n,,,%d,", DutResults->_huaweiIqTestResults.singalValue);
 		fprintf(pFile, "%f,", DutResults->_huaweiIqTestResults.nosieValue);
+		fprintf(pFile, "%f,", DutResults->_huaweiIqTestResults.snr);
+		//fprintf(pFile, "%f,", DutResults->_huaweiIqTestResults.snrUG);
+		//fprintf(pFile, "%d,", DutResults->_huaweiIqTestResults.calchuaidian);
 		fprintf(pFile, "\n");
 	}
 

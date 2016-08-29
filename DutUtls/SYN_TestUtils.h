@@ -137,6 +137,8 @@ typedef struct
 	int _highLimit;
 	int _lowLimit;
 	int _numSamples;
+	float _fCrop;
+	//float _fGrav;
 }HuaweiIQTestInfo;
 
 typedef struct
@@ -144,6 +146,8 @@ typedef struct
 	float	snr;
 	int		singalValue;
 	float	nosieValue;
+	//float	snrUG;
+	//int		calchuaidian;
 	int		_bPass;
 
 	double  m_elapsedtime;
