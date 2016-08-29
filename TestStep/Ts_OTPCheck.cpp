@@ -165,7 +165,7 @@ void Ts_OTPCheck::Execute()
 		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, pDst, MS0_SIZE);
 		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nLNA_count = count;
 
-		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_LNA", HexToString(pDst, 4, _pSyn_Dut->_RowNumber-1+4)));
+		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_LNA", HexToString(pDst, 0, _pSyn_Dut->_RowNumber+4)));
 	}
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SNR)
 	{
@@ -180,7 +180,7 @@ void Ts_OTPCheck::Execute()
 		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPR, pDst, MS0_SIZE);
 		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPGA_OOPR_count = count;
 
-		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_PGA_OOPR", HexToString(pDst,0, _pSyn_Dut->_RowNumber-1)));
+		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_PGA_OOPR", HexToString(pDst,0, _pSyn_Dut->_RowNumber+4)));
 
 	}
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_FlexId)
@@ -231,7 +231,7 @@ void Ts_OTPCheck::Execute()
 		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPP, pDst, MS0_SIZE);
 		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPGA_OOPP_count= count;
 
-		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_PGA_OOPP", HexToString(pDst, 0,NUM_PGA_OOPP_OTP_ROWS * (_pSyn_Dut->_ColumnNumber - 8)-1)));
+		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_PGA_OOPP", HexToString(pDst, 0, NUM_PGA_OOPP_OTP_ROWS*(_pSyn_Dut->_ColumnNumber-HEADER)+4)));
 	}
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_SCM_WOF_ZONE0)
 	{
