@@ -35,7 +35,7 @@ void Ts_HuaweiImageQualityTest::SetUp()
 	_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._lowLimit = 30;
 	_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._numSamples = 30;
 	_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._fCrop = 0.2;
-	//_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._fGrav = 0.1;
+	//_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._fGrav = 0.2;
 	
 	ParseTestStepArgs(_strArgs, listOfArgValue);
 	size_t ilistSize = listOfArgValue.size();

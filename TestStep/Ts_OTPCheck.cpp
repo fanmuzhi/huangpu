@@ -180,8 +180,7 @@ void Ts_OTPCheck::Execute()
 		int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPR, pDst, MS0_SIZE);
 		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPGA_OOPR_count = count;
 
-		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_PGA_OOPR", HexToString(pDst, 0, _pSyn_Dut->_RowNumber+4)));
-
+		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_PGA_OOPR", HexToString(pDst,0, _pSyn_Dut->_RowNumber+4)));
 	}
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_FlexId)
 	{
