@@ -13,7 +13,10 @@ Syn_FingerprintTest::Syn_FingerprintTest(string &strName, string &strArgs, Syn_D
 , _pSyn_Module(NULL)
 {
 #ifdef _DEBUG
-	LOG(DEBUG) << "============================== " << strName << " ==============================";
+	if (strName != "WaitStimulus")
+	{
+		LOG(DEBUG) << "============================== " << strName << " ==============================";
+	}
 #endif
 
 	switch (_pSyn_Dut->_eProjectType)
