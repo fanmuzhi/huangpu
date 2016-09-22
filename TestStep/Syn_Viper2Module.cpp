@@ -1,4 +1,5 @@
 #include "Syn_Viper2Module.h"
+#include <vector>
 
 Syn_Viper2Module::Syn_Viper2Module()
 {
@@ -68,21 +69,26 @@ void Syn_Viper2Module::ImageDecode(FPSFrame *pDecodeFrame, FPSFrame *pEncodeFram
 bool Syn_Viper2Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRows, CalibrationInfo &calInfo, CalibrationResults &calResult)
 {
 	FPSFrame * arFrames = new FPSFrame[MAXFRAMES];
-	int	nNumRows = numRows;
-	int	nNumCols = numCols;
-	int	nPgaIdx = calInfo.m_nPgaIdx;
-	FPSFrame * calFrameZeroOffsets = new FPSFrame[MAXFRAMES];
-	FPSFrame * calFrameNonZeroOffsets = new FPSFrame[MAXFRAMES];
-	//int8_t * pOffsetArr = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx + 4];
-	int8_t * pOffsetArr = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx];
-	float nSetRatio = calInfo.m_nPgaOffsetRatio;
+	int nNumRows = numRows;
+	int nNumCols = numCols;
+	int nPgaIdx = calInfo.m_nPgaIdx;
+	FPSFrame *calFrameZeroOffsets = new FPSFrame[MAXFRAMES];
+	FPSFrame *calFrameNonZeroOffsets = new FPSFrame[MAXFRAMES];
 	float nConfigRatio = calInfo.m_nPgaOffsetRatio;
 	int nNumFrames = calInfo.m_nNumPgaSamples;
 	int16_t nTotal;
-	int8_t * pTempOffsets = new int8_t[nNumRows * nNumCols];
-	int8_t * pTmp;
-	int8_t * pPrtFileOffsets;
-	int8_t * pOtpOffsets;
+	//int arRowNums[NUM_PGA_OOPP_OTP_ROWS];
+	//int8_t* pTempOffsets = new int8_t[nNumRows * nNumCols];
+	std::vector<int8_t> vPixelError;
+	std::vector<int8_t> vPGAOffsets;
+	std::vector<int8_t> vPGAFineOffsets;
+	//int8_t* pTmp;
+	int8_t* pPrtFileOffsets;
+	int8_t* pOtpOffsets;
+    int32_t min_corr_limit = (int32_t) (-128 / nConfigRatio);
+	min_corr_limit = min_corr_limit < -128 ? -128 : min_corr_limit;
+    int32_t max_corr_limit = (int32_t) (127 / nConfigRatio);
+	max_corr_limit = max_corr_limit > 127 ? 127 : max_corr_limit;
 
 	//These are the rows we save to OTP for calculating the variance score.
 	int	arRowNums[NUM_PGA_OOPP_OTP_ROWS] = { PGA_OOPP_OTP_ROW1, PGA_OOPP_OTP_ROW2, PGA_OOPP_OTP_ROW3, PGA_OOPP_OTP_ROW4, PGA_OOPP_OTP_ROW5 };
@@ -92,22 +98,17 @@ bool Syn_Viper2Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 			arRowNums[i] = ((i + 1)*(nNumRows / 6)) - 1;
 	}
 
-	/*	int8_t arPixVals[256] = {0};
-	for (int nFrame=0; nFrame<256; nFrame++)
-	{
-	memset((void*)&pCalResults->m_pPrintPatch[nPgaIdx+4], (int8_t)nFrame, nNumRows * (nNumCols-HEADER));
-	GetFingerprintImage(*pCalResults, &arFrames[0], nNumRows, nNumCols, NULL, 0);
-	arPixVals[nFrame] = arFrames[0].arr[5][HEADER+137];
-	}
-	memset((void*)&pCalResults->m_pPrintPatch[nPgaIdx+4], 0, nNumRows * (nNumCols-HEADER));
-	*/
+	////These are the rows we save to OTP for calculating the variance score.
+	//for (int i = 0; i < NUM_PGA_OOPP_OTP_ROWS; i++)
+	//	arRowNums[i] = ((i + 1)*(nNumRows / 6)) - 1;
+
 	//Get user-specified number of images with the PGA offsets set to 0 (no offset), then
 	//calculate the average.
 	for (int nFrame = 0; nFrame<nNumFrames; nFrame++)
 		GetFingerprintImage(calResult, &arFrames[nFrame], nNumRows, nNumCols);
 	for (int nRow = 0; nRow<nNumRows; nRow++)
 	{
-		for (int nCol = 0; nCol<nNumCols; nCol++)
+		for (int nCol = HEADER; nCol < nNumCols; nCol++)
 		{
 			nTotal = 0;
 			for (int nFrame = 0; nFrame<nNumFrames; nFrame++)
@@ -116,15 +117,17 @@ bool Syn_Viper2Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 		}
 	}
 
-	//Calculate the PGA offsets (no fine tuning).
-	pTmp = pTempOffsets;
+	//Calculate the PixelError.
 	for (int nRow = 0; nRow<nNumRows; nRow++)
 	{
-		for (int nCol = HEADER; nCol<nNumCols; nCol++)
-		if (calFrameZeroOffsets->arr[nRow][nCol] >= 0xbb)
-			*pTmp++ = CalcPgaOffset(calFrameZeroOffsets->arr[nRow][nCol], nConfigRatio, nConfigRatio);
-		else
-			*pTmp++ = CalcPgaOffset(calFrameZeroOffsets->arr[nRow][nCol], nConfigRatio, nConfigRatio);
+		for (int nCol = HEADER; nCol < nNumCols; nCol++)
+			vPixelError.push_back(calFrameZeroOffsets->arr[nRow][nCol] - 128);
+	}
+
+	//Calculate the PGA offsets (no fine tuning).
+	for (int i = 0; i < nNumRows * (nNumCols - HEADER); i++)
+	{
+		vPGAOffsets.push_back((float)vPixelError[i] / nConfigRatio);
 	}
 
 	//Put the PGA offsets into the print file. The ordering is a bit strange.
@@ -133,19 +136,19 @@ bool Syn_Viper2Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 	for (int nRow = 0; nRow<nNumRows; nRow++)
 	{
 		for (int nCol = 0; nCol<4; nCol++)
-			*pPrtFileOffsets++ = pTempOffsets[(nRow * (nNumCols - HEADER)) + nCol];
+			*pPrtFileOffsets++ = vPGAOffsets[(nRow * (nNumCols - HEADER)) + nCol];
 	}
 
 	//Put the PGA offsets into the print file. The ordering is a bit strange.
 	for (int nBigCol = HEADER + 4; nBigCol<nNumCols; nBigCol = nBigCol + 4)
 	{
 		for (int nCol = 0; nCol<4; nCol++)
-			*pPrtFileOffsets++ = pTempOffsets[((nNumRows - 1) * (nNumCols - HEADER)) + ((nBigCol - HEADER) + nCol)];
+			*pPrtFileOffsets++ = vPGAOffsets[((nNumRows - 1) * (nNumCols - HEADER)) + ((nBigCol - HEADER) + nCol)];
 
 		for (int nRow = 0; nRow<nNumRows - 1; nRow++)
 		{
 			for (int nCol = 0; nCol<4; nCol++)
-				*pPrtFileOffsets++ = pTempOffsets[(nRow * (nNumCols - HEADER)) + ((nBigCol - HEADER) + nCol)];
+				*pPrtFileOffsets++ = vPGAOffsets[(nRow * (nNumCols - HEADER)) + ((nBigCol - HEADER) + nCol)];
 		}
 	}
 
@@ -154,13 +157,12 @@ bool Syn_Viper2Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 	for (int nSelRowIdx = 0; nSelRowIdx < NUM_PGA_OOPP_OTP_ROWS; nSelRowIdx++)
 	{
 		for (int nCol = 0; nCol < nNumCols - HEADER; nCol++)
-			*pOtpOffsets++ = pTempOffsets[(arRowNums[nSelRowIdx] * (nNumCols - HEADER)) + nCol];
+			*pOtpOffsets++ = vPGAOffsets[(arRowNums[nSelRowIdx] * (nNumCols - HEADER)) + nCol];
 	}
 
 	if (calInfo.m_bPgaFineTuning)
 	{
-		//Get user-specified number of images with the PGA offsets set to 0 (no offset), then
-		//calculate the average.
+		//Get user-specified number of images with new PGA offsets, then calculate the average.
 		for (int nFrame = 0; nFrame<nNumFrames; nFrame++)
 			GetFingerprintImage(calResult, &arFrames[nFrame], nNumRows, nNumCols);
 		for (int nRow = 0; nRow<nNumRows; nRow++)
@@ -170,24 +172,48 @@ bool Syn_Viper2Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 				nTotal = 0;
 				for (int nFrame = 0; nFrame<nNumFrames; nFrame++)
 					nTotal += (int16_t)arFrames[nFrame].arr[nRow][nCol];
-
 				calFrameNonZeroOffsets->arr[nRow][nCol] = nTotal / nNumFrames;
 			}
 		}
-
-		//Adjust the PGA offsets (fine tuning).
-		pTmp = pTempOffsets;
+		
+		//Get per pixel ratio
+		int index = 0;
 		for (int nRow = 0; nRow<nNumRows; nRow++)
 		{
-			for (int nCol = HEADER; nCol<nNumCols; nCol++)
+			for (int nCol = HEADER; nCol < nNumCols; nCol++)
 			{
-				int8_t nAdjustment = CalcPgaOffset(calFrameNonZeroOffsets->arr[nRow][nCol], nConfigRatio, nConfigRatio);
-				if (((float)(*pTmp) + (float)nAdjustment) > 127)
-					*pTmp++ = 127;
-				else if (((float)(*pTmp) + (float)nAdjustment) < -128)
-					*pTmp++ = -128;
+				float new_ratio = nConfigRatio;
+				float delta = (float)(calFrameZeroOffsets->arr[nRow][nCol] - calFrameNonZeroOffsets->arr[nRow][nCol]);
+				if (vPGAOffsets[index] != 0)
+				{
+					new_ratio = delta / vPGAOffsets[index];
+				}
+				if (abs(delta) < 10)
+					new_ratio = nConfigRatio;
+				if (new_ratio <= 0)
+					new_ratio = nConfigRatio;
+				if ((((calFrameNonZeroOffsets->arr[nRow][nCol] - 128) * (calFrameZeroOffsets->arr[nRow][nCol] - 128)) > 0)
+					&& (vPGAOffsets[index] <= min_corr_limit || vPGAOffsets[index] >= max_corr_limit))
+				{
+					new_ratio = nConfigRatio;
+
+					//int nAdj = (calFrameZeroOffsets->arr[nRow][nCol] - 128)/nConfigRatio;
+					//int temp = vPGAOffsets[index] + nAdj;
+
+					//calculate new pGA offsets with Dane's formula
+					int temp = (vPGAOffsets[index] - (delta / nConfigRatio)) + vPGAOffsets[index];
+					temp = temp > 127 ? 127 : temp;
+					temp = temp < -128 ? -128 : temp;
+					vPGAFineOffsets.push_back(temp);
+				}
 				else
-					*pTmp++ += nAdjustment;
+				{
+					int temp = vPixelError[index] / new_ratio;
+					temp = temp > 127 ? 127 : temp;
+					temp = temp < -128 ? -128 : temp;
+					vPGAFineOffsets.push_back(temp);
+				}
+				index++;
 			}
 		}
 
@@ -197,19 +223,19 @@ bool Syn_Viper2Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 		for (int nRow = 0; nRow<nNumRows; nRow++)
 		{
 			for (int nCol = 0; nCol<4; nCol++)
-				*pPrtFileOffsets++ = pTempOffsets[(nRow * (nNumCols - HEADER)) + nCol];
+				*pPrtFileOffsets++ = vPGAOffsets[(nRow * (nNumCols - HEADER)) + nCol];
 		}
 
 		//Put the PGA offsets into the print file. The ordering is a bit strange.
 		for (int nBigCol = HEADER + 4; nBigCol<nNumCols; nBigCol = nBigCol + 4)
 		{
 			for (int nCol = 0; nCol<4; nCol++)
-				*pPrtFileOffsets++ = pTempOffsets[((nNumRows - 1) * (nNumCols - HEADER)) + ((nBigCol - HEADER) + nCol)];
+				*pPrtFileOffsets++ = vPGAOffsets[((nNumRows - 1) * (nNumCols - HEADER)) + ((nBigCol - HEADER) + nCol)];
 
 			for (int nRow = 0; nRow<nNumRows - 1; nRow++)
 			{
 				for (int nCol = 0; nCol<4; nCol++)
-					*pPrtFileOffsets++ = pTempOffsets[(nRow * (nNumCols - HEADER)) + ((nBigCol - HEADER) + nCol)];
+					*pPrtFileOffsets++ = vPGAOffsets[(nRow * (nNumCols - HEADER)) + ((nBigCol - HEADER) + nCol)];
 			}
 		}
 
@@ -218,31 +244,93 @@ bool Syn_Viper2Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 		for (int nSelRowIdx = 0; nSelRowIdx < NUM_PGA_OOPP_OTP_ROWS; nSelRowIdx++)
 		{
 			for (int nCol = 0; nCol < nNumCols - HEADER; nCol++)
-				*pOtpOffsets++ = pTempOffsets[(arRowNums[nSelRowIdx] * (nNumCols - HEADER)) + nCol];
+				*pOtpOffsets++ = vPGAFineOffsets[(arRowNums[nSelRowIdx] * (nNumCols - HEADER)) + nCol];
 		}
+
+		//print file for debug
+		/*
+		std::string sFileName("PixelValue.csv");
+		FILE *pFile = fopen(sFileName.c_str(), "a");
+		if (NULL != pFile)
+		{
+			int k = 0;
+			fprintf(pFile, "vPixelError\n");
+			for (int nRow = 0; nRow < nNumRows; nRow++)
+			{
+				for (int nCol = HEADER; nCol < nNumCols; nCol++)
+				{
+					fprintf(pFile, "%d,", vPixelError[k]);
+					k++;
+				}
+				fprintf(pFile, "\n");
+			}
+
+			k = 0;
+			fprintf(pFile, "\nvPGAOffsets\n");
+			for (int nRow = 0; nRow < nNumRows; nRow++)
+			{
+				for (int nCol = HEADER; nCol < nNumCols; nCol++)
+				{
+					fprintf(pFile, "%d,", vPGAOffsets[k]);
+					k++;
+				}
+				fprintf(pFile, "\n");
+			}
+
+			k = 0;
+			fprintf(pFile, "\nvPGAFineOffsets\n");
+			for (int nRow = 0; nRow < nNumRows; nRow++)
+			{
+				for (int nCol = HEADER; nCol < nNumCols; nCol++)
+				{
+					fprintf(pFile, "%d,", vPGAFineOffsets[k]);
+					k++;
+				}
+				fprintf(pFile, "\n");
+			}
+
+			fprintf(pFile, "\ncalFrameZeroOffsets\n");
+			for (int nRow = 0; nRow < nNumRows; nRow++)
+			{
+				for (int nCol = HEADER; nCol < nNumCols; nCol++)
+				{
+					fprintf(pFile, "%d,", calFrameZeroOffsets->arr[nRow][nCol]);
+				}
+				fprintf(pFile, "\n");
+			}
+
+			fprintf(pFile, "\ncalFrameNonZeroOffsets\n");
+			for (int nRow = 0; nRow < nNumRows; nRow++)
+			{
+				for (int nCol = HEADER; nCol < nNumCols; nCol++)
+				{
+					fprintf(pFile, "%d,", calFrameNonZeroOffsets->arr[nRow][nCol]);
+				}
+				fprintf(pFile, "\n");
+			}
+
+			fclose(pFile);
+		}*/
 	}
 
 	//Check if Stage 2 array is all the same.
 	bool bStage2AllEqual = true;
-	//pOffsetArr = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx + 4];
-	pOffsetArr = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx];
-	for (int i = 1; i<(nNumRows * (nNumCols - 8)); i++)
+	pPrtFileOffsets = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx];
+	for (int i = 1; i<(nNumRows * (nNumCols - HEADER)); i++)
 	{
-		if (pOffsetArr[i - 1] != pOffsetArr[i])
+		if (pPrtFileOffsets[i - 1] != pPrtFileOffsets[i])
 			bStage2AllEqual = false;
 	}
 
 	delete[] arFrames;
 	arFrames = NULL;
-
+	delete[] calFrameZeroOffsets;
+	calFrameZeroOffsets = NULL;
 	delete[] calFrameNonZeroOffsets;
 	calFrameNonZeroOffsets = NULL;
 
-	delete[] calFrameZeroOffsets;
-	calFrameZeroOffsets = NULL;
-
-	delete[] pTempOffsets;
 	return !bStage2AllEqual;
+
 }
 
 float Syn_Viper2Module::m_matrix[144][144] = { { 0.062500, -0.062500, -0.062500, -0.062500, -0.062500, 0.062500, 0.062500, 0.062500, -0.062500, 0.062500, 0.062500, 0.062500, -0.062500, 0.062500, 0.062500, 0.062500, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000 },
