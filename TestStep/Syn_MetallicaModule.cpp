@@ -70,7 +70,10 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 	//Calculate the PGA offsets (no fine tuning).
 	for (int i = 0; i < nNumRows * (nNumCols - HEADER); i++)
 	{
-		vPGAOffsets.push_back(vPixelError[i] / nConfigRatio);
+		float temp = (float)vPixelError[i] / nConfigRatio;
+		temp = temp > 127 ? 127 : temp;
+		temp = temp < -128 ? -128 : temp;
+		vPGAOffsets.push_back(temp);
 	}
 
 	//Put the PGA offsets into the print file. The ordering is a bit strange.
@@ -130,7 +133,7 @@ bool Syn_MetallicaModule::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t nu
 					new_ratio = nConfigRatio;
 
 					//calculate new pGA offsets with Dane's formula
-					int temp = (vPGAOffsets[index] - (delta / nConfigRatio)) + vPGAOffsets[index];
+					float temp = ((float)vPGAOffsets[index] - (delta / nConfigRatio)) + (float)vPGAOffsets[index];
 					temp = temp > 127 ? 127 : temp;
 					temp = temp < -128 ? -128 : temp;
 					vPGAFineOffsets.push_back(temp);

@@ -121,13 +121,18 @@ bool Syn_Viper2Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 	for (int nRow = 0; nRow<nNumRows; nRow++)
 	{
 		for (int nCol = HEADER; nCol < nNumCols; nCol++)
+		{
 			vPixelError.push_back(calFrameZeroOffsets->arr[nRow][nCol] - 128);
+		}
 	}
 
 	//Calculate the PGA offsets (no fine tuning).
 	for (int i = 0; i < nNumRows * (nNumCols - HEADER); i++)
 	{
-		vPGAOffsets.push_back((float)vPixelError[i] / nConfigRatio);
+		float temp = (float)vPixelError[i] / nConfigRatio;
+		temp = temp > 127 ? 127 : temp;
+		temp = temp < -128 ? -128 : temp;
+		vPGAOffsets.push_back(temp);
 	}
 
 	//Put the PGA offsets into the print file. The ordering is a bit strange.
@@ -197,11 +202,9 @@ bool Syn_Viper2Module::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRo
 				{
 					new_ratio = nConfigRatio;
 
-					//int nAdj = (calFrameZeroOffsets->arr[nRow][nCol] - 128)/nConfigRatio;
-					//int temp = vPGAOffsets[index] + nAdj;
-
 					//calculate new pGA offsets with Dane's formula
-					int temp = (vPGAOffsets[index] - (delta / nConfigRatio)) + vPGAOffsets[index];
+					float temp = ((float)vPGAOffsets[index] - (delta / nConfigRatio)) + (float)vPGAOffsets[index];
+					//int temp = (vPGAOffsets[index] - (delta / nConfigRatio)) + vPGAOffsets[index];
 					temp = temp > 127 ? 127 : temp;
 					temp = temp < -128 ? -128 : temp;
 					vPGAFineOffsets.push_back(temp);
