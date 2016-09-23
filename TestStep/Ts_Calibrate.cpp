@@ -300,14 +300,45 @@ int32_t Ts_Calibrate::OtpPgaVarianceTest(int8_t* pOtpPgaOffsets, int8_t* pCurPga
 {
 	int	nNumCols = _pSyn_Dut->_ColumnNumber;
 
+	////Calculate the variance between OTP PGA offsets and current PGA offsets.
+	//int32_t nVariance = 0, nDelta;
+	//for (int i=0; i < NUM_PGA_OOPP_OTP_ROWS * (nNumCols-HEADER); i++)
+	//{
+	//	nDelta = (int32_t)(pOtpPgaOffsets[i] - pCurPgaOffsets[i]);
+	//	nVariance += nDelta * nDelta;
+	//}
+	//nVariance /= 4096;
+
+	//return nVariance;
+
+	int nMAX_COL, LineDC_OTP[NUM_PGA_OOPP_OTP_ROWS], LineDC_Cur[NUM_PGA_OOPP_OTP_ROWS];
+	int LineTotal_OTP, LineAverage_OTP, LineTotal_Cur, LineAverage_Cur;
+
+	//int nPixCount = _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nNumberPxlSteps;
+	for (int nRow = 0; nRow < NUM_PGA_OOPP_OTP_ROWS; nRow++)
+	{
+		LineTotal_OTP = 0;
+		LineTotal_Cur = 0;
+
+		for (int i = 0; i < nNumCols; i++)
+		{
+			LineTotal_OTP += pOtpPgaOffsets[(nRow * nNumCols) + i];
+			LineTotal_Cur += pCurPgaOffsets[(nRow * nNumCols) + i];
+		}
+
+		LineDC_OTP[nRow] = LineTotal_OTP / nNumCols;
+		LineDC_Cur[nRow] = LineTotal_Cur / nNumCols;
+	}
+
 	//Calculate the variance between OTP PGA offsets and current PGA offsets.
 	int32_t nVariance = 0, nDelta;
-	for (int i=0; i < NUM_PGA_OOPP_OTP_ROWS * (nNumCols-HEADER); i++)
+	for (int i = 0; i < NUM_PGA_OOPP_OTP_ROWS * nNumCols; i++)
 	{
-		nDelta = (int32_t)(pOtpPgaOffsets[i] - pCurPgaOffsets[i]);
+		nDelta = (int32_t)((pOtpPgaOffsets[i] - LineDC_OTP[i / nNumCols]) - (pCurPgaOffsets[i] - LineDC_Cur[i / nNumCols]));
 		nVariance += nDelta * nDelta;
 	}
-	nVariance /= 4096;
+
+	nVariance /= (4 * nNumCols * NUM_PGA_OOPP_OTP_ROWS);
 
 	return nVariance;
 }
