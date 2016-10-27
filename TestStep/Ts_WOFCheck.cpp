@@ -77,7 +77,7 @@ void Ts_WOFCheck::Execute()
 
 	int count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FD_ZONE0, pDst, MS0_SIZE);
 	_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofZONE0_FD_count = count;
-	_pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nWofFdOtpValue = pDst[5];
+	_pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nWofFdOtpValue = pDst[4];
 	_pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nWofFdOtpGain = pDst[6];
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_wofCheckInfo.m_bExecuted = true;
@@ -92,20 +92,38 @@ void Ts_WOFCheck::ProcessData()
 		throw ex;
 	}
 
-	////check gain
-	//if (_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nGain != _pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nWofFdOtpGain)
-	//{
-	//	bPass = false;
-	//}
 
-	//check delta with limit
-	int delta = 0;
-	delta = abs(_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nTriggerWithStim - _pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nWofFdOtpValue);
-	if (delta > _pSyn_Dut->_pSyn_DutTestInfo->_wofCheckInfo.checkLimit)
+	//calc wof no-stimulus data
+
+	bPass = false;
+	uint8_t numGains = _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nNumGains;
+	uint8_t nGainStart = _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nGainStart;
+	uint8_t nGainInc = _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nGainInc;
+	uint8_t numThresholds = _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nNumThresholds;
+
+	int nTgrIndex;
+	for (uint8_t gainIndex = 0; gainIndex < numGains; gainIndex++)
 	{
-		bPass = false;
-	}
 
+		int CurrentGain = nGainStart + (nGainInc * gainIndex);
+		bool rc1 = CalcWofTriggerIdx(_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nNumThresholds, 
+			&_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_arDataWithoutStim[6 + (gainIndex * numThresholds)], nTgrIndex);
+
+		if (CurrentGain == _pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nWofFdOtpGain)
+		{
+			int delta = 0;
+			delta = abs(nTgrIndex - _pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nWofFdOtpValue);
+			if (delta >= _pSyn_Dut->_pSyn_DutTestInfo->_wofCheckInfo.checkLimit)
+			{
+				bPass = false;
+			}
+			else
+			{
+				bPass = true;
+				break;
+			}
+		}
+	}
 	if (!bPass)
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
@@ -114,11 +132,34 @@ void Ts_WOFCheck::ProcessData()
 		return;
 	}
 	else
+	{
+		_pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_bPass = true;
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOF_Check", "Pass"));
+	}
 
 	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_elapsedtime);
 }
 
 void Ts_WOFCheck::CleanUp()
 {
+}
+
+bool Ts_WOFCheck::CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf, int &oTgrIdx)
+{
+	bool bFound(false);
+
+	//Find the first occurence of 1.
+	oTgrIdx = nNumThresholds;
+	int iExpected = 0;
+	for (int i = 0; i<nNumThresholds; i++)
+	{
+		if (((pTriggerBuf[i] & 0x01) != iExpected) && (oTgrIdx == nNumThresholds))
+		{
+			oTgrIdx = i;
+			bFound = true;
+			break;
+		}
+	}
+
+	return bFound;
 }

@@ -17,5 +17,7 @@ public:
 	virtual void	CleanUp();
 
 private:
+	bool CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf, int &oTgrIdx);
+
 	bool bPass;
 };

@@ -172,6 +172,7 @@ void Syn_Dut::InitData(Syn_SysConfig &sysConfig, AdcBaseLineInfo &iAdcBaseLineIn
 	_pSyn_DutTestResult->_SdkBaselineResults.m_bPass = 1;
 	_pSyn_DutTestResult->_SpiOwnershipResults.m_bPass = 1;
 	_pSyn_DutTestResult->_otpCheckResult._bPass = 1;
+	_pSyn_DutTestResult->_wofCheckResults.m_bPass = 1;
 
 	//time ms
 	_pSyn_DutTestResult->_z0FDWofResults.m_elapsedtime = 0;
