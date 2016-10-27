@@ -157,7 +157,11 @@ typedef struct
 {
 	int		m_bPass;
 	int     m_nWofFdOtpValue;
+	int     m_nWofFdCurrentValue[2];
 	int     m_nWofFdOtpGain;
+	int     m_nWofFdCurrentGain;
+	int     m_m_nWofFdValue;
+	int     m_nDelta;
 	double  m_elapsedtime;
 }WofCheckResults;
 

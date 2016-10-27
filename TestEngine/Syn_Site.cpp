@@ -909,12 +909,12 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	//WOF Check
 	if (DutInfo->_wofCheckInfo.m_bExecuted)
 	{
-		fprintf(pFile, "\nWOF Check with OTP ,%s,%.0f ms,WOF FD VALUE,OTP Value,Gain,OTP Gain", DutResults->_wofCheckResults.m_bPass ? "Pass" : "Fail", DutResults->_wofCheckResults.m_elapsedtime);
-		fprintf(pFile, "\n,,,%d,%d,%d,%d\n", DutResults->_z0FDWofResults.m_nTriggerWithStim,
+		fprintf(pFile, "\nWOF Check with OTP ,%s,%.0f ms,WOF FD VALUE,OTP Value,Current Gain,OTP Gain,Delta ", DutResults->_wofCheckResults.m_bPass ? "Pass" : "Fail", DutResults->_wofCheckResults.m_elapsedtime);
+		fprintf(pFile, "\n,,,%d,%d,%d,%d,%d\n", DutResults->_wofCheckResults.m_m_nWofFdValue,
 				DutResults->_wofCheckResults.m_nWofFdOtpValue,
-				DutResults->_z0FDWofResults.m_nGain,
-				DutResults->_wofCheckResults.m_nWofFdOtpGain);
-
+				DutResults->_wofCheckResults.m_nWofFdCurrentGain,
+				DutResults->_wofCheckResults.m_nWofFdOtpGain,
+				DutResults->_wofCheckResults.m_nDelta);
 	}
 	//Average No Finger & Average Finger
 	//int numFrames = 30;

@@ -105,15 +105,17 @@ void Ts_WOFCheck::ProcessData()
 	for (uint8_t gainIndex = 0; gainIndex < numGains; gainIndex++)
 	{
 
-		int CurrentGain = nGainStart + (nGainInc * gainIndex);
-		bool rc1 = CalcWofTriggerIdx(_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nNumThresholds, 
-			&_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_arDataWithoutStim[6 + (gainIndex * numThresholds)], nTgrIndex);
-
-		if (CurrentGain == _pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nWofFdOtpGain)
+		//_pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nWofFdCurrentGain = nGainStart + (nGainInc * gainIndex);
+		//bool rc1 = CalcWofTriggerIdx(_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nNumThresholds, 
+		//	&_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_arDataWithoutStim[6 + (gainIndex * numThresholds)], nTgrIndex);
+		//_pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nWofFdCurrentValue = nTgrIndex;
+		if (_pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nWofFdCurrentGain  == _pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nWofFdOtpGain)
 		{
-			int delta = 0;
-			delta = abs(nTgrIndex - _pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nWofFdOtpValue);
-			if (delta >= _pSyn_Dut->_pSyn_DutTestInfo->_wofCheckInfo.checkLimit)
+			_pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_m_nWofFdValue = _pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nWofFdCurrentValue[gainIndex];
+			_pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nDelta = abs(_pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nWofFdCurrentValue[gainIndex]- 
+				_pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nWofFdOtpValue);
+
+			if (_pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nDelta >= _pSyn_Dut->_pSyn_DutTestInfo->_wofCheckInfo.checkLimit)
 			{
 				bPass = false;
 			}

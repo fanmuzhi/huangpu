@@ -146,6 +146,26 @@ void Ts_ViperWOF::Execute()
 		{
 			_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_bExecutedWithoutStimulus = 1;
 		}
+	
+		uint8_t numGains = _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nNumGains;
+		uint8_t nGainStart = _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nGainStart;
+		uint8_t nGainInc = _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nGainInc;
+		uint8_t numThresholds = _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nNumThresholds;
+		int nTgrIndex = 0;
+		for (uint8_t gainIndex = 0; gainIndex < numGains; gainIndex++)
+		{
+			int sum = 0;
+			for (int i = 0; i < 5; i++)
+			{
+				GetZ0WofData(_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults, false);
+				_pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nWofFdCurrentGain = nGainStart + (nGainInc * gainIndex);
+				bool rc1 = CalcWofTriggerIdx(_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nNumThresholds,
+					&_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_arDataWithoutStim[6 + (gainIndex * numThresholds)], nTgrIndex);
+				sum = sum + nTgrIndex;
+			}
+			_pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nWofFdCurrentValue[gainIndex] = sum / 5;
+		}
+
 
 		ComputeRunningTime(dCurrentElapsedTime);
 		_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_elapsedtime += dCurrentElapsedTime;
