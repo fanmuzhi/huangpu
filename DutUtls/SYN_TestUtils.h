@@ -155,6 +155,14 @@ typedef struct
 
 typedef struct
 {
+	int		m_bPass;
+	int     m_nWofFdOtpValue;
+	int     m_nWofFdOtpGain;
+	double  m_elapsedtime;
+}WofCheckResults;
+
+typedef struct
+{
 	uint8_t  _GerVerArray[VERSION_SIZE];
 
 	uint32_t   buildtime;        /* Unix-style build time, in seconds   *//*  from 1/1/1970 12:00 AM GMT         */
@@ -1129,3 +1137,9 @@ typedef struct
 	int iRealRowNumber;
 	int iRealColumnNumber;
 }Syn_WaitStimulusResults;// Syn_WaitStimulusInfo;
+
+typedef struct
+{
+	int		m_bExecuted;
+	int		checkLimit;
+}WofCheckInfo;

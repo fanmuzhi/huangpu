@@ -25,6 +25,7 @@
 #include "Ts_RAMTest.h"
 #include "Ts_AFETest.h"
 #include "Ts_WOFFD.h"
+#include "Ts_WOFCheck.h"
 #include "Ts_WOFFU.h"
 #include "Ts_WOFLowPower.h"
 #include "Ts_SCM_WOF.h"
@@ -172,6 +173,10 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 			opTestStepInstance = new Ts_WOFFD(strTestStepName, strTestArgs, pDutCtrl, pDut);
 		else
 			return false;
+	}
+	else if (std::string("WOF_Check") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_WOFCheck(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else if (std::string("WOF_FU_WithoutStimulus") == strTestStepName || std::string("WOF_FU_WithStimulus") == strTestStepName)
 	{

@@ -129,6 +129,7 @@ void Syn_Dut::InitData(Syn_SysConfig &sysConfig, AdcBaseLineInfo &iAdcBaseLineIn
 	_pSyn_DutTestInfo->_SpiOwnershipInfo.m_bExecuted = false;
 	_pSyn_DutTestInfo->_otpCheckInfo._bExecuted = false;
 	_pSyn_DutTestInfo->_huaweiIqTestInfo._bExecuted = false;
+	_pSyn_DutTestInfo->_wofCheckInfo.m_bExecuted = false;
 
 	_pSyn_DutTestResult->_initResults.m_bPass = 1;
 	_pSyn_DutTestResult->_calibrationResults.m_bPass = 1;
@@ -179,6 +180,7 @@ void Syn_Dut::InitData(Syn_SysConfig &sysConfig, AdcBaseLineInfo &iAdcBaseLineIn
 	_pSyn_DutTestResult->_z1FUWofResults.m_elapsedtime = 0;
 	_pSyn_DutTestResult->_z0SCM_wofResults.m_elapsedtime = 0;
 	_pSyn_DutTestResult->_z1SCM_wofResults.m_elapsedtime = 0;
+	_pSyn_DutTestResult->_wofCheckResults.m_elapsedtime = 0;
 
 	//m_nStage2VarianceScore
 	_pSyn_DutTestResult->_calibrationResults.m_nStage2VarianceScore = -0x300;

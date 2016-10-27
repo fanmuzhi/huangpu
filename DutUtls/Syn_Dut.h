@@ -65,6 +65,7 @@ struct Syn_DutTestInfo
 	OTPCheckInfo				_otpCheckInfo;
 	GetVerInfo					_getVerInfo;
 	HuaweiIQTestInfo			_huaweiIqTestInfo;
+	WofCheckInfo                _wofCheckInfo;
 };
 
 struct Syn_DutTestResult
@@ -119,6 +120,7 @@ struct Syn_DutTestResult
 	OTPCheckResults				_otpCheckResult;
 	Syn_WaitStimulusResults		_WaitStimulusResults;
 	HuaweiIQTestResults			_huaweiIqTestResults;
+	WofCheckResults             _wofCheckResults;
 };
 
 class Syn_Dut

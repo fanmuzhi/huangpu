@@ -134,6 +134,7 @@
     <ClInclude Include="Ts_ViperWOF.h" />
     <ClInclude Include="Ts_Viper_SCMWOF.h" />
     <ClInclude Include="Ts_WaitStimulus.h" />
+    <ClInclude Include="Ts_WOFCheck.h" />
     <ClInclude Include="Ts_WOFFD.h" />
     <ClInclude Include="Ts_WOFFU.h" />
     <ClInclude Include="Ts_WOFLowPower.h" />
@@ -181,6 +182,7 @@
     <ClCompile Include="Ts_ViperWOF.cpp" />
     <ClCompile Include="Ts_Viper_SCMWOF.cpp" />
     <ClCompile Include="Ts_WaitStimulus.cpp" />
+    <ClCompile Include="Ts_WOFCheck.cpp" />
     <ClCompile Include="Ts_WOFFD.cpp" />
     <ClCompile Include="Ts_WOFFU.cpp" />
     <ClCompile Include="Ts_WOFLowPower.cpp" />
