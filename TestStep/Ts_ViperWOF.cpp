@@ -155,7 +155,7 @@ void Ts_ViperWOF::Execute()
 		for (uint8_t gainIndex = 0; gainIndex < numGains; gainIndex++)
 		{
 			int sum = 0;
-			for (int i = 0; i < 5; i++)
+			for (int i = 0; i < 10; i++)
 			{
 				GetZ0WofData(_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults, false);
 				_pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nWofFdCurrentGain = nGainStart + (nGainInc * gainIndex);
@@ -163,7 +163,7 @@ void Ts_ViperWOF::Execute()
 					&_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_arDataWithoutStim[6 + (gainIndex * numThresholds)], nTgrIndex);
 				sum = sum + nTgrIndex;
 			}
-			_pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nWofFdCurrentValue[gainIndex] = sum / 5;
+			_pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nWofFdCurrentValue[gainIndex] = sum / 10;
 		}
 
 

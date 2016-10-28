@@ -105,7 +105,7 @@ void Ts_WOFCheck::ProcessData()
 	for (uint8_t gainIndex = 0; gainIndex < numGains; gainIndex++)
 	{
 
-		//_pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nWofFdCurrentGain = nGainStart + (nGainInc * gainIndex);
+		_pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nWofFdCurrentGain = nGainStart + (nGainInc * gainIndex);
 		//bool rc1 = CalcWofTriggerIdx(_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_nNumThresholds, 
 		//	&_pSyn_Dut->_pSyn_DutTestResult->_z0FDWofResults.m_arDataWithoutStim[6 + (gainIndex * numThresholds)], nTgrIndex);
 		//_pSyn_Dut->_pSyn_DutTestResult->_wofCheckResults.m_nWofFdCurrentValue = nTgrIndex;
