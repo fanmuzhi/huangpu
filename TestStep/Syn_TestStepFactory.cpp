@@ -38,6 +38,7 @@
 #include "Ts_SlowOscTrim.h"
 #include "Ts_Viper_SCMWOF.h"
 #include "Ts_ViperWOF.h"
+#include "Ts_DeepSleepCurrent.h"
 
 Syn_TestStepFactory::Syn_TestStepFactory()
 {
@@ -220,6 +221,10 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	else if (std::string("Invalidate") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_Invalidate(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("DeepSleepCurrent") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_DeepSleepCurrent(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else if (std::string("OscTrim") == strTestStepName)
 	{

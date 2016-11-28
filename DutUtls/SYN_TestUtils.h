@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-#define SW_VERSION "1.1.6"
+#define SW_VERSION "1.1.7"
 
 #define SYN_FALSE							0
 #define SYN_TRUE							!SYN_FALSE
@@ -1129,3 +1129,19 @@ typedef struct
 	int iRealRowNumber;
 	int iRealColumnNumber;
 }Syn_WaitStimulusResults;// Syn_WaitStimulusInfo;
+
+//DeepSleep:
+typedef struct
+{
+	int			m_bExecuted;
+	float		m_SleepCurrentValue;
+}DeepSleepModeInfo;
+
+typedef struct
+{
+	int			m_bPass;
+
+	float		m_DeepSleepCurrentValue;
+
+	double      m_elapsedtime;
+}DeepSleepModeResults;

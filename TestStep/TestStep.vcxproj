@@ -106,6 +106,7 @@
     <ClInclude Include="Syn_TestStepFactory.h" />
     <ClInclude Include="Syn_ViperModule.h" />
     <ClInclude Include="Ts_CurrentTest.h" />
+    <ClInclude Include="Ts_DeepSleepCurrent.h" />
     <ClInclude Include="Ts_DRdyTest.h" />
     <ClInclude Include="Ts_ConsecutivePixels.h" />
     <ClInclude Include="Ts_FinalizationStep.h" />
@@ -153,6 +154,7 @@
     <ClCompile Include="Syn_TestStepFactory.cpp" />
     <ClCompile Include="Syn_ViperModule.cpp" />
     <ClCompile Include="Ts_CurrentTest.cpp" />
+    <ClCompile Include="Ts_DeepSleepCurrent.cpp" />
     <ClCompile Include="Ts_DRdyTest.cpp" />
     <ClCompile Include="Ts_ConsecutivePixels.cpp" />
     <ClCompile Include="Ts_FinalizationStep.cpp" />

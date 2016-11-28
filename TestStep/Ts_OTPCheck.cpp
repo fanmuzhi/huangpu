@@ -252,7 +252,7 @@ void Ts_OTPCheck::Execute()
 		_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPartNumberId_count= count;
 
 		//Compare PartNumber
-		std::string strExistsPartNumber = HexToString(pDst,8,14);
+		/*std::string strExistsPartNumber = HexToString(pDst,8,14);
 		if ("05,80,00,60,33,01,00" == strExistsPartNumber)
 		{
 			std::string strConfigFileName = _pSyn_Dut->_sConfigFileName;
@@ -264,7 +264,7 @@ void Ts_OTPCheck::Execute()
 					_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPartNumberId_count = 0;
 				}
 			}
-		}
+		}*/
 		_pSyn_Dut->_pSyn_DutTestResult->_mapMainSectorInfo.insert(std::map<std::string, std::string>::value_type("EXT_TAG_PART_NUMBERS", HexToString(pDst, 0, 19)));
 	}
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_LNA_PGA_GAINS)
