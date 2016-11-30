@@ -311,8 +311,9 @@ int32_t Ts_Calibrate::OtpPgaVarianceTest(int8_t* pOtpPgaOffsets, int8_t* pCurPga
 
 	//return nVariance;
 
-	int nMAX_COL, LineDC_OTP[NUM_PGA_OOPP_OTP_ROWS], LineDC_Cur[NUM_PGA_OOPP_OTP_ROWS];
-	int LineTotal_OTP, LineAverage_OTP, LineTotal_Cur, LineAverage_Cur;
+	//int nMAX_COL;
+	int LineDC_OTP[NUM_PGA_OOPP_OTP_ROWS], LineDC_Cur[NUM_PGA_OOPP_OTP_ROWS];
+	int LineTotal_OTP, LineTotal_Cur;// , LineAverage_OTP, LineAverage_Cur;
 
 	//int nPixCount = _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nNumberPxlSteps;
 	for (int nRow = 0; nRow < NUM_PGA_OOPP_OTP_ROWS; nRow++)

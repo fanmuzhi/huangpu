@@ -846,7 +846,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	//DeepSleepCurrent Test
 	if (DutInfo->_deepSleepModeInfoInfo.m_bExecuted)
 	{
-		fprintf(pFile, "\nDeepSleepCurrent Test,%s,%0.f ms,Value,", DutResults->_deepSleepModeResults.m_bPass ? "Pass" : "Fail", DutResults->_deepSleepModeResults.m_elapsedtime);
+		fprintf(pFile, "\nDeepSleepCurrent Test,%s,%0.f ms,Value (uA),", DutResults->_deepSleepModeResults.m_bPass ? "Pass" : "Fail", DutResults->_deepSleepModeResults.m_elapsedtime);
 		fprintf(pFile, "\n,,,%.3f", DutResults->_deepSleepModeResults.m_DeepSleepCurrentValue);
 		fprintf(pFile, "\n");
 	}
