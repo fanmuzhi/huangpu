@@ -1,7 +1,7 @@
 #pragma once
 
 //Local
-#include "Syn_DutCtrl.h"
+//#include "Syn_DutCtrl.h"
 #include "Syn_Config.h"
 
 #include "Syn_TestUtils.h"
