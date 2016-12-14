@@ -178,10 +178,6 @@
   <ItemGroup>
     <ResourceCompile Include="TestStep.rc" />
   </ItemGroup>
-  <ItemGroup>
-    <Library Include="..\lib\FpAlphaModule.lib" />
-    <Library Include="..\lib\FpBridge.lib" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

@@ -263,8 +263,4 @@
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
-  <ItemGroup>
-    <Library Include="..\lib\FpAlphaModule.lib" />
-    <Library Include="..\lib\FpBridge.lib" />
-  </ItemGroup>
 </Project>
