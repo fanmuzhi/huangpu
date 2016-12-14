@@ -86,12 +86,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Syn_DeviceManager.cpp" />
     <ClCompile Include="Syn_Site.cpp" />
     <ClCompile Include="Syn_SysConfigOperation.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Syn_DeviceManager.h" />
     <ClInclude Include="Syn_Site.h" />
     <ClInclude Include="Syn_SysConfigOperation.h" />
   </ItemGroup>

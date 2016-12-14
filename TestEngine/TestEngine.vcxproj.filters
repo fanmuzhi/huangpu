@@ -21,18 +21,12 @@
     <ClCompile Include="Syn_SysConfigOperation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Syn_DeviceManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Syn_Site.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Syn_SysConfigOperation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Syn_DeviceManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,16 +4,7 @@
     <ClCompile Include="Syn_FingerprintTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Syn_MetallicaModule.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Syn_Module.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Syn_TestStepFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Syn_ViperModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Ts_AcqImgFinger.cpp">
@@ -82,12 +73,6 @@
     <ClCompile Include="Ts_FinalizationStep.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Syn_Viper1Module.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Syn_Viper2Module.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Ts_OpensShortsTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -141,19 +126,10 @@
     <ClInclude Include="Syn_FingerprintTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Syn_MetallicaModule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Syn_Module.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Syn_TestStep.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Syn_TestStepFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Syn_ViperModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ts_AcqImgFinger.h">
@@ -222,12 +198,6 @@
     <ClInclude Include="Ts_FinalizationStep.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Syn_Viper1Module.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Syn_Viper2Module.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Ts_OpensShortsTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -276,6 +246,15 @@
     <ClInclude Include="Ts_Viper_SCMWOF.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FpAlphaModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="syn_bridge.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="syn_devicemanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
@@ -295,5 +274,9 @@
     <ResourceCompile Include="TestStep.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\lib\FpAlphaModule.lib" />
+    <Library Include="..\lib\FpBridge.lib" />
   </ItemGroup>
 </Project>

@@ -21,15 +21,6 @@
     <ClInclude Include="Syn_BinCodes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Syn_DutCtrl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Syn_SPCCtrl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Syn_MPC04Ctrl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Syn_Exception.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -48,15 +39,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Syn_BinCodes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Syn_SPCCtrl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Syn_MPC04Ctrl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Syn_DutCtrl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -92,19 +92,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Syn_Viper1Module.h" />
-    <ClInclude Include="Syn_Viper2Module.h" />
+    <ClInclude Include="FpAlphaModule.h" />
+    <ClInclude Include="syn_bridge.h" />
+    <ClInclude Include="syn_devicemanager.h" />
     <ClInclude Include="Ts_AcqImgFinger.h" />
     <ClInclude Include="Ts_AcqImgNoFinger.h" />
     <ClInclude Include="Ts_AFETest.h" />
     <ClInclude Include="Ts_ButtonTest.h" />
     <ClInclude Include="Ts_Calibrate.h" />
     <ClInclude Include="Syn_FingerprintTest.h" />
-    <ClInclude Include="Syn_MetallicaModule.h" />
-    <ClInclude Include="Syn_Module.h" />
     <ClInclude Include="Syn_TestStep.h" />
     <ClInclude Include="Syn_TestStepFactory.h" />
-    <ClInclude Include="Syn_ViperModule.h" />
     <ClInclude Include="Ts_CurrentTest.h" />
     <ClInclude Include="Ts_DRdyTest.h" />
     <ClInclude Include="Ts_ConsecutivePixels.h" />
@@ -140,18 +138,13 @@
     <ClInclude Include="Ts_WoVarTest.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Syn_Viper1Module.cpp" />
-    <ClCompile Include="Syn_Viper2Module.cpp" />
     <ClCompile Include="Ts_AcqImgFinger.cpp" />
     <ClCompile Include="Ts_AcqImgNoFinger.cpp" />
     <ClCompile Include="Ts_AFETest.cpp" />
     <ClCompile Include="Ts_ButtonTest.cpp" />
     <ClCompile Include="Ts_Calibrate.cpp" />
     <ClCompile Include="Syn_FingerprintTest.cpp" />
-    <ClCompile Include="Syn_MetallicaModule.cpp" />
-    <ClCompile Include="Syn_Module.cpp" />
     <ClCompile Include="Syn_TestStepFactory.cpp" />
-    <ClCompile Include="Syn_ViperModule.cpp" />
     <ClCompile Include="Ts_CurrentTest.cpp" />
     <ClCompile Include="Ts_DRdyTest.cpp" />
     <ClCompile Include="Ts_ConsecutivePixels.cpp" />
@@ -188,6 +181,10 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TestStep.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\lib\FpAlphaModule.lib" />
+    <Library Include="..\lib\FpBridge.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
