@@ -92,15 +92,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="FpAlphaModule.h" />
-    <ClInclude Include="syn_bridge.h" />
-    <ClInclude Include="syn_devicemanager.h" />
     <ClInclude Include="Ts_AcqImgFinger.h" />
     <ClInclude Include="Ts_AcqImgNoFinger.h" />
     <ClInclude Include="Ts_AFETest.h" />
     <ClInclude Include="Ts_ButtonTest.h" />
     <ClInclude Include="Ts_Calibrate.h" />
-    <ClInclude Include="Syn_FingerprintTest.h" />
     <ClInclude Include="Syn_TestStep.h" />
     <ClInclude Include="Syn_TestStepFactory.h" />
     <ClInclude Include="Ts_CurrentTest.h" />

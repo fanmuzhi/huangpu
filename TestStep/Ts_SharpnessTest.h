@@ -4,7 +4,7 @@
 class Ts_SharpnessTest : public Syn_FingerprintTest
 {
 public:
-	Ts_SharpnessTest(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
+	Ts_SharpnessTest(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut);
 	virtual ~Ts_SharpnessTest();
 
 	virtual void	SetUp();

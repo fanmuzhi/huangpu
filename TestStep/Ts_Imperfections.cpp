@@ -1,6 +1,6 @@
 #include "Ts_Imperfections.h"
 
-Ts_Imperfections::Ts_Imperfections(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
+Ts_Imperfections::Ts_Imperfections(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
 {
 }

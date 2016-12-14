@@ -4,7 +4,7 @@
 static int m_kernelSharpnessGx[3][3] = { { 1, 2, 1 }, { 0, 0, 0 }, { -1, -2, -1 } };
 static int m_kernelSharpnessGy[3][3] = { { 1, 0, -1 }, { 2, 0, -2 }, { 1, 0, -1 } };
 
-Ts_SharpnessTest::Ts_SharpnessTest(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
+Ts_SharpnessTest::Ts_SharpnessTest(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
 {
 }

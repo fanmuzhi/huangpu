@@ -4,7 +4,7 @@
 class Ts_ButtonTest : public Syn_FingerprintTest
 {
 public:
-	Ts_ButtonTest(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
+	Ts_ButtonTest(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut);
 	virtual ~Ts_ButtonTest();
 
 	virtual void SetUp();

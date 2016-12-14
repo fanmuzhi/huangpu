@@ -3,7 +3,7 @@
 class Ts_Viper_SCMWOF : public Syn_FingerprintTest
 {
 public:
-	Ts_Viper_SCMWOF(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
+	Ts_Viper_SCMWOF(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut);
 	virtual ~Ts_Viper_SCMWOF();
 
 	virtual void SetUp();

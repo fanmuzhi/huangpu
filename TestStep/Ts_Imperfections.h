@@ -4,7 +4,7 @@
 class Ts_Imperfections : public Syn_FingerprintTest
 {
 public:
-	Ts_Imperfections(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
+	Ts_Imperfections(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut);
 	virtual ~Ts_Imperfections();
 
 	virtual void	SetUp();

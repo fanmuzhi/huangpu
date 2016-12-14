@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <io.h>
 
-Ts_FinalizationStep::Ts_FinalizationStep(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
+Ts_FinalizationStep::Ts_FinalizationStep(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
 {
 }

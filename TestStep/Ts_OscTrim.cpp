@@ -1,6 +1,6 @@
 #include "Ts_OscTrim.h"
 
-Ts_OscTrim::Ts_OscTrim(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
+Ts_OscTrim::Ts_OscTrim(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
 {
 }

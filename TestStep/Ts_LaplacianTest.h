@@ -4,7 +4,7 @@
 class Ts_LaplacianTest : public Syn_FingerprintTest
 {
 public:
-	Ts_LaplacianTest(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
+	Ts_LaplacianTest(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut);
 	virtual ~Ts_LaplacianTest();
 
 	virtual void	SetUp();

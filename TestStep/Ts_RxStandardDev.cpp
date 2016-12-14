@@ -1,6 +1,6 @@
 #include "Ts_RxStandardDev.h"
 
-Ts_RxStandardDev::Ts_RxStandardDev(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
+Ts_RxStandardDev::Ts_RxStandardDev(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
 {
 }

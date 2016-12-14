@@ -3,7 +3,7 @@
 class Ts_FinalizationStep : public Syn_FingerprintTest
 {
 public:
-	Ts_FinalizationStep(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
+	Ts_FinalizationStep(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut);
 	virtual ~Ts_FinalizationStep();
 
 	virtual void SetUp();

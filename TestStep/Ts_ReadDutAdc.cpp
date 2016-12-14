@@ -12,7 +12,7 @@
 	0x14, 0x28, 0x00, 0x80, 0x31, 0x00, 0x00, 0x00, 0x08,
 	0x24, 0x20, 0x00, 0x80, 0x09, 0x00, 0x00, 0x00, 0x08 };*/
 
-Ts_ReadDutAdc::Ts_ReadDutAdc(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
+Ts_ReadDutAdc::Ts_ReadDutAdc(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
 {
 }

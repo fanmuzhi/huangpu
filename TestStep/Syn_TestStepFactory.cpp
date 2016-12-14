@@ -47,7 +47,7 @@ Syn_TestStepFactory::~Syn_TestStepFactory()
 {
 }
 
-bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, std::string strTestArgs,Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut, Syn_TestStep * &opTestStepInstance)
+bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, std::string strTestArgs,FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut, Syn_TestStep * &opTestStepInstance)
 {
 	opTestStepInstance = NULL;
 

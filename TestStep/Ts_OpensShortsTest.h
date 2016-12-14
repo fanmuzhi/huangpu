@@ -5,7 +5,7 @@
 class Ts_OpensShortsTest : public Syn_FingerprintTest
 {
 public:
-	Ts_OpensShortsTest(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
+	Ts_OpensShortsTest(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut);
 	virtual ~Ts_OpensShortsTest();
 
 	virtual void	SetUp();

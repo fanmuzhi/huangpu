@@ -8,7 +8,7 @@
 //windows
 //#include "windows.h" 
 
-Syn_FingerprintTest::Syn_FingerprintTest(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
+Syn_FingerprintTest::Syn_FingerprintTest(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_TestStep(strName, strArgs, pDutCtrl, pDut)
 , _pSyn_Module(NULL)
 {

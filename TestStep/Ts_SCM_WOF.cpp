@@ -1,6 +1,6 @@
 #include "Ts_SCM_WOF.h"
 
-Ts_SCM_WOF::Ts_SCM_WOF(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
+Ts_SCM_WOF::Ts_SCM_WOF(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
 {
 }

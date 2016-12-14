@@ -5,7 +5,7 @@
 class Ts_WOFFD : public Syn_FingerprintTest
 {
 public:
-	Ts_WOFFD(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
+	Ts_WOFFD(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut);
 	virtual ~Ts_WOFFD();
 
 	virtual void	SetUp();

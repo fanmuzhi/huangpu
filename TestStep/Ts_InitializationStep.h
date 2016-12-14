@@ -4,7 +4,7 @@
 class Ts_InitializationStep : public Syn_FingerprintTest
 {
 public:
-	Ts_InitializationStep(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
+	Ts_InitializationStep(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut);
 	virtual ~Ts_InitializationStep();
 
 	bool CheckMPCVoltages();

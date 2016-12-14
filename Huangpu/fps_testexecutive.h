@@ -19,7 +19,7 @@
 
 //DutUtls
 #include "Syn_Dut.h"
-#include "Syn_DutCtrl.h"
+#include "FpAlphaModule.h"
 #include "Syn_Exception.h"
 #include "Syn_TestUtils.h"
 

@@ -4,7 +4,7 @@
 class Ts_RxStandardDev : public Syn_FingerprintTest
 {
 public:
-	Ts_RxStandardDev(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
+	Ts_RxStandardDev(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut);
 	virtual ~Ts_RxStandardDev();
 
 	virtual void	SetUp();

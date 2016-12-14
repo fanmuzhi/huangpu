@@ -1,7 +1,7 @@
 #include "Ts_AcqImgFinger.h"
 
 
-Ts_AcqImgFinger::Ts_AcqImgFinger(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
+Ts_AcqImgFinger::Ts_AcqImgFinger(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
 {
 }

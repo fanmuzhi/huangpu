@@ -8,7 +8,7 @@
 class Ts_HuaweiImageQualityTest : public Syn_FingerprintTest
 {
 public:
-	Ts_HuaweiImageQualityTest(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
+	Ts_HuaweiImageQualityTest(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut);
 	virtual ~Ts_HuaweiImageQualityTest();
 
 

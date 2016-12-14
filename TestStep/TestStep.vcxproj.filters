@@ -123,9 +123,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Syn_FingerprintTest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Syn_TestStep.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -244,15 +241,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ts_Viper_SCMWOF.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FpAlphaModule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="syn_bridge.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="syn_devicemanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

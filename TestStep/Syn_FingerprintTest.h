@@ -20,7 +20,7 @@ class Syn_FingerprintTest :public Syn_TestStep
 
 public:
 
-	Syn_FingerprintTest(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
+	Syn_FingerprintTest(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut);
 
 	virtual ~Syn_FingerprintTest();
 	
@@ -59,8 +59,6 @@ public:
 	void TrimSlowOsc(SlowOscInfo &iSlowOscInfo, SlowOscResults &ioSlowOscResults, uint16_t Vdd_mV, uint16_t Vio_mV, uint16_t Vled_mV, uint16_t Vddh_mV);
 
 protected:
-
-	Syn_Module *_pSyn_Module;
 
 	DWORD _starttime, _finishtime;
 	//time_t _starttime, _finishtime;

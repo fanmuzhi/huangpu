@@ -3,7 +3,7 @@
 //DutUtls
 #include "Syn_Config.h"
 #include "Syn_Dut.h"
-#include "Syn_DutCtrl.h"
+#include "FpAlphaModule.h"
 #include "Syn_Exception.h"
 #include "Syn_TestUtils.h"
 
@@ -86,7 +86,7 @@ private:
 
 	Syn_Dut *_pSyn_Dut;
 
-	Syn_DutCtrl *_pSyn_DutCtrl;
+	FpAlphaModule *_pSyn_DutCtrl;
 
 	//id
 	unsigned int _iSiteNumber;

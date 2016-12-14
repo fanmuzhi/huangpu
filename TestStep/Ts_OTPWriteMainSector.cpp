@@ -2,7 +2,7 @@
 
 #include <regex>
 
-Ts_OTPWriteMainSector::Ts_OTPWriteMainSector(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
+Ts_OTPWriteMainSector::Ts_OTPWriteMainSector(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
 , bBurnPGA_OOPP(false)
 {

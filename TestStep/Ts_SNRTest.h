@@ -3,7 +3,7 @@
 class Ts_SNRTest : public Syn_FingerprintTest
 {
 public:
-	Ts_SNRTest(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
+	Ts_SNRTest(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut);
 	virtual ~Ts_SNRTest();
 
 	virtual void	SetUp();

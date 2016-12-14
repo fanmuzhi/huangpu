@@ -4,7 +4,7 @@
 class Ts_OTPWriteBootSector : public Syn_FingerprintTest
 {
 public:
-	Ts_OTPWriteBootSector(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
+	Ts_OTPWriteBootSector(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut);
 	virtual ~Ts_OTPWriteBootSector();
 
 	virtual void	SetUp();

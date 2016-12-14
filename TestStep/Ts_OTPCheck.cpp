@@ -2,7 +2,7 @@
 
 #include <regex>
 
-Ts_OTPCheck::Ts_OTPCheck(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
+Ts_OTPCheck::Ts_OTPCheck(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
 , bPass(true)
 {

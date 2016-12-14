@@ -5,7 +5,7 @@ class Ts_WOFLowPower : public Syn_FingerprintTest
 {
 public:
 
-	Ts_WOFLowPower(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
+	Ts_WOFLowPower(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut);
 	virtual ~Ts_WOFLowPower();
 
 	virtual void SetUp();

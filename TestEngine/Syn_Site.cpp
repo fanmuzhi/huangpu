@@ -4,7 +4,7 @@
 #include "Syn_SysConfigOperation.h"
 
 //MPC_API
-#include "MpcApiDll.h"
+//#include "MpcApiDll.h"
 //#include "MpcApiError.h"
 //#include "MPCErrors.h"
 
@@ -127,7 +127,7 @@ uint32_t Syn_Site::Init()
 	}
 
 	//Create DutCtrl
-	rc = Syn_DutCtrl::CreateDutCtrlInstance(iDutControllerType, _uiSerialNumber, _pSyn_DutCtrl);
+	rc = FpAlphaModule::CreateDutCtrlInstance(iDutControllerType, _uiSerialNumber, _pSyn_DutCtrl);
 	if (NULL == _pSyn_DutCtrl)
 	{
 		_siteState = Error;

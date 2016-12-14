@@ -1,7 +1,7 @@
 //local
 #include "Ts_SlowOscTrim.h"
 
-Ts_SlowOscTrim::Ts_SlowOscTrim(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut)
+Ts_SlowOscTrim::Ts_SlowOscTrim(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
 {
 }

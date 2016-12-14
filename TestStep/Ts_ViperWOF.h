@@ -4,7 +4,7 @@
 class Ts_ViperWOF : public Syn_FingerprintTest
 {
 public:
-	Ts_ViperWOF(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
+	Ts_ViperWOF(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut);
 	virtual ~Ts_ViperWOF();
 
 	virtual void	SetUp();

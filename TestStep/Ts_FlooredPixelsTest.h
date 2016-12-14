@@ -5,7 +5,7 @@ class Ts_FlooredPixelsTest : public Syn_FingerprintTest
 {
 public:
 
-	Ts_FlooredPixelsTest(string &strName, string &strArgs, Syn_DutCtrl * &pDutCtrl, Syn_Dut * &pDut);
+	Ts_FlooredPixelsTest(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut);
 	virtual ~Ts_FlooredPixelsTest();
 
 	virtual void	SetUp();
