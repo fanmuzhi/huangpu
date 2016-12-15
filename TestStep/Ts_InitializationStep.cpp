@@ -148,20 +148,13 @@ void Ts_InitializationStep::Execute()
 	//	throw ex;
 	//}
 
-	//poweron
-	PowerOff();
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-
-	if (VERSION_SIZE < 36)
-	{
-		Syn_Exception ex(Syn_ExceptionCode::Syn_ERR_INITIALIZATION_FAILED);
-		ex.SetDescription("TestStep InitializationStep:VERSION_SIZE error!");
-		throw ex;
-	}
+	//PowerOn
+	_pSyn_DutCtrl->PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVddh_mV);
+	_pSyn_DutCtrl->FpTidleSet(0);
 
 	try
 	{
-		_pSyn_DutCtrl->FpGetVersion(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo._GerVerArray, VERSION_SIZE);
+		_pSyn_DutCtrl->FpGetVersion((uint8_t*)&(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo), VERSION_SIZE);
 	}
 	catch (Syn_Exception ex)
 	{
@@ -171,71 +164,45 @@ void Ts_InitializationStep::Execute()
 		return;
 	}
 
-	uint8_t *pTempArray = _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo._GerVerArray;
-
 	//fill the gerVerInfo to DUT serial number
 	//fill other info
-	//memcpy(&(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.buildtime), &pTempArray[0], 4);
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.buildtime = (uint32_t)pTempArray[0] << 0 | (uint32_t)pTempArray[1] << 8 | (uint32_t)pTempArray[2] << 16 | (uint32_t)pTempArray[3] << 24;
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.buildnum = pTempArray[4] << 0 | pTempArray[5] << 8 | pTempArray[6] << 16 | pTempArray[7]<<24;
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.vmajor = pTempArray[8];
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.vminor = pTempArray[9];
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.target = pTempArray[10];
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.product = pTempArray[11];
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.siliconrev = pTempArray[12];
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.formalrel = pTempArray[13];
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.platform = pTempArray[14];
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.patch = pTempArray[15];
-	memcpy(snArray, &(pTempArray[16]), 6);
-	memcpy(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.security, &(pTempArray[22]), 2);
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.patchsig = pTempArray[24] << 0 | pTempArray[25] << 8 | pTempArray[26] << 16 | pTempArray[27]<<24; 
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.iface = pTempArray[28];
-	memcpy(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.otpsig, &(pTempArray[29]), 3);
 
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.otpspare1 = pTempArray[32] << 0 | pTempArray[33]<<8;
-
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.reserved = pTempArray[34];
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.device_type = pTempArray[35];
-
+	memcpy(snArray, _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number, 6);
 	//if serial number doesn't exist
 	if (0 == memcmp(snArray, snInitArray, 6))
 	{
-		Create_SN(snInitArray, _pSyn_Dut->_DeviceSerialNumber, _pSyn_Dut->_iSiteNumber, 0);
+		Create_SN(snInitArray, std::stoul(_pSyn_Dut->_DeviceSerialNumber), _pSyn_Dut->_iSiteNumber, 0);
 		SerialNumReverseBitFields(snInitArray, snArray);
 	}
 	memcpy(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number, snArray, 6);
 
 	//copy serial number to string
-	char *cTempValue = new char[3];
+	char SingleNumber[3] = {0};
+	sprintf(SingleNumber, "%02X", (_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number)[4]);
+	_pSyn_Dut->_pSyn_DutTestResult->_versionResult.sSerialNumber[0] = SingleNumber[0];
+	_pSyn_Dut->_pSyn_DutTestResult->_versionResult.sSerialNumber[1] = SingleNumber[1];
 
-	sprintf(cTempValue, "%02X", (_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number)[4]);
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[0] = cTempValue[0];
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[1] = cTempValue[1];
+	sprintf(SingleNumber, "%02X", (_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number)[5]);
+	_pSyn_Dut->_pSyn_DutTestResult->_versionResult.sSerialNumber[2] = SingleNumber[0];
+	_pSyn_Dut->_pSyn_DutTestResult->_versionResult.sSerialNumber[3] = SingleNumber[1];
 
-	sprintf(cTempValue, "%02X", (_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number)[5]);
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[2] = cTempValue[0];
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[3] = cTempValue[1];
+	sprintf(SingleNumber, "%02X", (_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number)[0]);
+	_pSyn_Dut->_pSyn_DutTestResult->_versionResult.sSerialNumber[4] = SingleNumber[0];
+	_pSyn_Dut->_pSyn_DutTestResult->_versionResult.sSerialNumber[5] = SingleNumber[1];
 
-	sprintf(cTempValue, "%02X", (_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number)[0]);
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[4] = cTempValue[0];
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[5] = cTempValue[1];
+	sprintf(SingleNumber, "%02X", (_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number)[1]);
+	_pSyn_Dut->_pSyn_DutTestResult->_versionResult.sSerialNumber[6] = SingleNumber[0];
+	_pSyn_Dut->_pSyn_DutTestResult->_versionResult.sSerialNumber[7] = SingleNumber[1];
 
-	sprintf(cTempValue, "%02X", (_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number)[1]);
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[6] = cTempValue[0];
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[7] = cTempValue[1];
+	sprintf(SingleNumber, "%02X", (_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number)[2]);
+	_pSyn_Dut->_pSyn_DutTestResult->_versionResult.sSerialNumber[8] = SingleNumber[0];
+	_pSyn_Dut->_pSyn_DutTestResult->_versionResult.sSerialNumber[9] = SingleNumber[1];
 
-	sprintf(cTempValue, "%02X", (_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number)[2]);
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[8] = cTempValue[0];
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[9] = cTempValue[1];
-
-	sprintf(cTempValue, "%02X", (_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number)[3]);
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[10] = cTempValue[0];
-	_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[11] = cTempValue[1];
+	sprintf(SingleNumber, "%02X", (_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number)[3]);
+	_pSyn_Dut->_pSyn_DutTestResult->_versionResult.sSerialNumber[10] = SingleNumber[0];
+	_pSyn_Dut->_pSyn_DutTestResult->_versionResult.sSerialNumber[11] = SingleNumber[1];
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_bExecuted = true;
-
-	delete[] cTempValue;
-	cTempValue = NULL;
 }
 
 void Ts_InitializationStep::ProcessData()
@@ -247,22 +214,12 @@ void Ts_InitializationStep::ProcessData()
 		throw ex;
 	}
 
-	//_pSyn_Dut->_pSyn_DutTestResult->_sSensorSerialNumber.clear();
-	//for (int i = 0; i < DUT_SER_NUM_SIZE * 2; i++)
-	//{
-	//	_pSyn_Dut->_pSyn_DutTestResult->_sSensorSerialNumber.push_back(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.sSerialNumber[i]);
-	//}
-
 	_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("InitializationStep", "Pass"));
-
-	//ComputeRunningTime(_pDut)
 }
 
 void Ts_InitializationStep::CleanUp()
 {
-	PowerOff();
 }
-
 
 void Ts_InitializationStep::Create_SN(uint8_t* SN, uint32_t nDeviceSerNum, int nSiteNum, int nTestLocationId)
 {

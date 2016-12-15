@@ -84,12 +84,6 @@ void Ts_Calibrate::SetUp()
 	if (0 != listOfArgValue[13].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bPgaFineTuning = atoi(listOfArgValue[13].c_str());
 
-
-	//Power on
-	PowerOff();
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-	_pSyn_DutCtrl->FpUnloadPatch();
-
 	//load ImgAcqPatch
 	Syn_PatchInfo ImgAcqPatchInfo;
 	if (_pSyn_Dut->FindPatch("ImageAcqPatch", ImgAcqPatchInfo))
@@ -137,11 +131,6 @@ void Ts_Calibrate::Execute()
 		return;
 	}
 
-	if (NULL == _pSyn_Dut->_pSyn_DutTestResult)
-	{
-		_pSyn_Dut->_pSyn_DutTestResult = new Syn_DutTestResult();
-	}
-
 	_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_bPass = 1;
 
 	//construct print file
@@ -159,7 +148,7 @@ void Ts_Calibrate::Execute()
 
 	//check LNA tag in OTP
 	uint8_t		pSrc[2] = { 0, 0 };
-	uint8_t		pLnaValues[MS0_SIZE];
+	uint8_t		pLnaValues[MS0_SIZE] = { 0 };
 	uint8_t		pPgaValues[MS0_SIZE] = { 0 };
 	bool		bSuccess(false);
 	uint32_t nLnaIdx = _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nLnaIdx;
@@ -224,11 +213,6 @@ void Ts_Calibrate::Execute()
 		}
 	}
 
-	/*FPSFrame *pFrame = new FPSFrame();
-	GetFingerprintImage(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults, pFrame, numRows, numCols);
-	delete pFrame;
-	pFrame = NULL;*/
-
 	//Calibration is done. If the High Pass Filter (HPF) was disabled during calibration, re-enable it.
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nHpfOffset)
 		(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch)[_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nHpfOffset] |= 0x01;
@@ -261,7 +245,6 @@ void Ts_Calibrate::ProcessData()
 void Ts_Calibrate::CleanUp()
 {
 	_pSyn_DutCtrl->FpUnloadPatch();
-	PowerOff();
 }
 
 bool Ts_Calibrate::VerifyPixelRanges()

@@ -33,11 +33,6 @@ void Ts_RAMTest::SetUp()
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_RAMTestInfo.m_bExecuted = false;
 
-	//Power on
-	PowerOff();
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-	//_pSyn_DutCtrl->FpUnloadPatch();
-
 	//load ImgAcqPatch
 	/*Syn_PatchInfo OpensShortsPatchInfo;
 	if (!_pSyn_Dut->FindPatch("OpensShortsPatch", OpensShortsPatchInfo))
@@ -119,7 +114,7 @@ void Ts_RAMTest::ProcessData()
 
 void Ts_RAMTest::CleanUp()
 {
-	PowerOff();
+	_pSyn_DutCtrl->FpUnloadPatch();
 }
 
 void Ts_RAMTest::LoadRAMPatch(std::string sPatchName, uint8_t* pPatchResults, uint16_t nSize)
@@ -146,5 +141,5 @@ void Ts_RAMTest::LoadRAMPatch(std::string sPatchName, uint8_t* pPatchResults, ui
 	//_pSyn_DutCtrl->FpLoadPatch(RamPatchInfo._pArrayBuf, RamPatchInfo._uiArraySize);
 	//_pSyn_DutCtrl->FpRead(1, 0xFF, pPatchResults, nSize);
 
-	_pSyn_DutCtrl->FpLoadRamPatch(RamPatchInfo._pArrayBuf, RamPatchInfo._uiArraySize, pPatchResults, nSize);
+	//_pSyn_DutCtrl->FpLoadRamPatch(RamPatchInfo._pArrayBuf, RamPatchInfo._uiArraySize, pPatchResults, nSize);
 }

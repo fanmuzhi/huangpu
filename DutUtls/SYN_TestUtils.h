@@ -155,8 +155,6 @@ typedef struct
 
 typedef struct
 {
-	uint8_t  _GerVerArray[VERSION_SIZE];
-
 	uint32_t   buildtime;        /* Unix-style build time, in seconds   *//*  from 1/1/1970 12:00 AM GMT         */
 	uint32_t   buildnum;         /* build number                        */
 	uint8_t    vmajor;           /* major version                       */
@@ -175,9 +173,12 @@ typedef struct
 	uint16_t   otpspare1;        /* spare space                         */
 	uint8_t    reserved;         /* reserved byte                       */
 	uint8_t    device_type;      /* device type                         */
-
-	char sSerialNumber[12];
 }GetVerInfo;
+
+typedef struct
+{
+	char sSerialNumber[12];
+}GetVerResult;
 
 ///////////////////////////// ////////////////////////
 //////////////////////////// ////////////////////////

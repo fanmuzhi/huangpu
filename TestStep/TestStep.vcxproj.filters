@@ -34,9 +34,6 @@
     <ClCompile Include="Ts_InitializationStep.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Ts_LaplacianTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Ts_OTPCheck.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -103,12 +100,6 @@
     <ClCompile Include="Ts_Invalidate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Ts_OscTrim.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Ts_SlowOscTrim.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Ts_WOFFD.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -154,9 +145,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ts_InitializationStep.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Ts_LaplacianTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ts_OTPCheck.h">
@@ -225,12 +213,6 @@
     <ClInclude Include="Ts_Invalidate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Ts_OscTrim.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Ts_SlowOscTrim.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Ts_WOFFD.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -241,6 +223,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ts_Viper_SCMWOF.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Syn_FingerprintTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

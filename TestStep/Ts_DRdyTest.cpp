@@ -60,30 +60,28 @@ void Ts_DRdyTest::Execute()
 	uint8_t  pResult[2] = {0,0};
 
 	//set DRdy pin to input.
-	_pSyn_DutCtrl->GpioSetPinType(portID, pinMsk, 5);
+	//_pSyn_DutCtrl->GpioSetPinType(portID, pinMsk, 5);
 
-	PowerOff();
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, false);
-	_pSyn_DutCtrl->FpDisableSleep();
-	_pSyn_DutCtrl->FpWaitForCMDComplete();
-	::Sleep(5);
+	//_pSyn_DutCtrl->FpDisableSleep();
+	//_pSyn_DutCtrl->FpWaitForCMDComplete();
+	//::Sleep(5);
 
-	//read DRdy
-	for (int i = 0; i < NUM_DRDY_CHECKS; i++)
-	{
-		_pSyn_DutCtrl->GpioPinRead(portID, pinMsk, &nDRdyState);
-		_pSyn_Dut->_pSyn_DutTestResult->_DRdyResults.m_arHiStates[i] = (nDRdyState & pinMsk) ? 1 : 0;
-	}
+	////read DRdy
+	//for (int i = 0; i < NUM_DRDY_CHECKS; i++)
+	//{
+	//	_pSyn_DutCtrl->GpioPinRead(portID, pinMsk, &nDRdyState);
+	//	_pSyn_Dut->_pSyn_DutTestResult->_DRdyResults.m_arHiStates[i] = (nDRdyState & pinMsk) ? 1 : 0;
+	//}
 
-	_pSyn_DutCtrl->FpReadAndCheckStatus(0);
+	//_pSyn_DutCtrl->FpReadAndCheckStatus(0);
 
-	::Sleep(5);
-	//read DRdy
-	for (int i = 0; i < NUM_DRDY_CHECKS; i++)
-	{
-		_pSyn_DutCtrl->GpioPinRead(portID, pinMsk, &nDRdyState);
-		_pSyn_Dut->_pSyn_DutTestResult->_DRdyResults.m_arLoStates[i] = (nDRdyState & pinMsk) ? 1 : 0;
-	}
+	//::Sleep(5);
+	////read DRdy
+	//for (int i = 0; i < NUM_DRDY_CHECKS; i++)
+	//{
+	//	_pSyn_DutCtrl->GpioPinRead(portID, pinMsk, &nDRdyState);
+	//	_pSyn_Dut->_pSyn_DutTestResult->_DRdyResults.m_arLoStates[i] = (nDRdyState & pinMsk) ? 1 : 0;
+	//}
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_DRdyInfo.m_bExecuted = true;
 
@@ -122,5 +120,4 @@ void Ts_DRdyTest::ProcessData()
 
 void Ts_DRdyTest::CleanUp()
 {
-	PowerOff();
 }

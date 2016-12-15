@@ -38,13 +38,13 @@ void Syn_SerialNumberManageDlg::showEvent(QShowEvent * event)
 	ui->SiteManagePromptLabel->setText(QString("Select Serial Number for Site ") + QString::number(iSelectRowIndex+1)+QString(":"));
 
 	//get serial number list
-	std::vector<uint32_t> listOfSerialNumber;
+	std::vector<std::string> listOfSerialNumber;
 	pLocalSettingsDlg->GetSerialNumberList(listOfSerialNumber);
 
 	ui->SerialNumberTableWidget->setRowCount(listOfSerialNumber.size());
 	for (size_t i = 1; i <= listOfSerialNumber.size(); i++)
 	{
-		ui->SerialNumberTableWidget->setItem(i - 1, 0, new QTableWidgetItem(QString::number(listOfSerialNumber[i-1])));
+		ui->SerialNumberTableWidget->setItem(i - 1, 0, new QTableWidgetItem(QString::fromStdString(listOfSerialNumber[i-1])));
 	}
 }
 //void Syn_SerialNumberManageDlg::closeEvent(QCloseEvent * event)

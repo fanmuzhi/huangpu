@@ -27,12 +27,6 @@ void Ts_OTPWriteBootSector::SetUp()
 		return;
 	}
 
-	//Power on
-	PowerOff();
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-
-	_pSyn_DutCtrl->FpUnloadPatch();
-
 	//load OTPReadWritePatch
 	Syn_PatchInfo OTPRWPatchInfo;
 	if (!_pSyn_Dut->FindPatch("OtpReadWritePatch", OTPRWPatchInfo) || NULL == OTPRWPatchInfo._pArrayBuf)
@@ -171,5 +165,5 @@ void Ts_OTPWriteBootSector::ProcessData()
 
 void Ts_OTPWriteBootSector::CleanUp()
 {
-	PowerOff();
+	_pSyn_DutCtrl->FpUnloadPatch();
 }

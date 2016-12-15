@@ -47,11 +47,6 @@ void Ts_OpensShortsTest::SetUp()
 	if (0 != listOfArgValue[1].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_opensShortsInfo.m_nDelay_ms = atoi(listOfArgValue[1].c_str());
 
-	//Power on
-	PowerOff();
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-	_pSyn_DutCtrl->FpUnloadPatch();
-
 	//load OpenShortPatch
 	Syn_PatchInfo OpensShortsPatchInfo;
 	if (!_pSyn_Dut->FindPatch("OpensShortsPatch", OpensShortsPatchInfo) || NULL == OpensShortsPatchInfo._pArrayBuf)
@@ -112,5 +107,5 @@ void Ts_OpensShortsTest::ProcessData()
 
 void Ts_OpensShortsTest::CleanUp()
 {
-	PowerOff();
+	_pSyn_DutCtrl->FpUnloadPatch();
 }

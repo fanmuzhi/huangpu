@@ -59,20 +59,6 @@ void Ts_CurrentTest::SetUp()
 	if (0 != listOfArgValue[5].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqDigMin_uA = (int)(stof(listOfArgValue[5]) * 1000);//(int)(_tstof((LPCTSTR)listOfArgValue[5].c_str()) * 1000);
 
-	//power on
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-	_pSyn_DutCtrl->FpUnloadPatch();
-	//load ImgAcqPatch
-	/*Syn_PatchInfo ImgAcqPatchInfo;
-	if (!_pSyn_Dut->FindPatch("ImageAcqPatch", ImgAcqPatchInfo) || NULL == ImgAcqPatchInfo._pArrayBuf)
-	{
-		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-		ex.SetDescription("ImageAcqPatch Patch is NULL!");
-		throw ex;
-		return;
-	}
-	_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);*/
-
 	//load ImgAcqPatch
 	Syn_PatchInfo ImgAcqPatchInfo;
 	if (_pSyn_Dut->FindPatch("ImageAcqPatch", ImgAcqPatchInfo))
@@ -196,5 +182,4 @@ void Ts_CurrentTest::ProcessData()
 void Ts_CurrentTest::CleanUp()
 {
 	_pSyn_DutCtrl->FpUnloadPatch();
-	PowerOff();
 }

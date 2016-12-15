@@ -34,8 +34,6 @@
 #include "Ts_WaitStimulus.h"
 #include "Ts_Invalidate.h"
 #include "Ts_HuaweiImageQualityTest.h"
-#include "Ts_OscTrim.h"
-#include "Ts_SlowOscTrim.h"
 #include "Ts_Viper_SCMWOF.h"
 #include "Ts_ViperWOF.h"
 
@@ -154,20 +152,12 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	{
 		opTestStepInstance = new Ts_AFETest(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
-	/*else if (std::string("WOFWithoutStimulus") == strTestStepName)
-	{
-		opTestStepInstance = new Ts_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
-	}
-	else if (std::string("WOFWithStimulus") == strTestStepName)
-	{
-		opTestStepInstance = new Ts_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
-	}*/
 	else if (std::string("WOF_FD_WithoutStimulus") == strTestStepName || std::string("WOF_FD_WithStimulus") == strTestStepName)
 	{
-		if (pDut->_eProjectType == ProjectType::Viper1 || pDut->_eProjectType == ProjectType::Viper2)
+		if (pDut->_strProjectType == "Viper" || pDut->_strProjectType == "Viper2")
 			//Viper WOF
 			opTestStepInstance = new Ts_ViperWOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
-		else if (pDut->_eProjectType == ProjectType::Metallica)
+		else if (pDut->_strProjectType == "Metallica")
 			//Metallica WOF
 			opTestStepInstance = new Ts_WOFFD(strTestStepName, strTestArgs, pDutCtrl, pDut);
 		else
@@ -184,10 +174,10 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	}
 	else if (std::string("SCM_WOFWithoutStimulus") == strTestStepName || std::string("SCM_WOFWithStimulus") == strTestStepName)
 	{
-		if (pDut->_eProjectType == ProjectType::Viper1 || pDut->_eProjectType == ProjectType::Viper2)
+		if (pDut->_strProjectType == "Viper" || pDut->_strProjectType == "Viper2")
 			//Viper SCM WOF
 			opTestStepInstance = new Ts_Viper_SCMWOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
-		else if (pDut->_eProjectType == ProjectType::Metallica)
+		else if (pDut->_strProjectType == "Metallica")
 			//Metallica WOF
 			opTestStepInstance = new Ts_SCM_WOF(strTestStepName, strTestArgs, pDutCtrl, pDut);
 		else
@@ -220,14 +210,6 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	else if (std::string("Invalidate") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_Invalidate(strTestStepName, strTestArgs, pDutCtrl, pDut);
-	}
-	else if (std::string("OscTrim") == strTestStepName)
-	{
-		opTestStepInstance = new Ts_OscTrim(strTestStepName, strTestArgs, pDutCtrl, pDut);
-	}
-	else if (std::string("SlowOsc") == strTestStepName)
-	{
-		opTestStepInstance = new Ts_SlowOscTrim(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else
 	{

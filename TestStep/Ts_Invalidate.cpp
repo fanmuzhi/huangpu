@@ -27,11 +27,6 @@ void Ts_Invalidate::SetUp()
 		return;
 	}
 
-	//power on
-	PowerOff();
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-	_pSyn_DutCtrl->FpUnloadPatch();
-
 	//load ImgAcqPatch
 	Syn_PatchInfo OtpReadWritePatchInfo;
 	if (!(_pSyn_Dut->FindPatch("OtpReadWritePatch", OtpReadWritePatchInfo)) || 0 == OtpReadWritePatchInfo._uiArraySize)
@@ -75,13 +70,13 @@ void Ts_Invalidate::ProcessData()
 
 void Ts_Invalidate::CleanUp()
 {
-	PowerOff();
+	_pSyn_DutCtrl->FpUnloadPatch();
 }
 
 void Ts_Invalidate::Invalidate(uint32_t tagId)
 {
 	uint8_t pDst[MS0_SIZE] = {0};
-	int count_threshold = 1;
+	unsigned int count_threshold = 1;
 	int timeout(10);
 
 	while (timeout&&!(_pSyn_DutCtrl->FpOtpRomTagRead(tagId, pDst, MS0_SIZE) < count_threshold))

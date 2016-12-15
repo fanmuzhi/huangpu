@@ -154,7 +154,7 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 	bool IsSucess(true);
 	for (size_t i = 0; i < iLocalSettingsSiteCounts; i++)
 	{
-		uint32_t uiSerialNumber = LocalSettingsInfo._listOfSiteSettings[i]._uiDutSerNum;
+		string uiSerialNumber = LocalSettingsInfo._listOfSiteSettings[i]._strDutSerNum;
 		uint8_t uiSiteNumber = i + 1;
 		Syn_Site *pSyn_SiteInstance = NULL; 
 		rc = Syn_Site::CreateSiteInstance(uiSiteNumber, uiSerialNumber, _LocalSettingsInfo._strSysConfigFilePath, LocalSettingsInfo._listOfSiteSettings[i]._adcBaseLineInfo, pSyn_SiteInstance);
@@ -162,7 +162,7 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 		{
 			string osErrorInfo("");
 			GetErrorInfo(rc, osErrorInfo);
-			QMessageBox::critical(this, QString("Error"), QString("Can't cosntruct Serial Number:") + QString::number(uiSerialNumber) + QString(" device(") + QString::fromStdString(osErrorInfo) + QString("),check it please!"));
+			QMessageBox::critical(this, QString("Error"), QString("Can't cosntruct Serial Number:") + QString::fromStdString(uiSerialNumber) + QString(" device(") + QString::fromStdString(osErrorInfo) + QString("),check it please!"));
 			IsSucess = false;
 			break;
 		}
@@ -209,8 +209,8 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 	QStringList strListOfHeader;
 	for (size_t t = 1; t <= _iRealDeviceCounts; t++)
 	{
-		uint32_t uiSerialNumber(0);
-		_ListOfSitePtr[t - 1]->GetSerialNumber(uiSerialNumber);
+		string strSerialNumber;
+		_ListOfSitePtr[t - 1]->GetSerialNumber(strSerialNumber);
 		unsigned int iSiteNumber(0);
 		_ListOfSitePtr[t - 1]->GetSiteNumber(iSiteNumber);
 
@@ -239,7 +239,7 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 				break;
 		}
 		
-		QTableWidgetItem *itemSiteNumber = new QTableWidgetItem(QString::number(iSiteNumber) + QString(" (") + QString::number(uiSerialNumber) + QString(") "));
+		QTableWidgetItem *itemSiteNumber = new QTableWidgetItem(QString::number(iSiteNumber) + QString(" (") + QString::fromStdString(strSerialNumber) + QString(") "));
 		QTableWidgetItem *itemSiteStatus = new QTableWidgetItem(strSiteStatus);
 		itemSiteNumber->setTextAlignment(Qt::AlignCenter);
 		itemSiteStatus->setTextAlignment(Qt::AlignCenter);
@@ -462,12 +462,12 @@ void FPS_TestExecutive::ReceiveTestStep(unsigned int iSiteNumber, const QString 
 	//SerialNumber
 	if (QString("InitializationStep") == strTestStepName)
 	{
-		Syn_DutTestInfo *DutInfo = NULL;
-		_ListOfSitePtr[iPos]->GetTestInfo(DutInfo);
-		if (NULL != DutInfo)
+		Syn_DutTestResult *DutResult = NULL;
+		_ListOfSitePtr[iPos]->GetTestResult(DutResult);
+		if (NULL != DutResult)
 		{
 			QString qsSensorSerialNumber("");
-			qsSensorSerialNumber = QString::fromLatin1(DutInfo->_getVerInfo.sSerialNumber, sizeof(DutInfo->_getVerInfo.sSerialNumber));
+			qsSensorSerialNumber = QString::fromLatin1(DutResult->_versionResult.sSerialNumber, sizeof(DutResult->_versionResult.sSerialNumber));
 
 			QTableWidgetItem *itemSerialNumber = new QTableWidgetItem(qsSensorSerialNumber);
 			itemSerialNumber->setTextAlignment(Qt::AlignCenter);
@@ -967,7 +967,14 @@ void FPS_TestExecutive::GetVersionForDutDump()
 
 	Syn_DutTestInfo *pInfo = NULL;
 	rc = pSelectedSite->GetTestInfo(pInfo);
-	if (rc != 0)
+	if (0 != rc)
+	{
+		QMessageBox::information(this, QString("Error"), QString::number(rc, 16).toUpper());
+		return;
+	}
+	Syn_DutTestResult *pResult = NULL;
+	rc = pSelectedSite->GetTestResult(pResult);
+	if (0 != rc)
 	{
 		QMessageBox::information(this, QString("Error"), QString::number(rc, 16).toUpper());
 		return;
@@ -975,15 +982,6 @@ void FPS_TestExecutive::GetVersionForDutDump()
 
 	ui.textBrowser->clear();
 	ui.textBrowser->append(QString("Version:"));
-	/*for (int i = 1; i <= VERSION_SIZE / 4; i++)
-	{
-		int StartPos = (i - 1) * 4;
-		int EndPos = i * 4 - 1;
-
-		Display(pInfo->_getVerInfo._GerVerArray, StartPos, EndPos);
-	}*/
-
-
 	QDateTime timeValue = QDateTime::fromTime_t(pInfo->_getVerInfo.buildtime + 43200);
 	ui.textBrowser->append(QString("buildtime:") + timeValue.toString());
 	ui.textBrowser->append(QString("buildnum:") + QString::number(pInfo->_getVerInfo.buildnum, 16).toUpper());
@@ -996,7 +994,7 @@ void FPS_TestExecutive::GetVersionForDutDump()
 	ui.textBrowser->append(QString("platform:") + QString::number(pInfo->_getVerInfo.platform));
 	ui.textBrowser->append(QString("patch:") + QString::number(pInfo->_getVerInfo.patch));
 	//ui.textBrowser->append(QString("serial_number:") + QString::number(pInfo->_getVerInfo.serial_number[0], 16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[1], 16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[2], 16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[3], 16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[4], 16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[5], 16));
-	ui.textBrowser->append(QString("serial_number:") + QString::fromLatin1(pInfo->_getVerInfo.sSerialNumber, 12));
+	ui.textBrowser->append(QString("serial_number:") + QString::fromLatin1(pResult->_versionResult.sSerialNumber, 12));
 	ui.textBrowser->append(QString("security:") + QString::number(pInfo->_getVerInfo.security[0]) + QString("|") + QString::number(pInfo->_getVerInfo.security[1]));
 	ui.textBrowser->append(QString("patchsig:") + QString::number(pInfo->_getVerInfo.patchsig));
 	ui.textBrowser->append(QString("iface:") + QString::number(pInfo->_getVerInfo.iface));
@@ -1072,12 +1070,12 @@ void FPS_TestExecutive::ReadOTPForDutDump()
 	unsigned int oSiteNumber;
 	pSelectedSite->GetSiteNumber(oSiteNumber);
 
-	uint32_t oSerialNumber;
-	pSelectedSite->GetSerialNumber(oSerialNumber);
+	string strSerialNumber;
+	pSelectedSite->GetSerialNumber(strSerialNumber);
 
 	ui.textBrowser->clear();
 	ui.textBrowser->append(QString("SiteNumber:") + QString::number(oSiteNumber));
-	ui.textBrowser->append(QString("Device SerialNumber:") + QString::number(oSerialNumber));
+	ui.textBrowser->append(QString("Device SerialNumber:") + QString::fromStdString(strSerialNumber));
 
 	QPalette pa;
 	if (oDutTestResult->_binCodes[0] == "1")

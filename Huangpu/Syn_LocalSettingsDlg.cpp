@@ -4,7 +4,7 @@
 
 Syn_LocalSettingsDlg::Syn_LocalSettingsDlg(QWidget *parent)
 : QDialog(parent)
-, _pSyn_DeviceManager(NULL)
+, _pSynDeviceManager(NULL)
 //, _pSyn_SerialNumberManageDlg(NULL)
 //, _pSyn_UpdateADCOffsetsDlg(NULL)
 //, _pSyn_UpdateFirmwareProcessDlg(NULL)
@@ -71,7 +71,7 @@ Syn_LocalSettingsDlg::Syn_LocalSettingsDlg(QWidget *parent)
 		}
 
 		QString strSiteNumber(QString::number(i+1));
-		QString strSerialNumber(QString::number((_LocalSettingsInfo._listOfSiteSettings)[i]._uiDutSerNum));
+		QString strSerialNumber(QString::fromStdString((_LocalSettingsInfo._listOfSiteSettings)[i]._strDutSerNum));
 
 		ui->SiteTableWidget->setItem(i, 0, new QTableWidgetItem(strSiteNumber));
 		ui->SiteTableWidget->setItem(i, 1, new QTableWidgetItem(strSerialNumber));
@@ -83,12 +83,23 @@ Syn_LocalSettingsDlg::Syn_LocalSettingsDlg(QWidget *parent)
 		_TempVoltagesValue.nVddh = CurrentAdcBaseLineInfo.m_nVddh;
 	}
 
-	if (NULL == _pSyn_DeviceManager)
+	if (NULL == _pSynDeviceManager)
 	{
-		_pSyn_DeviceManager = new Syn_DeviceManager();
+		_pSynDeviceManager = new syn_devicemanager();
 	}
-	//_pSyn_DeviceManager->Close();
-	uint32_t uiResult = _pSyn_DeviceManager->Open();
+
+	QString strDeviceType = QString::fromStdString(_LocalSettingsInfo._strDeviceType);
+	devicetype Type;
+	if ("MPC04" == strDeviceType.toUpper())
+		Type = spi_mpc04;
+	else if ("M5" == strDeviceType.toUpper())
+		Type = spi_mpc04;
+	else
+		Type = spi_mpc04;
+	uint32_t uiResult = _pSynDeviceManager->Connect(Type);
+
+	vector<string> listofDeviceSerinumber;
+	uiResult = _pSynDeviceManager->GetSerialNumberList(listofDeviceSerinumber);
 }
 
 Syn_LocalSettingsDlg::~Syn_LocalSettingsDlg()
@@ -98,10 +109,10 @@ Syn_LocalSettingsDlg::~Syn_LocalSettingsDlg()
 		delete ui;
 		ui = NULL;
 	}
-	if (NULL != _pSyn_DeviceManager)
+	if (NULL != _pSynDeviceManager)
 	{
-		delete _pSyn_DeviceManager;
-		_pSyn_DeviceManager = NULL;
+		delete _pSynDeviceManager;
+		_pSynDeviceManager = NULL;
 	}
 }
 
@@ -174,12 +185,6 @@ void Syn_LocalSettingsDlg::ConfirmSite()
 	}
 	_LocalSettingsInfo._strLogFilePath = strLogFilePath.toStdString();
 
-	/*_LocalSettingsInfo.m_bVerboseMode = _pSyn_LocalSettingsDlg->ui->VerboseLogCheckBox->isChecked();
-	_LocalSettingsInfo.m_bQAMode = _pSyn_LocalSettingsDlg->ui->QAModeCheckBox->isChecked();
-	_LocalSettingsInfo.m_bLGAMode = _pSyn_LocalSettingsDlg->ui->LGAModecheckBox->isChecked();
-	_LocalSettingsInfo.m_bRunRepeatedly = _pSyn_LocalSettingsDlg->ui->AutoRepeatEnabledCheckBox->isChecked();
-	_LocalSettingsInfo._strAutoController = _pSyn_LocalSettingsDlg->ui->AutoControllerComboBox->currentText().toStdString();*/
-
 	//Set SiteInfo
 	//fill current info to LocalSettings Config
 	_LocalSettingsInfo._listOfSiteSettings.clear();
@@ -195,10 +200,8 @@ void Syn_LocalSettingsDlg::ConfirmSite()
 		if (NULL != pAdcValueItem)
 			strAdcValue = pAdcValueItem->text();
 
-		uint32_t uiSerialNumber = strSerialNumber.toInt();
-
 		SiteSettings CurrentSiteSettings;
-		CurrentSiteSettings._uiDutSerNum = uiSerialNumber;
+		CurrentSiteSettings._strDutSerNum = strSerialNumber.toStdString();
 
 		AdcBaseLineInfo CurrentAdcBaseLineInfo;
 		QStringList strListOfAdcBaseLinesValue = strAdcValue.split(QString(" "));
@@ -235,12 +238,6 @@ void Syn_LocalSettingsDlg::ConfirmSite()
 		pLocalSettingsInstance = NULL;
 	}
 
-	Syn_UpdateFirmwareProcessDlg *_pSyn_UpdateFirmwareProcessDlg = new Syn_UpdateFirmwareProcessDlg(this);
-	_pSyn_UpdateFirmwareProcessDlg->setAttribute(Qt::WA_DeleteOnClose);
-	_pSyn_UpdateFirmwareProcessDlg->show();
-	//_pSyn_UpdateFirmwareProcessDlg->close();
-	
-	//uint32_t uiResults = _pSyn_DeviceManager->UpdateFirmware();
 	this->close();
 }
 
@@ -278,23 +275,16 @@ void Syn_LocalSettingsDlg::SelectLogFilePath()
 
 void Syn_LocalSettingsDlg::ModifySiteCounts()
 {
-	if (NULL == _pSyn_DeviceManager)
+	if (NULL == _pSynDeviceManager)
 	{
-		_pSyn_DeviceManager = new Syn_DeviceManager();
-	}
-
-	uint32_t rc = _pSyn_DeviceManager->Open();
-	if (Syn_ExceptionCode::Syn_OK != rc)
-	{
-		QMessageBox::critical(this, QString("Error"), QString("Can't Open Device Manage,check it please!"));
 		return;
 	}
 
 	QString strUserSiteCounts = ui->SiteCountsLineEdit->text();
 	int iUserSiteCounts = strUserSiteCounts.toInt();
 
-	std::vector<uint32_t> listOfSerialNumber;
-	_pSyn_DeviceManager->GetSerialNumberList(listOfSerialNumber);
+	std::vector<std::string> listOfSerialNumber;
+	_pSynDeviceManager->GetSerialNumberList(listOfSerialNumber);
 	if (iUserSiteCounts > listOfSerialNumber.size())
 	{
 		QMessageBox::critical(this, QString("Error"), QString("Current Site Numbers is more than real Device conunts(") + QString::number(listOfSerialNumber.size()) + QString(")!"));
@@ -324,7 +314,7 @@ void Syn_LocalSettingsDlg::ModifySiteCounts()
 void Syn_LocalSettingsDlg::SetLeds(int rowNumber, int columnNumber)
 {
 	//get SerialNumber
-	int iSerialNumberColumn(1);
+	/*int iSerialNumberColumn(1);
 	QTableWidgetItem *item = NULL;
 	item = ui->SiteTableWidget->item(rowNumber, iSerialNumberColumn);
 	if (NULL == item)
@@ -334,12 +324,7 @@ void Syn_LocalSettingsDlg::SetLeds(int rowNumber, int columnNumber)
 	strSerialNumber = item->text();
 	uint32_t iSerialNumber = strSerialNumber.toInt();
 	if (0 == iSerialNumber)
-		return;
-
-	if (NULL != _pSyn_DeviceManager)
-	{
-		_pSyn_DeviceManager->SetLeds(iSerialNumber);
-	}
+		return;*/
 }
 
 void Syn_LocalSettingsDlg::CreateSerialNumberManageDialog()
@@ -349,16 +334,15 @@ void Syn_LocalSettingsDlg::CreateSerialNumberManageDialog()
 	_pSyn_SerialNumberManageDlg->show();
 }
 
-void Syn_LocalSettingsDlg::GetSerialNumberList(std::vector<uint32_t> &listOfSerialNumber)
+void Syn_LocalSettingsDlg::GetSerialNumberList(std::vector<std::string> &listOfSerialNumber)
 {
 
-	if (NULL == _pSyn_DeviceManager)
+	if (NULL == _pSynDeviceManager)
 	{
-		_pSyn_DeviceManager = new Syn_DeviceManager();
+		return;
 	}
 
-	uint32_t rc = _pSyn_DeviceManager->Open();
-	_pSyn_DeviceManager->GetSerialNumberList(listOfSerialNumber);
+	_pSynDeviceManager->GetSerialNumberList(listOfSerialNumber);
 	if (0 == listOfSerialNumber.size())
 	{
 		QMessageBox::critical(this, QString("Error"), QString("Can't find device,check it please!"));
@@ -407,7 +391,7 @@ void Syn_LocalSettingsDlg::UpdateADCOffsets(int Vdd, int Vio, int Vled, int Vddh
 			uint32_t uiSerialNumber = strSerialNumber.toInt();
 			uint32_t arAdcBaseLines[NUM_CURRENT_VALUES][KNUMGAINS] = { 0 };
 
-			rc = _pSyn_DeviceManager->UpdateADCOffsets(uiSerialNumber, Vdd, Vio, Vled, Vddh, arAdcBaseLines);
+			/*rc = _pSyn_DeviceManager->UpdateADCOffsets(uiSerialNumber, Vdd, Vio, Vled, Vddh, arAdcBaseLines);
 			if (Syn_ExceptionCode::Syn_OK == rc)
 			{
 				QString strAdcBaseLinesValue("");
@@ -419,7 +403,7 @@ void Syn_LocalSettingsDlg::UpdateADCOffsets(int Vdd, int Vio, int Vled, int Vddh
 					}
 				}
 				ui->SiteTableWidget->setItem(i, 2, new QTableWidgetItem(strAdcBaseLinesValue));
-			}
+			}*/
 		}
 	}
 }

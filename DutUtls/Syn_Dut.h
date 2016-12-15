@@ -11,12 +11,12 @@
 #include <vector>
 #include <map>
 
-enum ProjectType
-{
-	Viper1 = 0x1001,
-	Viper2,
-	Metallica
-};
+//enum ProjectType
+//{
+//	Viper1 = 0x1001,
+//	Viper2,
+//	Metallica
+//};
 
 struct Syn_DutTestInfo
 {
@@ -77,6 +77,7 @@ struct Syn_DutTestResult
 	//std::string					_sSensorSerialNumber;
 
 	InitializationResults		_initResults;
+	GetVerResult				_versionResult;
 	CalibrationResults			_calibrationResults;
 	AcqImgNoFingerResult		_acqImgNoFingerResult;
 	AcqImgFingerResult		    _acqImgFingerResult;
@@ -129,7 +130,7 @@ public:
 	Syn_Dut();
 	virtual ~Syn_Dut();
 
-	static bool CreateDutInstance(ProjectType iType, Syn_Dut * &opSyn_DutInstance);
+	static bool CreateDutInstance(string Type, Syn_Dut * &opSyn_DutInstance);
 
 	//function
 	void InitData(Syn_SysConfig &sysConfig, AdcBaseLineInfo &iAdcBaseLineInfo);
@@ -153,10 +154,10 @@ public:
 	uint16_t		_RowNumber;//NumRows
 	uint16_t		_ColumnNumber;//NumCols
 
-	ProjectType		_eProjectType;
+	string			_strProjectType;
 
 	string			_sConfigFileName;
 
-	uint32_t _DeviceSerialNumber;
+	string _DeviceSerialNumber;
 	unsigned int _iSiteNumber;
 };

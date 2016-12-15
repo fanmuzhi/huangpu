@@ -77,9 +77,6 @@ void Ts_ButtonTest::SetUp()
 		else
 			_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_expectedState = atoi(listOfArgValue[3].c_str());
 	}
-
-	PowerOff();
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 }
 
 void Ts_ButtonTest::Execute()
@@ -93,18 +90,18 @@ void Ts_ButtonTest::Execute()
 
 		//Configure Button pin as input.
 		//GPIO_3 is connected to J4 of the microcontroller.
-		_pSyn_DutCtrl->GpioSetPinType(_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_portId, _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_pinMsk, 5);
+		//_pSyn_DutCtrl->GpioSetPinType(_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_portId, _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_pinMsk, 5);
 
-		//Get the state of the Button pin NUM_DRDY_CHECKS times.
-		for (int i = 0; i<NUM_BTN_CHECKS; i++)
-		{
-			_pSyn_DutCtrl->GpioPinRead(_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_portId, _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_pinMsk, &nBtnState);
-			_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithStimResults.m_arCurrStates[i] = (nBtnState & _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_pinMsk) ? 1 : 0;
-		}
+		////Get the state of the Button pin NUM_DRDY_CHECKS times.
+		//for (int i = 0; i<NUM_BTN_CHECKS; i++)
+		//{
+		//	_pSyn_DutCtrl->GpioPinRead(_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_portId, _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_pinMsk, &nBtnState);
+		//	_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithStimResults.m_arCurrStates[i] = (nBtnState & _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_pinMsk) ? 1 : 0;
+		//}
 
-		SYN_ProcessBtnTestData(_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo, _pSyn_Dut->_pSyn_DutTestResult->_btnTestWithStimResults);
+		//SYN_ProcessBtnTestData(_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo, _pSyn_Dut->_pSyn_DutTestResult->_btnTestWithStimResults);
 
-		ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithStimResults.m_elapsedtime);
+		//ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithStimResults.m_elapsedtime);
 	}
 	else	
 	{
@@ -114,18 +111,18 @@ void Ts_ButtonTest::Execute()
 
 		//Configure Button pin as input.
 		//GPIO_3 is connected to J4 of the microcontroller.
-		_pSyn_DutCtrl->GpioSetPinType(_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo.m_portId, _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo.m_pinMsk, 5);
+		//_pSyn_DutCtrl->GpioSetPinType(_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo.m_portId, _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo.m_pinMsk, 5);
 
-		//Get the state of the Button pin NUM_DRDY_CHECKS times.
-		for (int i = 0; i<NUM_BTN_CHECKS; i++)
-		{
-			_pSyn_DutCtrl->GpioPinRead(_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo.m_portId, _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo.m_pinMsk, &nBtnState);
-			_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithoutStimResults.m_arCurrStates[i] = (nBtnState & _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo.m_pinMsk) ? 1 : 0;
-		}
+		////Get the state of the Button pin NUM_DRDY_CHECKS times.
+		//for (int i = 0; i<NUM_BTN_CHECKS; i++)
+		//{
+		//	_pSyn_DutCtrl->GpioPinRead(_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo.m_portId, _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo.m_pinMsk, &nBtnState);
+		//	_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithoutStimResults.m_arCurrStates[i] = (nBtnState & _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo.m_pinMsk) ? 1 : 0;
+		//}
 
-		SYN_ProcessBtnTestData(_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo, _pSyn_Dut->_pSyn_DutTestResult->_btnTestWithoutStimResults);
+		//SYN_ProcessBtnTestData(_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo, _pSyn_Dut->_pSyn_DutTestResult->_btnTestWithoutStimResults);
 
-		ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithoutStimResults.m_elapsedtime);
+		//ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithoutStimResults.m_elapsedtime);
 	}
 }
 
@@ -159,7 +156,6 @@ void Ts_ButtonTest::ProcessData()
 
 void Ts_ButtonTest::CleanUp()
 {
-	PowerOff();
 }
 
 void Ts_ButtonTest::SYN_ProcessBtnTestData(BtnTestInfo &pInfo, BtnTestResults &pResults)

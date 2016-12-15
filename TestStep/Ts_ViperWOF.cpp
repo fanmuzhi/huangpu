@@ -222,83 +222,79 @@ void Ts_ViperWOF::ProcessData()
 
 void Ts_ViperWOF::CleanUp()
 {
-	PowerOff();
+	_pSyn_DutCtrl->FpUnloadPatch();
 }
 
 bool Ts_ViperWOF::GetZ0WofData(WofTestInfo &wofInfo, WofTestResults &wofResults, bool UseConfigVoltage)
 {
-	bool rc(false);
+	//bool rc(false);
 
-	bool		bWithStim = wofInfo.m_bWithStimulus;
-	uint8_t*	pResponseBuf = bWithStim ? wofResults.m_arDataWithStim : wofResults.m_arDataWithoutStim;
+	//bool		bWithStim = wofInfo.m_bWithStimulus;
+	//uint8_t*	pResponseBuf = bWithStim ? wofResults.m_arDataWithStim : wofResults.m_arDataWithoutStim;
 
-	Syn_PatchInfo WofCmd1Patch, WofCmd2Patch;
-	rc = _pSyn_Dut->FindPatch("WofFdCmd1", WofCmd1Patch);
-	rc = _pSyn_Dut->FindPatch("WofFdCmd2", WofCmd2Patch);
+	//Syn_PatchInfo WofCmd1Patch, WofCmd2Patch;
+	//rc = _pSyn_Dut->FindPatch("WofFdCmd1", WofCmd1Patch);
+	//rc = _pSyn_Dut->FindPatch("WofFdCmd2", WofCmd2Patch);
 
-	int nVcc = (int)(wofInfo.m_nVCC * 1000);
-	PowerOff();
+	//int nVcc = (int)(wofInfo.m_nVCC * 1000);
 
-	if (UseConfigVoltage)
-	{
-		PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, nVcc, nVcc, true);
-	}
-	else
-	{
-		PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-	}
+	//if (UseConfigVoltage)
+	//{
+	//	_pSyn_DutCtrl->PowerOff();
+	//	_pSyn_DutCtrl->PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV,nVcc);
+	//	_pSyn_DutCtrl->FpTidleSet(0);
+	//}
 
-	Syn_PatchInfo WofPatchInfo;
-	rc = _pSyn_Dut->FindPatch("WofPatch", WofPatchInfo);
-	if (NULL == WofPatchInfo._pArrayBuf || NULL == WofCmd1Patch._pArrayBuf || NULL == WofCmd2Patch._pArrayBuf)
-	{
-		return false;
-	}
+	//Syn_PatchInfo WofPatchInfo;
+	//rc = _pSyn_Dut->FindPatch("WofPatch", WofPatchInfo);
+	//if (NULL == WofPatchInfo._pArrayBuf || NULL == WofCmd1Patch._pArrayBuf || NULL == WofCmd2Patch._pArrayBuf)
+	//{
+	//	return false;
+	//}
 
-	//Load the patch, execute and wait for cmd1 to complete.
-	_pSyn_DutCtrl->FpLoadPatch(WofPatchInfo._pArrayBuf, WofPatchInfo._uiArraySize);
+	////Load the patch, execute and wait for cmd1 to complete.
+	//_pSyn_DutCtrl->FpLoadPatch(WofPatchInfo._pArrayBuf, WofPatchInfo._uiArraySize);
 
-	_pSyn_DutCtrl->FpWrite(1, WofCmd1Patch._pArrayBuf[0], &WofCmd1Patch._pArrayBuf[1], WofCmd1Patch._uiArraySize - 1);
-	_pSyn_DutCtrl->FpWaitForCMDComplete();
-	_pSyn_DutCtrl->FpReadAndCheckStatus(0);
+	//_pSyn_DutCtrl->FpWrite(1, WofCmd1Patch._pArrayBuf[0], &WofCmd1Patch._pArrayBuf[1], WofCmd1Patch._uiArraySize - 1);
+	//_pSyn_DutCtrl->FpWaitForCMDComplete();
+	//_pSyn_DutCtrl->FpReadAndCheckStatus(0);
 
-	//Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.
-	ModifySweepWofCmdData(WofCmd2Patch._pArrayBuf);
-	wofResults.m_nThreshStart = WofCmd2Patch._pArrayBuf[0x1E];
-	wofResults.m_nThreshInc = WofCmd2Patch._pArrayBuf[0x22];
-	wofResults.m_nThreshStop = WofCmd2Patch._pArrayBuf[0x26];
-	wofResults.m_nNumThresholds = ((wofResults.m_nThreshStop - wofResults.m_nThreshStart) / wofResults.m_nThreshInc) + 1;
-	wofResults.m_nGainStart = WofCmd2Patch._pArrayBuf[0x0C];
-	wofResults.m_nGainInc = WofCmd2Patch._pArrayBuf[0x10];
-	wofResults.m_nGainStop = WofCmd2Patch._pArrayBuf[0x14];
-	wofResults.m_nNumGains = ((wofResults.m_nGainStop - wofResults.m_nGainStart) / wofResults.m_nGainInc) + 1;
-	wofResults.m_nResponseSize = (wofResults.m_nNumThresholds * wofResults.m_nNumGains) + 6;
+	////Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.
+	//ModifySweepWofCmdData(WofCmd2Patch._pArrayBuf);
+	//wofResults.m_nThreshStart = WofCmd2Patch._pArrayBuf[0x1E];
+	//wofResults.m_nThreshInc = WofCmd2Patch._pArrayBuf[0x22];
+	//wofResults.m_nThreshStop = WofCmd2Patch._pArrayBuf[0x26];
+	//wofResults.m_nNumThresholds = ((wofResults.m_nThreshStop - wofResults.m_nThreshStart) / wofResults.m_nThreshInc) + 1;
+	//wofResults.m_nGainStart = WofCmd2Patch._pArrayBuf[0x0C];
+	//wofResults.m_nGainInc = WofCmd2Patch._pArrayBuf[0x10];
+	//wofResults.m_nGainStop = WofCmd2Patch._pArrayBuf[0x14];
+	//wofResults.m_nNumGains = ((wofResults.m_nGainStop - wofResults.m_nGainStart) / wofResults.m_nGainInc) + 1;
+	//wofResults.m_nResponseSize = (wofResults.m_nNumThresholds * wofResults.m_nNumGains) + 6;
 
-	//Execute and wait for sweep command to complete.
-	_pSyn_DutCtrl->FpWrite(1, WofCmd2Patch._pArrayBuf[0], &WofCmd2Patch._pArrayBuf[1], WofCmd2Patch._uiArraySize - 1);
-	_pSyn_DutCtrl->FpWaitForCMDComplete();
-	_pSyn_DutCtrl->FpReadAndCheckStatus(0);
+	////Execute and wait for sweep command to complete.
+	//_pSyn_DutCtrl->FpWrite(1, WofCmd2Patch._pArrayBuf[0], &WofCmd2Patch._pArrayBuf[1], WofCmd2Patch._uiArraySize - 1);
+	//_pSyn_DutCtrl->FpWaitForCMDComplete();
+	//_pSyn_DutCtrl->FpReadAndCheckStatus(0);
 
-	//Send execute command and wait for response.
-	int timeout = 100;
-	do
-	{
-		_pSyn_DutCtrl->FpWrite(1, 0xF9, (uint8_t*)0, 0);
-		::Sleep(20);
-		_pSyn_DutCtrl->FpRead(1, 0xFF, pResponseBuf, wofResults.m_nResponseSize);
-		timeout--;
-	} while (timeout && (!((pResponseBuf[0] == 0x00) && (pResponseBuf[1] == 0x00))));
+	////Send execute command and wait for response.
+	//int timeout = 100;
+	//do
+	//{
+	//	_pSyn_DutCtrl->FpWrite(1, 0xF9, (uint8_t*)0, 0);
+	//	::Sleep(20);
+	//	_pSyn_DutCtrl->FpRead(1, 0xFF, pResponseBuf, wofResults.m_nResponseSize);
+	//	timeout--;
+	//} while (timeout && (!((pResponseBuf[0] == 0x00) && (pResponseBuf[1] == 0x00))));
 
-	if (timeout == 0)
-	{
-		Syn_Exception ex(0);
-		ex.SetDescription("WOF: Status never complete.");
-		throw(ex);
-		return false;
-	}
+	//if (timeout == 0)
+	//{
+	//	Syn_Exception ex(0);
+	//	ex.SetDescription("WOF: Status never complete.");
+	//	throw(ex);
+	//	return false;
+	//}
 
 	//Clear registers.
-	PowerOff();
 	return true;
 }
 

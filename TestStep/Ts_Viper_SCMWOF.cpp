@@ -208,100 +208,97 @@ void Ts_Viper_SCMWOF::ProcessData()
 
 void Ts_Viper_SCMWOF::CleanUp()
 {
-	PowerOff();
+	_pSyn_DutCtrl->FpUnloadPatch();
 }
 
 bool Ts_Viper_SCMWOF::ExecuteZone0SCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults& results, bool UseConfigVotage)
 {
-	Syn_PatchInfo ScmWofPatchInfo, Cmd1ScmWofPlotInfo, Cmd2ScmWofBinInfo, Cmd3SweepTagInfo;// WofCmd2Info;
-	_pSyn_Dut->FindPatch("ScmWofPatch", ScmWofPatchInfo);
-	_pSyn_Dut->FindPatch("Cmd1ScmWofPlot", Cmd1ScmWofPlotInfo);
-	_pSyn_Dut->FindPatch("Cmd2ScmWofBin", Cmd2ScmWofBinInfo);
-	_pSyn_Dut->FindPatch("Cmd3SweepTag", Cmd3SweepTagInfo);
-	//_pSyn_Dut->FindPatch("WofCmd2", WofCmd2Info);
+	//Syn_PatchInfo ScmWofPatchInfo, Cmd1ScmWofPlotInfo, Cmd2ScmWofBinInfo, Cmd3SweepTagInfo;// WofCmd2Info;
+	//_pSyn_Dut->FindPatch("ScmWofPatch", ScmWofPatchInfo);
+	//_pSyn_Dut->FindPatch("Cmd1ScmWofPlot", Cmd1ScmWofPlotInfo);
+	//_pSyn_Dut->FindPatch("Cmd2ScmWofBin", Cmd2ScmWofBinInfo);
+	//_pSyn_Dut->FindPatch("Cmd3SweepTag", Cmd3SweepTagInfo);
+	////_pSyn_Dut->FindPatch("WofCmd2", WofCmd2Info);
 
-	if (NULL == ScmWofPatchInfo._pArrayBuf || NULL == Cmd1ScmWofPlotInfo._pArrayBuf || NULL == Cmd2ScmWofBinInfo._pArrayBuf || NULL == Cmd3SweepTagInfo._pArrayBuf)// || NULL == WofCmd2Info._pArrayBuf)
-	{
-		//Syn_Exception ex(0);
-		//ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-		//ex.SetDescription("SCMWOF Patch is NULL!");
-		//throw ex;
-		return false;
-	}
-	bool		bWithStim = info.m_bWithStimulus;
-	int			timeout;
-	//uint8_t*    pWofCmd2Gains = WofCmd2Info._pArrayBuf;
-	uint8_t*	pWofCmd1 = Cmd1ScmWofPlotInfo._pArrayBuf;
-	int			nCmd1Size = Cmd1ScmWofPlotInfo._uiArraySize;
-	uint8_t*	pWofCmd2 = Cmd2ScmWofBinInfo._pArrayBuf;
-	int			nCmd2Size = Cmd2ScmWofBinInfo._uiArraySize;
-	uint8_t*	pWofCmd3 = Cmd3SweepTagInfo._pArrayBuf;
-	int			nCmd3Size = Cmd3SweepTagInfo._uiArraySize;
-	uint8_t		pGetPrintMerged[3000] = { 0 };
-	int			nGetPrintMergedSize = nCmd2Size + nCmd3Size;
-	uint8_t*	pResponseBuf = bWithStim ? results.m_arDataWithStim : results.m_arDataWithoutStim;
-	int			nVcc = (int)(info.m_nVCC * 1000);
+	//if (NULL == ScmWofPatchInfo._pArrayBuf || NULL == Cmd1ScmWofPlotInfo._pArrayBuf || NULL == Cmd2ScmWofBinInfo._pArrayBuf || NULL == Cmd3SweepTagInfo._pArrayBuf)// || NULL == WofCmd2Info._pArrayBuf)
+	//{
+	//	//Syn_Exception ex(0);
+	//	//ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+	//	//ex.SetDescription("SCMWOF Patch is NULL!");
+	//	//throw ex;
+	//	return false;
+	//}
+	//bool		bWithStim = info.m_bWithStimulus;
+	//int			timeout;
+	////uint8_t*    pWofCmd2Gains = WofCmd2Info._pArrayBuf;
+	//uint8_t*	pWofCmd1 = Cmd1ScmWofPlotInfo._pArrayBuf;
+	//int			nCmd1Size = Cmd1ScmWofPlotInfo._uiArraySize;
+	//uint8_t*	pWofCmd2 = Cmd2ScmWofBinInfo._pArrayBuf;
+	//int			nCmd2Size = Cmd2ScmWofBinInfo._uiArraySize;
+	//uint8_t*	pWofCmd3 = Cmd3SweepTagInfo._pArrayBuf;
+	//int			nCmd3Size = Cmd3SweepTagInfo._uiArraySize;
+	//uint8_t		pGetPrintMerged[3000] = { 0 };
+	//int			nGetPrintMergedSize = nCmd2Size + nCmd3Size;
+	//uint8_t*	pResponseBuf = bWithStim ? results.m_arDataWithStim : results.m_arDataWithoutStim;
+	//int			nVcc = (int)(info.m_nVCC * 1000);
 
-	PowerOff();
-	if (UseConfigVotage)
-	{
-		PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, nVcc, nVcc, true);
-	}
-	else
-	{
-		PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-	}
-	ModifySweepSCMWofCmdData(pWofCmd3);
+	//if (UseConfigVotage)
+	//{
+	//	_pSyn_DutCtrl->PowerOff();
+	//	_pSyn_DutCtrl->PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, nVcc);
+	//	_pSyn_DutCtrl->FpTidleSet(0);
+	//}
+	//
+	//ModifySweepSCMWofCmdData(pWofCmd3);
 
-	//Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.
-	results.m_nThreshStart = pWofCmd3[0x1E];
-	results.m_nThreshInc = pWofCmd3[0x22];
-	results.m_nThreshStop = pWofCmd3[0x26];
-	results.m_nNumThresholds = ((results.m_nThreshStop - results.m_nThreshStart) / results.m_nThreshInc) + 1;
-	results.m_nGainStart = pWofCmd3[0x0B];
-	results.m_nGainInc = pWofCmd3[0x0F];
-	results.m_nGainStop = pWofCmd3[0x13];
-	results.m_nNumGains = ((results.m_nGainStop - results.m_nGainStart) / results.m_nGainInc) + 1;
-	results.m_nResponseSize = (results.m_nNumThresholds * results.m_nNumGains) + 6;
+	////Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.
+	//results.m_nThreshStart = pWofCmd3[0x1E];
+	//results.m_nThreshInc = pWofCmd3[0x22];
+	//results.m_nThreshStop = pWofCmd3[0x26];
+	//results.m_nNumThresholds = ((results.m_nThreshStop - results.m_nThreshStart) / results.m_nThreshInc) + 1;
+	//results.m_nGainStart = pWofCmd3[0x0B];
+	//results.m_nGainInc = pWofCmd3[0x0F];
+	//results.m_nGainStop = pWofCmd3[0x13];
+	//results.m_nNumGains = ((results.m_nGainStop - results.m_nGainStart) / results.m_nGainInc) + 1;
+	//results.m_nResponseSize = (results.m_nNumThresholds * results.m_nNumGains) + 6;
 
-	//Merge the bin and sweep tag files.
-	pGetPrintMerged[0] = 0x78;	//Line length (not used).
-	memcpy(&pGetPrintMerged[4], pWofCmd2, nCmd2Size);
-	memcpy(&pGetPrintMerged[nCmd2Size + 4], pWofCmd3, nCmd3Size);
+	////Merge the bin and sweep tag files.
+	//pGetPrintMerged[0] = 0x78;	//Line length (not used).
+	//memcpy(&pGetPrintMerged[4], pWofCmd2, nCmd2Size);
+	//memcpy(&pGetPrintMerged[nCmd2Size + 4], pWofCmd3, nCmd3Size);
 
-	//Download patch.
-	_pSyn_DutCtrl->FpLoadPatch(ScmWofPatchInfo._pArrayBuf, ScmWofPatchInfo._uiArraySize);
+	////Download patch.
+	//_pSyn_DutCtrl->FpLoadPatch(ScmWofPatchInfo._pArrayBuf, ScmWofPatchInfo._uiArraySize);
 
-	//Write and wait for cmd1 to complete.
-	_pSyn_DutCtrl->FpWrite(1, pWofCmd1[0], &pWofCmd1[1], nCmd1Size - 1);
-	_pSyn_DutCtrl->FpWaitForCMDComplete();
-	_pSyn_DutCtrl->FpReadAndCheckStatus(0);
+	////Write and wait for cmd1 to complete.
+	//_pSyn_DutCtrl->FpWrite(1, pWofCmd1[0], &pWofCmd1[1], nCmd1Size - 1);
+	//_pSyn_DutCtrl->FpWaitForCMDComplete();
+	//_pSyn_DutCtrl->FpReadAndCheckStatus(0);
 
-	///Write and wait for GetPrintMerged to complete.
-	_pSyn_DutCtrl->FpWrite(1, 0x02, pGetPrintMerged, nGetPrintMergedSize + 4);
-	_pSyn_DutCtrl->FpWaitForCMDComplete();
-	_pSyn_DutCtrl->FpReadAndCheckStatus(0);
+	/////Write and wait for GetPrintMerged to complete.
+	//_pSyn_DutCtrl->FpWrite(1, 0x02, pGetPrintMerged, nGetPrintMergedSize + 4);
+	//_pSyn_DutCtrl->FpWaitForCMDComplete();
+	//_pSyn_DutCtrl->FpReadAndCheckStatus(0);
 
-	//Send execute command and wait for response.
-	timeout = 100;
-	do
-	{
-		_pSyn_DutCtrl->FpWrite(1, 0xFA, (uint8_t*)0, 0);
-		::Sleep(20);
-		_pSyn_DutCtrl->FpRead(1, 0xFF, pResponseBuf, results.m_nResponseSize);
-		timeout--;
-	} while (timeout && (!((pResponseBuf[0] == 0x00) && (pResponseBuf[1] == 0x00))));
+	////Send execute command and wait for response.
+	//timeout = 100;
+	//do
+	//{
+	//	_pSyn_DutCtrl->FpWrite(1, 0xFA, (uint8_t*)0, 0);
+	//	::Sleep(20);
+	//	_pSyn_DutCtrl->FpRead(1, 0xFF, pResponseBuf, results.m_nResponseSize);
+	//	timeout--;
+	//} while (timeout && (!((pResponseBuf[0] == 0x00) && (pResponseBuf[1] == 0x00))));
 
-	if (timeout == 0)
-	{
-		Syn_Exception ex(0);
-		ex.SetDescription("SCM WOF: Status never complete.");
-		throw(ex);
-		return false;
-	}
+	//if (timeout == 0)
+	//{
+	//	Syn_Exception ex(0);
+	//	ex.SetDescription("SCM WOF: Status never complete.");
+	//	throw(ex);
+	//	return false;
+	//}
 
 	//Clear registers.
-	PowerOff();
 	return true;
 }
 

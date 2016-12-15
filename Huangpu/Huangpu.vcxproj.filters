@@ -98,15 +98,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_Syn_BinCodesDlg.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="Syn_UpdateFirmwareProcessDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_Syn_UpdateFirmwareProcessDlg.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_Syn_UpdateFirmwareProcessDlg.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_Syn_MiniThread.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -169,12 +160,6 @@
     <CustomBuild Include="Syn_BinCodesDlg.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="Syn_UpdateFirmwareProcessDlg.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Syn_UpdateFirmwareProcessDlg.ui">
-      <Filter>Form Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="Syn_MiniThread.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
@@ -208,9 +193,6 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_Syn_BinCodesDlg.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_Syn_UpdateFirmwareProcessDlg.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_Syn_DebugModeDlg.h">

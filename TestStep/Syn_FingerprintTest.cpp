@@ -6,7 +6,6 @@
 
 Syn_FingerprintTest::Syn_FingerprintTest(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_TestStep(strName, strArgs, pDutCtrl, pDut)
-, _pSyn_Module(NULL)
 {
 #ifdef _DEBUG
 	if (strName != "WaitStimulus")
@@ -15,29 +14,6 @@ Syn_FingerprintTest::Syn_FingerprintTest(string &strName, string &strArgs, FpAlp
 	}
 #endif
 
-	switch (_pSyn_Dut->_eProjectType)
-	{
-		case Metallica:
-			_pSyn_Module = new Syn_MetallicaModule();
-			_pSyn_Module->SetDutCtrl(_pSyn_DutCtrl);
-			break;
-
-		case Viper1:
-			_pSyn_Module = new Syn_Viper1Module();
-			_pSyn_Module->SetDutCtrl(_pSyn_DutCtrl);
-			break;
-			
-		case Viper2:
-			_pSyn_Module = new Syn_Viper2Module();
-			_pSyn_Module->SetDutCtrl(_pSyn_DutCtrl);
-			break;
-
-		default:
-			_pSyn_Module = new Syn_MetallicaModule();
-			_pSyn_Module->SetDutCtrl(_pSyn_DutCtrl);
-			break;		
-	}
-
 	//_starttime = time(NULL);
 	_starttime = GetTickCount64();
 }
@@ -45,129 +21,91 @@ Syn_FingerprintTest::Syn_FingerprintTest(string &strName, string &strArgs, FpAlp
 
 Syn_FingerprintTest::~Syn_FingerprintTest()
 {
-	if (NULL != _pSyn_Module)
-	{
-		delete _pSyn_Module;
-		_pSyn_Module = NULL;
-	}
 }
-
-
-void Syn_FingerprintTest::PowerOn(int nPwrVdd, int nPwrVio, int nPwrVled, int nPwrVddh, bool bDisableSleep)
-{
-	if (NULL == _pSyn_Module)
-	{
-		return;
-	}
-
-	_pSyn_Module->PowerOn(nPwrVdd, nPwrVio, nPwrVled, nPwrVddh, bDisableSleep);
-}
-
-
-void Syn_FingerprintTest::PowerOff()
-{
-	if (NULL == _pSyn_Module)
-	{
-		return;
-	}
-
-	_pSyn_Module->PowerOff();
-}
-
 
 void Syn_FingerprintTest::CopyToPrintPatch(uint8_t* pSrc, uint8_t* pPrintPatch, int nNumBytes, int nPatchIdx)
 {
-	if (NULL == _pSyn_Module)
+	/*if (NULL == _pSyn_Module)
 	{
 		return;
 	}
 
-	_pSyn_Module->CopyToPrintPatch(pSrc, pPrintPatch, nNumBytes, nPatchIdx);
+	_pSyn_Module->CopyToPrintPatch(pSrc, pPrintPatch, nNumBytes, nPatchIdx);*/
 }
 
 
 bool Syn_FingerprintTest::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRows, CalibrationInfo &calInfo, CalibrationResults &calResult)
 {
-	if (NULL == _pSyn_Module)
+	/*if (NULL == _pSyn_Module)
 	{
 		return false;
 	}
 
-	return _pSyn_Module->CalculatePgaOffsets_OOPP(numCols, numRows, calInfo, calResult);
+	return _pSyn_Module->CalculatePgaOffsets_OOPP(numCols, numRows, calInfo, calResult);*/
+
+	return true;
 }
 
 
 void Syn_FingerprintTest::GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *pFrame, int nNumRows, int nNumCols)
 {
-	if (NULL == _pSyn_Module)
+	/*if (NULL == _pSyn_Module)
 	{
 		return;
 	}
 
-	_pSyn_Module->GetFingerprintImage(pCalResults, pFrame, nNumRows, nNumCols);
+	_pSyn_Module->GetFingerprintImage(pCalResults, pFrame, nNumRows, nNumCols);*/
 }
 
 void Syn_FingerprintTest::GetFingerprintImageForCurrentTest(CalibrationResults& pCalResults, FPSFrame* pFrame, int nNumRows, int nNumCols, uint32_t* pCurrentDrawVals, int nGain)
 {
-	if (NULL == _pSyn_Module)
+	/*if (NULL == _pSyn_Module)
 	{
 		return;
 	}
 
-	_pSyn_Module->GetFingerprintImageForCurrentTest(pCalResults, pFrame, nNumRows, nNumCols, pCurrentDrawVals, nGain);
+	_pSyn_Module->GetFingerprintImageForCurrentTest(pCalResults, pFrame, nNumRows, nNumCols, pCurrentDrawVals, nGain);*/
 }
 
 void Syn_FingerprintTest::CalculateLnaOffsetsBinarySearch(FPSFrame* pFrame, uint8_t* pLnaValues, int nNumRows, int nNumCols, CalibrationInfo &CalInfo, CalibrationResults &CalResults)
 {
-	if (NULL == _pSyn_Module)
+	/*if (NULL == _pSyn_Module)
 	{
 		return;
 	}
 
-	_pSyn_Module->CalculateLnaOffsetsBinarySearch(pFrame, pLnaValues, nNumRows, nNumCols, CalInfo, CalResults);
+	_pSyn_Module->CalculateLnaOffsetsBinarySearch(pFrame, pLnaValues, nNumRows, nNumCols, CalInfo, CalResults);*/
 }
-
-
-bool Syn_FingerprintTest::CheckDUTexists()
-{
-	if (NULL == _pSyn_Module)
-	{
-		return false;
-	}
-
-	return _pSyn_Module->CheckDUTexists();
-}
-
 
 void Syn_FingerprintTest::ImageDecode(FPSFrame *pDecodeFrame, FPSFrame *pEncodeFrame, int nNumRow, int nNumCol, int nNumFrames)
 {
-	if (NULL == _pSyn_Module)
+	/*if (NULL == _pSyn_Module)
 	{
 		return;
 	}
 
-	return _pSyn_Module->ImageDecode(pDecodeFrame, pEncodeFrame, nNumRow, nNumCol, nNumFrames);
+	return _pSyn_Module->ImageDecode(pDecodeFrame, pEncodeFrame, nNumRow, nNumCol, nNumFrames);*/
 }
 
 void Syn_FingerprintTest::ModifySweepWofCmdData(uint8_t* pSweepCmd)
 {
-	if (NULL == _pSyn_Module)
+	/*if (NULL == _pSyn_Module)
 	{
 		return;
 	}
 
-	return _pSyn_Module->ModifySweepWofCmdData(pSweepCmd);
+	return _pSyn_Module->ModifySweepWofCmdData(pSweepCmd);*/
 
 }
 
 void Syn_FingerprintTest::ModifySweepSCMWofCmdData(uint8_t* pSweepCmd)
 {
-	if (NULL == _pSyn_Module)
+	/*if (NULL == _pSyn_Module)
 	{
 		return;
 	}
 
-	return _pSyn_Module->ModifySweepSCMWofCmdData(pSweepCmd);
+	return _pSyn_Module->ModifySweepSCMWofCmdData(pSweepCmd);*/
 
 }
 
@@ -259,24 +197,4 @@ void Syn_FingerprintTest::RemoveBaseline(FPSFrame *pImgFingerArr, FPSFrame *pImg
 		}
 	}
 
-}
-
-void Syn_FingerprintTest::TrimOsc(OscTrimInfo &iOscTrimInfo, OscTrimResults &ioOscTrimResults, uint16_t Vdd_mV, uint16_t Vio_mV, uint16_t Vled_mV, uint16_t Vddh_mV)
-{
-	if (NULL == _pSyn_Module)
-	{
-		return;
-	}
-
-	return _pSyn_Module->TrimOsc(iOscTrimInfo, ioOscTrimResults, Vdd_mV,Vio_mV,Vled_mV,Vddh_mV);
-}
-
-void Syn_FingerprintTest::TrimSlowOsc(SlowOscInfo &iSlowOscInfo, SlowOscResults &ioSlowOscResults, uint16_t Vdd_mV, uint16_t Vio_mV, uint16_t Vled_mV, uint16_t Vddh_mV)
-{
-	if (NULL == _pSyn_Module)
-	{
-		return;
-	}
-
-	return _pSyn_Module->TrimSlowOsc(iSlowOscInfo, ioSlowOscResults, Vdd_mV, Vio_mV, Vled_mV, Vddh_mV);
 }

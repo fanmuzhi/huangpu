@@ -41,11 +41,6 @@ void Ts_ReadDutAdc::SetUp()
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_ReadDutAdcInfo.m_bExecuted = false;
 
-	//Power On
-	PowerOff();
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-	_pSyn_DutCtrl->FpUnloadPatch();
-
 	//load OTPReadWritePatch
 	Syn_PatchInfo OTPRWPatchInfo;
 	if (!_pSyn_Dut->FindPatch("OtpReadWritePatch", OTPRWPatchInfo) || NULL == OTPRWPatchInfo._pArrayBuf)
@@ -102,7 +97,7 @@ void Ts_ReadDutAdc::ProcessData()
 
 void Ts_ReadDutAdc::CleanUp()
 {
-	PowerOff();
+	_pSyn_DutCtrl->FpUnloadPatch();
 }
 
 void Ts_ReadDutAdc::ReadDutAdcSetup()
@@ -151,7 +146,7 @@ int Ts_ReadDutAdc::ReadDutAdc()
 
 	uint8_t	pDst[6];
 	int nAdcReading = 0;
-	_pSyn_DutCtrl->FpPeekRegister(0x80002024, pDst);
+	//_pSyn_DutCtrl->FpPeekRegister(0x80002024, pDst);
 	nAdcReading = ((uint16_t)pDst[5] << 8) + pDst[4];	//Swap.
 
 	_pSyn_DutCtrl->FpPokeRegister(0x80002024, 0x09);

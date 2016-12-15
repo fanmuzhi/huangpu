@@ -51,11 +51,6 @@ void Ts_PixelPatchTest::SetUp()
 	//
 	//_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sPixPatchFail);
 
-	//Power On
-	PowerOff();
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-	_pSyn_DutCtrl->FpUnloadPatch();
-
 	//load PixelPatch
 	Syn_PatchInfo PixelPatchInfo;
 	if (!_pSyn_Dut->FindPatch("PixelPatch", PixelPatchInfo) || NULL == PixelPatchInfo._pArrayBuf)
@@ -103,8 +98,5 @@ void Ts_PixelPatchTest::ProcessData()
 void Ts_PixelPatchTest::CleanUp()
 {
 	//Reset as work around for bug in Pixel Patch.
-	//PowerOff();
-	//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-	//_pSyn_DutCtrl->FpUnloadPatch();
-	PowerOff();
+	_pSyn_DutCtrl->FpUnloadPatch();
 }

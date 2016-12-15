@@ -3,10 +3,7 @@
 #include "Syn_Exception.h"
 #include "Syn_SysConfigOperation.h"
 
-//MPC_API
-//#include "MpcApiDll.h"
-//#include "MpcApiError.h"
-//#include "MPCErrors.h"
+#include "syn_devicemanager.h"
 
 //std
 #include <iostream>
@@ -27,16 +24,17 @@
 INITIALIZE_EASYLOGGINGPP
 #endif
 
-Syn_Site::Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath)
+Syn_Site::Syn_Site(uint8_t siteNumber, string deviceSerNumber, string strConfigFilePath)
 :_pSyn_Dut(NULL)
+, _pSynBridge(NULL)
 , _pSyn_DutCtrl(NULL)
 , _iSiteNumber(siteNumber)
-,_uiSerialNumber(deviceSerNumber)
+,_strSerialNumber(deviceSerNumber)
 , _strConfigFilePath(strConfigFilePath)
 ,_siteState(Closed)
-,_stopFlag(false)
 , _uiErrorFlag(Syn_ExceptionCode::Syn_OK)
 ,_strErrorMessage("")
+, _strProjectType("")
 {
 	RegisterLoggingConfig();
 }
@@ -49,6 +47,12 @@ Syn_Site::~Syn_Site()
 		_pSyn_Dut = NULL;
 	}
 
+	if (NULL != _pSynBridge)
+	{
+		delete _pSynBridge;
+		_pSynBridge = NULL;
+	}
+
 	if (NULL != _pSyn_DutCtrl)
 	{
 		delete _pSyn_DutCtrl;
@@ -56,7 +60,7 @@ Syn_Site::~Syn_Site()
 	}
 }
 
-uint32_t Syn_Site::CreateSiteInstance(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath, const AdcBaseLineInfo &iADCInfo, Syn_Site * &opSiteInstance)
+uint32_t Syn_Site::CreateSiteInstance(uint8_t siteNumber, string deviceSerNumber, string strConfigFilePath, const AdcBaseLineInfo &iADCInfo, Syn_Site * &opSiteInstance)
 {
 	opSiteInstance = NULL;
 
@@ -111,28 +115,53 @@ uint32_t Syn_Site::Init()
 
 	//DutController:SPC,MPC04
 	std::string strDutController(_SysConfig._strDutController);
-	DutController iDutControllerType;
-	if (std::string("SPC") == strDutController)
+	devicetype DeviceType;
+	if (std::string("M5") == strDutController)
 	{
-		iDutControllerType = Syn_SPC;
+		DeviceType = spi_m5;
 	}
 	else if (std::string("MPC04") == strDutController)
 	{
-		iDutControllerType = Syn_MPC04;
+		DeviceType = spi_mpc04;
 	}
 	else
 	{
-		iDutControllerType = Syn_SPC;
+		DeviceType = spi_m5;
 		//LOG(ERROR) << "Error:Syn_Site::Init() - an unknown DutController,construct it to SPC!";
 	}
 
-	//Create DutCtrl
-	rc = FpAlphaModule::CreateDutCtrlInstance(iDutControllerType, _uiSerialNumber, _pSyn_DutCtrl);
-	if (NULL == _pSyn_DutCtrl)
+	//Create Bridge
+	rc = syn_bridge::CreateDeviceInstance(_strSerialNumber, DeviceType, _pSynBridge);
+	if (NULL == _pSynBridge)
 	{
 		_siteState = Error;
 		_uiErrorFlag = rc;
 		//LOG(ERROR) << "Error:Syn_Site::Init() - CreateDutInstance is failed!";
+		return rc;
+	}
+
+	//Module
+	_strProjectType = _SysConfig._strDutType; 
+	FpAlphaModule::AlphaSensorType SensorType;
+	if (string("Viper") == _strProjectType || string("Viper2") == _strProjectType)
+	{
+		SensorType = FpAlphaModule::Viper2;
+	}
+	else if (std::string("Metallica") == _strProjectType)
+	{
+		SensorType = FpAlphaModule::Metallica;
+	}
+	else
+	{
+		SensorType = FpAlphaModule::Viper2;
+	}
+	rc = FpAlphaModule::CreateModuleInstance(SensorType, _pSynBridge, _pSyn_DutCtrl);
+	if (NULL == _pSyn_DutCtrl)
+	{
+		_siteState = Error;
+		_uiErrorFlag = rc;
+		delete _pSynBridge;
+		_pSynBridge = NULL;
 		return rc;
 	}
 
@@ -153,34 +182,9 @@ uint32_t Syn_Site::Open()
 	{
 		return Syn_ExceptionCode::Syn_SiteStateError;
 	}
-	//if (_siteState != SiteState::Closed)
-	//{
-	//	return Syn_ExceptionCode::Syn_SiteStateError;
-	//}
 	_uiErrorFlag = 0;
 
 	bool rc(false);
-
-	//ProejctType:Viper1,Viper2,Metallica
-	std::string strProjectType(_SysConfig._strDutType);
-	ProjectType iProjectType;
-	if (std::string("Viper") == strProjectType || std::string("Viper1") == strProjectType)
-	{
-		iProjectType = Viper1;
-	}
-	else if (std::string("Viper2") == strProjectType)
-	{
-		iProjectType = Viper2;
-	}
-	else if (std::string("Metallica") == strProjectType)
-	{
-		iProjectType = Metallica;
-	}
-	else
-	{
-		iProjectType = Viper1;
-		//LOG(ERROR) << "Error:Syn_Site::Init() - an unknown ProjectType,construct it to Viper1!";
-	}
 
 	if (NULL != _pSyn_Dut)
 	{
@@ -189,7 +193,7 @@ uint32_t Syn_Site::Open()
 	}
 
 	//Create Dut
-	rc = Syn_Dut::CreateDutInstance(iProjectType, _pSyn_Dut);
+	rc = Syn_Dut::CreateDutInstance(_strProjectType, _pSyn_Dut);
 	if (NULL == _pSyn_Dut)
 	{
 		_siteState = Error;
@@ -214,7 +218,7 @@ uint32_t Syn_Site::Open()
 	
 	_siteState = Idle;
 
-	_pSyn_Dut->_DeviceSerialNumber = _uiSerialNumber;
+	_pSyn_Dut->_DeviceSerialNumber = _strSerialNumber;
 	_pSyn_Dut->_iSiteNumber = _iSiteNumber;
 
 	return Syn_ExceptionCode::Syn_OK;
@@ -399,7 +403,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	std::string sSensorSerialNumber("");
 	for (int i = 0; i < 12; i++)
 	{
-		sSensorSerialNumber.push_back(DutInfo->_getVerInfo.sSerialNumber[i]);
+		sSensorSerialNumber.push_back(DutResults->_versionResult.sSerialNumber[i]);
 	}
 
 	std::string strFilePath("");
@@ -432,7 +436,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	}
 
 	fprintf(pFile, "%%%%%%%%%%%%%%%%%%%%%%\n");
-	fprintf(pFile, "MTLog,%d,%d\n", _iSiteNumber, _uiSerialNumber);
+	fprintf(pFile, "MTLog,%d,%s\n", _iSiteNumber, _strSerialNumber.c_str());
 
 	//Put in part number.
 	fprintf(pFile, "Version,%s\n", SW_VERSION);//Version

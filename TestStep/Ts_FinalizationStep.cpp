@@ -48,5 +48,5 @@ void Ts_FinalizationStep::ProcessData()
 
 void Ts_FinalizationStep::CleanUp()
 {
-	PowerOff();
+	_pSyn_DutCtrl->PowerOff();
 }

@@ -46,11 +46,6 @@ void Ts_WoVarTest::SetUp()
 	if (0 != listOfArgValue[1].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_woVarInfo.m_nDelay_ms = atoi(listOfArgValue[1].c_str());
 
-	//Power On
-	PowerOff();
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-	_pSyn_DutCtrl->FpUnloadPatch();
-
 	//load OTPReadWritePatch
 	Syn_PatchInfo WovarPatchInfo;
 	if (!_pSyn_Dut->FindPatch("WovarPatch", WovarPatchInfo) || NULL == WovarPatchInfo._pArrayBuf)
@@ -92,6 +87,5 @@ void Ts_WoVarTest::ProcessData()
 
 void Ts_WoVarTest::CleanUp()
 {
-	//_pSyn_DutCtrl->FpUnloadPatch();
-	PowerOff();
+	_pSyn_DutCtrl->FpUnloadPatch();
 }

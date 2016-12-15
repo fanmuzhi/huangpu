@@ -87,11 +87,6 @@ void Ts_OTPCheck::SetUp()
 	if (0 != listOfArgValue[12].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_otpCheckInfo._bCheckTAG_LNA_PGA_GAINS = atoi(listOfArgValue[14].c_str());
 
-	//Power On
-	PowerOff();
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-	_pSyn_DutCtrl->FpUnloadPatch();
-
 	//load OTPReadWritePatch
 	Syn_PatchInfo OTPRWPatchInfo;
 	if (!_pSyn_Dut->FindPatch("OtpReadWritePatch", OTPRWPatchInfo) || NULL == OTPRWPatchInfo._pArrayBuf)
@@ -438,7 +433,6 @@ void Ts_OTPCheck::ProcessData()
 void Ts_OTPCheck::CleanUp()
 {
 	_pSyn_DutCtrl->FpUnloadPatch();
-	PowerOff();
 }
 
 string Ts_OTPCheck::HexToString(uint8_t arrValue[],int stratPos,int endPos)

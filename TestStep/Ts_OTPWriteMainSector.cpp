@@ -29,10 +29,6 @@ void Ts_OTPWriteMainSector::SetUp()
 		throw ex;
 		return;
 	}
-
-	//Power On
-	PowerOff();
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
 }
 
 void Ts_OTPWriteMainSector::Execute()
@@ -349,18 +345,6 @@ void Ts_OTPWriteMainSector::Execute()
 void Ts_OTPWriteMainSector::ProcessData()
 {
 	Syn_Exception ex(0);
-	Syn_PatchInfo OTPRWPatchInfo;
-	if (!_pSyn_Dut->FindPatch("OtpReadWritePatch", OTPRWPatchInfo) || NULL == OTPRWPatchInfo._pArrayBuf)
-	{
-		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-		ex.SetDescription("OtpReadWritePatch Patch is NULL!");
-		throw ex;
-		return;
-	}
-	PowerOff();
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-	_pSyn_DutCtrl->FpUnloadPatch();
-	_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
 
 	int count = 0;
 	int result = 1;		//0 for match
@@ -440,7 +424,7 @@ void Ts_OTPWriteMainSector::ProcessData()
 
 void Ts_OTPWriteMainSector::CleanUp()
 {
-	PowerOff();
+	_pSyn_DutCtrl->FpUnloadPatch();
 }
 
 void Ts_OTPWriteMainSector::BurnToOTP(long nRecType, uint8_t* pSrc, int numBytes)

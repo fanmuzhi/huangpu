@@ -35,12 +35,12 @@ Syn_Dut::~Syn_Dut()
 	_listOfPatchInfo.clear();
 }
 
-bool Syn_Dut::CreateDutInstance(ProjectType iType, Syn_Dut * &opSyn_DutInstance)
+bool Syn_Dut::CreateDutInstance(string iType, Syn_Dut * &opSyn_DutInstance)
 {
 	//opSyn_DutInstance = NULL;
 
 	opSyn_DutInstance = new Syn_Dut();
-	opSyn_DutInstance->_eProjectType = iType;
+	opSyn_DutInstance->_strProjectType = iType;
 
 	return true;
 }

@@ -3,6 +3,7 @@
 //DutUtls
 #include "Syn_Config.h"
 #include "Syn_Dut.h"
+#include "syn_bridge.h"
 #include "FpAlphaModule.h"
 #include "Syn_Exception.h"
 #include "Syn_TestUtils.h"
@@ -24,7 +25,7 @@ public:
 	enum ExcuteType{ All = 0x6001, Setup, Excute, ProcessData, Cleanup};
 
 	//static function
-	static uint32_t CreateSiteInstance(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath, const AdcBaseLineInfo &iADCInfo, Syn_Site * &opSiteInstance);
+	static uint32_t CreateSiteInstance(uint8_t siteNumber, string deviceSerNumber, string strConfigFilePath, const AdcBaseLineInfo &iADCInfo, Syn_Site * &opSiteInstance);
 
 	/*need call Open function*/
 	//Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath);
@@ -61,7 +62,7 @@ public:
 
 	inline void SetSiteNumber(unsigned int iSiteNumber){ _iSiteNumber = iSiteNumber; };
 	inline void GetSiteNumber(unsigned int &oSiteNumber){ oSiteNumber = _iSiteNumber; };
-	inline void GetSerialNumber(uint32_t &oSerialNumber){ oSerialNumber = _uiSerialNumber; };
+	inline void GetSerialNumber(string &oSerialNumber){ oSerialNumber = _strSerialNumber; };
 
 	inline void GetSysConfig(Syn_SysConfig &oConfig){ oConfig = _SysConfig; };
 
@@ -72,7 +73,7 @@ public:
 private:
 
 	/*need call Open function*/
-	Syn_Site(uint8_t siteNumber, uint32_t deviceSerNumber, std::string strConfigFilePath);
+	Syn_Site(uint8_t siteNumber, string string, std::string strConfigFilePath);
 
 	/*site initiazlization*/
 	uint32_t Init();
@@ -80,25 +81,26 @@ private:
 	bool FileExists(const std::string& name);
 
 	//variable
-	std::string _strConfigFilePath;
+	string _strConfigFilePath;
 
 	Syn_SysConfig _SysConfig;
 
 	Syn_Dut *_pSyn_Dut;
 
+	syn_bridge	  *_pSynBridge;
 	FpAlphaModule *_pSyn_DutCtrl;
 
 	//id
 	unsigned int _iSiteNumber;
-	uint32_t _uiSerialNumber;
+	string _strSerialNumber;
 
 	SiteState _siteState;
 
-	bool _stopFlag;
-
 	uint32_t _uiErrorFlag;
-	std::string _strErrorMessage;
+	string _strErrorMessage;
 
 	AdcBaseLineInfo _ADCInfo;
+
+	string _strProjectType;
 };
 

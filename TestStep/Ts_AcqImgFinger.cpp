@@ -47,11 +47,6 @@ void Ts_AcqImgFinger::SetUp()
 	if (0 != listOfArgValue[1].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_acqImgFingerInfo.m_nNumImagesWithStimulus= atoi(listOfArgValue[1].c_str());
 
-	//power on
-	PowerOff();
-	PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
-	_pSyn_DutCtrl->FpUnloadPatch();
-
 	//load ImgAcqPatch
 	Syn_PatchInfo ImgAcqPatchInfo;
 	if (_pSyn_Dut->FindPatch("ImageAcqPatch", ImgAcqPatchInfo))
@@ -153,5 +148,4 @@ void Ts_AcqImgFinger::ProcessData()
 void Ts_AcqImgFinger::CleanUp()
 {
 	_pSyn_DutCtrl->FpUnloadPatch();
-	PowerOff();
 }

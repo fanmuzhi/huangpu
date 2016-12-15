@@ -1,8 +1,8 @@
 #pragma once
 
 //Local
-//#include "Syn_Module.h"
 #include "FpAlphaModule.h"
+#include "syn_bridge.h"
 
 //DutUtls
 #include "Syn_Dut.h"
@@ -21,7 +21,7 @@ class Syn_TestStep
 public:
 	
 	Syn_TestStep(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut)
-		:_strName(strName),  _strArgs(strArgs), _pSyn_DutCtrl(pDutCtrl), _pSyn_Dut(pDut)
+		:_strName(strName), _strArgs(strArgs), _pSyn_DutCtrl(pDutCtrl), _pSyn_Dut(pDut)
 	{
 	}
 
@@ -46,10 +46,10 @@ public:
 protected:
 
 	string _strName;
-
 	string _strArgs;
 
-	FpAlphaModule *_pSyn_DutCtrl;
+	FpAlphaModule	*_pSyn_DutCtrl;
+	//syn_bridge		*_pSynBridge;
 	
 	Syn_Dut *_pSyn_Dut;
 };

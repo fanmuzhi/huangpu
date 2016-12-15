@@ -126,12 +126,15 @@ bool Syn_LocalSettingConfig::GetLocalSettings(Syn_LocalSettings &oSyn_LocalSetti
 		{
 			oSyn_LocalSettings._strAutoController = element.text().toStdString();
 		}
+		else if (QString("DeviceType") == strTagName)
+		{
+			oSyn_LocalSettings._strDeviceType = element.text().toStdString();
+		}
 		else if (QString("Site") == strTagName.left(4))
 		{
 			SiteSettings CurrentSiteSettings;
 
-			uint32_t uiSerialNumber = element.text().toUInt();
-			CurrentSiteSettings._uiDutSerNum = uiSerialNumber;
+			CurrentSiteSettings._strDutSerNum = element.text().toStdString();
 			
 			AdcBaseLineInfo CurrentAdcBaseLineInfo;
 			QString strVoltagesValue = element.attribute(QString("Voltages"));
@@ -219,7 +222,7 @@ bool Syn_LocalSettingConfig::SetLocalSettings(Syn_LocalSettings iSyn_LocalSettin
 
 		QString strSiteTitle(QString("Site")+QString::number(i));
 		QDomElement SiteNode = q_DomDocument.createElement(strSiteTitle);
-		QString strSerialNumber(QString::number(CurrentSiteSettings._uiDutSerNum));
+		QString strSerialNumber(QString::fromStdString(CurrentSiteSettings._strDutSerNum));
 		QDomText SiteTextNode = q_DomDocument.createTextNode(strSerialNumber);
 		rootNode.appendChild(SiteNode);
 		SiteNode.appendChild(SiteTextNode);
@@ -253,6 +256,13 @@ bool Syn_LocalSettingConfig::SetLocalSettings(Syn_LocalSettings iSyn_LocalSettin
 	QDomText AutoControllerTextNode = q_DomDocument.createTextNode(strAutoController);
 	rootNode.appendChild(AutoControllerNode);
 	AutoControllerNode.appendChild(AutoControllerTextNode);
+
+	//DeviceType
+	QDomElement DeviceTypeNode = q_DomDocument.createElement("DeviceType");
+	QString strDeviceType(QString::fromStdString(iSyn_LocalSettings._strDeviceType));
+	QDomText DeviceTypeNodeTextNode = q_DomDocument.createTextNode(strDeviceType);
+	rootNode.appendChild(DeviceTypeNode);
+	DeviceTypeNode.appendChild(DeviceTypeNodeTextNode);
 
 	//Save
 	QFile qFile(_strFilePath);

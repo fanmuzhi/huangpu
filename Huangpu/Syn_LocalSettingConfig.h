@@ -21,7 +21,7 @@ using namespace std;
 
 struct SiteSettings
 {
-	uint32_t		_uiDutSerNum;
+	string		_strDutSerNum;
 	AdcBaseLineInfo	_adcBaseLineInfo;//SYN_TestUtils
 };
 
@@ -42,6 +42,8 @@ struct Syn_LocalSettings
 	bool					m_bManualControl;
 
 	string					_strAutoController;
+
+	string					_strDeviceType;
 };
 
 class Syn_LocalSettingConfig

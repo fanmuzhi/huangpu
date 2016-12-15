@@ -4,12 +4,12 @@
 #include <QWidget>
 #include <QtWidgets/QDialog>
 
+#include "syn_devicemanager.h"
+
 #include "Syn_Dut.h"
-#include "Syn_DeviceManager.h"
 #include "Syn_LocalSettingConfig.h"
 #include "Syn_SerialNumberManageDlg.h"
 #include "Syn_UpdateADCOffsetsDlg.h"
-#include "Syn_UpdateFirmwareProcessDlg.h"
 #include "Syn_Exception.h"
 
 
@@ -35,9 +35,9 @@ public:
 	~Syn_LocalSettingsDlg();
 
 	//void closeEvent(QCloseEvent * event);
-	Syn_DeviceManager *_pSyn_DeviceManager;
+	syn_devicemanager *_pSynDeviceManager;
 
-	void GetSerialNumberList(std::vector<uint32_t> &listOfSerialNumber);
+	void GetSerialNumberList(std::vector<std::string> &listOfSerialNumber);
 	void SetSerialNumberForSite(const QString strSerialNumber);
 	void UpdateADCOffsets(int Vdd, int Vio, int Vled, int Vddh);
 	int GetSiteRowIndex();
@@ -63,10 +63,6 @@ private:
 
 	//Temp Voltages,save VoltagesValue from user define or configfile
 	Syn_VoltagesValue _TempVoltagesValue;
-
-	//Syn_SerialNumberManageDlg *_pSyn_SerialNumberManageDlg;
-	//Syn_UpdateADCOffsetsDlg *_pSyn_UpdateADCOffsetsDlg;
-	//Syn_UpdateFirmwareProcessDlg *_pSyn_UpdateFirmwareProcessDlg;
 };
 
 #endif // SYN_LOCALSETTINGSDLG_H
