@@ -1,9 +1,5 @@
 //Local
 #include "Syn_FingerprintTest.h"
-#include "Syn_MetallicaModule.h"
-#include "Syn_ViperModule.h"
-#include "Syn_Viper1Module.h"
-#include "Syn_Viper2Module.h"
 
 //windows
 //#include "windows.h" 
