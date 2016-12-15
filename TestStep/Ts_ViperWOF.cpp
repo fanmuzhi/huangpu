@@ -6,7 +6,6 @@ Ts_ViperWOF::Ts_ViperWOF(string &strName, string &strArgs, FpAlphaModule * &pDut
 {
 }
 
-
 Ts_ViperWOF::~Ts_ViperWOF()
 {
 }

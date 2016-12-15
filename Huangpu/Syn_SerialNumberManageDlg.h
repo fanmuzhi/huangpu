@@ -10,8 +10,6 @@ class Syn_SerialNumberManageDlg : public QDialog
 {
 	Q_OBJECT
 
-	//friend class Syn_LocalSettingsDlg;
-
 public:
 	Syn_SerialNumberManageDlg(QWidget *parent = 0);
 	~Syn_SerialNumberManageDlg();

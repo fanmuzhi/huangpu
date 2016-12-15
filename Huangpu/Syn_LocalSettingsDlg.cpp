@@ -5,9 +5,6 @@
 Syn_LocalSettingsDlg::Syn_LocalSettingsDlg(QWidget *parent)
 : QDialog(parent)
 , _pSynDeviceManager(NULL)
-//, _pSyn_SerialNumberManageDlg(NULL)
-//, _pSyn_UpdateADCOffsetsDlg(NULL)
-//, _pSyn_UpdateFirmwareProcessDlg(NULL)
 {
 	ui = new Ui::Syn_LocalSettingsDlg();
 	ui->setupUi(this);
@@ -92,14 +89,9 @@ Syn_LocalSettingsDlg::Syn_LocalSettingsDlg(QWidget *parent)
 	devicetype Type;
 	if ("MPC04" == strDeviceType.toUpper())
 		Type = spi_mpc04;
-	else if ("M5" == strDeviceType.toUpper())
-		Type = spi_mpc04;
 	else
-		Type = spi_mpc04;
+		Type = spi_m5;
 	uint32_t uiResult = _pSynDeviceManager->Connect(Type);
-
-	vector<string> listofDeviceSerinumber;
-	uiResult = _pSynDeviceManager->GetSerialNumberList(listofDeviceSerinumber);
 }
 
 Syn_LocalSettingsDlg::~Syn_LocalSettingsDlg()
@@ -128,7 +120,7 @@ void Syn_LocalSettingsDlg::ConfirmSite()
 		return;
 	}
 
-	std::vector<uint32_t> listOfCurrentSerialNumber;
+	std::vector<string> listOfCurrentSerialNumber;
 	for (int i = 0; i < iUserDefineSiteCounts; i++)
 	{
 		QString strSerialNumber("");
@@ -141,8 +133,7 @@ void Syn_LocalSettingsDlg::ConfirmSite()
 		if (NULL != pAdcValueItem)
 			strAdcValue = pAdcValueItem->text();
 
-		uint32_t uiSerialNumber = strSerialNumber.toInt();
-		if (0 == uiSerialNumber || QString("") == strSerialNumber)
+		if (0 == strSerialNumber.size())
 		{
 			QMessageBox::critical(this, QString("Error"), QString("Site ")+QString::number(i+1)+QString("'s SerialNumber is 0!"));
 			return;
@@ -151,7 +142,7 @@ void Syn_LocalSettingsDlg::ConfirmSite()
 		bool IsExists(false);
 		for (int j = 1; j <= listOfCurrentSerialNumber.size(); j++)
 		{
-			if (uiSerialNumber == listOfCurrentSerialNumber[j - 1])
+			if (strSerialNumber.toStdString() == listOfCurrentSerialNumber[j - 1])
 			{
 				IsExists = true;
 				break;
@@ -163,7 +154,7 @@ void Syn_LocalSettingsDlg::ConfirmSite()
 			return;
 		}
 
-		listOfCurrentSerialNumber.push_back(uiSerialNumber);
+		listOfCurrentSerialNumber.push_back(strSerialNumber.toStdString());
 	}
 
 	//update LocalSettings info
@@ -185,6 +176,9 @@ void Syn_LocalSettingsDlg::ConfirmSite()
 	}
 	_LocalSettingsInfo._strLogFilePath = strLogFilePath.toStdString();
 
+	QString strDeviceType = ui->DeviceTypeComboBox->itemText(ui->DeviceTypeComboBox->currentIndex());
+	_LocalSettingsInfo._strDeviceType = strDeviceType.toStdString();
+
 	//Set SiteInfo
 	//fill current info to LocalSettings Config
 	_LocalSettingsInfo._listOfSiteSettings.clear();
@@ -203,8 +197,10 @@ void Syn_LocalSettingsDlg::ConfirmSite()
 		SiteSettings CurrentSiteSettings;
 		CurrentSiteSettings._strDutSerNum = strSerialNumber.toStdString();
 
+		//TODO
+		//need modify...................................................................................
 		AdcBaseLineInfo CurrentAdcBaseLineInfo;
-		QStringList strListOfAdcBaseLinesValue = strAdcValue.split(QString(" "));
+		/*QStringList strListOfAdcBaseLinesValue = strAdcValue.split(QString(" "));
 		if ((NUM_CURRENT_VALUES*KNUMGAINS) > strListOfAdcBaseLinesValue.size())
 		{
 			continue;
@@ -216,9 +212,9 @@ void Syn_LocalSettingsDlg::ConfirmSite()
 			{
 				(CurrentAdcBaseLineInfo.m_arAdcBaseLines)[a][b] = strListOfAdcBaseLinesValue[(NUM_CURRENT_VALUES)*b + a].toInt();
 			}
-		}
+		}*/
 
-		//need modify...................................................................................
+		
 		CurrentAdcBaseLineInfo.m_nVdd = _TempVoltagesValue.nVdd;
 		CurrentAdcBaseLineInfo.m_nVio = _TempVoltagesValue.nVio;
 		CurrentAdcBaseLineInfo.m_nVled = _TempVoltagesValue.nVled;
@@ -283,6 +279,14 @@ void Syn_LocalSettingsDlg::ModifySiteCounts()
 	QString strUserSiteCounts = ui->SiteCountsLineEdit->text();
 	int iUserSiteCounts = strUserSiteCounts.toInt();
 
+	devicetype Type;
+	QString strDeviceType = ui->DeviceTypeComboBox->itemText(ui->DeviceTypeComboBox->currentIndex());
+	if ("MPC04" == strDeviceType.toUpper())
+		Type = spi_mpc04;
+	else
+		Type = spi_m5;
+
+	_pSynDeviceManager->Connect(Type);
 	std::vector<std::string> listOfSerialNumber;
 	_pSynDeviceManager->GetSerialNumberList(listOfSerialNumber);
 	if (iUserSiteCounts > listOfSerialNumber.size())
@@ -299,7 +303,7 @@ void Syn_LocalSettingsDlg::ModifySiteCounts()
 			ui->SiteTableWidget->insertRow(i-1);
 			ui->SiteTableWidget->setItem(i - 1, 0, new QTableWidgetItem(QString::number(i)));
 			ui->SiteTableWidget->setItem(i - 1, 1, new QTableWidgetItem(QString("0")));
-			ui->SiteTableWidget->setItem(i - 1, 2, new QTableWidgetItem("0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 "));
+			ui->SiteTableWidget->setItem(i - 1, 2, new QTableWidgetItem("0 0 0 0 "));
 		}
 	}
 	else if (iCurrentRowCounts > iUserSiteCounts)
@@ -313,18 +317,6 @@ void Syn_LocalSettingsDlg::ModifySiteCounts()
 
 void Syn_LocalSettingsDlg::SetLeds(int rowNumber, int columnNumber)
 {
-	//get SerialNumber
-	/*int iSerialNumberColumn(1);
-	QTableWidgetItem *item = NULL;
-	item = ui->SiteTableWidget->item(rowNumber, iSerialNumberColumn);
-	if (NULL == item)
-		return;
-
-	QString strSerialNumber("");
-	strSerialNumber = item->text();
-	uint32_t iSerialNumber = strSerialNumber.toInt();
-	if (0 == iSerialNumber)
-		return;*/
 }
 
 void Syn_LocalSettingsDlg::CreateSerialNumberManageDialog()
@@ -342,6 +334,14 @@ void Syn_LocalSettingsDlg::GetSerialNumberList(std::vector<std::string> &listOfS
 		return;
 	}
 
+	devicetype Type;
+	QString strDeviceType = ui->DeviceTypeComboBox->itemText(ui->DeviceTypeComboBox->currentIndex());
+	if ("MPC04" == strDeviceType.toUpper())
+		Type = spi_mpc04;
+	else
+		Type = spi_m5;
+
+	_pSynDeviceManager->Connect(Type);
 	_pSynDeviceManager->GetSerialNumberList(listOfSerialNumber);
 	if (0 == listOfSerialNumber.size())
 	{
@@ -352,12 +352,10 @@ void Syn_LocalSettingsDlg::GetSerialNumberList(std::vector<std::string> &listOfS
 
 void Syn_LocalSettingsDlg::SetSerialNumberForSite(const QString strSerialNumber)
 {
-
 	int iSiteRowIndex = ui->SiteTableWidget->currentRow();
 	if (iSiteRowIndex < 0)
 		iSiteRowIndex = 0;
 	ui->SiteTableWidget->setItem(iSiteRowIndex, 1, new QTableWidgetItem(strSerialNumber));
-	//_pSyn_LocalSettingsDlg->ui->SiteTableWidget->setItem(iSiteRowIndex, 2, new QTableWidgetItem(QString("0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ")));
 }
 
 void Syn_LocalSettingsDlg::CreateUpdateADCOffsetsDlg()

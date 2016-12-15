@@ -47,10 +47,6 @@ void Syn_SerialNumberManageDlg::showEvent(QShowEvent * event)
 		ui->SerialNumberTableWidget->setItem(i - 1, 0, new QTableWidgetItem(QString::fromStdString(listOfSerialNumber[i-1])));
 	}
 }
-//void Syn_SerialNumberManageDlg::closeEvent(QCloseEvent * event)
-//{
-//	ui.CancelPushButton->click();
-//}
 
 void Syn_SerialNumberManageDlg::SelectSerialNumber()
 {

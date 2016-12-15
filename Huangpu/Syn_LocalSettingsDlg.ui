@@ -9,38 +9,38 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>489</width>
-    <height>632</height>
+    <width>448</width>
+    <height>610</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Local Settings</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_8">
-   <item row="1" column="0">
-    <widget class="QGroupBox" name="LogFileGroupBox">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <widget class="QGroupBox" name="DeviceTypeGroupBox">
      <property name="title">
-      <string>LogFile Path</string>
+      <string>Device Type</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_5">
-      <item row="0" column="0">
-       <widget class="QLineEdit" name="LogFileLineEdit">
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="SelectLogFilePushButton">
-        <property name="text">
-         <string>Select</string>
-        </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QComboBox" name="DeviceTypeComboBox">
+        <item>
+         <property name="text">
+          <string>M5</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>MPC04</string>
+         </property>
+        </item>
        </widget>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="0" column="0">
+   <item>
     <widget class="QGroupBox" name="SysConfigFileGroupBox">
      <property name="title">
       <string>Config File</string>
@@ -63,7 +63,30 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item>
+    <widget class="QGroupBox" name="LogFileGroupBox">
+     <property name="title">
+      <string>LogFile Path</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <item row="0" column="0">
+       <widget class="QLineEdit" name="LogFileLineEdit">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="SelectLogFilePushButton">
+        <property name="text">
+         <string>Select</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="SiteGroupBox">
      <property name="title">
       <string>Site</string>
@@ -137,7 +160,7 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item>
     <widget class="QFrame" name="frame">
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>

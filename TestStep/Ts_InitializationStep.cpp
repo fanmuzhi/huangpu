@@ -152,9 +152,10 @@ void Ts_InitializationStep::Execute()
 	_pSyn_DutCtrl->PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVddh_mV);
 	_pSyn_DutCtrl->FpTidleSet(0);
 
+	uint32_t rc(0);
 	try
 	{
-		_pSyn_DutCtrl->FpGetVersion((uint8_t*)&(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo), VERSION_SIZE);
+		rc = _pSyn_DutCtrl->FpGetVersion((uint8_t*)&(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo), VERSION_SIZE);
 	}
 	catch (Syn_Exception ex)
 	{
@@ -163,18 +164,25 @@ void Ts_InitializationStep::Execute()
 		//throw ex;
 		return;
 	}
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Module command failed!");
+		throw ex;
+		return;
+	}
 
 	//fill the gerVerInfo to DUT serial number
 	//fill other info
 
 	memcpy(snArray, _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number, 6);
 	//if serial number doesn't exist
-	if (0 == memcmp(snArray, snInitArray, 6))
+	/*if (0 == memcmp(snArray, snInitArray, 6))
 	{
 		Create_SN(snInitArray, std::stoul(_pSyn_Dut->_DeviceSerialNumber), _pSyn_Dut->_iSiteNumber, 0);
 		SerialNumReverseBitFields(snInitArray, snArray);
 	}
-	memcpy(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number, snArray, 6);
+	memcpy(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number, snArray, 6);*/
 
 	//copy serial number to string
 	char SingleNumber[3] = {0};

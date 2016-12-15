@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
@@ -24,21 +25,25 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QTableWidget>
+#include <QtWidgets/QVBoxLayout>
 
 QT_BEGIN_NAMESPACE
 
 class Ui_Syn_LocalSettingsDlg
 {
 public:
-    QGridLayout *gridLayout_8;
-    QGroupBox *LogFileGroupBox;
-    QGridLayout *gridLayout_5;
-    QLineEdit *LogFileLineEdit;
-    QPushButton *SelectLogFilePushButton;
+    QVBoxLayout *verticalLayout_2;
+    QGroupBox *DeviceTypeGroupBox;
+    QVBoxLayout *verticalLayout;
+    QComboBox *DeviceTypeComboBox;
     QGroupBox *SysConfigFileGroupBox;
     QGridLayout *gridLayout;
     QLineEdit *SysConfigFileLlineEdit;
     QPushButton *SelectSysConfigFilePushButton;
+    QGroupBox *LogFileGroupBox;
+    QGridLayout *gridLayout_5;
+    QLineEdit *LogFileLineEdit;
+    QPushButton *SelectLogFilePushButton;
     QGroupBox *SiteGroupBox;
     QGridLayout *gridLayout_6;
     QFrame *frame_2;
@@ -60,30 +65,24 @@ public:
         if (Syn_LocalSettingsDlg->objectName().isEmpty())
             Syn_LocalSettingsDlg->setObjectName(QStringLiteral("Syn_LocalSettingsDlg"));
         Syn_LocalSettingsDlg->setWindowModality(Qt::ApplicationModal);
-        Syn_LocalSettingsDlg->resize(489, 632);
-        gridLayout_8 = new QGridLayout(Syn_LocalSettingsDlg);
-        gridLayout_8->setSpacing(6);
-        gridLayout_8->setContentsMargins(11, 11, 11, 11);
-        gridLayout_8->setObjectName(QStringLiteral("gridLayout_8"));
-        LogFileGroupBox = new QGroupBox(Syn_LocalSettingsDlg);
-        LogFileGroupBox->setObjectName(QStringLiteral("LogFileGroupBox"));
-        gridLayout_5 = new QGridLayout(LogFileGroupBox);
-        gridLayout_5->setSpacing(6);
-        gridLayout_5->setContentsMargins(11, 11, 11, 11);
-        gridLayout_5->setObjectName(QStringLiteral("gridLayout_5"));
-        LogFileLineEdit = new QLineEdit(LogFileGroupBox);
-        LogFileLineEdit->setObjectName(QStringLiteral("LogFileLineEdit"));
-        LogFileLineEdit->setReadOnly(true);
+        Syn_LocalSettingsDlg->resize(448, 610);
+        verticalLayout_2 = new QVBoxLayout(Syn_LocalSettingsDlg);
+        verticalLayout_2->setSpacing(6);
+        verticalLayout_2->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
+        DeviceTypeGroupBox = new QGroupBox(Syn_LocalSettingsDlg);
+        DeviceTypeGroupBox->setObjectName(QStringLiteral("DeviceTypeGroupBox"));
+        verticalLayout = new QVBoxLayout(DeviceTypeGroupBox);
+        verticalLayout->setSpacing(6);
+        verticalLayout->setContentsMargins(11, 11, 11, 11);
+        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        DeviceTypeComboBox = new QComboBox(DeviceTypeGroupBox);
+        DeviceTypeComboBox->setObjectName(QStringLiteral("DeviceTypeComboBox"));
 
-        gridLayout_5->addWidget(LogFileLineEdit, 0, 0, 1, 1);
-
-        SelectLogFilePushButton = new QPushButton(LogFileGroupBox);
-        SelectLogFilePushButton->setObjectName(QStringLiteral("SelectLogFilePushButton"));
-
-        gridLayout_5->addWidget(SelectLogFilePushButton, 0, 1, 1, 1);
+        verticalLayout->addWidget(DeviceTypeComboBox);
 
 
-        gridLayout_8->addWidget(LogFileGroupBox, 1, 0, 1, 1);
+        verticalLayout_2->addWidget(DeviceTypeGroupBox);
 
         SysConfigFileGroupBox = new QGroupBox(Syn_LocalSettingsDlg);
         SysConfigFileGroupBox->setObjectName(QStringLiteral("SysConfigFileGroupBox"));
@@ -103,7 +102,27 @@ public:
         gridLayout->addWidget(SelectSysConfigFilePushButton, 0, 1, 1, 1);
 
 
-        gridLayout_8->addWidget(SysConfigFileGroupBox, 0, 0, 1, 1);
+        verticalLayout_2->addWidget(SysConfigFileGroupBox);
+
+        LogFileGroupBox = new QGroupBox(Syn_LocalSettingsDlg);
+        LogFileGroupBox->setObjectName(QStringLiteral("LogFileGroupBox"));
+        gridLayout_5 = new QGridLayout(LogFileGroupBox);
+        gridLayout_5->setSpacing(6);
+        gridLayout_5->setContentsMargins(11, 11, 11, 11);
+        gridLayout_5->setObjectName(QStringLiteral("gridLayout_5"));
+        LogFileLineEdit = new QLineEdit(LogFileGroupBox);
+        LogFileLineEdit->setObjectName(QStringLiteral("LogFileLineEdit"));
+        LogFileLineEdit->setReadOnly(true);
+
+        gridLayout_5->addWidget(LogFileLineEdit, 0, 0, 1, 1);
+
+        SelectLogFilePushButton = new QPushButton(LogFileGroupBox);
+        SelectLogFilePushButton->setObjectName(QStringLiteral("SelectLogFilePushButton"));
+
+        gridLayout_5->addWidget(SelectLogFilePushButton, 0, 1, 1, 1);
+
+
+        verticalLayout_2->addWidget(LogFileGroupBox);
 
         SiteGroupBox = new QGroupBox(Syn_LocalSettingsDlg);
         SiteGroupBox->setObjectName(QStringLiteral("SiteGroupBox"));
@@ -164,7 +183,7 @@ public:
         gridLayout_6->addLayout(horizontalLayout_2, 2, 0, 1, 1);
 
 
-        gridLayout_8->addWidget(SiteGroupBox, 2, 0, 1, 1);
+        verticalLayout_2->addWidget(SiteGroupBox);
 
         frame = new QFrame(Syn_LocalSettingsDlg);
         frame->setObjectName(QStringLiteral("frame"));
@@ -189,7 +208,7 @@ public:
         gridLayout_7->addItem(horizontalSpacer, 0, 0, 1, 1);
 
 
-        gridLayout_8->addWidget(frame, 3, 0, 1, 1);
+        verticalLayout_2->addWidget(frame);
 
 
         retranslateUi(Syn_LocalSettingsDlg);
@@ -200,10 +219,16 @@ public:
     void retranslateUi(QDialog *Syn_LocalSettingsDlg)
     {
         Syn_LocalSettingsDlg->setWindowTitle(QApplication::translate("Syn_LocalSettingsDlg", "Local Settings", 0));
-        LogFileGroupBox->setTitle(QApplication::translate("Syn_LocalSettingsDlg", "LogFile Path", 0));
-        SelectLogFilePushButton->setText(QApplication::translate("Syn_LocalSettingsDlg", "Select", 0));
+        DeviceTypeGroupBox->setTitle(QApplication::translate("Syn_LocalSettingsDlg", "Device Type", 0));
+        DeviceTypeComboBox->clear();
+        DeviceTypeComboBox->insertItems(0, QStringList()
+         << QApplication::translate("Syn_LocalSettingsDlg", "M5", 0)
+         << QApplication::translate("Syn_LocalSettingsDlg", "MPC04", 0)
+        );
         SysConfigFileGroupBox->setTitle(QApplication::translate("Syn_LocalSettingsDlg", "Config File", 0));
         SelectSysConfigFilePushButton->setText(QApplication::translate("Syn_LocalSettingsDlg", "Select", 0));
+        LogFileGroupBox->setTitle(QApplication::translate("Syn_LocalSettingsDlg", "LogFile Path", 0));
+        SelectLogFilePushButton->setText(QApplication::translate("Syn_LocalSettingsDlg", "Select", 0));
         SiteGroupBox->setTitle(QApplication::translate("Syn_LocalSettingsDlg", "Site", 0));
         SiteCountsSettingLabel->setText(QApplication::translate("Syn_LocalSettingsDlg", "Number of Sites:", 0));
         QTableWidgetItem *___qtablewidgetitem = SiteTableWidget->horizontalHeaderItem(0);
