@@ -63,8 +63,8 @@ FPS_TestExecutive::FPS_TestExecutive(QWidget *parent)
 	
 	//Debug
 	//OTP Dump
-	QObject::connect(ui.pushButtonGetVer, SIGNAL(clicked()), this, SLOT(GetVersionForDutDump()));
-	QObject::connect(ui.pushButtonReadOTP, SIGNAL(clicked()), this, SLOT(ReadOTPForDutDump()));
+	QObject::connect(ui.pushButtonGetVer, SIGNAL(clicked()), this, SLOT(GetVersion()));
+	QObject::connect(ui.pushButtonReadOTP, SIGNAL(clicked()), this, SLOT(ReadOTP()));
 
 	//Invalidate sensor
 	QObject::connect(ui.pushButtonInvalidate, SIGNAL(clicked()), this, SLOT(Invalidate()));
@@ -914,7 +914,7 @@ void FPS_TestExecutive::ClearSites()
 	}
 }
 
-void FPS_TestExecutive::GetVersionForDutDump()
+void FPS_TestExecutive::GetVersion()
 {
 	int iSiteCurrentIndex = ui.comboBox->currentIndex();
 	if (iSiteCurrentIndex<0)
@@ -957,14 +957,12 @@ void FPS_TestExecutive::GetVersionForDutDump()
 		QMessageBox::information(this, QString("Error"), QString::number(rc, 16).toUpper());
 		return;
 	}
-
 	rc = pSelectedSite->GetTestResult(oDutTestResult);
 	if (rc != 0)
 	{
 		QMessageBox::information(this, QString("Error"), QString::number(rc, 16).toUpper());
 		return;
 	}
-
 	Syn_DutTestInfo *pInfo = NULL;
 	rc = pSelectedSite->GetTestInfo(pInfo);
 	if (0 != rc)
@@ -972,29 +970,66 @@ void FPS_TestExecutive::GetVersionForDutDump()
 		QMessageBox::information(this, QString("Error"), QString::number(rc, 16).toUpper());
 		return;
 	}
-	Syn_DutTestResult *pResult = NULL;
-	rc = pSelectedSite->GetTestResult(pResult);
-	if (0 != rc)
+	rc = pSelectedSite->ExecuteTestStep("FinalizationStep");
+
+	time_t buildtime;
+	struct tm mytm;
+	wchar_t timestr[80];
+	buildtime = (time_t)pInfo->_getVerInfo.buildtime;
+	mytm = *localtime(&buildtime);
+	(void)wcsftime(&(timestr[0]), (sizeof((timestr)) / sizeof((timestr)[0])), L"%d-%b-%Y %I:%M:%S %p %Z", &mytm);
+	
+	QString strProductType("");
+	switch (pInfo->_getVerInfo.product)
 	{
-		QMessageBox::information(this, QString("Error"), QString::number(rc, 16).toUpper());
-		return;
+		case 48:
+			strProductType = " (Metallica) ";
+			break;
+		case 51:
+			strProductType = " (Viper2) ";
+			break;
+		default:
+			break; 
+	}
+
+	QString strTarget("");
+	switch (pInfo->_getVerInfo.target)
+	{
+		case 1:
+			strTarget = " (ROM) ";
+			break;
+		case 2:
+			strTarget = " (FPGA) ";
+			break;
+		case 3:
+			strTarget = " (RTLSIM) ";
+			break;
+		case 4:
+			strTarget = " (ISS) ";
+			break;
+		case 5:
+			strTarget = " (FPGADBG) ";
+			break;
+		default:
+			strTarget = " (???) ";
+			break;
 	}
 
 	ui.textBrowser->clear();
 	ui.textBrowser->append(QString("Version:"));
-	QDateTime timeValue = QDateTime::fromTime_t(pInfo->_getVerInfo.buildtime + 43200);
-	ui.textBrowser->append(QString("buildtime:") + timeValue.toString());
-	ui.textBrowser->append(QString("buildnum:") + QString::number(pInfo->_getVerInfo.buildnum, 16).toUpper());
+	//QDateTime timeValue = QDateTime::fromTime_t(pInfo->_getVerInfo.buildtime + 43200);
+	//ui.textBrowser->append(QString("buildtime:") + timeValue.toString());
+	ui.textBrowser->append(QString("buildtime:") + QString::fromWCharArray(timestr));
+	ui.textBrowser->append(QString("buildnum:") + QString::number(pInfo->_getVerInfo.buildnum));
 	ui.textBrowser->append(QString("vmajor:") + QString::number(pInfo->_getVerInfo.vmajor));
 	ui.textBrowser->append(QString("vminor:") + QString::number(pInfo->_getVerInfo.vminor));
-	ui.textBrowser->append(QString("target:") + QString::number(pInfo->_getVerInfo.target));
-	ui.textBrowser->append(QString("product:") + QString::number(pInfo->_getVerInfo.product));
+	ui.textBrowser->append(QString("target:") + QString::number(pInfo->_getVerInfo.target) + strTarget);
+	ui.textBrowser->append(QString("product:") + QString::number(pInfo->_getVerInfo.product) + strProductType);
 	ui.textBrowser->append(QString("siliconrev:") + QString::number(pInfo->_getVerInfo.siliconrev));
 	ui.textBrowser->append(QString("formalrel:") + QString::number(pInfo->_getVerInfo.formalrel));
 	ui.textBrowser->append(QString("platform:") + QString::number(pInfo->_getVerInfo.platform));
 	ui.textBrowser->append(QString("patch:") + QString::number(pInfo->_getVerInfo.patch));
-	//ui.textBrowser->append(QString("serial_number:") + QString::number(pInfo->_getVerInfo.serial_number[0], 16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[1], 16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[2], 16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[3], 16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[4], 16) + QString("|") + QString::number(pInfo->_getVerInfo.serial_number[5], 16));
-	ui.textBrowser->append(QString("serial_number:") + QString::fromLatin1(pResult->_versionResult.sSerialNumber, 12));
+	ui.textBrowser->append(QString("serial_number:") + QString::fromLatin1(oDutTestResult->_versionResult.sSerialNumber, 12));
 	ui.textBrowser->append(QString("security:") + QString::number(pInfo->_getVerInfo.security[0]) + QString("|") + QString::number(pInfo->_getVerInfo.security[1]));
 	ui.textBrowser->append(QString("patchsig:") + QString::number(pInfo->_getVerInfo.patchsig));
 	ui.textBrowser->append(QString("iface:") + QString::number(pInfo->_getVerInfo.iface));
@@ -1006,7 +1041,7 @@ void FPS_TestExecutive::GetVersionForDutDump()
 	pSelectedSite->Close();
 }
 
-void FPS_TestExecutive::ReadOTPForDutDump()
+void FPS_TestExecutive::ReadOTP()
 {
 	int iSiteCurrentIndex = ui.comboBox->currentIndex();
 	if (iSiteCurrentIndex<0)
@@ -1223,7 +1258,7 @@ void FPS_TestExecutive::Invalidate()
 	pSelectedSite->Close();
 
 	//OTP Check
-	ReadOTPForDutDump();
+	this->ReadOTP();
 }
 
 void FPS_TestExecutive::Display(uint8_t* pDst, unsigned int StartPos, unsigned int EndPos)

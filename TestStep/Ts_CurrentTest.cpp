@@ -144,7 +144,7 @@ void Ts_CurrentTest::ProcessData()
 	}
 
 	//actCurrent_uA = ((3/4096) * ADCCounts * (1000000/gain) (uint32_t)
-	current_uA = (_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_arImageAcqCurrentVals[ADC4] > (int)ablInfo.m_arAdcBaseLines[ADC4][_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nLowGain]) ?
+	/*current_uA = (_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_arImageAcqCurrentVals[ADC4] > (int)ablInfo.m_arAdcBaseLines[ADC4][_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nLowGain]) ?
 		(_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_arImageAcqCurrentVals[ADC4] - ablInfo.m_arAdcBaseLines[ADC4][_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nLowGain]) : 0;
 	_pSyn_Dut->_pSyn_DutTestResult->_currentResults.m_nImageAcqAnaCurrent_uA = (3 * current_uA * (1000000 / arGains[_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nLowGain])) / 4096;
 
@@ -176,7 +176,7 @@ void Ts_CurrentTest::ProcessData()
 	else
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("CurrentTest", "Pass"));
 
-	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_currentResults.m_elapsedtime);
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_currentResults.m_elapsedtime);*/
 }
 
 void Ts_CurrentTest::CleanUp()

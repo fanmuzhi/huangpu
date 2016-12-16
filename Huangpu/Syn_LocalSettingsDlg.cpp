@@ -2,6 +2,8 @@
 #include "ui_Syn_LocalSettingsDlg.h"
 #include <QtWidgets>
 
+#include "syn_bridge.h"
+
 Syn_LocalSettingsDlg::Syn_LocalSettingsDlg(QWidget *parent)
 : QDialog(parent)
 , _pSynDeviceManager(NULL)
@@ -61,10 +63,7 @@ Syn_LocalSettingsDlg::Syn_LocalSettingsDlg(QWidget *parent)
 		QString strAdcBaseLinesValue("");
 		for (int a = 0; a < NUM_CURRENT_VALUES; a++)
 		{
-			for (int b = 0; b < KNUMGAINS; b++)
-			{
-				strAdcBaseLinesValue += QString::number((CurrentAdcBaseLineInfo.m_arAdcBaseLines)[a][b]) + QString(" ");
-			}
+			strAdcBaseLinesValue += QString::number((CurrentAdcBaseLineInfo.m_arrAdcBaseLines)[a]) + QString(" ");
 		}
 
 		QString strSiteNumber(QString::number(i+1));
@@ -200,21 +199,17 @@ void Syn_LocalSettingsDlg::ConfirmSite()
 		//TODO
 		//need modify...................................................................................
 		AdcBaseLineInfo CurrentAdcBaseLineInfo;
-		/*QStringList strListOfAdcBaseLinesValue = strAdcValue.split(QString(" "));
-		if ((NUM_CURRENT_VALUES*KNUMGAINS) > strListOfAdcBaseLinesValue.size())
+		QStringList strListOfAdcBaseLinesValue = strAdcValue.split(QString(" "));
+		if (NUM_CURRENT_VALUES > strListOfAdcBaseLinesValue.size())
 		{
 			continue;
 		}
 
 		for (int a = 0; a < NUM_CURRENT_VALUES; a++)
 		{
-			for (int b = 0; b < KNUMGAINS; b++)
-			{
-				(CurrentAdcBaseLineInfo.m_arAdcBaseLines)[a][b] = strListOfAdcBaseLinesValue[(NUM_CURRENT_VALUES)*b + a].toInt();
-			}
-		}*/
+			(CurrentAdcBaseLineInfo.m_arrAdcBaseLines)[a] = strListOfAdcBaseLinesValue[a].toInt();
+		}
 
-		
 		CurrentAdcBaseLineInfo.m_nVdd = _TempVoltagesValue.nVdd;
 		CurrentAdcBaseLineInfo.m_nVio = _TempVoltagesValue.nVio;
 		CurrentAdcBaseLineInfo.m_nVled = _TempVoltagesValue.nVled;
@@ -317,6 +312,7 @@ void Syn_LocalSettingsDlg::ModifySiteCounts()
 
 void Syn_LocalSettingsDlg::SetLeds(int rowNumber, int columnNumber)
 {
+	return;
 }
 
 void Syn_LocalSettingsDlg::CreateSerialNumberManageDialog()
@@ -378,6 +374,21 @@ void Syn_LocalSettingsDlg::UpdateADCOffsets(int Vdd, int Vio, int Vled, int Vddh
 	_TempVoltagesValue.nVled = Vled;
 	_TempVoltagesValue.nVddh = Vddh;
 
+	delete _pSynDeviceManager; _pSynDeviceManager = NULL;
+	devicetype Type;
+	uint32_t clockRate(MPC04_CLOCKRATE);
+	QString strDeviceType = ui->DeviceTypeComboBox->itemText(ui->DeviceTypeComboBox->currentIndex());
+	if ("MPC04" == strDeviceType.toUpper())
+	{
+		Type = spi_mpc04;
+		clockRate = MPC04_CLOCKRATE;
+	}
+	else
+	{
+		Type = spi_m5;
+		clockRate = M5_CLOCKRATE;
+	}
+
 	uint32_t rc = 0;
 	for (int i = 0; i < iSiteCounts; i++)
 	{
@@ -386,24 +397,35 @@ void Syn_LocalSettingsDlg::UpdateADCOffsets(int Vdd, int Vio, int Vled, int Vddh
 		if (NULL != item)
 		{
 			strSerialNumber = item->text();
-			uint32_t uiSerialNumber = strSerialNumber.toInt();
-			uint32_t arAdcBaseLines[NUM_CURRENT_VALUES][KNUMGAINS] = { 0 };
+			uint32_t arrAdcBaseLines[NUM_CURRENT_VALUES] = { 0 };
 
-			/*rc = _pSyn_DeviceManager->UpdateADCOffsets(uiSerialNumber, Vdd, Vio, Vled, Vddh, arAdcBaseLines);
-			if (Syn_ExceptionCode::Syn_OK == rc)
+			syn_bridge *pBridge = NULL;
+			rc = syn_bridge::CreateDeviceInstance(strSerialNumber.toStdString(), Type, pBridge);
+			if (0 == rc&&NULL != pBridge)
 			{
+				pBridge->SetPortSPI(clockRate);
+				pBridge->SetVoltages(Vddh,Vdd);
+
+				uint32_t arrLowGain[2] = { 2 };
+				uint32_t arrHighGain[2] = { 2 };
+				rc = pBridge->GetCurrentValues(arrLowGain);
+				rc = pBridge->GetCurrentValues(arrHighGain,false);
+
 				QString strAdcBaseLinesValue("");
-				for (int a = 0; a < NUM_CURRENT_VALUES; a++)
-				{
-					for (int b = 0; b < KNUMGAINS; b++)
-					{
-						strAdcBaseLinesValue += QString::number(arAdcBaseLines[a][b]) + QString(" ");
-					}
-				}
+				strAdcBaseLinesValue = QString::number(arrLowGain[0]) + QString(" ") + QString::number(arrLowGain[1]) + QString(" ")+
+										QString::number(arrHighGain[0]) + QString(" ") + QString::number(arrHighGain[1]) + QString(" ");
+
+				pBridge->SetVoltages(0, 0);
+				delete pBridge;
+				pBridge = NULL;
+
 				ui->SiteTableWidget->setItem(i, 2, new QTableWidgetItem(strAdcBaseLinesValue));
-			}*/
+			}
 		}
 	}
+
+	_pSynDeviceManager = new syn_devicemanager();
+	rc = _pSynDeviceManager->Connect(Type);
 }
 
 int Syn_LocalSettingsDlg::GetSiteRowIndex()

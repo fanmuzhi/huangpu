@@ -77,8 +77,8 @@ public Q_SLOTS:
 	void GetErrorInfo(uint32_t iErrorCode, std::string &osErrorInfo);
 	
 	//Debug
-	void GetVersionForDutDump();
-	void ReadOTPForDutDump();
+	void GetVersion();
+	void ReadOTP();
 	void Invalidate();
 
 	void CreateDebugModeDlg();

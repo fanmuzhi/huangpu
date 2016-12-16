@@ -155,15 +155,12 @@ bool Syn_LocalSettingConfig::GetLocalSettings(Syn_LocalSettings &oSyn_LocalSetti
 				strListOfAdcBaseLinesValue.removeLast();
 			}
 			int AdcBaseLinesSize = strListOfAdcBaseLinesValue.size();
-			if ((NUM_CURRENT_VALUES*KNUMGAINS) == AdcBaseLinesSize)
+			if ((NUM_CURRENT_VALUES) == AdcBaseLinesSize)
 			{
 				for (int a = 0; a < NUM_CURRENT_VALUES; a++)
 				{
-					for (int b = 0; b < KNUMGAINS; b++)
-					{
-						uint32_t iTempValue = strListOfAdcBaseLinesValue[(NUM_CURRENT_VALUES)*b + a].toInt();
-						(CurrentAdcBaseLineInfo.m_arAdcBaseLines)[a][b] = iTempValue;
-					}
+					uint32_t iTempValue = strListOfAdcBaseLinesValue[a].toInt();
+					(CurrentAdcBaseLineInfo.m_arrAdcBaseLines)[a] = iTempValue;
 				}
 			}
 
@@ -232,10 +229,7 @@ bool Syn_LocalSettingConfig::SetLocalSettings(Syn_LocalSettings iSyn_LocalSettin
 		QString strAdcBaseLinesValue("");
 		for (int a = 0; a < NUM_CURRENT_VALUES; a++)
 		{
-			for (int b = 0; b < KNUMGAINS; b++)
-			{
-				strAdcBaseLinesValue += QString::number((CurrentSiteSettings._adcBaseLineInfo.m_arAdcBaseLines)[a][b])+ QString(" ");
-			}
+			strAdcBaseLinesValue += QString::number((CurrentSiteSettings._adcBaseLineInfo.m_arrAdcBaseLines)[a]) + QString(" ");
 		}
 		//qAdcBaseLinesAttribute.setValue(strAdcBaseLinesValue);
 		//SiteNode.appendChild(qAdcBaseLinesAttribute);

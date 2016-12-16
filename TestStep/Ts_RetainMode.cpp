@@ -87,10 +87,10 @@ void Ts_RetainMode::Execute()
 	//_pSyn_DutCtrl->FpEnterSleep();
 
 	//uint16_t nADCBaseline = site.GetLocalSettingsPtr()->GetAblInfo(site.GetDutCtrlSerNum()).m_arAdcBaseLines[2][2];//baseline gain.
-	uint16_t nADCBaseline = _pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arAdcBaseLines[2][2];
+	/*uint16_t nADCBaseline = _pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[2];
 	uint32_t pTemp[NUM_ADC_BASE_READINGS] = {0, 0, 0, 0};
 	float	arRawADCLow[NUM_ADC_BASE_READINGS] = {0.0, 0.0, 0.0, 0.0};
-	float	nGainDiff = 0.0;
+	float	nGainDiff = 0.0;*/
 
 	//uint8_t pDst[NUM_CURRENT_DRAW_READINGS];
 

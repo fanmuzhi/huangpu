@@ -130,6 +130,8 @@ void Ts_InitializationStep::Execute()
 		return;
 	}
 
+	uint32_t rc(0);
+
 	////GPIO init
 	//_pSyn_DutCtrl->GpioSetPinType(8, 0x10, 5);	//Pin 13 = input (possible button)	
 	//_pSyn_DutCtrl->GpioSetPinType(1, 0x10, 5);	//Pin 3 = input (DRDY). Needs xbar setup.
@@ -149,10 +151,23 @@ void Ts_InitializationStep::Execute()
 	//}
 
 	//PowerOn
-	_pSyn_DutCtrl->PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVddh_mV);
-	_pSyn_DutCtrl->FpTidleSet(0);
+	rc = _pSyn_DutCtrl->PowerOn(_pSyn_Dut->_uiDutpwrVddh_mV, _pSyn_Dut->_uiDutpwrVdd_mV);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("PowerOn command failed!");
+		throw ex;
+		return;
+	}
+	rc = _pSyn_DutCtrl->FpTidleSet(0);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpTidleSet command failed!");
+		throw ex;
+		return;
+	}
 
-	uint32_t rc(0);
 	try
 	{
 		rc = _pSyn_DutCtrl->FpGetVersion((uint8_t*)&(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo), VERSION_SIZE);

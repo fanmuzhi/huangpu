@@ -89,6 +89,9 @@ typedef unsigned char UINT8; // UINT8 is created to handle MPC04 data
 
 #define MAX_PART_NUMBER_LENGTH 8
 
+#define MPC04_CLOCKRATE		8
+#define M5_CLOCKRATE		12
+
 typedef struct
 {
 	int		_bExecuted;
@@ -681,13 +684,13 @@ typedef struct
 	double      m_elapsedtime;
 }ImperfectionsTestResults;
 
-
 ///////////////////////////// ////////////////////////
 //Current test
 typedef struct
 {
 	int			m_bExecuted;
-	uint32_t	m_arAdcBaseLines[NUM_CURRENT_VALUES][KNUMGAINS];
+	//uint32_t	m_arAdcBaseLines[NUM_CURRENT_VALUES][KNUMGAINS];
+	uint32_t	m_arrAdcBaseLines[NUM_CURRENT_VALUES];//lowgain-1.8v lowgain-3.3v highgain-1.8v highgain-3.3v
 	uint32_t	m_nVdd;
 	uint32_t	m_nVio;
 	uint32_t	m_nVled;

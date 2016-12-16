@@ -81,10 +81,7 @@ uint32_t Syn_Site::CreateSiteInstance(uint8_t siteNumber, string deviceSerNumber
 
 		for (int a = 0; a < NUM_CURRENT_VALUES; a++)
 		{
-			for (int b = 0; b < KNUMGAINS; b++)
-			{
-				(opSiteInstance->_ADCInfo.m_arAdcBaseLines)[a][b] = (iADCInfo.m_arAdcBaseLines)[a][b];
-			}
+			(opSiteInstance->_ADCInfo.m_arrAdcBaseLines)[a] = (iADCInfo.m_arrAdcBaseLines)[a];
 		}
 	}
 	
@@ -116,18 +113,16 @@ uint32_t Syn_Site::Init()
 	//DutController:SPC,MPC04
 	std::string strDutController(_SysConfig._strDutController);
 	devicetype DeviceType;
-	if (std::string("M5") == strDutController)
-	{
-		DeviceType = spi_m5;
-	}
-	else if (std::string("MPC04") == strDutController)
+	uint32_t clockrate = M5_CLOCKRATE;
+	if (std::string("MPC04") == strDutController)
 	{
 		DeviceType = spi_mpc04;
+		clockrate = M5_CLOCKRATE;
 	}
 	else
 	{
 		DeviceType = spi_m5;
-		//LOG(ERROR) << "Error:Syn_Site::Init() - an unknown DutController,construct it to SPC!";
+		clockrate = M5_CLOCKRATE;
 	}
 
 	//Create Bridge
@@ -170,6 +165,8 @@ uint32_t Syn_Site::Init()
 		delete pConfigOperationInstance;
 		pConfigOperationInstance = NULL;
 	}
+
+	rc = _pSynBridge->SetPortSPI(clockrate);
 
 	_siteState = Closed;
 
