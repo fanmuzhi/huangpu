@@ -1111,6 +1111,7 @@ void FPS_TestExecutive::ReadOTP()
 	ui.textBrowser->clear();
 	ui.textBrowser->append(QString("SiteNumber:") + QString::number(oSiteNumber));
 	ui.textBrowser->append(QString("Device SerialNumber:") + QString::fromStdString(strSerialNumber));
+	ui.textBrowser->append(QString("Sensor SerialNumber:") + QString::fromLatin1(oDutTestResult->_versionResult.sSerialNumber, 12));
 
 	QPalette pa;
 	if (oDutTestResult->_binCodes[0] == "1")
@@ -1136,14 +1137,6 @@ void FPS_TestExecutive::ReadOTP()
 	ui.OTPResultLabel->setFont(ft);
 	ui.OTPResultLabel->setPalette(pa);
 
-	//ui.textBrowser->append(QString("Sysconfig Boot Sector 0:"));
-	//for (int i = 1; i <= BS0_SIZE / 8; i++)
-	//{
-	//	int StartPos = (i - 1) * 8;
-	//	int EndPos = i * 8 - 1;
-
-	//	Display(oDutTestInfo->_otpCheckInfo._UserSpecifiedBS0, StartPos, EndPos);
-	//}
 
 	ui.textBrowser->append(QString("\nBoot Sector 0:"));
 	ui.textBrowser->append(QString("=============="));
@@ -1154,15 +1147,6 @@ void FPS_TestExecutive::ReadOTP()
 
 		Display(oDutTestInfo->_otpCheckInfo._BootSector0Array, StartPos, EndPos);
 	}
-
-	//ui.textBrowser->append(QString("Sysconfig Boot Sector 1:"));
-	//for (int i = 1; i <= BS1_SIZE / 8; i++)
-	//{
-	//	int StartPos = (i - 1) * 8;
-	//	int EndPos = i * 8 - 1;
-
-	//	Display(oDutTestInfo->_otpCheckInfo._UserSpecifiedBS1, StartPos, EndPos);
-	//}
 
 	ui.textBrowser->append(QString("\nBoot Sector 1:"));
 	ui.textBrowser->append(QString("=============="));
@@ -1272,7 +1256,10 @@ void FPS_TestExecutive::Display(uint8_t* pDst, unsigned int StartPos, unsigned i
 	QString s = "";
 	for (int i = StartPos; i <= EndPos; i++)
 	{
-		s += (QString::number(pDst[i], 16)).toUpper() + ",";
+		QString strValue = (QString::number(pDst[i], 16)).toUpper();
+		if (1 == strValue.size())
+			strValue = "0" + strValue;
+		s += strValue + ",";
 	}
 	ui.textBrowser->append(s);
 }
