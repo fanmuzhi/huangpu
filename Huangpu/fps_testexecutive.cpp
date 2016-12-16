@@ -1101,7 +1101,6 @@ void FPS_TestExecutive::ReadOTP()
 	}
 
 	//Syn_SiteInfo oSiteInfo;
-	//pSelectedSite->GetSiteInfo(oSiteInfo);
 	unsigned int oSiteNumber;
 	pSelectedSite->GetSiteNumber(oSiteNumber);
 
@@ -1123,13 +1122,20 @@ void FPS_TestExecutive::ReadOTP()
 	else
 	{
 		QString sBinCodes = "";
-		for (auto i = 0; i < oDutTestResult->_binCodes.size(); i++)
+		if (1 == oDutTestResult->_binCodes.size())
 		{
-			sBinCodes += (oDutTestResult->_binCodes[i] + ", ").c_str();
+			sBinCodes += (oDutTestResult->_binCodes[0]).c_str();
 		}
-
+		else
+		{
+			for (size_t i = 0; i < oDutTestResult->_binCodes.size(); i++)
+			{
+				sBinCodes += (oDutTestResult->_binCodes[i] + ", ").c_str();
+			}
+		}
+		
 		ui.textBrowser->append(QString("Result: FAIL ") + sBinCodes);
-		ui.OTPResultLabel->setText(QString("Result: FAIL,Bicode: ") + sBinCodes);
+		ui.OTPResultLabel->setText(QString("Result: FAIL - Bincode: ") + sBinCodes);
 		pa.setColor(QPalette::WindowText, Qt::red);
 	}
 	QFont ft;

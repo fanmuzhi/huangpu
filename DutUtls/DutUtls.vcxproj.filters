@@ -30,9 +30,6 @@
     <ClInclude Include="Syn_TestUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Syn_Vcsfw.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Syn_Dut.cpp">

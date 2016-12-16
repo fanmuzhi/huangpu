@@ -101,7 +101,6 @@
     <ClInclude Include="Syn_Dut.h" />
     <ClInclude Include="Syn_Exception.h" />
     <ClInclude Include="Syn_TestUtils.h" />
-    <ClInclude Include="Syn_Vcsfw.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Syn_BinCodes.cpp" />

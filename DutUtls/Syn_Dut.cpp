@@ -4,7 +4,6 @@
 //Local
 #include "Syn_Dut.h"
 #include "Syn_Exception.h"
-#include "Syn_Vcsfw.h"
 
 //std
 #include <iostream>
