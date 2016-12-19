@@ -1,5 +1,6 @@
 #include "Ts_ViperWOF.h"
 
+#define WOF_REPONSE_HEAD 4
 
 Ts_ViperWOF::Ts_ViperWOF(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
@@ -101,6 +102,19 @@ void Ts_ViperWOF::SetUp()
 	{
 		_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_nVCC = stof(listOfArgValue[11]);
 	}
+
+	bool rc(false);
+	Syn_PatchInfo WofPatchInfo;
+	rc = _pSyn_Dut->FindPatch("WofPatch", WofPatchInfo);
+	if (!rc || NULL == WofPatchInfo._pArrayBuf)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+		ex.SetDescription("WOF Patch is NULL!");
+		throw ex;
+		return;
+	}
+
+	_pSyn_DutCtrl->FpLoadPatch(WofPatchInfo._pArrayBuf, WofPatchInfo._uiArraySize);
 	
 }
 
@@ -120,17 +134,6 @@ void Ts_ViperWOF::Execute()
 	{
 		ex.SetError(Syn_ExceptionCode::Syn_DutNull);
 		ex.SetDescription("_pSyn_Dut is NULL!");
-		throw ex;
-		return;
-	}
-
-	// WofPatch is not empty, and either/both Zone0 or Zone1 are used.
-	Syn_PatchInfo WofPatchInfo;
-	rc = _pSyn_Dut->FindPatch("WofPatch", WofPatchInfo);
-	if (!rc || NULL == WofPatchInfo._pArrayBuf)
-	{
-		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-		ex.SetDescription("WOF Patch is NULL!");
 		throw ex;
 		return;
 	}
@@ -226,72 +229,53 @@ void Ts_ViperWOF::CleanUp()
 
 bool Ts_ViperWOF::GetZ0WofData(WofTestInfo &wofInfo, WofTestResults &wofResults, bool UseConfigVoltage)
 {
-	//bool rc(false);
+	bool rc(false);
+	Syn_Exception ex(0);
 
-	//bool		bWithStim = wofInfo.m_bWithStimulus;
-	//uint8_t*	pResponseBuf = bWithStim ? wofResults.m_arDataWithStim : wofResults.m_arDataWithoutStim;
+	bool		bWithStim = wofInfo.m_bWithStimulus;
+	uint8_t*	pResponseBuf = bWithStim ? wofResults.m_arDataWithStim : wofResults.m_arDataWithoutStim;
 
-	//Syn_PatchInfo WofCmd1Patch, WofCmd2Patch;
-	//rc = _pSyn_Dut->FindPatch("WofFdCmd1", WofCmd1Patch);
-	//rc = _pSyn_Dut->FindPatch("WofFdCmd2", WofCmd2Patch);
+	Syn_PatchInfo WofCmd1Patch, WofCmd2Patch;
+	rc = _pSyn_Dut->FindPatch("WofFdCmd1", WofCmd1Patch);
+	rc = _pSyn_Dut->FindPatch("WofFdCmd2", WofCmd2Patch);
 
-	//int nVcc = (int)(wofInfo.m_nVCC * 1000);
+	int nVcc = (int)(wofInfo.m_nVCC * 1000);
 
-	//if (UseConfigVoltage)
-	//{
-	//	_pSyn_DutCtrl->PowerOff();
-	//	_pSyn_DutCtrl->PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV,nVcc);
-	//	_pSyn_DutCtrl->FpTidleSet(0);
-	//}
+	if (UseConfigVoltage)
+	{
+		_pSyn_DutCtrl->PowerOff();
+		_pSyn_DutCtrl->PowerOn(nVcc, _pSyn_Dut->_uiDutpwrVdd_mV);
+		_pSyn_DutCtrl->FpTidleSet(0);
+	}
 
-	//Syn_PatchInfo WofPatchInfo;
-	//rc = _pSyn_Dut->FindPatch("WofPatch", WofPatchInfo);
-	//if (NULL == WofPatchInfo._pArrayBuf || NULL == WofCmd1Patch._pArrayBuf || NULL == WofCmd2Patch._pArrayBuf)
-	//{
-	//	return false;
-	//}
 
-	////Load the patch, execute and wait for cmd1 to complete.
-	//_pSyn_DutCtrl->FpLoadPatch(WofPatchInfo._pArrayBuf, WofPatchInfo._uiArraySize);
+	rc = _pSyn_DutCtrl->FpRunWOFPlot(WofCmd1Patch._pArrayBuf, WofCmd1Patch._uiArraySize, WofCmd2Patch._pArrayBuf, WofCmd2Patch._uiArraySize, pResponseBuf, 5000);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("GetZ0WofData() Failed");
+		throw ex;
+	}
 
-	//_pSyn_DutCtrl->FpWrite(1, WofCmd1Patch._pArrayBuf[0], &WofCmd1Patch._pArrayBuf[1], WofCmd1Patch._uiArraySize - 1);
-	//_pSyn_DutCtrl->FpWaitForCMDComplete();
-	//_pSyn_DutCtrl->FpReadAndCheckStatus(0);
+	if (UseConfigVoltage)
+	{
+		_pSyn_DutCtrl->PowerOff();
+		_pSyn_DutCtrl->PowerOn(_pSyn_Dut->_uiDutpwrVddh_mV,_pSyn_Dut->_uiDutpwrVdd_mV);
+		_pSyn_DutCtrl->FpTidleSet(0);
+	}
 
-	////Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.
-	//ModifySweepWofCmdData(WofCmd2Patch._pArrayBuf);
-	//wofResults.m_nThreshStart = WofCmd2Patch._pArrayBuf[0x1E];
-	//wofResults.m_nThreshInc = WofCmd2Patch._pArrayBuf[0x22];
-	//wofResults.m_nThreshStop = WofCmd2Patch._pArrayBuf[0x26];
-	//wofResults.m_nNumThresholds = ((wofResults.m_nThreshStop - wofResults.m_nThreshStart) / wofResults.m_nThreshInc) + 1;
-	//wofResults.m_nGainStart = WofCmd2Patch._pArrayBuf[0x0C];
-	//wofResults.m_nGainInc = WofCmd2Patch._pArrayBuf[0x10];
-	//wofResults.m_nGainStop = WofCmd2Patch._pArrayBuf[0x14];
-	//wofResults.m_nNumGains = ((wofResults.m_nGainStop - wofResults.m_nGainStart) / wofResults.m_nGainInc) + 1;
-	//wofResults.m_nResponseSize = (wofResults.m_nNumThresholds * wofResults.m_nNumGains) + 6;
+	//Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.
+	ModifySweepWofCmdData(WofCmd2Patch._pArrayBuf);
+	wofResults.m_nThreshStart = WofCmd2Patch._pArrayBuf[0x1E];
+	wofResults.m_nThreshInc = WofCmd2Patch._pArrayBuf[0x22];
+	wofResults.m_nThreshStop = WofCmd2Patch._pArrayBuf[0x26];
+	wofResults.m_nNumThresholds = ((wofResults.m_nThreshStop - wofResults.m_nThreshStart) / wofResults.m_nThreshInc) + 1;
+	wofResults.m_nGainStart = WofCmd2Patch._pArrayBuf[0x0C];
+	wofResults.m_nGainInc = WofCmd2Patch._pArrayBuf[0x10];
+	wofResults.m_nGainStop = WofCmd2Patch._pArrayBuf[0x14];
+	wofResults.m_nNumGains = ((wofResults.m_nGainStop - wofResults.m_nGainStart) / wofResults.m_nGainInc) + 1;
+	wofResults.m_nResponseSize = (wofResults.m_nNumThresholds * wofResults.m_nNumGains) + WOF_REPONSE_HEAD;
 
-	////Execute and wait for sweep command to complete.
-	//_pSyn_DutCtrl->FpWrite(1, WofCmd2Patch._pArrayBuf[0], &WofCmd2Patch._pArrayBuf[1], WofCmd2Patch._uiArraySize - 1);
-	//_pSyn_DutCtrl->FpWaitForCMDComplete();
-	//_pSyn_DutCtrl->FpReadAndCheckStatus(0);
-
-	////Send execute command and wait for response.
-	//int timeout = 100;
-	//do
-	//{
-	//	_pSyn_DutCtrl->FpWrite(1, 0xF9, (uint8_t*)0, 0);
-	//	::Sleep(20);
-	//	_pSyn_DutCtrl->FpRead(1, 0xFF, pResponseBuf, wofResults.m_nResponseSize);
-	//	timeout--;
-	//} while (timeout && (!((pResponseBuf[0] == 0x00) && (pResponseBuf[1] == 0x00))));
-
-	//if (timeout == 0)
-	//{
-	//	Syn_Exception ex(0);
-	//	ex.SetDescription("WOF: Status never complete.");
-	//	throw(ex);
-	//	return false;
-	//}
 
 	//Clear registers.
 	return true;
@@ -319,8 +303,8 @@ void Ts_ViperWOF::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Re
 		{
 			//Calc the gain.
 			int nTgrIdex_withoutFinger(0), nTgrIdex_withFinger(0);
-			bool rc1 = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithoutStim[6 + (nGainIdx * Results.m_nNumThresholds)], nTgrIdex_withoutFinger);
-			bool rc2 = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithStim[6 + (nGainIdx * Results.m_nNumThresholds)], nTgrIdex_withFinger);
+			bool rc1 = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithoutStim[WOF_REPONSE_HEAD + (nGainIdx * Results.m_nNumThresholds)], nTgrIdex_withoutFinger);
+			bool rc2 = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithStim[WOF_REPONSE_HEAD + (nGainIdx * Results.m_nNumThresholds)], nTgrIdex_withFinger);
 			Results.m_nGain = Results.m_nGainStart + (Results.m_nGainInc * nGainIdx);
 			Results.m_nTriggerWithoutStim = nTgrIdex_withoutFinger;
 			Results.m_nTriggerWithStim = nTgrIdex_withFinger;

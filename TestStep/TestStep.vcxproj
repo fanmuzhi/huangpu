@@ -70,6 +70,17 @@
       <AdditionalDependencies>
       </AdditionalDependencies>
     </Lib>
+    <PreLinkEvent>
+      <Command>xcopy /y "$(SolutionDir)..\changning\Win32\Debug\FpAlphaModule.lib" "$(SolutionDir)Win32\Debug\"
+xcopy /y "$(SolutionDir)..\changning\Win32\Debug\FpAlphaModule.dll" "$(SolutionDir)Win32\Debug\"
+xcopy /y "$(SolutionDir)..\changning\Win32\Debug\FpBridge.lib" "$(SolutionDir)Win32\Debug\"
+xcopy /y "$(SolutionDir)..\changning\Win32\Debug\FpBridge.dll" "$(SolutionDir)Win32\Debug\"</Command>
+    </PreLinkEvent>
+    <PreBuildEvent>
+      <Command>xcopy /y "$(SolutionDir)..\changning\FpAlphaModule\FpAlphaModule.h" "$(SolutionDir)inc\"
+xcopy /y "$(SolutionDir)..\changning\FpBridge\syn_bridge.h" "$(SolutionDir)inc\"
+xcopy /y "$(SolutionDir)..\changning\FpBridge\syn_devicemanager.h" "$(SolutionDir)inc\"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -90,6 +101,17 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>$(SolutionDir)$(Platform)\$(Configuration)\DutUtls.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreLinkEvent>
+      <Command>xcopy /y "$(SolutionDir)..\changning\Win32\Release\FpAlphaModule.lib" "$(SolutionDir)Win32\Release\"
+xcopy /y "$(SolutionDir)..\changning\Win32\Release\FpAlphaModule.dll" "$(SolutionDir)Win32\Release\"
+xcopy /y "$(SolutionDir)..\changning\Win32\Release\FpBridge.lib" "$(SolutionDir)Win32\Release\"
+xcopy /y "$(SolutionDir)..\changning\Win32\Release\FpBridge.dll" "$(SolutionDir)Win32\Release\"</Command>
+    </PreLinkEvent>
+    <PreBuildEvent>
+      <Command>xcopy /y "$(SolutionDir)..\changning\FpAlphaModule\FpAlphaModule.h" "$(SolutionDir)inc\"
+xcopy /y "$(SolutionDir)..\changning\FpBridge\syn_bridge.h" "$(SolutionDir)inc\"
+xcopy /y "$(SolutionDir)..\changning\FpBridge\syn_devicemanager.h" "$(SolutionDir)inc\"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Syn_FingerprintTest.h" />

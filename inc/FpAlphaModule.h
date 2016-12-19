@@ -11,11 +11,13 @@
 #define TIMEOUT_VALUE 2000
 
 //error code
-#define ERROR_TIME_OUT				0x1500
-#define ERROR_CRC_VERIFY			0x1501
-#define ERROR_BL_MODE				0x1502
-#define ERROR_PARAM_UNDEFINE		0x1502
-#define ERROR_TYPE					0x1503
+#define FPMODULE_ERROR_TIME_OUT				0x1500
+#define FPMODULE_ERROR_CRC_VERIFY			0x1501
+#define FPMODULE_ERROR_BL_MODE				0x1502
+#define FPMODULE_ERROR_PARAM_UNDEFINE		0x1503
+#define FPMODULE_ERROR_TYPE					0x1504
+#define FPMODULE_ERROR_IMAGE_MAXSIZE		0x1505
+#define FPMODULE_ERROR_PARAM_NULL			0x1506
 
 typedef enum{ OFF_REPLYSENT, CMDWAIT, CMDPROC, REPLY };
 
@@ -60,6 +62,8 @@ public:
 
 	virtual uint32_t FpTidleSet(uint16_t idletime = 0, uint32_t timeout = TIMEOUT_VALUE);
 
+	virtual uint32_t FpReset(uint32_t timeout = TIMEOUT_VALUE);
+
 	virtual uint32_t FpGetVersion(uint8_t *arrVersion, uint32_t size = 38, uint32_t timeout = TIMEOUT_VALUE);
 
 	virtual uint32_t FpGetStartInfo(uint8_t *arrStartInfo, uint32_t size, uint32_t timeout = TIMEOUT_VALUE);
@@ -67,8 +71,6 @@ public:
 	virtual uint32_t FpLoadPatch(uint8_t* pPatch, uint32_t numBytes, uint32_t timeout = TIMEOUT_VALUE);
 
 	virtual uint32_t FpUnloadPatch(uint32_t patchindex = 0, uint32_t timeout = TIMEOUT_VALUE);
-
-
 
 	virtual uint32_t FpOtpRomTagRead(uint32_t nExtTag, uint8_t* pDst, int numBytes, uint32_t timeout = TIMEOUT_VALUE);
 
@@ -84,6 +86,9 @@ public:
 
 	virtual uint32_t FpGetImage2(uint16_t nRows, uint16_t nCols, uint8_t *pDst, uint16_t nBlobSize, uint8_t *pBlob, uint32_t timeout = TIMEOUT_VALUE);
 
+	virtual uint32_t FpRunWOFPlot(uint8_t *wofCmd1, uint16_t wofCmd1Size, uint8_t *wofCmd2, uint16_t wofCmd2Size, uint8_t *pDst, uint16_t responseSize, uint32_t timeout = TIMEOUT_VALUE);
+
+	virtual uint32_t FpRunSCMWOFPlot(uint8_t *wofPlot, uint16_t wofPlotSize, uint8_t *wofBin, uint16_t wofBinSize, uint8_t * wofSweep, uint16_t wofSweepSize, uint8_t *pDst, uint16_t responseSize, uint32_t timeout = TIMEOUT_VALUE);
 
 	virtual uint32_t FpPokeRegister(uint32_t nHwRegAddr, uint32_t value, uint8_t opsize = 4, uint32_t timeout = TIMEOUT_VALUE);
 
@@ -102,8 +107,11 @@ protected:
 
 	uint32_t readCmd(uint8_t endpoint, uint8_t *arrRep, uint32_t size, uint32_t timeout);
 
+	virtual uint32_t modifyWofCmd(uint8_t *wofCmd) = 0;
+
+	virtual uint32_t modifySweepSCMWofCmdData(uint8_t *wofCmd) = 0;
+
 protected:
 
 	syn_bridge *_pSynBridge;
 };
-
