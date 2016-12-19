@@ -11,11 +11,13 @@
 #define TIMEOUT_VALUE 2000
 
 //error code
-#define ERROR_TIME_OUT				0x1500
-#define ERROR_CRC_VERIFY			0x1501
-#define ERROR_BL_MODE				0x1502
-#define ERROR_PARAM_UNDEFINE		0x1502
-#define ERROR_TYPE					0x1503
+#define FPMODULE_ERROR_TIME_OUT				0x1500
+#define FPMODULE_ERROR_CRC_VERIFY			0x1501
+#define FPMODULE_ERROR_BL_MODE				0x1502
+#define FPMODULE_ERROR_PARAM_UNDEFINE		0x1503
+#define FPMODULE_ERROR_TYPE					0x1504
+#define FPMODULE_ERROR_IMAGE_MAXSIZE		0x1505
+#define FPMODULE_ERROR_PARAM_NULL			0x1506
 
 typedef enum{ OFF_REPLYSENT, CMDWAIT, CMDPROC, REPLY };
 
@@ -68,9 +70,7 @@ public:
 
 	virtual uint32_t FpUnloadPatch(uint32_t patchindex = 0, uint32_t timeout = TIMEOUT_VALUE);
 
-
-
-	virtual uint32_t FpOtpRomTagRead(uint32_t nExtTag, uint8_t* pDst, int numBytes, uint32_t timeout = TIMEOUT_VALUE);
+	virtual uint32_t FpOtpRomTagRead(uint32_t nExtTag, uint8_t* pDst, int numBytes, int &ntags, uint32_t timeout = TIMEOUT_VALUE);
 
 	virtual uint32_t FpOtpRomTagWrite(uint8_t* pDst, int numBytes, uint32_t timeout = TIMEOUT_VALUE);
 
@@ -84,6 +84,7 @@ public:
 
 	virtual uint32_t FpGetImage2(uint16_t nRows, uint16_t nCols, uint8_t *pDst, uint16_t nBlobSize, uint8_t *pBlob, uint32_t timeout = TIMEOUT_VALUE);
 
+	virtual uint32_t FpRunWOFPlot(uint8_t *wofCmd1, uint16_t wofCmd1Size, uint8_t *wofCmd2, uint16_t wofCmd2Size, uint8_t *pDst, uint16_t responseSize, uint32_t timeout = TIMEOUT_VALUE);
 
 	virtual uint32_t FpPokeRegister(uint32_t nHwRegAddr, uint32_t value, uint8_t opsize = 4, uint32_t timeout = TIMEOUT_VALUE);
 
@@ -102,8 +103,9 @@ protected:
 
 	uint32_t readCmd(uint8_t endpoint, uint8_t *arrRep, uint32_t size, uint32_t timeout);
 
+	virtual uint32_t modifyWofCmd(uint8_t *wofCmd) = 0;
+
 protected:
 
 	syn_bridge *_pSynBridge;
 };
-

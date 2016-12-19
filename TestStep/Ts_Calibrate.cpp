@@ -113,7 +113,7 @@ void Ts_Calibrate::Execute()
 		throw ex;
 		return;
 	}
-
+	uint32_t rc(0);
 	//CheckDUTexists();
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted = true;
@@ -152,7 +152,10 @@ void Ts_Calibrate::Execute()
 	uint8_t		pPgaValues[MS0_SIZE] = { 0 };
 	bool		bSuccess(false);
 	uint32_t nLnaIdx = _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nLnaIdx;
-	if (_pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, pLnaValues, MS0_SIZE) > 0)
+
+	int nTags(0);
+	rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, pLnaValues, MS0_SIZE, nTags);
+	if (nTags > 0)
 	{
 		CopyToPrintPatch(&pLnaValues[4], _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch, numRows, nLnaIdx);	//skip LNA first 4 bytes 00 00 00 07
 	}
@@ -174,7 +177,8 @@ void Ts_Calibrate::Execute()
 	{
 		//If the OOPP offsets exist in the OTP, put them in a more convenient location. Skip the 0x00000007 stored in 1st 4 bytes.
 		//int nPgaRecCount = GetMS0RecordData(TAG_CAL, EXT_TAG_PGA_OOPP, pPgaValues, MS0_SIZE, site);
-		int nPgaRecCount = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPP, pPgaValues, MS0_SIZE);
+		int nPgaRecCount(0);
+		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPP, pPgaValues, MS0_SIZE, nPgaRecCount);
 		memcpy(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPGAOtpArray, &pPgaValues[4], NUM_PGA_OOPP_OTP_ROWS * (numCols  - HEADER));
 
 		bSuccess = CalculatePgaOffsets_OOPP(numCols, numRows, _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults);

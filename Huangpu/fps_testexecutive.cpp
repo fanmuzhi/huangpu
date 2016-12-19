@@ -154,15 +154,15 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 	bool IsSucess(true);
 	for (size_t i = 0; i < iLocalSettingsSiteCounts; i++)
 	{
-		string uiSerialNumber = LocalSettingsInfo._listOfSiteSettings[i]._strDutSerNum;
+		string strSerialNumber = LocalSettingsInfo._listOfSiteSettings[i]._strDutSerNum;
 		uint8_t uiSiteNumber = i + 1;
 		Syn_Site *pSyn_SiteInstance = NULL; 
-		rc = Syn_Site::CreateSiteInstance(uiSiteNumber, uiSerialNumber, _LocalSettingsInfo._strSysConfigFilePath, LocalSettingsInfo._listOfSiteSettings[i]._adcBaseLineInfo, pSyn_SiteInstance);
+		rc = Syn_Site::CreateSiteInstance(uiSiteNumber, strSerialNumber, _LocalSettingsInfo._strSysConfigFilePath, LocalSettingsInfo._listOfSiteSettings[i]._adcBaseLineInfo, pSyn_SiteInstance);
 		if (NULL == pSyn_SiteInstance || Syn_ExceptionCode::Syn_OK != rc)
 		{
 			string osErrorInfo("");
 			GetErrorInfo(rc, osErrorInfo);
-			QMessageBox::critical(this, QString("Error"), QString("Can't cosntruct Serial Number:") + QString::fromStdString(uiSerialNumber) + QString(" device(") + QString::fromStdString(osErrorInfo) + QString("),check it please!"));
+			QMessageBox::critical(this, QString("Error"), QString("Can't cosntruct Serial Number:") + QString::fromStdString(strSerialNumber) + QString(" device(") + QString::fromStdString(osErrorInfo) + QString("),check it please!"));
 			IsSucess = false;
 			break;
 		}
@@ -1237,7 +1237,9 @@ void FPS_TestExecutive::Invalidate()
 	}
 
 	Syn_DutTestResult *oDutTestResult = NULL;
+	rc = pSelectedSite->ExecuteTestStep("InitializationStep");
 	rc = pSelectedSite->ExecuteTestStep("Invalidate");
+	rc = pSelectedSite->ExecuteTestStep("FinalizationStep");
 	pSelectedSite->GetTestResult(oDutTestResult);
 	if (rc != 0)
 	{
