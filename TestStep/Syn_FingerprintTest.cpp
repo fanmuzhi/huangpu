@@ -38,8 +38,7 @@ void Syn_FingerprintTest::GetFingerprintImage(CalibrationResults &pCalResults, F
 	if (((nRows * nCols) % 64) == 0)
 		nRows++;
 
-	//uint8_t *pImgBuff = new uint8_t[nCols * nRows];
-	uint8_t pImgBuff[11000] = {0};
+	uint8_t *pImgBuff = new uint8_t[nCols * nRows];
 
 	uint32_t rc = _pSyn_DutCtrl->FpGetImage2(nRows, nCols, pImgBuff, pCalResults.m_nPrintPatchSize, pCalResults.m_pPrintPatch);
 
@@ -48,9 +47,9 @@ void Syn_FingerprintTest::GetFingerprintImage(CalibrationResults &pCalResults, F
 		pFrame->arr[i / nCols][i%nCols] = pImgBuff[i];
 	}
 
-	/*delete[] pImgBuff;
-	pImgBuff = NULL;*/
-	cout << "!" << endl;
+	delete[] pImgBuff;
+	pImgBuff = NULL;
+	
 	return;
 }
 

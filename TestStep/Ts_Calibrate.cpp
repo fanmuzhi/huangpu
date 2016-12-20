@@ -176,7 +176,7 @@ void Ts_Calibrate::Execute()
 	FPSFrame *pLnaFrame = new FPSFrame();
 	this->CalculateLnaOffsetsBinarySearch(pLnaFrame, pLnaValues, numRows, numCols, _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults);
 	//CopyToPrintPatch(pLnaValues, &site.m_calibrationResults.m_pPrintPatch[4], GetSysConfig().GetNumRows(), site.m_calibrationInfo.m_nLnaIdx);
-	_pSyn_DutCtrl->CopyToPrintPatch(pLnaValues, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch, numRows, nLnaIdx);
+	CopyToPrintPatch(pLnaValues, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch, numRows, nLnaIdx);
 
 	delete pLnaFrame;
 	pLnaFrame = NULL;
@@ -384,7 +384,7 @@ void Ts_Calibrate::CalculateLnaOffsetsBinarySearch(FPSFrame* pFrame, uint8_t* pL
 		for (int i = 0; i<nNumRows; i++)
 			arMid[i] = ((arHi[i] - arLo[i]) / 2) + arLo[i];
 
-		_pSyn_DutCtrl->CopyToPrintPatch(arMid, CalResults.m_pPrintPatch, nNumRows, CalInfo.m_nLnaIdx);
+		CopyToPrintPatch(arMid, CalResults.m_pPrintPatch, nNumRows, CalInfo.m_nLnaIdx);
 
 		GetFingerprintImage(CalResults, pFrame, nNumRows, nNumCols);
 
@@ -609,4 +609,10 @@ bool Ts_Calibrate::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRows, 
 	calFrameNonZeroOffsets = NULL;
 
 	return !bStage2AllEqual;
+}
+
+void Ts_Calibrate::CopyToPrintPatch(uint8_t* pSrc, uint8_t* pPrintPatch, int nNumBytes, int nPatchIdx)
+{
+	//For Metallica sensors, we copy once into Print Patch.
+	memcpy(&pPrintPatch[nPatchIdx], pSrc, nNumBytes);
 }

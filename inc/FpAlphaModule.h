@@ -104,8 +104,6 @@ public:
 
 	virtual void ImageDecode(uint8_t arrDecodeFrame[][COLUMN_SIZE_MAX], uint8_t arrEncodeFrame[][COLUMN_SIZE_MAX], int nNumRow, int nNumCol) = 0;
 
-	virtual void CopyToPrintPatch(uint8_t* pSrc, uint8_t* pPrintPatch, int nNumBytes, int nPatchIdx) = 0;
-
 protected:
 
 	uint32_t getStatus(Alpha_Sensor_Status_t &oSensorStatus);
