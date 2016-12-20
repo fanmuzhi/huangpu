@@ -8,6 +8,10 @@
 
 #include "syn_bridge.h"
 
+#define ROW_SIZE_MAX		160
+#define COLUMN_SIZE_MAX		160
+#define ALPHA_HEADER		8
+
 #define TIMEOUT_VALUE 2000
 
 //error code
@@ -97,6 +101,9 @@ public:
 	virtual uint32_t FpPeekRegister(uint32_t nHwRegAddr, uint8_t opsize, uint32_t &ovalue, uint32_t timeout = TIMEOUT_VALUE);
 
 	virtual uint32_t FpUpdateADCOffsets(uint32_t arrAdcbaselines[4], uint32_t timeout = TIMEOUT_VALUE);
+
+	virtual void ImageDecode(uint8_t arrDecodeFrame[ROW_SIZE_MAX][COLUMN_SIZE_MAX], uint8_t arrEncodeFrame[ROW_SIZE_MAX][COLUMN_SIZE_MAX], int nNumRow, int nNumCol) = 0;
+
 
 protected:
 
