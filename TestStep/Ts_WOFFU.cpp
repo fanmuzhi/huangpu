@@ -1,6 +1,9 @@
 #include "Ts_WOFFU.h"
 
 #define WOF_REPONSE_HEAD 4
+#define WOF_GAIN_START	 1
+#define WOF_GAIN_STEP	 1
+#define WOF_GAIN_STOP	 3
 
 Ts_WOFFU::Ts_WOFFU(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
@@ -135,20 +138,6 @@ void Ts_WOFFU::SetUp()
 		_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_FingerMode = stoi(listOfArgValue[12]);
 		_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_FingerMode = stoi(listOfArgValue[12]);
 	}
-
-	bool rc(false);
-	// WofPatch is not empty, and either/both Zone0 or Zone1 are used.
-	Syn_PatchInfo WofPatchInfo;
-	rc = _pSyn_Dut->FindPatch("WofPatch", WofPatchInfo);
-	if (!rc || NULL == WofPatchInfo._pArrayBuf)
-	{
-		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-		ex.SetDescription("WOF Patch is NULL!");
-		throw ex;
-		return;
-	}
-
-	_pSyn_DutCtrl->FpLoadPatch(WofPatchInfo._pArrayBuf, WofPatchInfo._uiArraySize);
 }
 
 void Ts_WOFFU::Execute()
@@ -291,7 +280,6 @@ void Ts_WOFFU::ProcessData()
 
 void Ts_WOFFU::CleanUp()
 {
-	_pSyn_DutCtrl->FpUnloadPatch();
 }
 
 bool Ts_WOFFU::GetZone0FingerUpData(WofTestInfo &wofInfo, WofTestResults &wofResults, Syn_PatchInfo &WofCmd1Patch, Syn_PatchInfo &WofCmd2Patch)
@@ -302,16 +290,23 @@ bool Ts_WOFFU::GetZone0FingerUpData(WofTestInfo &wofInfo, WofTestResults &wofRes
 	bool		bWithStim = wofInfo.m_bWithStimulus;
 	uint8_t*	pResponseBuf = bWithStim ? wofResults.m_arDataWithStim : wofResults.m_arDataWithoutStim;
 
-	rc = _pSyn_DutCtrl->FpRunWOFPlot(WofCmd1Patch._pArrayBuf, WofCmd1Patch._uiArraySize, WofCmd2Patch._pArrayBuf, WofCmd2Patch._uiArraySize, pResponseBuf, 5000);
-	if (0 != rc)
+	//Load WOF Patch
+	Syn_PatchInfo WofPatchInfo;
+	_pSyn_Dut->FindPatch("WofPatch", WofPatchInfo);
+	if (NULL == WofPatchInfo._pArrayBuf)
 	{
-		ex.SetError(rc);
-		ex.SetDescription("GetZ0FingerUpData() Failed");
+		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+		ex.SetDescription("WOF Patch is NULL!");
 		throw ex;
 	}
+	_pSyn_DutCtrl->FpLoadPatch(WofPatchInfo._pArrayBuf, WofPatchInfo._uiArraySize);
+
+	//Fill Settings
+	WofCmd2Patch._pArrayBuf[0x0C] = WOF_GAIN_START;
+	WofCmd2Patch._pArrayBuf[0x10] = WOF_GAIN_STEP;
+	WofCmd2Patch._pArrayBuf[0x14] = WOF_GAIN_STOP;
 
 	//Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.
-	ModifySweepWofCmdData(WofCmd2Patch._pArrayBuf);
 	wofResults.m_nThreshStart = WofCmd2Patch._pArrayBuf[0x1F];
 	wofResults.m_nThreshInc = WofCmd2Patch._pArrayBuf[0x23];
 	wofResults.m_nThreshStop = WofCmd2Patch._pArrayBuf[0x27];
@@ -322,7 +317,18 @@ bool Ts_WOFFU::GetZone0FingerUpData(WofTestInfo &wofInfo, WofTestResults &wofRes
 	wofResults.m_nNumGains = ((wofResults.m_nGainStop - wofResults.m_nGainStart) / wofResults.m_nGainInc) + 1;
 	wofResults.m_nResponseSize = (wofResults.m_nNumThresholds * wofResults.m_nNumGains) + WOF_REPONSE_HEAD;
 
+	//Run WOF Patch
+	rc = _pSyn_DutCtrl->FpRunWOFPlot(WofCmd1Patch._pArrayBuf, WofCmd1Patch._uiArraySize, WofCmd2Patch._pArrayBuf, WofCmd2Patch._uiArraySize, pResponseBuf, wofResults.m_nResponseSize);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("GetZ0FingerUpData() Failed");
+		throw ex;
+	}
+
 	//Clear registers.
+	_pSyn_DutCtrl->FpUnloadPatch();
+	_pSyn_DutCtrl->FpReset();
 	return true;
 }
 
@@ -334,16 +340,23 @@ bool Ts_WOFFU::GetZone1FingerUpData(WofTestInfo &wofInfo, WofTestResults &wofRes
 	bool		bWithStim = wofInfo.m_bWithStimulus;
 	uint8_t*	pResponseBuf = bWithStim ? wofResults.m_arDataWithStim : wofResults.m_arDataWithoutStim;
 
-	rc = _pSyn_DutCtrl->FpRunWOFPlot(WofCmd3Patch._pArrayBuf, WofCmd3Patch._uiArraySize, WofCmd4Patch._pArrayBuf, WofCmd4Patch._uiArraySize, pResponseBuf, 5000);
-	if (0 != rc)
+	//Load WOF Patch
+	Syn_PatchInfo WofPatchInfo;
+	_pSyn_Dut->FindPatch("WofPatch", WofPatchInfo);
+	if (NULL == WofPatchInfo._pArrayBuf)
 	{
-		ex.SetError(rc);
-		ex.SetDescription("GetZone1FingerUpData() Failed");
+		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+		ex.SetDescription("WOF Patch is NULL!");
 		throw ex;
 	}
+	_pSyn_DutCtrl->FpLoadPatch(WofPatchInfo._pArrayBuf, WofPatchInfo._uiArraySize);
+
+	//Fill the settings
+	WofCmd4Patch._pArrayBuf[0x0A] = WOF_GAIN_START;
+	WofCmd4Patch._pArrayBuf[0x0E] = WOF_GAIN_STEP;
+	WofCmd4Patch._pArrayBuf[0x12] = WOF_GAIN_STOP;
 
 	//Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.
-	ModifySweepWofCmdData(WofCmd4Patch._pArrayBuf);
 	wofResults.m_nThreshStart = WofCmd4Patch._pArrayBuf[0x20];
 	wofResults.m_nThreshInc = WofCmd4Patch._pArrayBuf[0x24];
 	wofResults.m_nThreshStop = WofCmd4Patch._pArrayBuf[0x28];
@@ -354,7 +367,18 @@ bool Ts_WOFFU::GetZone1FingerUpData(WofTestInfo &wofInfo, WofTestResults &wofRes
 	wofResults.m_nNumGains = ((wofResults.m_nGainStop - wofResults.m_nGainStart) / wofResults.m_nGainInc) + 1;
 	wofResults.m_nResponseSize = (wofResults.m_nNumThresholds * wofResults.m_nNumGains) + WOF_REPONSE_HEAD;
 
+	//Run WOF Patch
+	rc = _pSyn_DutCtrl->FpRunWOFPlot(WofCmd3Patch._pArrayBuf, WofCmd3Patch._uiArraySize, WofCmd4Patch._pArrayBuf, WofCmd4Patch._uiArraySize, pResponseBuf, wofResults.m_nResponseSize);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("GetZone1FingerUpData() Failed");
+		throw ex;
+	}
+
 	//Clear registers.
+	_pSyn_DutCtrl->FpUnloadPatch();
+	_pSyn_DutCtrl->FpReset();
 	return true;
 }
 

@@ -107,9 +107,9 @@ protected:
 
 	uint32_t readCmd(uint8_t endpoint, uint8_t *arrRep, uint32_t size, uint32_t timeout);
 
-	virtual uint32_t modifyWofCmd(uint8_t *wofCmd) = 0;
+	//virtual uint32_t modifyWofCmd(uint8_t *wofCmd) = 0;
 
-	virtual uint32_t modifySweepSCMWofCmdData(uint8_t *wofCmd) = 0;
+	//virtual uint32_t modifySweepSCMWofCmdData(uint8_t *wofCmd) = 0;
 
 protected:
 

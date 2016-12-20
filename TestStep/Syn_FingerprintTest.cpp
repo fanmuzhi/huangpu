@@ -87,28 +87,6 @@ void Syn_FingerprintTest::ImageDecode(FPSFrame *pDecodeFrame, FPSFrame *pEncodeF
 	return _pSyn_Module->ImageDecode(pDecodeFrame, pEncodeFrame, nNumRow, nNumCol, nNumFrames);*/
 }
 
-void Syn_FingerprintTest::ModifySweepWofCmdData(uint8_t* pSweepCmd)
-{
-	/*if (NULL == _pSyn_Module)
-	{
-		return;
-	}
-
-	return _pSyn_Module->ModifySweepWofCmdData(pSweepCmd);*/
-
-}
-
-void Syn_FingerprintTest::ModifySweepSCMWofCmdData(uint8_t* pSweepCmd)
-{
-	/*if (NULL == _pSyn_Module)
-	{
-		return;
-	}
-
-	return _pSyn_Module->ModifySweepSCMWofCmdData(pSweepCmd);*/
-
-}
-
 bool Syn_FingerprintTest::ParseTestStepArgs(const std::string &strArgsValue, std::vector<std::string> &olistOfArgValue, std::string strSymbol)
 {
 	olistOfArgValue.clear();
