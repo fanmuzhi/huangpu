@@ -31,10 +31,8 @@ void Ts_DRdyTest::SetUp()
 	}
 
 	//parse args
-	_pSyn_Dut->_pSyn_DutTestInfo->_DRdyInfo.m_bExecuted = false;
 	_pSyn_Dut->_pSyn_DutTestInfo->_DRdyInfo.m_pinMsk = 0x10;	//bit 4
 	_pSyn_Dut->_pSyn_DutTestInfo->_DRdyInfo.m_portId = 1;		//port B
-
 
 	std::vector<std::string> listOfArgValue;
 	ParseTestStepArgs(_strArgs, listOfArgValue);
@@ -44,19 +42,21 @@ void Ts_DRdyTest::SetUp()
 		for (size_t t = 1; t <= 2 - ilistSize; t++)
 			listOfArgValue.push_back(std::string(""));
 	}
+
 	if (0 != listOfArgValue[0].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_DRdyInfo.m_portId= atoi(listOfArgValue[0].c_str());
 	if (0 != listOfArgValue[1].length())
-		//_pSyn_Dut->_pSyn_DutTestInfo->_DRdyInfo.m_pinMsk= atoi(listOfArgValue[1].c_str());
 		_pSyn_Dut->_pSyn_DutTestInfo->_DRdyInfo.m_pinMsk = strtoul(listOfArgValue[1].c_str(), NULL, 16);
 
+	_pSyn_Dut->_pSyn_DutTestInfo->_DRdyInfo.m_bExecuted = false;
 }
 
 void Ts_DRdyTest::Execute()
 {
+	uint32_t rc(0);
 	int portID = _pSyn_Dut->_pSyn_DutTestInfo->_DRdyInfo.m_portId;
 	int pinMsk = _pSyn_Dut->_pSyn_DutTestInfo->_DRdyInfo.m_pinMsk;
-	uint32_t nDRdyState;
+	bool *nDRdyState = false;
 	uint8_t  pResult[2] = {0,0};
 
 	//set DRdy pin to input.
@@ -83,6 +83,11 @@ void Ts_DRdyTest::Execute()
 	//	_pSyn_Dut->_pSyn_DutTestResult->_DRdyResults.m_arLoStates[i] = (nDRdyState & pinMsk) ? 1 : 0;
 	//}
 
+	for (int i = 0; i < NUM_DRDY_CHECKS; i++)
+	{
+		//rc = _pSynBridge->GPIO_CheckDRDY(nDRdyState);
+		_pSyn_Dut->_pSyn_DutTestResult->_DRdyResults.m_arLoStates[i] = (*nDRdyState & pinMsk) ? 1 : 0;
+	}
 	_pSyn_Dut->_pSyn_DutTestInfo->_DRdyInfo.m_bExecuted = true;
 
 }
@@ -120,4 +125,5 @@ void Ts_DRdyTest::ProcessData()
 
 void Ts_DRdyTest::CleanUp()
 {
+	_pSyn_DutCtrl->FpReset();
 }
