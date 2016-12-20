@@ -87,10 +87,16 @@ Syn_LocalSettingsDlg::Syn_LocalSettingsDlg(QWidget *parent)
 	QString strDeviceType = QString::fromStdString(_LocalSettingsInfo._strDeviceType);
 	devicetype Type;
 	if ("MPC04" == strDeviceType.toUpper())
+	{
 		Type = spi_mpc04;
+		ui->DeviceTypeComboBox->setCurrentIndex(1);
+	}
 	else
+	{
 		Type = spi_m5;
+	}
 	uint32_t uiResult = _pSynDeviceManager->Connect(Type);
+
 }
 
 Syn_LocalSettingsDlg::~Syn_LocalSettingsDlg()

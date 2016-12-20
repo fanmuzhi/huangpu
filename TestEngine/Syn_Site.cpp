@@ -117,7 +117,7 @@ uint32_t Syn_Site::Init()
 	if (std::string("MPC04") == strDutController)
 	{
 		DeviceType = spi_mpc04;
-		clockrate = M5_CLOCKRATE;
+		clockrate = MPC04_CLOCKRATE;
 	}
 	else
 	{
