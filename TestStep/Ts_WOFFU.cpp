@@ -318,7 +318,7 @@ bool Ts_WOFFU::GetZone0FingerUpData(WofTestInfo &wofInfo, WofTestResults &wofRes
 	wofResults.m_nResponseSize = (wofResults.m_nNumThresholds * wofResults.m_nNumGains) + WOF_REPONSE_HEAD;
 
 	//Run WOF Patch
-	rc = _pSyn_DutCtrl->FpRunWOFPlot(WofCmd1Patch._pArrayBuf, WofCmd1Patch._uiArraySize, WofCmd2Patch._pArrayBuf, WofCmd2Patch._uiArraySize, pResponseBuf, 5000);
+	rc = _pSyn_DutCtrl->FpRunWOFPlot(WofCmd1Patch._pArrayBuf, WofCmd1Patch._uiArraySize, WofCmd2Patch._pArrayBuf, WofCmd2Patch._uiArraySize, pResponseBuf, wofResults.m_nResponseSize);
 	if (0 != rc)
 	{
 		ex.SetError(rc);
@@ -368,7 +368,7 @@ bool Ts_WOFFU::GetZone1FingerUpData(WofTestInfo &wofInfo, WofTestResults &wofRes
 	wofResults.m_nResponseSize = (wofResults.m_nNumThresholds * wofResults.m_nNumGains) + WOF_REPONSE_HEAD;
 
 	//Run WOF Patch
-	rc = _pSyn_DutCtrl->FpRunWOFPlot(WofCmd3Patch._pArrayBuf, WofCmd3Patch._uiArraySize, WofCmd4Patch._pArrayBuf, WofCmd4Patch._uiArraySize, pResponseBuf, 5000);
+	rc = _pSyn_DutCtrl->FpRunWOFPlot(WofCmd3Patch._pArrayBuf, WofCmd3Patch._uiArraySize, WofCmd4Patch._pArrayBuf, WofCmd4Patch._uiArraySize, pResponseBuf, wofResults.m_nResponseSize);
 	if (0 != rc)
 	{
 		ex.SetError(rc);

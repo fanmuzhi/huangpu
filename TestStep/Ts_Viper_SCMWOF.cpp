@@ -213,7 +213,6 @@ void Ts_Viper_SCMWOF::ProcessData()
 
 void Ts_Viper_SCMWOF::CleanUp()
 {
-	_pSyn_DutCtrl->FpUnloadPatch();
 }
 
 bool Ts_Viper_SCMWOF::ExecuteZone0SCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResults& results, bool UseConfigVotage)
@@ -240,6 +239,15 @@ bool Ts_Viper_SCMWOF::ExecuteZone0SCMWofTest(SCM_WofTestInfo& info, SCM_WofTestR
 	int			timeout;
 	uint8_t*	pResponseBuf = bWithStim ? results.m_arDataWithStim : results.m_arDataWithoutStim;
 	int			nVcc = (int)(info.m_nVCC * 1000);
+
+	//Load WOF Patch
+	if (NULL == ScmWofPatchInfo._pArrayBuf)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+		ex.SetDescription("SCMWOF Patch is NULL!");
+		throw ex;
+	}
+	_pSyn_DutCtrl->FpLoadPatch(ScmWofPatchInfo._pArrayBuf, ScmWofPatchInfo._uiArraySize);
 
 	if (UseConfigVotage)
 	{
