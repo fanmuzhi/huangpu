@@ -1,6 +1,9 @@
 #include "Ts_SCM_WOF.h"
 
 #define WOF_REPONSE_HEAD 4
+#define WOF_GAIN_START	 1
+#define WOF_GAIN_STEP	 1
+#define WOF_GAIN_STOP	 3
 
 Ts_SCM_WOF::Ts_SCM_WOF(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
@@ -275,16 +278,6 @@ bool Ts_SCM_WOF::ExecuteZone0SCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResult
 	uint32_t rc(0);
 	Syn_Exception ex(0);
 
-	Syn_PatchInfo ScmWofPatchInfo;	
-	_pSyn_Dut->FindPatch("ScmWofPatch", ScmWofPatchInfo);
-	if (NULL == ScmWofPatchInfo._pArrayBuf)
-	{
-		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-		ex.SetDescription("SCMWOF Patch is NULL!");
-		throw ex;
-	}
-	_pSyn_DutCtrl->FpLoadPatch(ScmWofPatchInfo._pArrayBuf, ScmWofPatchInfo._uiArraySize);
-
 	Syn_PatchInfo Cmd1ScmWofPlotInfo, Cmd2ScmWofBinInfo, Cmd3SweepTagInfo;// WofCmd2Info;
 	_pSyn_Dut->FindPatch("Cmd1ScmWofPlot", Cmd1ScmWofPlotInfo);
 	_pSyn_Dut->FindPatch("Cmd2ScmWofBin", Cmd2ScmWofBinInfo);
@@ -300,17 +293,23 @@ bool Ts_SCM_WOF::ExecuteZone0SCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResult
 
 	bool		bWithStim = info.m_bWithStimulus;
 	int			timeout;			
-
 	uint8_t*	pResponseBuf = bWithStim ? results.m_arDataWithStim : results.m_arDataWithoutStim;
 
-	rc = _pSyn_DutCtrl->FpRunSCMWOFPlot(Cmd1ScmWofPlotInfo._pArrayBuf, Cmd1ScmWofPlotInfo._uiArraySize, Cmd2ScmWofBinInfo._pArrayBuf, Cmd2ScmWofBinInfo._uiArraySize,
-		Cmd3SweepTagInfo._pArrayBuf, Cmd3SweepTagInfo._uiArraySize, pResponseBuf, 5000);
-	if (0 != rc)
+	//Load SCMWOF Patch
+	Syn_PatchInfo ScmWofPatchInfo;	
+	_pSyn_Dut->FindPatch("ScmWofPatch", ScmWofPatchInfo);
+	if (NULL == ScmWofPatchInfo._pArrayBuf)
 	{
-		ex.SetError(rc);
-		ex.SetDescription("GetZ0SCMWofData() Failed");
+		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+		ex.SetDescription("SCMWOF Patch is NULL!");
 		throw ex;
 	}
+	_pSyn_DutCtrl->FpLoadPatch(ScmWofPatchInfo._pArrayBuf, ScmWofPatchInfo._uiArraySize);
+
+	//Fill the settings
+	Cmd3SweepTagInfo._pArrayBuf[0x0B] = WOF_GAIN_START;
+	Cmd3SweepTagInfo._pArrayBuf[0x0F] = WOF_GAIN_STEP;
+	Cmd3SweepTagInfo._pArrayBuf[0x13] = WOF_GAIN_STOP;
 
 	//Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.
 	results.m_nThreshStart		= Cmd3SweepTagInfo._pArrayBuf[0x1E];
@@ -323,6 +322,16 @@ bool Ts_SCM_WOF::ExecuteZone0SCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResult
 	results.m_nNumGains			= ((results.m_nGainStop - results.m_nGainStart) / results.m_nGainInc) + 1;
 	results.m_nResponseSize		= (results.m_nNumThresholds * results.m_nNumGains) + 6;
 
+	//Run SCMWOF Patch
+	rc = _pSyn_DutCtrl->FpRunSCMWOFPlot(Cmd1ScmWofPlotInfo._pArrayBuf, Cmd1ScmWofPlotInfo._uiArraySize, Cmd2ScmWofBinInfo._pArrayBuf, Cmd2ScmWofBinInfo._uiArraySize,
+		Cmd3SweepTagInfo._pArrayBuf, Cmd3SweepTagInfo._uiArraySize, pResponseBuf, results.m_nResponseSize);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("GetZ0SCMWofData() Failed");
+		throw ex;
+	}
+
 	//Clear registers.
 	_pSyn_DutCtrl->FpUnloadPatch();
 	_pSyn_DutCtrl->FpReset();
@@ -333,16 +342,6 @@ bool Ts_SCM_WOF::ExecuteZone1SCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResult
 {	
 	uint32_t rc(0);
 	Syn_Exception ex(0);
-
-	Syn_PatchInfo ScmWofPatchInfo;	
-	_pSyn_Dut->FindPatch("ScmWofPatch", ScmWofPatchInfo);
-	if (NULL == ScmWofPatchInfo._pArrayBuf)
-	{
-		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-		ex.SetDescription("SCMWOF Patch is NULL!");
-		throw ex;
-	}
-	_pSyn_DutCtrl->FpLoadPatch(ScmWofPatchInfo._pArrayBuf, ScmWofPatchInfo._uiArraySize);
 
 	Syn_PatchInfo Cmd1ScmWofPlotInfo, Cmd2ScmWofBinInfo, Cmd4SweepTagInfo;//, WofCmd2Info;
 	_pSyn_Dut->FindPatch("Cmd1ScmWofPlot", Cmd1ScmWofPlotInfo);
@@ -360,15 +359,21 @@ bool Ts_SCM_WOF::ExecuteZone1SCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResult
 	bool		bWithStim = info.m_bWithStimulus;
 	uint8_t*	pResponseBuf = bWithStim ? results.m_arDataWithStim : results.m_arDataWithoutStim;
 
-
-	rc = _pSyn_DutCtrl->FpRunSCMWOFPlot(Cmd1ScmWofPlotInfo._pArrayBuf, Cmd1ScmWofPlotInfo._uiArraySize, Cmd2ScmWofBinInfo._pArrayBuf, Cmd2ScmWofBinInfo._uiArraySize,
-		Cmd4SweepTagInfo._pArrayBuf, Cmd4SweepTagInfo._uiArraySize, pResponseBuf, 5000);
-	if (0 != rc)
+	//Load WOF Patch
+	Syn_PatchInfo ScmWofPatchInfo;	
+	_pSyn_Dut->FindPatch("ScmWofPatch", ScmWofPatchInfo);
+	if (NULL == ScmWofPatchInfo._pArrayBuf)
 	{
-		ex.SetError(rc);
-		ex.SetDescription("GetZ0SCMWofData() Failed");
+		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+		ex.SetDescription("SCMWOF Patch is NULL!");
 		throw ex;
 	}
+	_pSyn_DutCtrl->FpLoadPatch(ScmWofPatchInfo._pArrayBuf, ScmWofPatchInfo._uiArraySize);
+
+	//Fill the settings
+	Cmd4SweepTagInfo._pArrayBuf[0x09] = WOF_GAIN_START;
+	Cmd4SweepTagInfo._pArrayBuf[0x0D] = WOF_GAIN_STEP;
+	Cmd4SweepTagInfo._pArrayBuf[0x11] = WOF_GAIN_STOP;
 
 	//Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.
 	results.m_nThreshStart		= Cmd4SweepTagInfo._pArrayBuf[0x1F];
@@ -380,6 +385,16 @@ bool Ts_SCM_WOF::ExecuteZone1SCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResult
 	results.m_nGainStop			= Cmd4SweepTagInfo._pArrayBuf[0x11];
 	results.m_nNumGains			= ((results.m_nGainStop - results.m_nGainStart) / results.m_nGainInc) + 1;
 	results.m_nResponseSize		= (results.m_nNumThresholds * results.m_nNumGains) + WOF_REPONSE_HEAD;
+
+	//Run WOF Patch
+	rc = _pSyn_DutCtrl->FpRunSCMWOFPlot(Cmd1ScmWofPlotInfo._pArrayBuf, Cmd1ScmWofPlotInfo._uiArraySize, Cmd2ScmWofBinInfo._pArrayBuf, Cmd2ScmWofBinInfo._uiArraySize,
+		Cmd4SweepTagInfo._pArrayBuf, Cmd4SweepTagInfo._uiArraySize, pResponseBuf, results.m_nResponseSize);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("GetZ0SCMWofData() Failed");
+		throw ex;
+	}
 
 	//clear registers
 	_pSyn_DutCtrl->FpUnloadPatch();
