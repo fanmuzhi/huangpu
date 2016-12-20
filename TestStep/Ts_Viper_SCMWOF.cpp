@@ -131,7 +131,7 @@ void Ts_Viper_SCMWOF::Execute()
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo.m_bWithStimulus)  // WithStimulus
 	{
 		// run WOF test with stimulus at normal voltage
-		bool bWithStimulus = _pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo.m_bWithStimulus;
+		bool bWithStimulus = _pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo.m_bWithStimulus ? true : false;
 		if (this->ExecuteZone0SCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults,false))
 		{
 			this->SYN_SCMWofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults, false);
@@ -235,8 +235,7 @@ bool Ts_Viper_SCMWOF::ExecuteZone0SCMWofTest(SCM_WofTestInfo& info, SCM_WofTestR
 		return false;
 	}
 
-	bool		bWithStim = info.m_bWithStimulus;
-	int			timeout;
+	bool		bWithStim = info.m_bWithStimulus ? true : false;
 	uint8_t*	pResponseBuf = bWithStim ? results.m_arDataWithStim : results.m_arDataWithoutStim;
 	int			nVcc = (int)(info.m_nVCC * 1000);
 
@@ -391,5 +390,5 @@ bool Ts_Viper_SCMWOF::CalcScmWofTriggerIdx(int nNumThresholds, uint8_t* pTrigger
 			bFound = 1;
 		}
 	}
-	return bFound;
+	return bFound ? true : false;
 }

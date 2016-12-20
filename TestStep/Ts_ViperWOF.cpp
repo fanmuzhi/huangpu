@@ -220,7 +220,7 @@ bool Ts_ViperWOF::GetZ0WofData(WofTestInfo &wofInfo, WofTestResults &wofResults,
 	uint32_t rc(0);
 	Syn_Exception ex(0);
 
-	bool		bWithStim = wofInfo.m_bWithStimulus;
+	bool bWithStim = wofInfo.m_bWithStimulus ? true : false;
 	uint8_t*	pResponseBuf = bWithStim ? wofResults.m_arDataWithStim : wofResults.m_arDataWithoutStim;
 
 	//Load WOF Patch
@@ -388,5 +388,5 @@ bool Ts_ViperWOF::CalcWofTriggerIdx(int nNumThresholds, uint8_t* pTriggerBuf, in
 			bFound = 1;
 		}
 	}
-	return bFound;
+	return bFound ? true : false;
 }

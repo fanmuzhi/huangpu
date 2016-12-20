@@ -284,10 +284,10 @@ void Ts_WOFFU::CleanUp()
 
 bool Ts_WOFFU::GetZone0FingerUpData(WofTestInfo &wofInfo, WofTestResults &wofResults, Syn_PatchInfo &WofCmd1Patch, Syn_PatchInfo &WofCmd2Patch)
 {
-	bool rc(false);
+	uint32_t rc(0);
 	Syn_Exception ex(0);
 
-	bool		bWithStim = wofInfo.m_bWithStimulus;
+	bool bWithStim = wofInfo.m_bWithStimulus ? true : false;
 	uint8_t*	pResponseBuf = bWithStim ? wofResults.m_arDataWithStim : wofResults.m_arDataWithoutStim;
 
 	//Load WOF Patch
@@ -329,15 +329,16 @@ bool Ts_WOFFU::GetZone0FingerUpData(WofTestInfo &wofInfo, WofTestResults &wofRes
 	//Clear registers.
 	_pSyn_DutCtrl->FpUnloadPatch();
 	_pSyn_DutCtrl->FpReset();
+
 	return true;
 }
 
 bool Ts_WOFFU::GetZone1FingerUpData(WofTestInfo &wofInfo, WofTestResults &wofResults, Syn_PatchInfo &WofCmd3Patch, Syn_PatchInfo &WofCmd4Patch)
 {
-	bool rc(false);
+	uint32_t rc(0);
 	Syn_Exception ex(0);
 
-	bool		bWithStim = wofInfo.m_bWithStimulus;
+	bool bWithStim = wofInfo.m_bWithStimulus ? true : false;
 	uint8_t*	pResponseBuf = bWithStim ? wofResults.m_arDataWithStim : wofResults.m_arDataWithoutStim;
 
 	//Load WOF Patch
@@ -379,6 +380,7 @@ bool Ts_WOFFU::GetZone1FingerUpData(WofTestInfo &wofInfo, WofTestResults &wofRes
 	//Clear registers.
 	_pSyn_DutCtrl->FpUnloadPatch();
 	_pSyn_DutCtrl->FpReset();
+
 	return true;
 }
 

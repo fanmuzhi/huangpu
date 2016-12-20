@@ -292,7 +292,7 @@ bool Ts_WOFFD::GetZ0WofData(WofTestInfo &wofInfo, WofTestResults &wofResults, Sy
 	uint32_t rc(0);
 	Syn_Exception ex(0);
 
-	bool		bWithStim = wofInfo.m_bWithStimulus;
+	bool		bWithStim = wofInfo.m_bWithStimulus ? true : false;
 	uint8_t*	pResponseBuf = bWithStim ? wofResults.m_arDataWithStim : wofResults.m_arDataWithoutStim;
 
 	//Load WOF Patch
@@ -339,10 +339,10 @@ bool Ts_WOFFD::GetZ0WofData(WofTestInfo &wofInfo, WofTestResults &wofResults, Sy
 
 bool Ts_WOFFD::GetZ1WofData(WofTestInfo &wofInfo, WofTestResults &wofResults, Syn_PatchInfo &WofCmd3Patch, Syn_PatchInfo &WofCmd4Patch)
 {
-	bool rc(false);
+	uint32_t rc(0);
 	Syn_Exception ex(0);
 
-	bool		bWithStim = wofInfo.m_bWithStimulus;
+	bool		bWithStim = wofInfo.m_bWithStimulus ? true : false;
 	uint8_t*	pResponseBuf = bWithStim ? wofResults.m_arDataWithStim : wofResults.m_arDataWithoutStim;
 
 	//Load WOF Patch
@@ -384,6 +384,7 @@ bool Ts_WOFFD::GetZ1WofData(WofTestInfo &wofInfo, WofTestResults &wofResults, Sy
 	//Clear registers.
 	_pSyn_DutCtrl->FpUnloadPatch();
 	_pSyn_DutCtrl->FpReset();
+
 	return true;
 }
 

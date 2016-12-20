@@ -34,7 +34,7 @@ void Ts_HuaweiImageQualityTest::SetUp()
 	_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._highLimit = 100;
 	_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._lowLimit = 30;
 	_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._numSamples = 30;
-	_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._fCrop = 0.2;
+	_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._fCrop = 0.2f;
 	//_pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._fGrav = 0.2;
 	
 	ParseTestStepArgs(_strArgs, listOfArgValue);
@@ -189,7 +189,7 @@ void Ts_HuaweiImageQualityTest::ProcessData()
 	int bPass = 1;
 	int highLimit = _pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._highLimit;
 	int lowLimit = _pSyn_Dut->_pSyn_DutTestInfo->_huaweiIqTestInfo._lowLimit;
-	int snr = _pSyn_Dut->_pSyn_DutTestResult->_huaweiIqTestResults.snr;
+	float snr = _pSyn_Dut->_pSyn_DutTestResult->_huaweiIqTestResults.snr;
 	//int snrUG = _pSyn_Dut->_pSyn_DutTestResult->_huaweiIqTestResults.snrUG;
 	//int calchuaidian = _pSyn_Dut->_pSyn_DutTestResult->_huaweiIqTestResults.calchuaidian;
 
