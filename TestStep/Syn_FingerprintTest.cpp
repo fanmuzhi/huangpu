@@ -81,12 +81,16 @@ void Syn_FingerprintTest::CalculateLnaOffsetsBinarySearch(FPSFrame* pFrame, uint
 
 void Syn_FingerprintTest::ImageDecode(FPSFrame *pDecodeFrame, FPSFrame *pEncodeFrame, int nNumRow, int nNumCol, int nNumFrames)
 {
-	/*if (NULL == _pSyn_Module)
+	if (NULL == _pSyn_DutCtrl)
 	{
 		return;
 	}
 
-	return _pSyn_Module->ImageDecode(pDecodeFrame, pEncodeFrame, nNumRow, nNumCol, nNumFrames);*/
+	for (unsigned int i = 0; i < nNumFrames; i++)
+	{
+		_pSyn_DutCtrl->ImageDecode(pDecodeFrame[i].arr, pEncodeFrame[i].arr, nNumRow, nNumCol);
+	}
+
 }
 
 bool Syn_FingerprintTest::ParseTestStepArgs(const std::string &strArgsValue, std::vector<std::string> &olistOfArgValue, std::string strSymbol)

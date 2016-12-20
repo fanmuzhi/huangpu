@@ -8,8 +8,8 @@
 
 #include "syn_bridge.h"
 
-#define ROW_SIZE_MAX		160
-#define COLUMN_SIZE_MAX		160
+#define ROW_SIZE_MAX		201
+#define COLUMN_SIZE_MAX		200
 #define ALPHA_HEADER		8
 
 #define TIMEOUT_VALUE 2000
