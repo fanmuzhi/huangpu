@@ -33,22 +33,10 @@ void Ts_RAMTest::SetUp()
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_RAMTestInfo.m_bExecuted = false;
 
-	//load ImgAcqPatch
-	/*Syn_PatchInfo OpensShortsPatchInfo;
-	if (!_pSyn_Dut->FindPatch("OpensShortsPatch", OpensShortsPatchInfo))
-	{
-		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-		ex.SetDescription("OpensShortsPatch Patch is NULL!");
-		throw ex;
-		return;
-	}
-	_pSyn_DutCtrl->FpLoadPatch(OpensShortsPatchInfo._pArrayBuf, OpensShortsPatchInfo._uiArraySize);*/
 }
 
 void Ts_RAMTest::Execute()
 {
-	_pSyn_Dut->_pSyn_DutTestInfo->_RAMTestInfo.m_bExecuted = true;
-
 	this->LoadRAMPatch("CacheDataRam", _pSyn_Dut->_pSyn_DutTestResult->_RAMTestResults.m_pResponseCacheDataRam,14);
 
 	this->LoadRAMPatch("CacheTagRam", _pSyn_Dut->_pSyn_DutTestResult->_RAMTestResults.m_pResponseCacheTagRam, 14);
@@ -59,7 +47,7 @@ void Ts_RAMTest::Execute()
 
 	this->LoadRAMPatch("ScmAndMainRam", _pSyn_Dut->_pSyn_DutTestResult->_RAMTestResults.m_pResponseScmAndMainRam, 14);
 
-	//PowerOn(_pSyn_Dut->_uiDutpwrVdd_mV, _pSyn_Dut->_uiDutpwrVio_mV, _pSyn_Dut->_uiDutpwrVled_mV, _pSyn_Dut->_uiDutpwrVddh_mV, true);
+	_pSyn_Dut->_pSyn_DutTestInfo->_RAMTestInfo.m_bExecuted = true;
 }
 
 void Ts_RAMTest::ProcessData()
@@ -114,7 +102,7 @@ void Ts_RAMTest::ProcessData()
 
 void Ts_RAMTest::CleanUp()
 {
-	_pSyn_DutCtrl->FpUnloadPatch();
+	_pSyn_DutCtrl->FpReset();
 }
 
 void Ts_RAMTest::LoadRAMPatch(std::string sPatchName, uint8_t* pPatchResults, uint16_t nSize)
@@ -128,8 +116,6 @@ void Ts_RAMTest::LoadRAMPatch(std::string sPatchName, uint8_t* pPatchResults, ui
 		return;
 	}
 
-	_pSyn_DutCtrl->FpUnloadPatch();
-
 	Syn_PatchInfo RamPatchInfo;
 	if (!_pSyn_Dut->FindPatch(sPatchName, RamPatchInfo) || NULL == RamPatchInfo._pArrayBuf)
 	{
@@ -138,8 +124,6 @@ void Ts_RAMTest::LoadRAMPatch(std::string sPatchName, uint8_t* pPatchResults, ui
 		throw ex;
 		return;
 	}
-	//_pSyn_DutCtrl->FpLoadPatch(RamPatchInfo._pArrayBuf, RamPatchInfo._uiArraySize);
-	//_pSyn_DutCtrl->FpRead(1, 0xFF, pPatchResults, nSize);
-
-	//_pSyn_DutCtrl->FpLoadRamPatch(RamPatchInfo._pArrayBuf, RamPatchInfo._uiArraySize, pPatchResults, nSize);
+	_pSyn_DutCtrl->FpLoadPatch(RamPatchInfo._pArrayBuf, RamPatchInfo._uiArraySize, pPatchResults, nSize);
+	_pSyn_DutCtrl->FpUnloadPatch();
 }

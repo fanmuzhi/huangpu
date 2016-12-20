@@ -9,7 +9,7 @@
 #include "syn_bridge.h"
 
 #define ROW_SIZE_MAX		201
-#define COLUMN_SIZE_MAX		200
+#define COLUMN_SIZE_MAX		200	
 #define ALPHA_HEADER		8
 
 #define TIMEOUT_VALUE 2000
@@ -73,7 +73,7 @@ public:
 
 	virtual uint32_t FpGetStartInfo(uint8_t *arrStartInfo, uint32_t size, uint32_t timeout = TIMEOUT_VALUE);
 
-	virtual uint32_t FpLoadPatch(uint8_t* pPatch, uint32_t numBytes, uint32_t timeout = TIMEOUT_VALUE);
+	virtual uint32_t FpLoadPatch(uint8_t* pPatch, uint32_t numBytes, uint8_t* pDst = NULL, uint32_t numbytes  = NULL, uint32_t timeout = TIMEOUT_VALUE);
 
 	virtual uint32_t FpUnloadPatch(uint32_t patchindex = 0, uint32_t timeout = TIMEOUT_VALUE);
 
