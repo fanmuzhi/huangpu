@@ -44,7 +44,6 @@ typedef struct Alpha_Sensor_Status
 
 class SYNA_FPALPHAMODULE_API FpAlphaModule
 {
-
 public:
 
 	enum AlphaSensorType{ Viper2, Metallica };
@@ -55,6 +54,8 @@ public:
 	virtual ~FpAlphaModule();
 
 	void SetBridge(syn_bridge *ipSynBridge);
+
+	void GetBridge(syn_bridge * &opSynBridge);
 
 	virtual uint32_t PowerOn(uint32_t vcc, uint32_t spivcc, uint32_t timeout = TIMEOUT_VALUE);
 

@@ -114,7 +114,6 @@ void Ts_Calibrate::Execute()
 		return;
 	}
 	uint32_t rc(0);
-	//CheckDUTexists();
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted = true;
 	

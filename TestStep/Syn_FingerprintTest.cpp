@@ -14,6 +14,8 @@ Syn_FingerprintTest::Syn_FingerprintTest(string &strName, string &strArgs, FpAlp
 	}
 #endif
 
+	pDutCtrl->GetBridge(_pSynBridge);
+
 	//_starttime = time(NULL);
 	_starttime = GetTickCount64();
 }
