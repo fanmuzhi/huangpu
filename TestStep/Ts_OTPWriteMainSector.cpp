@@ -34,6 +34,7 @@ void Ts_OTPWriteMainSector::SetUp()
 void Ts_OTPWriteMainSector::Execute()
 {
 	Syn_Exception ex(0);
+	uint32_t rc(0);
 
 	//load OTPReadWritePatch
 	Syn_PatchInfo OTPRWPatchInfo;
@@ -76,7 +77,7 @@ void Ts_OTPWriteMainSector::Execute()
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted)
 	{
 		//If LNA values have not been stored in the OTP.
-		nLNA_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, arMS0, MS0_SIZE);
+		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, arMS0, MS0_SIZE, nLNA_count);
 		if (nLNA_count == 0)
 		{
 			BurnToOTP(EXT_TAG_LNA, &(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults).m_pPrintPatch[(_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nLnaIdx], _pSyn_Dut->_RowNumber);
@@ -86,7 +87,7 @@ void Ts_OTPWriteMainSector::Execute()
 		//If PGA values (one offset per pixel) have not been stored in the OTP.
 		if ((_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nCalType == 1)//kPgaCalTypeOneOffsetPerPixel
 		{
-			nPGA_OOPP_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPP, arMS0, MS0_SIZE);
+			rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPP, arMS0, MS0_SIZE, nPGA_OOPP_count);
 			if (nPGA_OOPP_count == 0)
 			{
 				BurnToOTP(EXT_TAG_PGA_OOPP, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_arPgaOffsets, NUM_PGA_OOPP_OTP_ROWS * (nNumCols - 8));
@@ -98,7 +99,7 @@ void Ts_OTPWriteMainSector::Execute()
 		//If PGA (one offset per row) values have not been stored in the OTP.
 		if ((_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nCalType == 0)//kPgaCalTypeOneOffsetPerRow
 		{
-			nPGA_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPR, arMS0, MS0_SIZE);
+			rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPR, arMS0, MS0_SIZE, nPGA_count);
 			if (nPGA_count == 0)
 			{
 				BurnToOTP(EXT_TAG_PGA_OOPR, &(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults).m_pPrintPatch[(_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nPgaIdx], _pSyn_Dut->_RowNumber);
@@ -110,7 +111,7 @@ void Ts_OTPWriteMainSector::Execute()
 	//If SNR values have not been stored in the OTP.
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.m_bExecuted)
 	{
-		nSNR_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SNR, arMS0, MS0_SIZE);
+		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SNR, arMS0, MS0_SIZE, nSNR_count);
 		if (nSNR_count == 0)
 		{
 			memset(arMS0, 0, sizeof(arMS0));
@@ -127,7 +128,7 @@ void Ts_OTPWriteMainSector::Execute()
 	//If flex ID values have not been stored in the OTP.
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_bExecuted)
 	{
-		nFlexId_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_FlexId, arMS0, MS0_SIZE);
+		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_FlexId, arMS0, MS0_SIZE, nFlexId_count);
 		if (nFlexId_count == 0)
 		{
 			memset(arMS0, 0, sizeof(arMS0));
@@ -141,7 +142,7 @@ void Ts_OTPWriteMainSector::Execute()
 	//If WOF(zone 0) values have not been stored in the OTP.
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_bExecutedWithStimulus)
 	{
-		nWofBot_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FD_ZONE0, arMS0, MS0_SIZE);
+		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FD_ZONE0, arMS0, MS0_SIZE, nWofBot_count);
 		if (nWofBot_count == 0)
 		{
 			memset(arMS0, 0, sizeof(arMS0));
@@ -156,7 +157,7 @@ void Ts_OTPWriteMainSector::Execute()
 	}
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_bExecutedWithStimulus)
 	{
-		nWofBot_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FU_ZONE0, arMS0, MS0_SIZE);
+		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FU_ZONE0, arMS0, MS0_SIZE, nWofBot_count);
 		if (nWofBot_count == 0)
 		{
 			memset(arMS0, 0, sizeof(arMS0));
@@ -172,7 +173,7 @@ void Ts_OTPWriteMainSector::Execute()
 	//If WOF(zone 1) values have not been stored in the OTP.
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_bExecutedWithStimulus)
 	{
-		nWofTop_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FD_ZONE1, arMS0, MS0_SIZE);
+		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FD_ZONE1, arMS0, MS0_SIZE, nWofTop_count);
 		if (nWofTop_count == 0)
 		{
 			memset(arMS0, 0, sizeof(arMS0));
@@ -187,7 +188,7 @@ void Ts_OTPWriteMainSector::Execute()
 	}
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_bExecutedWithStimulus)
 	{
-		nWofTop_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FU_ZONE1, arMS0, MS0_SIZE);
+		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FU_ZONE1, arMS0, MS0_SIZE, nWofTop_count);
 		if (nWofTop_count == 0)
 		{
 			memset(arMS0, 0, sizeof(arMS0));
@@ -204,7 +205,7 @@ void Ts_OTPWriteMainSector::Execute()
 	//SCM WOF(zone1 top) 
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_z1SCM_wofInfo.m_bExecutedWithStimulus)
 	{
-		nScmWofTop_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_ZONE1, arMS0, MS0_SIZE);
+		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_ZONE1, arMS0, MS0_SIZE, nScmWofTop_count);
 		if (nScmWofTop_count == 0)
 		{	
 			memset(arMS0, 0, sizeof(arMS0));
@@ -220,7 +221,7 @@ void Ts_OTPWriteMainSector::Execute()
 	//SCM WOF(zone0 bottom)
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo.m_bExecutedWithStimulus)
 	{
-		nScmWofBot_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_ZONE0, arMS0, MS0_SIZE);
+		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_ZONE0, arMS0, MS0_SIZE, nScmWofBot_count);
 		if (nScmWofBot_count == 0)
 		{	
 			memset(arMS0, 0, sizeof(arMS0));
@@ -236,7 +237,7 @@ void Ts_OTPWriteMainSector::Execute()
 	//If temperature ADC values have not been stored in the OTP.
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_ReadDutAdcInfo.m_bExecuted)
 	{
-		nDutTempAdc_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_DutTempAdc, arMS0, MS0_SIZE);
+		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_DutTempAdc, arMS0, MS0_SIZE, nDutTempAdc_count);
 		if (nDutTempAdc_count == 0)
 		{
 			memset(arMS0, 0, sizeof(arMS0));
@@ -250,7 +251,7 @@ void Ts_OTPWriteMainSector::Execute()
 	//projID
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nProductId != 0)
 	{
-		nProductId_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PRODUCT_ID, arMS0, MS0_SIZE);
+		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PRODUCT_ID, arMS0, MS0_SIZE, nProductId_count);
 		if (nProductId_count == 0)
 		{
 			memset(arMS0, 0, sizeof(arMS0));
@@ -261,7 +262,7 @@ void Ts_OTPWriteMainSector::Execute()
 	}
 
 	//LNA_PGA_GAINS
-	nLNA_PGA_GAINS_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA_PGA_GAINS, arMS0, MS0_SIZE);
+	rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA_PGA_GAINS, arMS0, MS0_SIZE, nLNA_PGA_GAINS_count);
 	if (nLNA_PGA_GAINS_count == 0&&0!=_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_bUseConfigGains)
 	{
 		/*uint8_t LnaGainValue(0), PgaGainValue(0);
@@ -303,7 +304,7 @@ void Ts_OTPWriteMainSector::Execute()
 	//PART_NUMBERS
 	if (GetMtAndConfigPartNumbers(&partNumbers))
 	{
-		nPartNumberId_count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PART_NUMBERS, arMS0, MS0_SIZE);
+		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PART_NUMBERS, arMS0, MS0_SIZE, nPartNumberId_count);
 		if (nPartNumberId_count == 0)
 		{
 			BurnToOTP(EXT_TAG_PART_NUMBERS, (uint8_t*)&partNumbers, sizeof(partNumbers));
@@ -345,6 +346,7 @@ void Ts_OTPWriteMainSector::Execute()
 void Ts_OTPWriteMainSector::ProcessData()
 {
 	Syn_Exception ex(0);
+	uint32_t rc(0);
 
 	int count = 0;
 	int result = 1;		//0 for match
@@ -352,7 +354,7 @@ void Ts_OTPWriteMainSector::ProcessData()
 	uint8_t pDst[MS0_SIZE];
 
 	//check projID match
-	count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PRODUCT_ID, pDst, MS0_SIZE);
+	rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PRODUCT_ID, pDst, MS0_SIZE, count);
 	if (count > 0)
 	{
 		//result = memcmp(&pDst[4], &_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nProductId, 4);
@@ -368,7 +370,7 @@ void Ts_OTPWriteMainSector::ProcessData()
 	}
 
 	//check LNA match
-	count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, pDst, MS0_SIZE);
+	rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, pDst, MS0_SIZE, count);
 	if (count > 0)
 	{
 		if (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted)
@@ -386,7 +388,7 @@ void Ts_OTPWriteMainSector::ProcessData()
 	}
 
 	//check PGA OOPP match
-	count = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPP, pDst, MS0_SIZE);
+	rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPP, pDst, MS0_SIZE, count);
 	if (count > 0)
 	{
 		if (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted)

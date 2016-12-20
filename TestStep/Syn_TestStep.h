@@ -49,7 +49,6 @@ protected:
 	string _strArgs;
 
 	FpAlphaModule	*_pSyn_DutCtrl;
-	//syn_bridge		*_pSynBridge;
 	
 	Syn_Dut *_pSyn_Dut;
 };

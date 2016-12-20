@@ -31,7 +31,6 @@ void Ts_PixelPatchTest::SetUp()
 
 	//parse args
 	std::vector<std::string> listOfArgValue;
-	_pSyn_Dut->_pSyn_DutTestInfo->_pixelPatchInfo.m_bExecuted = false;
 	_pSyn_Dut->_pSyn_DutTestInfo->_pixelPatchInfo.m_nNumResBytes = 3000;
 	_pSyn_Dut->_pSyn_DutTestInfo->_pixelPatchInfo.m_nDelay_ms = 500;
 	
@@ -48,8 +47,13 @@ void Ts_PixelPatchTest::SetUp()
 	if (0 != listOfArgValue[1].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_pixelPatchInfo.m_nDelay_ms = atoi(listOfArgValue[1].c_str());
 
-	//
-	//_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sPixPatchFail);
+	_pSyn_Dut->_pSyn_DutTestInfo->_pixelPatchInfo.m_bExecuted = false;
+}
+
+void Ts_PixelPatchTest::Execute()
+{
+	uint32_t rc(0);
+	Syn_Exception ex(0);
 
 	//load PixelPatch
 	Syn_PatchInfo PixelPatchInfo;
@@ -61,22 +65,26 @@ void Ts_PixelPatchTest::SetUp()
 		return;
 	}
 	_pSyn_DutCtrl->FpLoadPatch(PixelPatchInfo._pArrayBuf, PixelPatchInfo._uiArraySize);
-	//::Sleep(1000);
-}
-
-void Ts_PixelPatchTest::Execute()
-{
-	_pSyn_Dut->_pSyn_DutTestInfo->_pixelPatchInfo.m_bExecuted = true;
 	
 	//Get the response.
-	_pSyn_DutCtrl->FpRunPatchTest(_pSyn_Dut->_pSyn_DutTestResult->_pixelPatchResults.m_pResponse, _pSyn_Dut->_pSyn_DutTestInfo->_pixelPatchInfo.m_nNumResBytes);
+	rc = _pSyn_DutCtrl->FpRunPatchTest(_pSyn_Dut->_pSyn_DutTestResult->_pixelPatchResults.m_pResponse, _pSyn_Dut->_pSyn_DutTestInfo->_pixelPatchInfo.m_nNumResBytes);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Run OpenShorts Patch Test Failed");
+		return;
+		throw ex;
+	}
 
+	_pSyn_DutCtrl->FpUnloadPatch();
+
+	_pSyn_Dut->_pSyn_DutTestInfo->_pixelPatchInfo.m_bExecuted = true;
 }
 
 void Ts_PixelPatchTest::ProcessData()
 {
 	_pSyn_Dut->_pSyn_DutTestResult->_pixelPatchResults.m_bPass = 0;
-	if (_pSyn_Dut->_pSyn_DutTestResult->_pixelPatchResults.m_pResponse[4] & 0x01)
+	if (_pSyn_Dut->_pSyn_DutTestResult->_pixelPatchResults.m_pResponse[2] & 0x01)
 		_pSyn_Dut->_pSyn_DutTestResult->_pixelPatchResults.m_bPass = 1;
 	else
 		_pSyn_Dut->_pSyn_DutTestResult->_pixelPatchResults.m_bPass = 0;
@@ -89,7 +97,6 @@ void Ts_PixelPatchTest::ProcessData()
 	else
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("PixelPatchTest", "Pass"));
-		//_pSyn_Dut->_pSyn_DutTestResult->_binCodes.pop_back();
 	}
 
 	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_pixelPatchResults.m_elapsedtime);
@@ -97,6 +104,5 @@ void Ts_PixelPatchTest::ProcessData()
 
 void Ts_PixelPatchTest::CleanUp()
 {
-	//Reset as work around for bug in Pixel Patch.
-	_pSyn_DutCtrl->FpUnloadPatch();
+	_pSyn_DutCtrl->FpReset();
 }

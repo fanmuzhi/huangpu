@@ -1,5 +1,7 @@
 #include "Ts_WOFFU.h"
 
+#define WOF_REPONSE_HEAD 4
+
 Ts_WOFFU::Ts_WOFFU(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
 {
@@ -133,6 +135,20 @@ void Ts_WOFFU::SetUp()
 		_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_FingerMode = stoi(listOfArgValue[12]);
 		_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_FingerMode = stoi(listOfArgValue[12]);
 	}
+
+	bool rc(false);
+	// WofPatch is not empty, and either/both Zone0 or Zone1 are used.
+	Syn_PatchInfo WofPatchInfo;
+	rc = _pSyn_Dut->FindPatch("WofPatch", WofPatchInfo);
+	if (!rc || NULL == WofPatchInfo._pArrayBuf)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+		ex.SetDescription("WOF Patch is NULL!");
+		throw ex;
+		return;
+	}
+
+	_pSyn_DutCtrl->FpLoadPatch(WofPatchInfo._pArrayBuf, WofPatchInfo._uiArraySize);
 }
 
 void Ts_WOFFU::Execute()
@@ -281,58 +297,30 @@ void Ts_WOFFU::CleanUp()
 bool Ts_WOFFU::GetZone0FingerUpData(WofTestInfo &wofInfo, WofTestResults &wofResults, Syn_PatchInfo &WofCmd1Patch, Syn_PatchInfo &WofCmd2Patch)
 {
 	bool rc(false);
+	Syn_Exception ex(0);
 
-	//bool		bWithStim = wofInfo.m_bWithStimulus;
-	//uint8_t*	pResponseBuf = bWithStim ? wofResults.m_arDataWithStim : wofResults.m_arDataWithoutStim;
+	bool		bWithStim = wofInfo.m_bWithStimulus;
+	uint8_t*	pResponseBuf = bWithStim ? wofResults.m_arDataWithStim : wofResults.m_arDataWithoutStim;
 
-	//Syn_PatchInfo WofPatchInfo;
-	//rc = _pSyn_Dut->FindPatch("WofPatch", WofPatchInfo);
-	//if (NULL == WofPatchInfo._pArrayBuf || NULL == WofCmd1Patch._pArrayBuf || NULL == WofCmd2Patch._pArrayBuf)
-	//{
-	//	return false;
-	//}
+	rc = _pSyn_DutCtrl->FpRunWOFPlot(WofCmd1Patch._pArrayBuf, WofCmd1Patch._uiArraySize, WofCmd2Patch._pArrayBuf, WofCmd2Patch._uiArraySize, pResponseBuf, 5000);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("GetZ0FingerUpData() Failed");
+		throw ex;
+	}
 
-	////Load the patch, execute and wait for cmd1 to complete.
-	//_pSyn_DutCtrl->FpLoadPatch(WofPatchInfo._pArrayBuf, WofPatchInfo._uiArraySize);
-
-	//_pSyn_DutCtrl->FpWrite(1, WofCmd1Patch._pArrayBuf[0], &WofCmd1Patch._pArrayBuf[1], WofCmd1Patch._uiArraySize - 1);
-	//_pSyn_DutCtrl->FpWaitForCMDComplete();
-	//_pSyn_DutCtrl->FpReadAndCheckStatus(0);
-
-	////Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.
-	//ModifySweepWofCmdData(WofCmd2Patch._pArrayBuf);
-	//wofResults.m_nThreshStart = WofCmd2Patch._pArrayBuf[0x1F];
-	//wofResults.m_nThreshInc = WofCmd2Patch._pArrayBuf[0x23];
-	//wofResults.m_nThreshStop = WofCmd2Patch._pArrayBuf[0x27];
-	//wofResults.m_nNumThresholds = ((wofResults.m_nThreshStop - wofResults.m_nThreshStart) / wofResults.m_nThreshInc) + 1;
-	//wofResults.m_nGainStart = WofCmd2Patch._pArrayBuf[0x0C];
-	//wofResults.m_nGainInc = WofCmd2Patch._pArrayBuf[0x10];
-	//wofResults.m_nGainStop = WofCmd2Patch._pArrayBuf[0x14];
-	//wofResults.m_nNumGains = ((wofResults.m_nGainStop - wofResults.m_nGainStart) / wofResults.m_nGainInc) + 1;
-	//wofResults.m_nResponseSize = (wofResults.m_nNumThresholds * wofResults.m_nNumGains) + 6;
-
-	////Execute and wait for sweep command to complete.
-	//_pSyn_DutCtrl->FpWrite(1, WofCmd2Patch._pArrayBuf[0], &WofCmd2Patch._pArrayBuf[1], WofCmd2Patch._uiArraySize - 1);
-	//_pSyn_DutCtrl->FpWaitForCMDComplete();
-	//_pSyn_DutCtrl->FpReadAndCheckStatus(0);
-
-	////Send execute command and wait for response.
-	//int timeout = 100;
-	//do
-	//{
-	//	_pSyn_DutCtrl->FpWrite(1, 0xF9, (uint8_t*)0, 0);
-	//	::Sleep(20);
-	//	_pSyn_DutCtrl->FpRead(1, 0xFF, pResponseBuf, wofResults.m_nResponseSize);
-	//	timeout--;
-	//} while (timeout && (!((pResponseBuf[0] == 0x00) && (pResponseBuf[1] == 0x00))));
-
-	//if (timeout == 0)
-	//{
-	//	Syn_Exception ex(0);
-	//	ex.SetDescription("WOF: Status never complete.");
-	//	throw(ex);
-	//	return false;
-	//}
+	//Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.
+	ModifySweepWofCmdData(WofCmd2Patch._pArrayBuf);
+	wofResults.m_nThreshStart = WofCmd2Patch._pArrayBuf[0x1F];
+	wofResults.m_nThreshInc = WofCmd2Patch._pArrayBuf[0x23];
+	wofResults.m_nThreshStop = WofCmd2Patch._pArrayBuf[0x27];
+	wofResults.m_nNumThresholds = ((wofResults.m_nThreshStop - wofResults.m_nThreshStart) / wofResults.m_nThreshInc) + 1;
+	wofResults.m_nGainStart = WofCmd2Patch._pArrayBuf[0x0C];
+	wofResults.m_nGainInc = WofCmd2Patch._pArrayBuf[0x10];
+	wofResults.m_nGainStop = WofCmd2Patch._pArrayBuf[0x14];
+	wofResults.m_nNumGains = ((wofResults.m_nGainStop - wofResults.m_nGainStart) / wofResults.m_nGainInc) + 1;
+	wofResults.m_nResponseSize = (wofResults.m_nNumThresholds * wofResults.m_nNumGains) + WOF_REPONSE_HEAD;
 
 	//Clear registers.
 	return true;
@@ -341,61 +329,30 @@ bool Ts_WOFFU::GetZone0FingerUpData(WofTestInfo &wofInfo, WofTestResults &wofRes
 bool Ts_WOFFU::GetZone1FingerUpData(WofTestInfo &wofInfo, WofTestResults &wofResults, Syn_PatchInfo &WofCmd3Patch, Syn_PatchInfo &WofCmd4Patch)
 {
 	bool rc(false);
+	Syn_Exception ex(0);
 
-	//bool		bWithStim = wofInfo.m_bWithStimulus;
-	//uint8_t*	pResponseBuf = bWithStim ? wofResults.m_arDataWithStim : wofResults.m_arDataWithoutStim;
-	//int nVcc = (int)(wofInfo.m_nVCC * 1000);
+	bool		bWithStim = wofInfo.m_bWithStimulus;
+	uint8_t*	pResponseBuf = bWithStim ? wofResults.m_arDataWithStim : wofResults.m_arDataWithoutStim;
 
-	//Syn_PatchInfo WofPatchInfo;
-	//rc = _pSyn_Dut->FindPatch("WofPatch", WofPatchInfo);
-	////rc = _pSyn_Dut->FindPatch("WofCmd3", WofCmd3PathInfo);
-	////rc = _pSyn_Dut->FindPatch("WofCmd4", WofCmd4PathInfo);
-	//if (NULL == WofPatchInfo._pArrayBuf || NULL == WofCmd3Patch._pArrayBuf || NULL == WofCmd4Patch._pArrayBuf)
-	//{
-	//	return false;
-	//}
+	rc = _pSyn_DutCtrl->FpRunWOFPlot(WofCmd3Patch._pArrayBuf, WofCmd3Patch._uiArraySize, WofCmd4Patch._pArrayBuf, WofCmd4Patch._uiArraySize, pResponseBuf, 5000);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("GetZone1FingerUpData() Failed");
+		throw ex;
+	}
 
-	////Load the patch, execute and wait for cmd3 to complete.
-	//_pSyn_DutCtrl->FpLoadPatch(WofPatchInfo._pArrayBuf, WofPatchInfo._uiArraySize);
-
-	//_pSyn_DutCtrl->FpWrite(1, WofCmd3Patch._pArrayBuf[0], &WofCmd3Patch._pArrayBuf[1], WofCmd3Patch._uiArraySize - 1);
-	//_pSyn_DutCtrl->FpWaitForCMDComplete();
-	//_pSyn_DutCtrl->FpReadAndCheckStatus(0);
-
-	////Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.
-	//ModifySweepWofCmdData(WofCmd4Patch._pArrayBuf);
-	//wofResults.m_nThreshStart = WofCmd4Patch._pArrayBuf[0x20];
-	//wofResults.m_nThreshInc = WofCmd4Patch._pArrayBuf[0x24];
-	//wofResults.m_nThreshStop = WofCmd4Patch._pArrayBuf[0x28];
-	//wofResults.m_nNumThresholds = ((wofResults.m_nThreshStop - wofResults.m_nThreshStart) / wofResults.m_nThreshInc) + 1;
-	//wofResults.m_nGainStart = WofCmd4Patch._pArrayBuf[0x0A];
-	//wofResults.m_nGainInc = WofCmd4Patch._pArrayBuf[0x0E];
-	//wofResults.m_nGainStop = WofCmd4Patch._pArrayBuf[0x12];
-	//wofResults.m_nNumGains = ((wofResults.m_nGainStop - wofResults.m_nGainStart) / wofResults.m_nGainInc) + 1;
-	//wofResults.m_nResponseSize = (wofResults.m_nNumThresholds * wofResults.m_nNumGains) + 6;
-
-	////Execute and wait for sweep command to complete.
-	//_pSyn_DutCtrl->FpWrite(1, WofCmd4Patch._pArrayBuf[0], &WofCmd4Patch._pArrayBuf[1], WofCmd4Patch._uiArraySize - 1);
-	//_pSyn_DutCtrl->FpWaitForCMDComplete();
-	//_pSyn_DutCtrl->FpReadAndCheckStatus(0);
-
-	////Send execute command and wait for response.
-	//int timeout = 100;
-	//do
-	//{
-	//	_pSyn_DutCtrl->FpWrite(1, 0xF9, (uint8_t*)0, 0);
-	//	::Sleep(20);
-	//	_pSyn_DutCtrl->FpRead(1, 0xFF, pResponseBuf, wofResults.m_nResponseSize);
-	//	timeout--;
-	//} while (timeout && (!((pResponseBuf[0] == 0x00) && (pResponseBuf[1] == 0x00))));
-
-	//if (timeout == 0)
-	//{
-	//	Syn_Exception ex(0);
-	//	ex.SetDescription("WOF: Status never complete.");
-	//	throw(ex);
-	//	return false;
-	//}
+	//Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.
+	ModifySweepWofCmdData(WofCmd4Patch._pArrayBuf);
+	wofResults.m_nThreshStart = WofCmd4Patch._pArrayBuf[0x20];
+	wofResults.m_nThreshInc = WofCmd4Patch._pArrayBuf[0x24];
+	wofResults.m_nThreshStop = WofCmd4Patch._pArrayBuf[0x28];
+	wofResults.m_nNumThresholds = ((wofResults.m_nThreshStop - wofResults.m_nThreshStart) / wofResults.m_nThreshInc) + 1;
+	wofResults.m_nGainStart = WofCmd4Patch._pArrayBuf[0x0A];
+	wofResults.m_nGainInc = WofCmd4Patch._pArrayBuf[0x0E];
+	wofResults.m_nGainStop = WofCmd4Patch._pArrayBuf[0x12];
+	wofResults.m_nNumGains = ((wofResults.m_nGainStop - wofResults.m_nGainStart) / wofResults.m_nGainInc) + 1;
+	wofResults.m_nResponseSize = (wofResults.m_nNumThresholds * wofResults.m_nNumGains) + WOF_REPONSE_HEAD;
 
 	//Clear registers.
 	return true;
@@ -417,8 +374,8 @@ void Ts_WOFFU::SYN_WofTestExecute(const WofTestInfo &Info, WofTestResults &Resul
 	{
 		//value without stimulus.
 		int nTgrIdex_withoutFinger(0), nTgrIdex_withFinger(0);
-		bool rc1 = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithoutStim[6 + (nGainIdx * Results.m_nNumThresholds)], nTgrIdex_withoutFinger);
-		bool rc2 = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithStim[6 + (nGainIdx * Results.m_nNumThresholds)], nTgrIdex_withFinger);
+		bool rc1 = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithoutStim[WOF_REPONSE_HEAD + (nGainIdx * Results.m_nNumThresholds)], nTgrIdex_withoutFinger);
+		bool rc2 = CalcWofTriggerIdx(Results.m_nNumThresholds, &Results.m_arDataWithStim[WOF_REPONSE_HEAD + (nGainIdx * Results.m_nNumThresholds)], nTgrIdex_withFinger);
 		
 #ifdef _DEBUG
 		LOG(DEBUG) << "WOFFU Gain:" << dec << Results.m_nGainStart + (Results.m_nGainInc * nGainIdx) << ",NoFinger:" << dec << nTgrIdex_withoutFinger << ",WithFinger:" << dec << nTgrIdex_withFinger << ",Delta:" << nTgrIdex_withoutFinger - nTgrIdex_withFinger;
