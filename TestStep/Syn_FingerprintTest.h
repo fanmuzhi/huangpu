@@ -42,10 +42,6 @@ public:
 
 	void ComputeRunningTime(double &ioRunningTime);
 
-	void ModifySweepWofCmdData(uint8_t* pSweepCmd);
-
-	void ModifySweepSCMWofCmdData(uint8_t* pSweepCmd);
-
 	void RemoveBaseline(FPSFrame *pImgFingerArr, FPSFrame *pImgNoFingerArr, int nNumRow, int nNumCol);
 
 	int max_array(int a[], int num_elements);

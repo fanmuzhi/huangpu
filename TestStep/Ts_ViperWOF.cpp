@@ -1,6 +1,9 @@
 #include "Ts_ViperWOF.h"
 
 #define WOF_REPONSE_HEAD 4
+#define WOF_GAIN_START	 100
+#define WOF_GAIN_STEP	 100
+#define WOF_GAIN_STOP	 200
 
 Ts_ViperWOF::Ts_ViperWOF(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
@@ -102,20 +105,6 @@ void Ts_ViperWOF::SetUp()
 	{
 		_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_nVCC = stof(listOfArgValue[11]);
 	}
-
-	bool rc(false);
-	Syn_PatchInfo WofPatchInfo;
-	rc = _pSyn_Dut->FindPatch("WofPatch", WofPatchInfo);
-	if (!rc || NULL == WofPatchInfo._pArrayBuf)
-	{
-		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-		ex.SetDescription("WOF Patch is NULL!");
-		throw ex;
-		return;
-	}
-
-	_pSyn_DutCtrl->FpLoadPatch(WofPatchInfo._pArrayBuf, WofPatchInfo._uiArraySize);
-	
 }
 
 void Ts_ViperWOF::Execute()
@@ -224,23 +213,33 @@ void Ts_ViperWOF::ProcessData()
 
 void Ts_ViperWOF::CleanUp()
 {
-	_pSyn_DutCtrl->FpUnloadPatch();
 }
 
 bool Ts_ViperWOF::GetZ0WofData(WofTestInfo &wofInfo, WofTestResults &wofResults, bool UseConfigVoltage)
 {
-	bool rc(false);
+	uint32_t rc(0);
 	Syn_Exception ex(0);
 
 	bool		bWithStim = wofInfo.m_bWithStimulus;
 	uint8_t*	pResponseBuf = bWithStim ? wofResults.m_arDataWithStim : wofResults.m_arDataWithoutStim;
 
+	//Load WOF Patch
+	Syn_PatchInfo WofPatchInfo;
+	_pSyn_Dut->FindPatch("WofPatch", WofPatchInfo);
+	if (NULL == WofPatchInfo._pArrayBuf)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+		ex.SetDescription("WOF Patch is NULL!");
+		throw ex;
+	}
+	_pSyn_DutCtrl->FpLoadPatch(WofPatchInfo._pArrayBuf, WofPatchInfo._uiArraySize);
+
 	Syn_PatchInfo WofCmd1Patch, WofCmd2Patch;
-	rc = _pSyn_Dut->FindPatch("WofFdCmd1", WofCmd1Patch);
-	rc = _pSyn_Dut->FindPatch("WofFdCmd2", WofCmd2Patch);
+	_pSyn_Dut->FindPatch("WofFdCmd1", WofCmd1Patch);
+	_pSyn_Dut->FindPatch("WofFdCmd2", WofCmd2Patch);
 
+	//if need 3.6 volts
 	int nVcc = (int)(wofInfo.m_nVCC * 1000);
-
 	if (UseConfigVoltage)
 	{
 		_pSyn_DutCtrl->PowerOff();
@@ -248,24 +247,12 @@ bool Ts_ViperWOF::GetZ0WofData(WofTestInfo &wofInfo, WofTestResults &wofResults,
 		_pSyn_DutCtrl->FpTidleSet(0);
 	}
 
-
-	rc = _pSyn_DutCtrl->FpRunWOFPlot(WofCmd1Patch._pArrayBuf, WofCmd1Patch._uiArraySize, WofCmd2Patch._pArrayBuf, WofCmd2Patch._uiArraySize, pResponseBuf, 5000);
-	if (0 != rc)
-	{
-		ex.SetError(rc);
-		ex.SetDescription("GetZ0WofData() Failed");
-		throw ex;
-	}
-
-	if (UseConfigVoltage)
-	{
-		_pSyn_DutCtrl->PowerOff();
-		_pSyn_DutCtrl->PowerOn(_pSyn_Dut->_uiDutpwrVddh_mV,_pSyn_Dut->_uiDutpwrVdd_mV);
-		_pSyn_DutCtrl->FpTidleSet(0);
-	}
+	//Fill the settings
+	WofCmd2Patch._pArrayBuf[0x0C] = WOF_GAIN_START;
+	WofCmd2Patch._pArrayBuf[0x10] = WOF_GAIN_STEP;
+	WofCmd2Patch._pArrayBuf[0x14] = WOF_GAIN_STOP;
 
 	//Get start, stop and increment for sweep thresholds and gains. Calc size of sensor response.
-	ModifySweepWofCmdData(WofCmd2Patch._pArrayBuf);
 	wofResults.m_nThreshStart = WofCmd2Patch._pArrayBuf[0x1E];
 	wofResults.m_nThreshInc = WofCmd2Patch._pArrayBuf[0x22];
 	wofResults.m_nThreshStop = WofCmd2Patch._pArrayBuf[0x26];
@@ -276,8 +263,26 @@ bool Ts_ViperWOF::GetZ0WofData(WofTestInfo &wofInfo, WofTestResults &wofResults,
 	wofResults.m_nNumGains = ((wofResults.m_nGainStop - wofResults.m_nGainStart) / wofResults.m_nGainInc) + 1;
 	wofResults.m_nResponseSize = (wofResults.m_nNumThresholds * wofResults.m_nNumGains) + WOF_REPONSE_HEAD;
 
+	//Run WOF Patch
+	rc = _pSyn_DutCtrl->FpRunWOFPlot(WofCmd1Patch._pArrayBuf, WofCmd1Patch._uiArraySize, WofCmd2Patch._pArrayBuf, WofCmd2Patch._uiArraySize, pResponseBuf, wofResults.m_nResponseSize);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("GetZ0WofData() Failed");
+		throw ex;
+	}
+
+	//if need 3.6 volts, recover to 3.3V now
+	if (UseConfigVoltage)
+	{
+		_pSyn_DutCtrl->PowerOff();
+		_pSyn_DutCtrl->PowerOn(_pSyn_Dut->_uiDutpwrVddh_mV,_pSyn_Dut->_uiDutpwrVdd_mV);
+		_pSyn_DutCtrl->FpTidleSet(0);
+	}
 
 	//Clear registers.
+	_pSyn_DutCtrl->FpUnloadPatch();
+	_pSyn_DutCtrl->FpReset();
 	return true;
 }
 
