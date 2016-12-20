@@ -76,19 +76,22 @@ void Ts_Invalidate::CleanUp()
 void Ts_Invalidate::Invalidate(uint32_t tagId)
 {
 	uint8_t pDst[MS0_SIZE] = {0};
-	unsigned int count_threshold = 1;
 	int timeout(10);
 
-	while (timeout&&!(_pSyn_DutCtrl->FpOtpRomTagRead(tagId, pDst, MS0_SIZE) < count_threshold))
+	uint32_t rc(0);
+	int count_threshold = 0;
+	rc = _pSyn_DutCtrl->FpOtpRomTagRead(tagId, pDst, MS0_SIZE, count_threshold);
+	while (timeout && 0 == rc && count_threshold > 0)
 	{
 		char Argument_to_write[2052] = { 0 };
 		int	numBytes(0);
-		get_invalidate_arguments(tagId,&Argument_to_write[0], numBytes);
-
+		get_invalidate_arguments(tagId, &Argument_to_write[0], numBytes);
 		_pSyn_DutCtrl->FpOtpRomTagWrite((uint8_t*)Argument_to_write, numBytes);
-		
+
+		rc = _pSyn_DutCtrl->FpOtpRomTagRead(tagId, pDst, MS0_SIZE, count_threshold);
 		timeout--;
-	}
+	} 
+	
 }
 
 void Ts_Invalidate::get_invalidate_arguments(uint32_t tagId, char* outString, int &oNumBytes)

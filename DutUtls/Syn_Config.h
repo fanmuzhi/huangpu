@@ -20,8 +20,7 @@ struct Syn_TestStepInfo
 
 	string _strTestStepName;
 	string _strTestStepArgs;
-
-	uint8_t _uiScriptID;
+	//uint8_t _uiScriptID;
 };
 
 struct Syn_TestScript
@@ -93,23 +92,6 @@ struct Syn_SysConfig
 
 			_listTestSteps.push_back(CurrentSyn_TestStepInfo);
 		}
-		/*_listTestScript.clear();
-		for (size_t i = 1; i <= original._listTestScript.size(); i++)
-		{
-			Syn_TestScript CurrentTestScriptInfo;
-			CurrentTestScriptInfo._strScriptName = (original._listTestScript)[i - 1]._strScriptName;
-			for (size_t j = 1; j <= (original._listTestScript)[i - 1]._listOfTestStep.size(); j++)
-			{
-				Syn_TestStepInfo CurrentSyn_TestStepInfo;
-				CurrentSyn_TestStepInfo._strNodeName = ((original._listTestScript)[i - 1])._listOfTestStep[j - 1]._strNodeName;
-				CurrentSyn_TestStepInfo._strTestStepName = ((original._listTestScript)[i - 1])._listOfTestStep[j - 1]._strTestStepName;
-				CurrentSyn_TestStepInfo._strTestStepArgs = ((original._listTestScript)[i - 1])._listOfTestStep[j - 1]._strTestStepArgs;
-
-				CurrentTestScriptInfo._listOfTestStep.push_back(CurrentSyn_TestStepInfo);
-			}
-
-			_listTestScript.push_back(CurrentTestScriptInfo);
-		}*/
 
 		_listPatchInfo.clear();
 		for (size_t i = 1; i <= original._listPatchInfo.size(); i++)
@@ -161,19 +143,6 @@ struct Syn_SysConfig
 			}
 		}
 
-		/*for (size_t i = 1; i <= _listTestScript.size(); i++)
-		{
-			for (size_t j = 1; j <= (_listTestScript[i - 1]._listOfTestStep).size(); j++)
-			{
-				if (strTestStepName == (_listTestScript[i - 1])._listOfTestStep[j - 1]._strTestStepName)
-				{
-					ostrArgsValue = (_listTestScript[i - 1])._listOfTestStep[j - 1]._strTestStepArgs;
-					IsExists = true;
-					return IsExists;
-				}
-			}
-		}*/
-
 		return IsExists;
 	}
 
@@ -195,32 +164,8 @@ struct Syn_SysConfig
 	uint8_t			_arrUserSpecifiedBS0[BS0_SIZE];//BootSector0
 	uint8_t			_arrUserSpecifiedBS1[BS1_SIZE];//BootSector1
 
-	//vector<Syn_TestScript>		_listTestScript;//TestSeq
 	vector<Syn_TestStepInfo>	_listTestSteps;
 	
 	vector<Syn_PatchInfo>		_listPatchInfo;//All patch
 	
 };
-
-//struct SiteSettings
-//{
-//	uint32_t		_uiDutSerNum;
-//	AdcBaseLineInfo	_adcBaseLineInfo;//SYN_TestUtils
-//};
-//
-//struct Syn_LocalSettings 
-//{
-//	string					_strSysConfigFilePath;
-//
-//	vector<SiteSettings>	_listOfSiteSettings;
-//
-//	//?
-//	bool					m_bRunRepeatedly;
-//	int						m_nNumRepetitions;
-//	bool					m_bLGAMode;
-//	bool					m_bQAMode;
-//	bool					m_bVerboseMode;
-//	bool					m_bManualControl;
-//
-//	string					_strAutoController;
-//};

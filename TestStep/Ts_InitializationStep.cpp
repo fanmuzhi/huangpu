@@ -131,25 +131,6 @@ void Ts_InitializationStep::Execute()
 	}
 
 	uint32_t rc(0);
-
-	////GPIO init
-	//_pSyn_DutCtrl->GpioSetPinType(8, 0x10, 5);	//Pin 13 = input (possible button)	
-	//_pSyn_DutCtrl->GpioSetPinType(1, 0x10, 5);	//Pin 3 = input (DRDY). Needs xbar setup.
-	//_pSyn_DutCtrl->GpioSetPinType(6, 0x80, 6);	//Pin 14 = output (Osc)
-	//_pSyn_DutCtrl->GpioPinWrite(6, 0x80, 0x80);	//Set pin 14 high.
-	//_pSyn_DutCtrl->GpioSetPinType(7, 0x10, 6);	//Pin 16 = output (Ext reset)
-	//_pSyn_DutCtrl->GpioPinWrite(7, 0x10, 0x0);	//Set pin 16 high (reverse logic).
-
-	////MPC04 self test
-	//if (! this->CheckMPCVoltages())
-	//{
-	//	//MPC04 self test fail
-	//	//throw error	
-	//	Syn_Exception ex(Syn_ExceptionCode::Syn_ERR_INITIALIZATION_FAILED);
-	//	ex.SetDescription("TestStep InitializationStep:MPC04 self test fail!");
-	//	throw ex;
-	//}
-
 	//PowerOn
 	rc = _pSyn_DutCtrl->PowerOn(_pSyn_Dut->_uiDutpwrVddh_mV, _pSyn_Dut->_uiDutpwrVdd_mV);
 	if (0 != rc)
@@ -192,12 +173,12 @@ void Ts_InitializationStep::Execute()
 
 	memcpy(snArray, _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number, 6);
 	//if serial number doesn't exist
-	/*if (0 == memcmp(snArray, snInitArray, 6))
+	if (0 == memcmp(snArray, snInitArray, 6))
 	{
 		Create_SN(snInitArray, std::stoul(_pSyn_Dut->_DeviceSerialNumber), _pSyn_Dut->_iSiteNumber, 0);
 		SerialNumReverseBitFields(snInitArray, snArray);
 	}
-	memcpy(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number, snArray, 6);*/
+	memcpy(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number, snArray, 6);
 
 	//copy serial number to string
 	char SingleNumber[3] = {0};

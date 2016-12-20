@@ -175,14 +175,6 @@ uint32_t Syn_SysConfigOperation::GetSysConfig(Syn_SysConfig &oSyn_SysConfig)
 		}
 		else if (std::string("TestSeq") == strNodeName)
 		{
-			//TestScript
-			/*Syn_TestScript CurrentTestScript;
-			rapidxml::xml_attribute<> *attribute = node->first_attribute("Script");
-			if (NULL != attribute)
-			{
-			CurrentTestScript._strScriptName = attribute->value();
-			}*/
-
 			for (rapidxml::xml_node<char> *TestNode = node->first_node(); TestNode != NULL; TestNode = TestNode->next_sibling())
 			{
 				Syn_TestStepInfo CurrentSyn_TestStepInfo;

@@ -72,7 +72,7 @@ public:
 
 	virtual uint32_t FpUnloadPatch(uint32_t patchindex = 0, uint32_t timeout = TIMEOUT_VALUE);
 
-	virtual uint32_t FpOtpRomTagRead(uint32_t nExtTag, uint8_t* pDst, int numBytes, uint32_t timeout = TIMEOUT_VALUE);
+	virtual uint32_t FpOtpRomTagRead(uint32_t nExtTag, uint8_t* pDst, int numBytes, int &ntags, uint32_t timeout = TIMEOUT_VALUE);
 
 	virtual uint32_t FpOtpRomTagWrite(uint8_t* pDst, int numBytes, uint32_t timeout = TIMEOUT_VALUE);
 
