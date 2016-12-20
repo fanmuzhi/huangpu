@@ -153,23 +153,37 @@ void Ts_Calibrate::Execute()
 	uint32_t nLnaIdx = _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nLnaIdx;
 
 	int nTags(0);
-	rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, pLnaValues, MS0_SIZE, nTags);
-	if (nTags > 0)
-	{
-		CopyToPrintPatch(&pLnaValues[4], _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch, numRows, nLnaIdx);	//skip LNA first 4 bytes 00 00 00 07
-	}
-	else
-	{
-		//Calculate the LNA values and put them into the print patch.
-		//FPSFrame *pFrame = site.m_acquireFpsResults.m_arImagesWithoutStimulus;
-		FPSFrame *pLnaFrame = new FPSFrame();
-		CalculateLnaOffsetsBinarySearch(pLnaFrame, pLnaValues, numRows, numCols, _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults);
-		//CopyToPrintPatch(pLnaValues, &site.m_calibrationResults.m_pPrintPatch[4], GetSysConfig().GetNumRows(), site.m_calibrationInfo.m_nLnaIdx);
-		CopyToPrintPatch(pLnaValues, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch, numRows, nLnaIdx);
+	//rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, pLnaValues, MS0_SIZE, nTags);
+	//if (nTags > 0)
+	//{
+	//	_pSyn_DutCtrl->CopyToPrintPatch(&pLnaValues[4], _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch, numRows, nLnaIdx);	//skip LNA first 4 bytes 00 00 00 07
+	//}
+	//else
+	//{
+	//	//Calculate the LNA values and put them into the print patch.
+	//	//FPSFrame *pFrame = site.m_acquireFpsResults.m_arImagesWithoutStimulus;
+	//	FPSFrame *pLnaFrame = new FPSFrame();
+	//	this->CalculateLnaOffsetsBinarySearch(pLnaFrame, pLnaValues, numRows, numCols, _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults);
+	//	//CopyToPrintPatch(pLnaValues, &site.m_calibrationResults.m_pPrintPatch[4], GetSysConfig().GetNumRows(), site.m_calibrationInfo.m_nLnaIdx);
+	//	_pSyn_DutCtrl->CopyToPrintPatch(pLnaValues, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch, numRows, nLnaIdx);
 
-		delete pLnaFrame;
-		pLnaFrame = NULL;
-	}
+	//	delete pLnaFrame;
+	//	pLnaFrame = NULL;
+	//}
+
+	//Calculate the LNA values and put them into the print patch.
+	//FPSFrame *pFrame = site.m_acquireFpsResults.m_arImagesWithoutStimulus;
+	FPSFrame *pLnaFrame = new FPSFrame();
+	this->CalculateLnaOffsetsBinarySearch(pLnaFrame, pLnaValues, numRows, numCols, _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults);
+	//CopyToPrintPatch(pLnaValues, &site.m_calibrationResults.m_pPrintPatch[4], GetSysConfig().GetNumRows(), site.m_calibrationInfo.m_nLnaIdx);
+	_pSyn_DutCtrl->CopyToPrintPatch(pLnaValues, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch, numRows, nLnaIdx);
+
+	delete pLnaFrame;
+	pLnaFrame = NULL;
+
+
+
+
 
 	//If cal type is One Offset Per Pixel.
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nCalType == kPgaCalTypeOneOffsetPerPixel)
@@ -370,7 +384,7 @@ void Ts_Calibrate::CalculateLnaOffsetsBinarySearch(FPSFrame* pFrame, uint8_t* pL
 		for (int i = 0; i<nNumRows; i++)
 			arMid[i] = ((arHi[i] - arLo[i]) / 2) + arLo[i];
 
-		CopyToPrintPatch(arMid, CalResults.m_pPrintPatch, nNumRows, CalInfo.m_nLnaIdx);
+		_pSyn_DutCtrl->CopyToPrintPatch(arMid, CalResults.m_pPrintPatch, nNumRows, CalInfo.m_nLnaIdx);
 
 		GetFingerprintImage(CalResults, pFrame, nNumRows, nNumCols);
 
@@ -423,4 +437,176 @@ void Ts_Calibrate::GetRowAverages(FPSFrame* pFrame, int nColBegin, int nColEnd, 
 		temp = temp / (nColEnd - nColBegin + 1);
 		pAverages[nRow] = temp;
 	}
+}
+
+bool Ts_Calibrate::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRows, CalibrationInfo &calInfo, CalibrationResults &calResult)
+{
+	FPSFrame * arFrames = new FPSFrame[MAXFRAMES];
+	int nNumRows = numRows;
+	int nNumCols = numCols;
+	int nPgaIdx = calInfo.m_nPgaIdx;
+	FPSFrame *calFrameZeroOffsets = new FPSFrame[MAXFRAMES];
+	FPSFrame *calFrameNonZeroOffsets = new FPSFrame[MAXFRAMES];
+	float nConfigRatio = calInfo.m_nPgaOffsetRatio;
+	int nNumFrames = calInfo.m_nNumPgaSamples;
+	int16_t nTotal;
+	int arRowNums[NUM_PGA_OOPP_OTP_ROWS];
+	//int8_t* pTempOffsets = new int8_t[nNumRows * nNumCols];
+	std::vector<int8_t> vPixelError;
+	std::vector<int8_t> vPGAOffsets;
+	std::vector<int8_t> vPGAFineOffsets;
+	//int8_t* pTmp;
+	int8_t* pPrtFileOffsets;
+	int8_t* pOtpOffsets;
+	int32_t min_corr_limit = (int32_t)(-128 / nConfigRatio);
+	min_corr_limit = min_corr_limit < -128 ? -128 : min_corr_limit;
+	int32_t max_corr_limit = (int32_t)(127 / nConfigRatio);
+	max_corr_limit = max_corr_limit > 127 ? 127 : max_corr_limit;
+
+	//These are the rows we save to OTP for calculating the variance score.
+	for (int i = 0; i < NUM_PGA_OOPP_OTP_ROWS; i++)
+		arRowNums[i] = ((i + 1)*(nNumRows / 6)) - 1;
+
+	//Get user-specified number of images with the PGA offsets set to 0 (no offset), then
+	//calculate the average.
+	for (int nFrame = 0; nFrame<nNumFrames; nFrame++)
+		GetFingerprintImage(calResult, &arFrames[nFrame], nNumRows, nNumCols);
+	for (int nRow = 0; nRow<nNumRows; nRow++)
+	{
+		for (int nCol = 0; nCol<nNumCols; nCol++)
+		{
+			nTotal = 0;
+			for (int nFrame = 0; nFrame<nNumFrames; nFrame++)
+				nTotal += (int16_t)arFrames[nFrame].arr[nRow][nCol];
+			calFrameZeroOffsets->arr[nRow][nCol] = nTotal / nNumFrames;
+		}
+	}
+
+	//Calculate the PixelError.
+	for (int nRow = 0; nRow<nNumRows; nRow++)
+	{
+		for (int nCol = HEADER; nCol < nNumCols; nCol++)
+			//*pTmp++ = CalcPgaOffset(calFrameZeroOffsets->arr[nRow][nCol], nConfigRatio, nConfigRatio);
+			vPixelError.push_back(calFrameZeroOffsets->arr[nRow][nCol] - 128);
+	}
+
+	//Calculate the PGA offsets (no fine tuning).
+	for (int i = 0; i < nNumRows * (nNumCols - HEADER); i++)
+	{
+		float temp = (float)vPixelError[i] / nConfigRatio;
+		temp = temp > 127 ? 127 : temp;
+		temp = temp < -128 ? -128 : temp;
+		vPGAOffsets.push_back(temp);
+	}
+
+	//Put the PGA offsets into the print file. The ordering is a bit strange.
+	pPrtFileOffsets = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx];
+	for (int nBigCol = 0; nBigCol<(nNumCols - HEADER); nBigCol = nBigCol + 4)
+	{
+		for (int nRow = 0; nRow<nNumRows; nRow++)
+		{
+			for (int nColIdx = 0; nColIdx<4; nColIdx++)
+				*pPrtFileOffsets++ = vPGAOffsets[(nRow * (nNumCols - HEADER)) + (nBigCol + nColIdx)];
+		}
+	}
+
+	//Save selected rows of PGA offsets for OTP (used in variance score) and log.
+	pOtpOffsets = (int8_t*)calResult.m_arPgaOffsets;
+	for (int nSelRowIdx = 0; nSelRowIdx < NUM_PGA_OOPP_OTP_ROWS; nSelRowIdx++)
+	{
+		for (int nCol = 0; nCol < nNumCols - HEADER; nCol++)
+			*pOtpOffsets++ = vPGAOffsets[(arRowNums[nSelRowIdx] * (nNumCols - HEADER)) + nCol];
+	}
+
+	if (calInfo.m_bPgaFineTuning)
+	{
+		//Get user-specified number of images with new PGA offsets, then calculate the average.
+		for (int nFrame = 0; nFrame<nNumFrames; nFrame++)
+			GetFingerprintImage(calResult, &arFrames[nFrame], nNumRows, nNumCols);
+		for (int nRow = 0; nRow<nNumRows; nRow++)
+		{
+			for (int nCol = 0; nCol<nNumCols; nCol++)
+			{
+				nTotal = 0;
+				for (int nFrame = 0; nFrame<nNumFrames; nFrame++)
+					nTotal += (int16_t)arFrames[nFrame].arr[nRow][nCol];
+				calFrameNonZeroOffsets->arr[nRow][nCol] = nTotal / nNumFrames;
+			}
+		}
+
+		//Get per pixel ratio
+		int index = 0;
+		for (int nRow = 0; nRow<nNumRows; nRow++)
+		{
+			for (int nCol = HEADER; nCol < nNumCols; nCol++)
+			{
+				float new_ratio = nConfigRatio;
+				float delta = (float)(calFrameZeroOffsets->arr[nRow][nCol] - calFrameNonZeroOffsets->arr[nRow][nCol]);
+				if (vPGAOffsets[index] != 0)
+				{
+					new_ratio = delta / vPGAOffsets[index];
+				}
+				if (abs(delta) < 10)
+					new_ratio = nConfigRatio;
+				if (new_ratio <= 0)
+					new_ratio = nConfigRatio;
+				if ((((calFrameNonZeroOffsets->arr[nRow][nCol] - 128) * (calFrameZeroOffsets->arr[nRow][nCol] - 128)) > 0)
+					&& (vPGAOffsets[index] <= min_corr_limit || vPGAOffsets[index] >= max_corr_limit))
+				{
+					new_ratio = nConfigRatio;
+
+					//calculate new pGA offsets with Dane's formula
+					float temp = ((float)vPGAOffsets[index] - (delta / nConfigRatio)) + (float)vPGAOffsets[index];
+					temp = temp > 127 ? 127 : temp;
+					temp = temp < -128 ? -128 : temp;
+					vPGAFineOffsets.push_back(temp);
+				}
+				else
+				{
+					int temp = vPixelError[index] / new_ratio;
+					temp = temp > 127 ? 127 : temp;
+					temp = temp < -128 ? -128 : temp;
+					vPGAFineOffsets.push_back(temp);
+				}
+				index++;
+			}
+		}
+
+		//Put the PGA offsets into the print file. The ordering is a bit strange.
+		pPrtFileOffsets = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx];
+		for (int nBigCol = 0; nBigCol<(nNumCols - HEADER); nBigCol = nBigCol + 4)
+		{
+			for (int nRow = 0; nRow<nNumRows; nRow++)
+			{
+				for (int nColIdx = 0; nColIdx<4; nColIdx++)
+					*pPrtFileOffsets++ = vPGAFineOffsets[(nRow * (nNumCols - HEADER)) + (nBigCol + nColIdx)];
+			}
+		}
+
+		//Save selected rows of PGA offsets for OTP (used in variance score) and log.
+		pOtpOffsets = (int8_t*)calResult.m_arPgaOffsets;
+		for (int nSelRowIdx = 0; nSelRowIdx < NUM_PGA_OOPP_OTP_ROWS; nSelRowIdx++)
+		{
+			for (int nCol = 0; nCol < nNumCols - HEADER; nCol++)
+				*pOtpOffsets++ = vPGAFineOffsets[(arRowNums[nSelRowIdx] * (nNumCols - HEADER)) + nCol];
+		}
+	}
+
+	//Check if Stage 2 array is all the same.
+	bool bStage2AllEqual = true;
+	pPrtFileOffsets = (int8_t*)&calResult.m_pPrintPatch[nPgaIdx];
+	for (int i = 1; i<(nNumRows * (nNumCols - HEADER)); i++)
+	{
+		if (pPrtFileOffsets[i - 1] != pPrtFileOffsets[i])
+			bStage2AllEqual = false;
+	}
+
+	delete[] arFrames;
+	arFrames = NULL;
+	delete[] calFrameZeroOffsets;
+	calFrameZeroOffsets = NULL;
+	delete[] calFrameNonZeroOffsets;
+	calFrameNonZeroOffsets = NULL;
+
+	return !bStage2AllEqual;
 }

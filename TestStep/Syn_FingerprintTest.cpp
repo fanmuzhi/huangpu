@@ -25,29 +25,6 @@ Syn_FingerprintTest::~Syn_FingerprintTest()
 {
 }
 
-void Syn_FingerprintTest::CopyToPrintPatch(uint8_t* pSrc, uint8_t* pPrintPatch, int nNumBytes, int nPatchIdx)
-{
-	if (NULL == _pSyn_DutCtrl)
-	{
-		return;
-	}
-
-	_pSyn_DutCtrl->CopyToPrintPatch(pSrc, pPrintPatch, nNumBytes, nPatchIdx);
-}
-
-bool Syn_FingerprintTest::CalculatePgaOffsets_OOPP(uint16_t numCols, uint16_t numRows, CalibrationInfo &calInfo, CalibrationResults &calResult)
-{
-	/*if (NULL == _pSyn_Module)
-	{
-		return false;
-	}
-
-	return _pSyn_Module->CalculatePgaOffsets_OOPP(numCols, numRows, calInfo, calResult);*/
-
-	return true;
-}
-
-
 void Syn_FingerprintTest::GetFingerprintImage(CalibrationResults &pCalResults, FPSFrame *pFrame, int nNumRows, int nNumCols)
 {
 	if (NULL == _pSyn_DutCtrl)
@@ -61,17 +38,20 @@ void Syn_FingerprintTest::GetFingerprintImage(CalibrationResults &pCalResults, F
 	if (((nRows * nCols) % 64) == 0)
 		nRows++;
 
-	uint8_t *pImgBuff = new uint8_t[nCols * nRows];
+	//uint8_t *pImgBuff = new uint8_t[nCols * nRows];
+	uint8_t pImgBuff[11000] = {0};
 
-	_pSyn_DutCtrl->FpGetImage2(nRows, nCols, pImgBuff, pCalResults.m_nPrintPatchSize, pCalResults.m_pPrintPatch);
+	uint32_t rc = _pSyn_DutCtrl->FpGetImage2(nRows, nCols, pImgBuff, pCalResults.m_nPrintPatchSize, pCalResults.m_pPrintPatch);
 
 	for (int i = 0; i < (nRows * nCols); i++)
 	{
 		pFrame->arr[i / nCols][i%nCols] = pImgBuff[i];
 	}
 
-	delete[] pImgBuff;
-	pImgBuff = NULL;
+	/*delete[] pImgBuff;
+	pImgBuff = NULL;*/
+	cout << "!" << endl;
+	return;
 }
 
 void Syn_FingerprintTest::GetFingerprintImageForCurrentTest(CalibrationResults& pCalResults, FPSFrame* pFrame, int nNumRows, int nNumCols, uint32_t* pCurrentDrawVals, int nGain)

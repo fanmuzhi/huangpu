@@ -102,7 +102,7 @@ public:
 
 	virtual uint32_t FpUpdateADCOffsets(uint32_t arrAdcbaselines[4], uint32_t timeout = TIMEOUT_VALUE);
 
-	virtual void ImageDecode(uint8_t arrDecodeFrame[ROW_SIZE_MAX][COLUMN_SIZE_MAX], uint8_t arrEncodeFrame[ROW_SIZE_MAX][COLUMN_SIZE_MAX], int nNumRow, int nNumCol) = 0;
+	virtual void ImageDecode(uint8_t arrDecodeFrame[][COLUMN_SIZE_MAX], uint8_t arrEncodeFrame[][COLUMN_SIZE_MAX], int nNumRow, int nNumCol) = 0;
 
 	virtual void CopyToPrintPatch(uint8_t* pSrc, uint8_t* pPrintPatch, int nNumBytes, int nPatchIdx) = 0;
 
