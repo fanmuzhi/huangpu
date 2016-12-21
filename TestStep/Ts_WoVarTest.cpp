@@ -29,6 +29,7 @@ void Ts_WoVarTest::SetUp()
 
 	//parse args
 	std::vector<std::string> listOfArgValue;
+	_pSyn_Dut->_pSyn_DutTestInfo->_woVarInfo.m_bExecuted = false;
 	_pSyn_Dut->_pSyn_DutTestInfo->_woVarInfo.m_nNumResBytes = 1000;
 	_pSyn_Dut->_pSyn_DutTestInfo->_woVarInfo.m_nDelay_ms = 500;
 	ParseTestStepArgs(_strArgs, listOfArgValue);
@@ -44,7 +45,6 @@ void Ts_WoVarTest::SetUp()
 	if (0 != listOfArgValue[1].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_woVarInfo.m_nDelay_ms = atoi(listOfArgValue[1].c_str());
 
-	_pSyn_Dut->_pSyn_DutTestInfo->_woVarInfo.m_bExecuted = false;
 }
 
 void Ts_WoVarTest::Execute()
@@ -59,10 +59,15 @@ void Ts_WoVarTest::Execute()
 		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
 		ex.SetDescription("WovarPatchInfo Patch is NULL!");
 		throw ex;
-		return;
 	}
 
-	_pSyn_DutCtrl->FpLoadPatch(WovarPatchInfo._pArrayBuf, WovarPatchInfo._uiArraySize);
+	rc = _pSyn_DutCtrl->FpLoadPatch(WovarPatchInfo._pArrayBuf, WovarPatchInfo._uiArraySize);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Load WaVar Patch Failed");
+		throw ex;
+	}
 
 	//Get the response.
 	rc = _pSyn_DutCtrl->FpRunPatchTest(_pSyn_Dut->_pSyn_DutTestResult->_woVarResults.m_pResponse, _pSyn_Dut->_pSyn_DutTestInfo->_woVarInfo.m_nNumResBytes);
@@ -70,11 +75,16 @@ void Ts_WoVarTest::Execute()
 	{
 		ex.SetError(rc);
 		ex.SetDescription("Run Wowar Patch Test Failed");
-		return;
 		throw ex;
 	}
 
-	_pSyn_DutCtrl->FpUnloadPatch();
+	rc = _pSyn_DutCtrl->FpUnloadPatch();
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Load OpenShorts Patch Failed");
+		throw ex;
+	}
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_woVarInfo.m_bExecuted = true;
 }
@@ -100,5 +110,21 @@ void Ts_WoVarTest::ProcessData()
 
 void Ts_WoVarTest::CleanUp()
 {
-	_pSyn_DutCtrl->FpReset();
+	Syn_Exception ex(0);
+	uint32_t rc = _pSyn_DutCtrl->FpReset();
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Unload Patch Failed");
+		throw ex;
+	}
+
+	rc = _pSyn_DutCtrl->FpTidleSet(0);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpTidleSet command failed!");
+		throw ex;
+		return;
+	}
 }

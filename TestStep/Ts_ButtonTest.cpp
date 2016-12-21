@@ -92,7 +92,8 @@ void Ts_ButtonTest::Execute()
 		for (int i = 0; i<NUM_BTN_CHECKS; i++)
 		{
 			_pSynBridge->GPIO_CheckSwitch(nBtnState);
-			_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithStimResults.m_arCurrStates[i] = (*nBtnState & _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_pinMsk) ? 1 : 0;
+			//_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithStimResults.m_arCurrStates[i] = (*nBtnState & _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_pinMsk) ? 1 : 0;
+			_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithStimResults.m_arCurrStates[i] = *nBtnState;
 		}
 
 		SYN_ProcessBtnTestData(_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo, _pSyn_Dut->_pSyn_DutTestResult->_btnTestWithStimResults);
@@ -106,7 +107,8 @@ void Ts_ButtonTest::Execute()
 		for (int i = 0; i<NUM_BTN_CHECKS; i++)
 		{
 			_pSynBridge->GPIO_CheckSwitch(nBtnState);
-			_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithoutStimResults.m_arCurrStates[i] = (*nBtnState & _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo.m_pinMsk) ? 1 : 0;
+			//_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithoutStimResults.m_arCurrStates[i] = (*nBtnState & _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo.m_pinMsk) ? 1 : 0;
+			_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithoutStimResults.m_arCurrStates[i] = *nBtnState;
 		}
 
 		SYN_ProcessBtnTestData(_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo, _pSyn_Dut->_pSyn_DutTestResult->_btnTestWithoutStimResults);
@@ -119,6 +121,8 @@ void Ts_ButtonTest::ProcessData()
 {
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_bWithStimulus)  // WithStimulus
 	{
+		ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithStimResults.m_elapsedtime);
+
 		if (_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithStimResults.m_bPass)
 		{
 			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("ButtonTestWithStimulus", "Pass"));
@@ -131,6 +135,8 @@ void Ts_ButtonTest::ProcessData()
 	}
 	else //without Stimulus
 	{
+		ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithoutStimResults.m_elapsedtime);
+
 		if (_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithoutStimResults.m_bPass)
 		{
 			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("ButtonTestWithoutStimulus", "Pass"));
@@ -141,8 +147,6 @@ void Ts_ButtonTest::ProcessData()
 			_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sButtonFail);
 		}
 	}
-
-	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_DRdyResults.m_elapsedtime);
 }
 
 void Ts_ButtonTest::CleanUp()

@@ -28,6 +28,7 @@ void Ts_AFETest::SetUp()
 	}
 
 	//parse args
+	_pSyn_Dut->_pSyn_DutTestInfo->_AFETestInfo.m_bExecuted = false;
 	_pSyn_Dut->_pSyn_DutTestInfo->_AFETestInfo.m_nNumResBytes = 2056;
 	_pSyn_Dut->_pSyn_DutTestInfo->_AFETestInfo.m_nDelay_ms = 500;
 	
@@ -45,18 +46,6 @@ void Ts_AFETest::SetUp()
 	if (0 != listOfArgValue[1].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_AFETestInfo.m_nDelay_ms = atoi(listOfArgValue[1].c_str());
 
-	//load Patch
-	Syn_PatchInfo AfePatchInfo;
-	if (!_pSyn_Dut->FindPatch("AfePatch", AfePatchInfo) || NULL == AfePatchInfo._pArrayBuf)
-	{
-		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-		ex.SetDescription("AfePatch Patch is NULL!");
-		throw ex;
-		return;
-	}
-	_pSyn_DutCtrl->FpLoadPatch(AfePatchInfo._pArrayBuf, AfePatchInfo._uiArraySize);
-
-	_pSyn_Dut->_pSyn_DutTestInfo->_AFETestInfo.m_bExecuted = false;
 }
 
 void Ts_AFETest::Execute()
@@ -71,10 +60,15 @@ void Ts_AFETest::Execute()
 		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
 		ex.SetDescription("AfePatch Patch is NULL!");
 		throw ex;
-		return;
 	}
 
-	_pSyn_DutCtrl->FpLoadPatch(AfePatchInfo._pArrayBuf, AfePatchInfo._uiArraySize);
+	rc = _pSyn_DutCtrl->FpLoadPatch(AfePatchInfo._pArrayBuf, AfePatchInfo._uiArraySize);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Load AFE Patch Failed");
+		throw ex;
+	}
 
 	//Get the response.
 	rc = _pSyn_DutCtrl->FpRunPatchTest(_pSyn_Dut->_pSyn_DutTestResult->_AFETestResults.m_pResponse, _pSyn_Dut->_pSyn_DutTestInfo->_AFETestInfo.m_nNumResBytes);
@@ -82,11 +76,16 @@ void Ts_AFETest::Execute()
 	{
 		ex.SetError(rc);
 		ex.SetDescription("Run AFE Patch Test Failed");
-		return;
 		throw ex;
 	}
 
-	_pSyn_DutCtrl->FpUnloadPatch();
+	rc = _pSyn_DutCtrl->FpUnloadPatch();
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Load OpenShorts Patch Failed");
+		throw ex;
+	}
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_AFETestInfo.m_bExecuted = true;
 }
@@ -114,5 +113,21 @@ void Ts_AFETest::ProcessData()
 
 void Ts_AFETest::CleanUp()
 {
-	_pSyn_DutCtrl->FpReset();
+	Syn_Exception ex(0);
+	uint32_t rc = _pSyn_DutCtrl->FpReset();
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Unload Patch Failed");
+		throw ex;
+	}
+
+	rc = _pSyn_DutCtrl->FpTidleSet(0);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpTidleSet command failed!");
+		throw ex;
+		return;
+	}
 }

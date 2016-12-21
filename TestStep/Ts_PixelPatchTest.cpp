@@ -31,6 +31,7 @@ void Ts_PixelPatchTest::SetUp()
 
 	//parse args
 	std::vector<std::string> listOfArgValue;
+	_pSyn_Dut->_pSyn_DutTestInfo->_pixelPatchInfo.m_bExecuted = false;
 	_pSyn_Dut->_pSyn_DutTestInfo->_pixelPatchInfo.m_nNumResBytes = 3000;
 	_pSyn_Dut->_pSyn_DutTestInfo->_pixelPatchInfo.m_nDelay_ms = 500;
 	
@@ -47,7 +48,6 @@ void Ts_PixelPatchTest::SetUp()
 	if (0 != listOfArgValue[1].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_pixelPatchInfo.m_nDelay_ms = atoi(listOfArgValue[1].c_str());
 
-	_pSyn_Dut->_pSyn_DutTestInfo->_pixelPatchInfo.m_bExecuted = false;
 }
 
 void Ts_PixelPatchTest::Execute()
@@ -62,21 +62,34 @@ void Ts_PixelPatchTest::Execute()
 		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
 		ex.SetDescription("PixelPatchInfo Patch is NULL!");
 		throw ex;
-		return;
 	}
-	_pSyn_DutCtrl->FpLoadPatch(PixelPatchInfo._pArrayBuf, PixelPatchInfo._uiArraySize);
 	
+	rc = _pSyn_DutCtrl->FpLoadPatch(PixelPatchInfo._pArrayBuf, PixelPatchInfo._uiArraySize);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Load Pixel Patch Failed");
+		throw ex;
+	}
+	
+	//rc = _pSyn_DutCtrl->FpGetPatchInfo((uint8_t*)&_pSyn_Dut->_pSyn_DutTestInfo->_getPatchInfo, PATCHINFO_SIZE);
+
 	//Get the response.
 	rc = _pSyn_DutCtrl->FpRunPatchTest(_pSyn_Dut->_pSyn_DutTestResult->_pixelPatchResults.m_pResponse, _pSyn_Dut->_pSyn_DutTestInfo->_pixelPatchInfo.m_nNumResBytes);
 	if (0 != rc)
 	{
 		ex.SetError(rc);
 		ex.SetDescription("Run OpenShorts Patch Test Failed");
-		return;
 		throw ex;
 	}
 
-	_pSyn_DutCtrl->FpUnloadPatch();
+	rc = _pSyn_DutCtrl->FpUnloadPatch();
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Load OpenShorts Patch Failed");
+		throw ex;
+	}
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_pixelPatchInfo.m_bExecuted = true;
 }
@@ -104,5 +117,21 @@ void Ts_PixelPatchTest::ProcessData()
 
 void Ts_PixelPatchTest::CleanUp()
 {
-	_pSyn_DutCtrl->FpReset();
+	Syn_Exception ex(0);
+	uint32_t rc = _pSyn_DutCtrl->FpReset();
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Unload Patch Failed");
+		throw ex;
+	}
+
+	rc = _pSyn_DutCtrl->FpTidleSet(0);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpTidleSet command failed!");
+		throw ex;
+		return;
+	}
 }
