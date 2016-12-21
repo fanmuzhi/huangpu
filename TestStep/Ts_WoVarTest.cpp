@@ -29,8 +29,6 @@ void Ts_WoVarTest::SetUp()
 
 	//parse args
 	std::vector<std::string> listOfArgValue;
-
-	_pSyn_Dut->_pSyn_DutTestInfo->_woVarInfo.m_bExecuted = false;
 	_pSyn_Dut->_pSyn_DutTestInfo->_woVarInfo.m_nNumResBytes = 1000;
 	_pSyn_Dut->_pSyn_DutTestInfo->_woVarInfo.m_nDelay_ms = 500;
 	ParseTestStepArgs(_strArgs, listOfArgValue);
@@ -46,6 +44,14 @@ void Ts_WoVarTest::SetUp()
 	if (0 != listOfArgValue[1].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_woVarInfo.m_nDelay_ms = atoi(listOfArgValue[1].c_str());
 
+	_pSyn_Dut->_pSyn_DutTestInfo->_woVarInfo.m_bExecuted = false;
+}
+
+void Ts_WoVarTest::Execute()
+{
+	uint32_t rc(0);
+	Syn_Exception ex(0);
+
 	//load OTPReadWritePatch
 	Syn_PatchInfo WovarPatchInfo;
 	if (!_pSyn_Dut->FindPatch("WovarPatch", WovarPatchInfo) || NULL == WovarPatchInfo._pArrayBuf)
@@ -55,13 +61,20 @@ void Ts_WoVarTest::SetUp()
 		throw ex;
 		return;
 	}
-	_pSyn_DutCtrl->FpLoadPatch(WovarPatchInfo._pArrayBuf, WovarPatchInfo._uiArraySize);
-}
 
-void Ts_WoVarTest::Execute()
-{
+	_pSyn_DutCtrl->FpLoadPatch(WovarPatchInfo._pArrayBuf, WovarPatchInfo._uiArraySize);
+
 	//Get the response.
-	_pSyn_DutCtrl->FpRunPatchTest(_pSyn_Dut->_pSyn_DutTestResult->_woVarResults.m_pResponse, _pSyn_Dut->_pSyn_DutTestInfo->_woVarInfo.m_nNumResBytes);
+	rc = _pSyn_DutCtrl->FpRunPatchTest(_pSyn_Dut->_pSyn_DutTestResult->_woVarResults.m_pResponse, _pSyn_Dut->_pSyn_DutTestInfo->_woVarInfo.m_nNumResBytes);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Run Wowar Patch Test Failed");
+		return;
+		throw ex;
+	}
+
+	_pSyn_DutCtrl->FpUnloadPatch();
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_woVarInfo.m_bExecuted = true;
 }
@@ -69,7 +82,7 @@ void Ts_WoVarTest::Execute()
 void Ts_WoVarTest::ProcessData()
 {
 	_pSyn_Dut->_pSyn_DutTestResult->_woVarResults.m_bPass = 0;
-	if (_pSyn_Dut->_pSyn_DutTestResult->_woVarResults.m_pResponse[4] & 0x01)
+	if (_pSyn_Dut->_pSyn_DutTestResult->_woVarResults.m_pResponse[2] & 0x01)
 		_pSyn_Dut->_pSyn_DutTestResult->_woVarResults.m_bPass = 1;
 	else
 		_pSyn_Dut->_pSyn_DutTestResult->_woVarResults.m_bPass = 0;
@@ -87,5 +100,5 @@ void Ts_WoVarTest::ProcessData()
 
 void Ts_WoVarTest::CleanUp()
 {
-	_pSyn_DutCtrl->FpUnloadPatch();
+	_pSyn_DutCtrl->FpReset();
 }

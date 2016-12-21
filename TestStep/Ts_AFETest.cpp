@@ -28,7 +28,6 @@ void Ts_AFETest::SetUp()
 	}
 
 	//parse args
-	_pSyn_Dut->_pSyn_DutTestInfo->_AFETestInfo.m_bExecuted = false;
 	_pSyn_Dut->_pSyn_DutTestInfo->_AFETestInfo.m_nNumResBytes = 2056;
 	_pSyn_Dut->_pSyn_DutTestInfo->_AFETestInfo.m_nDelay_ms = 500;
 	
@@ -56,21 +55,47 @@ void Ts_AFETest::SetUp()
 		return;
 	}
 	_pSyn_DutCtrl->FpLoadPatch(AfePatchInfo._pArrayBuf, AfePatchInfo._uiArraySize);
+
+	_pSyn_Dut->_pSyn_DutTestInfo->_AFETestInfo.m_bExecuted = false;
 }
 
 void Ts_AFETest::Execute()
 {
-	_pSyn_Dut->_pSyn_DutTestInfo->_AFETestInfo.m_bExecuted = true;
+	uint32_t rc(0);
+	Syn_Exception ex(0);
+
+	//load Patch
+	Syn_PatchInfo AfePatchInfo;
+	if (!_pSyn_Dut->FindPatch("AfePatch", AfePatchInfo) || NULL == AfePatchInfo._pArrayBuf)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+		ex.SetDescription("AfePatch Patch is NULL!");
+		throw ex;
+		return;
+	}
+
+	_pSyn_DutCtrl->FpLoadPatch(AfePatchInfo._pArrayBuf, AfePatchInfo._uiArraySize);
 
 	//Get the response.
-	_pSyn_DutCtrl->FpRunPatchTest(_pSyn_Dut->_pSyn_DutTestResult->_AFETestResults.m_pResponse, _pSyn_Dut->_pSyn_DutTestInfo->_AFETestInfo.m_nNumResBytes);
+	rc = _pSyn_DutCtrl->FpRunPatchTest(_pSyn_Dut->_pSyn_DutTestResult->_AFETestResults.m_pResponse, _pSyn_Dut->_pSyn_DutTestInfo->_AFETestInfo.m_nNumResBytes);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Run AFE Patch Test Failed");
+		return;
+		throw ex;
+	}
+
+	_pSyn_DutCtrl->FpUnloadPatch();
+
+	_pSyn_Dut->_pSyn_DutTestInfo->_AFETestInfo.m_bExecuted = true;
 }
 
 void Ts_AFETest::ProcessData()
 {
 	_pSyn_Dut->_pSyn_DutTestResult->_AFETestResults.m_bPass = 0;
 
-	if (_pSyn_Dut->_pSyn_DutTestResult->_AFETestResults.m_pResponse[4] & 0x01)
+	if (_pSyn_Dut->_pSyn_DutTestResult->_AFETestResults.m_pResponse[2] & 0x01)
 		_pSyn_Dut->_pSyn_DutTestResult->_AFETestResults.m_bPass = 1;
 	else
 		_pSyn_Dut->_pSyn_DutTestResult->_AFETestResults.m_bPass = 0;
@@ -89,5 +114,5 @@ void Ts_AFETest::ProcessData()
 
 void Ts_AFETest::CleanUp()
 {
-	_pSyn_DutCtrl->FpUnloadPatch();
+	_pSyn_DutCtrl->FpReset();
 }

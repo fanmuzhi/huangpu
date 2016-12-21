@@ -84,12 +84,10 @@ void Ts_OpensShortsTest::ProcessData()
 {
 	_pSyn_Dut->_pSyn_DutTestResult->_opensShortsResults.m_bPass = 0;
 
-	if (_pSyn_Dut->_pSyn_DutTestResult->_opensShortsResults.m_pResponse[2] & 0x00000001)
+	if (_pSyn_Dut->_pSyn_DutTestResult->_opensShortsResults.m_pResponse[2] & 0x01)
 		_pSyn_Dut->_pSyn_DutTestResult->_opensShortsResults.m_bPass = 1;
-	//else
-	//	_pSyn_Dut->_pSyn_DutTestResult->_pixelPatchResults.m_bPass = 0;
-	if (_pSyn_Dut->_pSyn_DutTestResult->_opensShortsResults.m_pResponse[2] & 0x00000002)
-		_pSyn_Dut->_pSyn_DutTestResult->_opensShortsResults.m_bPass = 0;
+	else
+		_pSyn_Dut->_pSyn_DutTestResult->_pixelPatchResults.m_bPass = 0;
 
 	if (!(_pSyn_Dut->_pSyn_DutTestResult->_opensShortsResults.m_bPass))
 	{
