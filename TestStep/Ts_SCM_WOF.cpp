@@ -158,7 +158,7 @@ void Ts_SCM_WOF::Execute()
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_z1SCM_wofInfo.m_bWithStimulus)  // WithStimulus
 	{
 		// run WOF test with stimulus at normal voltage
-		bool bWithStimulus = _pSyn_Dut->_pSyn_DutTestInfo->_z1SCM_wofInfo.m_bWithStimulus;
+		bool bWithStimulus = _pSyn_Dut->_pSyn_DutTestInfo->_z1SCM_wofInfo.m_bWithStimulus ? true : false;
 		if (this->ExecuteZone1SCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_z1SCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z1SCM_wofResults))
 		{
 			this->SYN_SCMWofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_z1SCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z1SCM_wofResults);
@@ -190,7 +190,7 @@ void Ts_SCM_WOF::Execute()
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo.m_bWithStimulus)  // WithStimulus
 	{
 		// run WOF test with stimulus at normal voltage
-		bool bWithStimulus = _pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo.m_bWithStimulus;
+		bool bWithStimulus = _pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo.m_bWithStimulus ? true : false;
 		if (this->ExecuteZone0SCMWofTest(_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults))
 		{
 			this->SYN_SCMWofTestExecute(_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo, _pSyn_Dut->_pSyn_DutTestResult->_z0SCM_wofResults);
@@ -291,8 +291,7 @@ bool Ts_SCM_WOF::ExecuteZone0SCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResult
 		throw ex;
 	}
 
-	bool		bWithStim = info.m_bWithStimulus;
-	int			timeout;			
+	bool bWithStim = info.m_bWithStimulus ? true : false;			
 	uint8_t*	pResponseBuf = bWithStim ? results.m_arDataWithStim : results.m_arDataWithoutStim;
 
 	//Load SCMWOF Patch
@@ -356,7 +355,7 @@ bool Ts_SCM_WOF::ExecuteZone1SCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResult
 		throw ex;
 		return false;
 	}
-	bool		bWithStim = info.m_bWithStimulus;
+	bool		bWithStim = info.m_bWithStimulus ? true : false;
 	uint8_t*	pResponseBuf = bWithStim ? results.m_arDataWithStim : results.m_arDataWithoutStim;
 
 	//Load WOF Patch
