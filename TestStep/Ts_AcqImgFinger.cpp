@@ -148,4 +148,6 @@ void Ts_AcqImgFinger::ProcessData()
 void Ts_AcqImgFinger::CleanUp()
 {
 	_pSyn_DutCtrl->FpUnloadPatch();
+
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_acqImgFingerResult.m_elapsedtime);
 }

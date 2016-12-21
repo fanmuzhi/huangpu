@@ -1,5 +1,6 @@
 #pragma once
 #include "Syn_FingerprintTest.h"
+#include <math.h>
 
 class Ts_InitializationStep : public Syn_FingerprintTest
 {

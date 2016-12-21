@@ -454,14 +454,14 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	fprintf(pFile, "Sensor Serial Number,%s\n", sSensorSerialNumber.c_str());
 
 	//InitlizationStep
-	fprintf(pFile, "\nInitialization,%s,%d ms\n", DutResults->_initResults.m_bPass ? "Pass" : "Fail", 0);
+	fprintf(pFile, "\nInitialization,%s,%d ms\n", DutResults->_initResults.m_bPass ? "Pass" : "Fail", DutResults->_initResults.m_elapsedtime);
 
 	//Osc Trim
 	if (DutInfo->_OscTrimInfo.m_bExecuted)
 	{
 		if (DutResults->_OscTrimResults.m_bPass)
 		{
-			fprintf(pFile, "\nOsc Trim,Pass,%.0f ms,%s,%d", .0f, (DutInfo->_OscTrimInfo.m_bDefaultValueUsed) ? "Default Value Used" : "Generated", DutResults->_OscTrimResults.m_nOscTrim);
+			fprintf(pFile, "\nOsc Trim,Pass,%.0f ms,%s,,%.0f ms", .0f, (DutInfo->_OscTrimInfo.m_bDefaultValueUsed) ? "Default Value Used" : "Generated", DutResults->_OscTrimResults.m_nOscTrim);
 		}
 		else //Failed Osc Trim
 		{
@@ -910,7 +910,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	//Average No Finger & Average Finger
 	//int numFrames = 30;
 	//float temp = 0.0;
-	fprintf(pFile, "\nAverage No Finger\n");
+	fprintf(pFile, "\nAverage No Finger,%.0f ms \n", DutResults->_acqImgNoFingerResult.m_elapsedtime);
 	for (int i = 0; i< DutResults->_acqImgNoFingerResult.iRealRowNumber; i++)
 	{
 		for (int j = 0; j< DutResults->_acqImgNoFingerResult.iRealColumnNumber; j++)
@@ -920,7 +920,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 		fprintf(pFile, "\n");
 	}
 	//temp = 0.0;
-	fprintf(pFile, "\nNormalized Finger\n");
+	fprintf(pFile, "\nNormalized Finger,%.0f ms\n", DutResults->_acqImgFingerResult.m_elapsedtime);
 	for (int i = 0; i< DutResults->_acqImgFingerResult.iRealRowNumber; i++)
 	{
 		for (int j = 0; j< DutResults->_acqImgFingerResult.iRealColumnNumber; j++)

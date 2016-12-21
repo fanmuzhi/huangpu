@@ -46,6 +46,5 @@ public:
 
 protected:
 
-	DWORD _starttime, _finishtime;
-	//time_t _starttime, _finishtime;
+	ULONGLONG _startTime, _finishTime;
 };

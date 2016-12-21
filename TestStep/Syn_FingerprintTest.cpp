@@ -16,8 +16,7 @@ Syn_FingerprintTest::Syn_FingerprintTest(string &strName, string &strArgs, FpAlp
 
 	pDutCtrl->GetBridge(_pSynBridge);
 
-	//_starttime = time(NULL);
-	_starttime = GetTickCount64();
+	_startTime = GetTickCount64();
 }
 
 
@@ -120,11 +119,8 @@ bool Syn_FingerprintTest::ParseTestStepArgs(const std::string &strArgsValue, std
 
 void Syn_FingerprintTest::ComputeRunningTime(double &ioRunningTime)
 {
-	//_finishtime = time(NULL);
-	//ioRunningTime = difftime(_finishtime, _starttime)*1000;
-
-	_finishtime = GetTickCount64();
-	ioRunningTime = (double)(_finishtime - _starttime);
+	_finishTime = GetTickCount64();
+	ioRunningTime = (double)(_finishTime - _startTime);
 }
 
 int Syn_FingerprintTest::max_array(int a[], int num_elements)

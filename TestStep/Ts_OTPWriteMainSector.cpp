@@ -61,18 +61,6 @@ void Ts_OTPWriteMainSector::Execute()
 	int		nFlexId_count, nWofBot_count, nWofTop_count, nDutTempAdc_count, nPGA_OOPP_count, nScmWofTop_count, nScmWofBot_count, nProductId_count, nPartNumberId_count;
 	MtAndConfigPnInfo    partNumbers;
 
-	//nLNA_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nLNA_count;
-	//nPGA_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPGA_OOPR_count;
-	//nSNR_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nSNR_count;
-	//nFlexId_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nFlexId_count;
-	//nWofBot_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofBot_count;
-	//nWofTop_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nWofTop_count;
-	//nDutTempAdc_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nDutTempAdc_count;
-	//nPGA_OOPP_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPGA_OOPP_count;
-	//nScmWofBot_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nScmWofBot_count;
-	//nProductId_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nProductId_count;
-	//nPartNumberId_count = _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPartNumberId_count;
-
 	//Cablirate
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted)
 	{

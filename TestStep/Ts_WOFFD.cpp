@@ -231,7 +231,6 @@ void Ts_WOFFD::Execute()
 			_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofTestFail);
 		}
 
-		ComputeRunningTime(dCurrentElapsedTime);
 		_pSyn_Dut->_pSyn_DutTestResult->_z1FDWofResults.m_elapsedtime += dCurrentElapsedTime;
 	}
 }

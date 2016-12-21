@@ -68,6 +68,8 @@ public Q_SLOTS:
 
 	void ReceiveTestStep(unsigned int iSiteNumber, const QString strTestStepName, const QString strPassResults);
 
+	QString TransformSerialnumber(uint8_t *arrSerialnumber, uint32_t size);
+
 	void ReceiveTestResults(unsigned int iSiteNumber, const Syn_DutTestResult *pDutResult);
 
 	void DisplayImageInTime(unsigned int iSiteNumber, const Syn_DutTestResult *pDutResult);

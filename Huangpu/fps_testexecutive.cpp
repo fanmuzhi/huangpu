@@ -462,18 +462,29 @@ void FPS_TestExecutive::ReceiveTestStep(unsigned int iSiteNumber, const QString 
 	//SerialNumber
 	if (QString("InitializationStep") == strTestStepName)
 	{
-		Syn_DutTestResult *DutResult = NULL;
-		_ListOfSitePtr[iPos]->GetTestResult(DutResult);
-		if (NULL != DutResult)
+		Syn_DutTestInfo *pTestInfo = NULL;
+		_ListOfSitePtr[iPos]->GetTestInfo(pTestInfo);
+		if (NULL != pTestInfo)
 		{
-			QString qsSensorSerialNumber("");
-			qsSensorSerialNumber = QString::fromLatin1(DutResult->_versionResult.sSerialNumber, sizeof(DutResult->_versionResult.sSerialNumber));
-
-			QTableWidgetItem *itemSerialNumber = new QTableWidgetItem(qsSensorSerialNumber);
+			QString strSerialumber = TransformSerialnumber(pTestInfo->_getVerInfo.serial_number, 6);
+			QTableWidgetItem *itemSerialNumber = new QTableWidgetItem(strSerialumber);
 			itemSerialNumber->setTextAlignment(Qt::AlignCenter);
 			ui.TestTableWidget->setItem(1, iPos, itemSerialNumber);
 		}
 	}
+}
+
+QString FPS_TestExecutive::TransformSerialnumber(uint8_t *arrSerialnumber, uint32_t size)
+{
+	if (size < 6)
+		return "";
+
+	QString strSerialnumber("");
+
+	strSerialnumber = QString::number(arrSerialnumber[4], 16) + QString::number(arrSerialnumber[5], 16) + QString::number(arrSerialnumber[0], 16) + 
+						QString::number(arrSerialnumber[1], 16) + QString::number(arrSerialnumber[2], 16) + QString::number(arrSerialnumber[3], 16);
+
+	return strSerialnumber.toUpper();
 }
 
 void FPS_TestExecutive::ReceiveTestResults(unsigned int iSiteNumber,const Syn_DutTestResult *pDutResult)

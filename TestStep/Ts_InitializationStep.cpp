@@ -170,12 +170,19 @@ void Ts_InitializationStep::Execute()
 
 	//fill the gerVerInfo to DUT serial number
 	//fill other info
-
 	memcpy(snArray, _pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number, 6);
 	//if serial number doesn't exist
 	if (0 == memcmp(snArray, snInitArray, 6))
 	{
-		Create_SN(snInitArray, std::stoul(_pSyn_Dut->_DeviceSerialNumber), _pSyn_Dut->_iSiteNumber, 0);
+		uint32_t iDeviceSN = 0;
+		size_t snSize = _pSyn_Dut->_DeviceSerialNumber.size();
+		for (size_t t = 0; t < snSize; t++)
+		{
+			uint8_t tempSN = (_pSyn_Dut->_DeviceSerialNumber)[t] - '0';//char to int
+			iDeviceSN += tempSN * pow(10, snSize-t-1);
+		}
+
+		Create_SN(snInitArray, iDeviceSN, _pSyn_Dut->_iSiteNumber, 0);
 		SerialNumReverseBitFields(snInitArray, snArray);
 	}
 	memcpy(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo.serial_number, snArray, 6);
@@ -223,6 +230,7 @@ void Ts_InitializationStep::ProcessData()
 
 void Ts_InitializationStep::CleanUp()
 {
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_initResults.m_elapsedtime);
 }
 
 void Ts_InitializationStep::Create_SN(uint8_t* SN, uint32_t nDeviceSerNum, int nSiteNum, int nTestLocationId)

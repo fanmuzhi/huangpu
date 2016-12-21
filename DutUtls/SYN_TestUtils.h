@@ -367,6 +367,8 @@ typedef struct
 	uint8_t*	pModuleTestPatchPtr;
 	int			nModuleTestPatchSize;
 	int			bProductionMode;
+
+	double      m_elapsedtime;
 }InitializationResults;
 
 ///////////////////////////// ////////////////////////
@@ -834,6 +836,8 @@ typedef struct
 	FPSFrame	arr_ImageFPSFrame;
 	int iRealRowNumber;
 	int iRealColumnNumber;
+
+	double      m_elapsedtime;
 }AcqImgNoFingerResult;
 
 typedef struct
@@ -851,6 +855,8 @@ typedef struct
 	FPSFrame	arr_ImageFPSFrame;
 	int iRealRowNumber;
 	int iRealColumnNumber;
+
+	double      m_elapsedtime;
 }AcqImgFingerResult;
 
 ///////////////////////////// ////////////////////////

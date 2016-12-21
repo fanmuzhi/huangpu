@@ -153,36 +153,23 @@ void Ts_Calibrate::Execute()
 	uint32_t nLnaIdx = _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nLnaIdx;
 
 	int nTags(0);
-	//rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, pLnaValues, MS0_SIZE, nTags);
-	//if (nTags > 0)
-	//{
-	//	_pSyn_DutCtrl->CopyToPrintPatch(&pLnaValues[4], _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch, numRows, nLnaIdx);	//skip LNA first 4 bytes 00 00 00 07
-	//}
-	//else
-	//{
-	//	//Calculate the LNA values and put them into the print patch.
-	//	//FPSFrame *pFrame = site.m_acquireFpsResults.m_arImagesWithoutStimulus;
-	//	FPSFrame *pLnaFrame = new FPSFrame();
-	//	this->CalculateLnaOffsetsBinarySearch(pLnaFrame, pLnaValues, numRows, numCols, _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults);
-	//	//CopyToPrintPatch(pLnaValues, &site.m_calibrationResults.m_pPrintPatch[4], GetSysConfig().GetNumRows(), site.m_calibrationInfo.m_nLnaIdx);
-	//	_pSyn_DutCtrl->CopyToPrintPatch(pLnaValues, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch, numRows, nLnaIdx);
+	rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, pLnaValues, MS0_SIZE, nTags);
+	if (nTags > 0)
+	{
+		CopyToPrintPatch(&pLnaValues[4], _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch, numRows, nLnaIdx);	//skip LNA first 4 bytes 00 00 00 07
+	}
+	else
+	{
+		//Calculate the LNA values and put them into the print patch.
+		//FPSFrame *pFrame = site.m_acquireFpsResults.m_arImagesWithoutStimulus;
+		FPSFrame *pLnaFrame = new FPSFrame();
+		this->CalculateLnaOffsetsBinarySearch(pLnaFrame, pLnaValues, numRows, numCols, _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults);
+		//CopyToPrintPatch(pLnaValues, &site.m_calibrationResults.m_pPrintPatch[4], GetSysConfig().GetNumRows(), site.m_calibrationInfo.m_nLnaIdx);
+		CopyToPrintPatch(pLnaValues, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch, numRows, nLnaIdx);
 
-	//	delete pLnaFrame;
-	//	pLnaFrame = NULL;
-	//}
-
-	//Calculate the LNA values and put them into the print patch.
-	//FPSFrame *pFrame = site.m_acquireFpsResults.m_arImagesWithoutStimulus;
-	FPSFrame *pLnaFrame = new FPSFrame();
-	this->CalculateLnaOffsetsBinarySearch(pLnaFrame, pLnaValues, numRows, numCols, _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults);
-	//CopyToPrintPatch(pLnaValues, &site.m_calibrationResults.m_pPrintPatch[4], GetSysConfig().GetNumRows(), site.m_calibrationInfo.m_nLnaIdx);
-	CopyToPrintPatch(pLnaValues, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch, numRows, nLnaIdx);
-
-	delete pLnaFrame;
-	pLnaFrame = NULL;
-
-
-
+		delete pLnaFrame;
+		pLnaFrame = NULL;
+	}
 
 
 	//If cal type is One Offset Per Pixel.
@@ -240,8 +227,6 @@ void Ts_Calibrate::Execute()
 
 void Ts_Calibrate::ProcessData()
 {
-	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_elapsedtime);
-
 	if (_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_bPass)
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("Calibrate", "Pass"));
@@ -262,6 +247,8 @@ void Ts_Calibrate::ProcessData()
 void Ts_Calibrate::CleanUp()
 {
 	_pSyn_DutCtrl->FpUnloadPatch();
+
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_elapsedtime);
 }
 
 bool Ts_Calibrate::VerifyPixelRanges()
