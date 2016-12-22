@@ -7,6 +7,7 @@
 Syn_LocalSettingsDlg::Syn_LocalSettingsDlg(QWidget *parent)
 : QDialog(parent)
 , _pSynDeviceManager(NULL)
+, _typeChanged(false)
 {
 	ui = new Ui::Syn_LocalSettingsDlg();
 	ui->setupUi(this);
@@ -31,6 +32,7 @@ Syn_LocalSettingsDlg::Syn_LocalSettingsDlg(QWidget *parent)
 	QObject::connect(ui->SiteTableWidget, SIGNAL(cellClicked(int, int)), this, SLOT(SetLeds(int, int)));
 	QObject::connect(ui->OKPushButton, SIGNAL(clicked()), this, SLOT(ConfirmSite()));
 
+	QObject::connect(ui->DeviceTypeComboBox, SIGNAL(currentIndexChanged(int index)), this, SLOT(TypeChanged(int index)));
 
 	//load localsetting
 	Syn_LocalSettingConfig *pSyn_LocalSettingConfig = NULL;
@@ -444,4 +446,9 @@ int Syn_LocalSettingsDlg::GetSiteRowIndex()
 	{
 		return 0;
 	}
+}
+
+void Syn_LocalSettingsDlg::TypeChanged(int index)
+{
+
 }

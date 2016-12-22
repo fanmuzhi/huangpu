@@ -50,6 +50,8 @@ public Q_SLOTS:
 	void SetLeds(int rowNumber, int columnNumber);
 	void ConfirmSite();
 
+	void TypeChanged(int index);
+
 	void CreateUpdateADCOffsetsDlg();
 	//void CloseUpdateADCOffsetsDialog();
 
@@ -63,6 +65,8 @@ private:
 
 	//Temp Voltages,save VoltagesValue from user define or configfile
 	Syn_VoltagesValue _TempVoltagesValue;
+	
+	bool _typeChanged;
 };
 
 #endif // SYN_LOCALSETTINGSDLG_H

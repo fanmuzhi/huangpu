@@ -1,6 +1,5 @@
 //local
 #include "fps_testexecutive.h"
-#include "ui_Syn_LocalSettingsDlg.h"
 //Qt
 #include <QtWidgets>
 
