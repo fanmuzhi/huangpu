@@ -37,6 +37,7 @@ typedef unsigned char UINT8; // UINT8 is created to handle MPC04 data
 
 #define	DUT_SER_NUM_SIZE	6
 #define	VERSION_SIZE		36
+#define	PATCHINFO_SIZE		36
 #define	BS0_SIZE			64
 #define	BS1_SIZE			64
 #define	MS0_SIZE			2 * 1024 
@@ -177,6 +178,18 @@ typedef struct
 	uint8_t    reserved;         /* reserved byte                       */
 	uint8_t    device_type;      /* device type                         */
 }GetVerInfo;
+
+typedef struct 
+{
+	uint32_t          basep;
+	uint32_t          size;
+	uint32_t          flags;
+	uint32_t          buildtime;
+	uint32_t          sig;        /* signature */
+	uint16_t          buildnum;
+	uint8_t           majorver;
+	uint8_t           minorver;
+}GetPatchInfo;
 
 typedef struct
 {

@@ -77,52 +77,43 @@ void Ts_ButtonTest::SetUp()
 		else
 			_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_expectedState = atoi(listOfArgValue[3].c_str());
 	}
+
+	_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_bExecuted = 0;
 }
 
 void Ts_ButtonTest::Execute()
 {
+	bool *nBtnState = new bool;
+	_pSyn_DutCtrl->GetBridge(_pSynBridge);
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_bWithStimulus)
 	{
 		//Execute with stimulus.
+		//Get the state of the Button pin NUM_DRDY_CHECKS times.
+		for (int i = 0; i<NUM_BTN_CHECKS; i++)
+		{
+			_pSynBridge->GPIO_CheckSwitch(nBtnState);
+			//_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithStimResults.m_arCurrStates[i] = (*nBtnState & _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_pinMsk) ? 1 : 0;
+			_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithStimResults.m_arCurrStates[i] = *nBtnState;
+		}
+
+		SYN_ProcessBtnTestData(_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo, _pSyn_Dut->_pSyn_DutTestResult->_btnTestWithStimResults);
+
 		_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_bExecuted = 1;
-
-		uint32_t	nBtnState;
-
-		//Configure Button pin as input.
-		//GPIO_3 is connected to J4 of the microcontroller.
-		//_pSyn_DutCtrl->GpioSetPinType(_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_portId, _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_pinMsk, 5);
-
-		////Get the state of the Button pin NUM_DRDY_CHECKS times.
-		//for (int i = 0; i<NUM_BTN_CHECKS; i++)
-		//{
-		//	_pSyn_DutCtrl->GpioPinRead(_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_portId, _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_pinMsk, &nBtnState);
-		//	_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithStimResults.m_arCurrStates[i] = (nBtnState & _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_pinMsk) ? 1 : 0;
-		//}
-
-		//SYN_ProcessBtnTestData(_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo, _pSyn_Dut->_pSyn_DutTestResult->_btnTestWithStimResults);
-
-		//ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithStimResults.m_elapsedtime);
 	}
 	else	
 	{
+		//Execute without stimulus.
+		//Get the state of the Button pin NUM_DRDY_CHECKS times.
+		for (int i = 0; i<NUM_BTN_CHECKS; i++)
+		{
+			_pSynBridge->GPIO_CheckSwitch(nBtnState);
+			//_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithoutStimResults.m_arCurrStates[i] = (*nBtnState & _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo.m_pinMsk) ? 1 : 0;
+			_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithoutStimResults.m_arCurrStates[i] = *nBtnState;
+		}
+
+		SYN_ProcessBtnTestData(_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo, _pSyn_Dut->_pSyn_DutTestResult->_btnTestWithoutStimResults);
+
 		_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo.m_bExecuted = 1;
-
-		uint32_t	nBtnState;
-
-		//Configure Button pin as input.
-		//GPIO_3 is connected to J4 of the microcontroller.
-		//_pSyn_DutCtrl->GpioSetPinType(_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo.m_portId, _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo.m_pinMsk, 5);
-
-		////Get the state of the Button pin NUM_DRDY_CHECKS times.
-		//for (int i = 0; i<NUM_BTN_CHECKS; i++)
-		//{
-		//	_pSyn_DutCtrl->GpioPinRead(_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo.m_portId, _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo.m_pinMsk, &nBtnState);
-		//	_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithoutStimResults.m_arCurrStates[i] = (nBtnState & _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo.m_pinMsk) ? 1 : 0;
-		//}
-
-		//SYN_ProcessBtnTestData(_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo, _pSyn_Dut->_pSyn_DutTestResult->_btnTestWithoutStimResults);
-
-		//ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithoutStimResults.m_elapsedtime);
 	}
 }
 
@@ -130,6 +121,8 @@ void Ts_ButtonTest::ProcessData()
 {
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_bWithStimulus)  // WithStimulus
 	{
+		ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithStimResults.m_elapsedtime);
+
 		if (_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithStimResults.m_bPass)
 		{
 			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("ButtonTestWithStimulus", "Pass"));
@@ -142,6 +135,8 @@ void Ts_ButtonTest::ProcessData()
 	}
 	else //without Stimulus
 	{
+		ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithoutStimResults.m_elapsedtime);
+
 		if (_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithoutStimResults.m_bPass)
 		{
 			_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("ButtonTestWithoutStimulus", "Pass"));
@@ -156,6 +151,7 @@ void Ts_ButtonTest::ProcessData()
 
 void Ts_ButtonTest::CleanUp()
 {
+	_pSyn_DutCtrl->FpReset();
 }
 
 void Ts_ButtonTest::SYN_ProcessBtnTestData(BtnTestInfo &pInfo, BtnTestResults &pResults)
