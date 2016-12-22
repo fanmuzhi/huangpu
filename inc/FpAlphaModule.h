@@ -89,7 +89,7 @@ public:
 
 	virtual uint32_t FpRunPatchTest(uint8_t *pDst, int numBytes, uint32_t timeout = TIMEOUT_VALUE);
 
-	virtual uint32_t FpGetImage(uint8_t *arrImage, uint32_t size, uint32_t timeout = TIMEOUT_VALUE);
+	virtual uint32_t FpGetImage(uint16_t nRows, uint16_t nCols, uint16_t nBlobSize, uint8_t *pBlob, uint32_t *arrValue, uint32_t timeout = TIMEOUT_VALUE);
 
 	virtual uint32_t FpGetImage2(uint16_t nRows, uint16_t nCols, uint8_t *pDst, uint16_t nBlobSize, uint8_t *pBlob, uint32_t timeout = TIMEOUT_VALUE);
 
