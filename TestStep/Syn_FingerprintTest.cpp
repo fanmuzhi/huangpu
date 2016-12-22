@@ -40,6 +40,13 @@ void Syn_FingerprintTest::GetFingerprintImage(CalibrationResults &pCalResults, F
 	uint8_t *pImgBuff = new uint8_t[nCols * nRows];
 
 	uint32_t rc = _pSyn_DutCtrl->FpGetImage2(nRows, nCols, pImgBuff, pCalResults.m_nPrintPatchSize, pCalResults.m_pPrintPatch);
+	if (0 != rc)
+	{
+		Syn_Exception ex(rc);
+		ex.SetDescription("FpGetImage2 is failed!");
+		throw ex;
+		return;
+	}
 
 	for (int i = 0; i < (nRows * nCols); i++)
 	{
@@ -61,16 +68,6 @@ void Syn_FingerprintTest::GetFingerprintImageForCurrentTest(CalibrationResults& 
 
 	_pSyn_Module->GetFingerprintImageForCurrentTest(pCalResults, pFrame, nNumRows, nNumCols, pCurrentDrawVals, nGain);*/
 }
-
-//void Syn_FingerprintTest::CalculateLnaOffsetsBinarySearch(FPSFrame* pFrame, uint8_t* pLnaValues, int nNumRows, int nNumCols, CalibrationInfo &CalInfo, CalibrationResults &CalResults)
-//{
-//	/*if (NULL == _pSyn_Module)
-//	{
-//		return;
-//	}
-//
-//	_pSyn_Module->CalculateLnaOffsetsBinarySearch(pFrame, pLnaValues, nNumRows, nNumCols, CalInfo, CalResults);*/
-//}
 
 void Syn_FingerprintTest::ImageDecode(FPSFrame *pDecodeFrame, FPSFrame *pEncodeFrame, int nNumRow, int nNumCol, int nNumFrames)
 {

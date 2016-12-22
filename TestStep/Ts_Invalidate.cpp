@@ -86,9 +86,23 @@ void Ts_Invalidate::Invalidate(uint32_t tagId)
 		char Argument_to_write[2052] = { 0 };
 		int	numBytes(0);
 		get_invalidate_arguments(tagId, &Argument_to_write[0], numBytes);
-		_pSyn_DutCtrl->FpOtpRomTagWrite((uint8_t*)Argument_to_write, numBytes);
+		rc = _pSyn_DutCtrl->FpOtpRomTagWrite((uint8_t*)Argument_to_write, numBytes);
+		if (0 != rc)
+		{
+			Syn_Exception ex(rc);
+			ex.SetDescription("Invalidate::FpOtpRomTagWrite is failed!");
+			throw ex;
+			return;
+		}
 
 		rc = _pSyn_DutCtrl->FpOtpRomTagRead(tagId, pDst, MS0_SIZE, count_threshold);
+		if (0 != rc)
+		{
+			Syn_Exception ex(rc);
+			ex.SetDescription("Invalidate::FpOtpRomTagRead is failed!");
+			throw ex;
+			return;
+		}
 		timeout--;
 	} 
 	

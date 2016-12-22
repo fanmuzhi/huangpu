@@ -50,8 +50,8 @@ void Syn_Thread::run()
 				_pSyn_Site->GetTestResult(pTestResult);
 				if (Syn_ExceptionCode::Syn_OK != rc || NULL == pTestResult)
 				{
-					QString qsErrorCode = QString::number(rc, 16);
-					emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), "Fail(" + qsErrorCode + ")");
+					QString strErrorCode = QString::number(rc, 16);
+					emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), "Fail(0x" + strErrorCode + ")");
 					emit send(iSiteNumber, pTestResult);
 					return;
 				}
@@ -80,8 +80,8 @@ void Syn_Thread::run()
 				_pSyn_Site->GetTestResult(pTestResult);
 				if (Syn_ExceptionCode::Syn_OK != rc || NULL == pTestResult)
 				{
-					QString qsErrorCode = QString::number(rc, 16);
-					emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), "Fail(" + qsErrorCode+")");
+					QString strErrorCode = QString::number(rc, 16);
+					emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), "Fail(0x" + strErrorCode + ")");
 					emit send(iSiteNumber, pTestResult);
 					return;
 				}
@@ -104,8 +104,8 @@ void Syn_Thread::run()
 				_pSyn_Site->GetTestResult(pTestResult);
 				if (Syn_ExceptionCode::Syn_OK != rc || NULL == pTestResult)
 				{
-					QString qsErrorCode = QString::number(rc, 16);
-					emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), "Fail(" + qsErrorCode + ")");
+					QString strErrorCode = QString::number(rc, 16);
+					emit send(iSiteNumber, QString::fromStdString(listOfTestStepName[t]), "Fail(0x" + strErrorCode + ")");
 					emit send(iSiteNumber, pTestResult);
 					return;
 				}
