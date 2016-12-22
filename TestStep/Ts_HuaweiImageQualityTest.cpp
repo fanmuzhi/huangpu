@@ -217,10 +217,9 @@ void Ts_HuaweiImageQualityTest::ProcessData()
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sSnrFail);
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("HuaweiImageQualityTest", "Fail"));
 	}
-
-	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_huaweiIqTestResults.m_elapsedtime);
 }
 
 void Ts_HuaweiImageQualityTest::CleanUp()
 {
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_huaweiIqTestResults.m_elapsedtime);
 }

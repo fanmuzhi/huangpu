@@ -137,13 +137,11 @@ void Ts_Calibrate::Execute()
 	memcpy(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch, PrintFileInfo._pArrayBuf, PrintFileInfo._uiArraySize);
 	_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_nPrintPatchSize = PrintFileInfo._uiArraySize;
 
-
 	//High Pass Filter(HPF)
 	//If the configuration file specifies the High Pass Filter (HPF) be disabled during calibration.
 	//Will be re-enabled at end of calibration step.
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nHpfOffset)
 		(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch)[_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nHpfOffset] &= 0xFE;
-
 
 	//check LNA tag in OTP
 	uint8_t		pSrc[2] = { 0, 0 };
@@ -171,7 +169,6 @@ void Ts_Calibrate::Execute()
 		pLnaFrame = NULL;
 	}
 
-
 	//If cal type is One Offset Per Pixel.
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nCalType == kPgaCalTypeOneOffsetPerPixel)
 	{
@@ -179,6 +176,13 @@ void Ts_Calibrate::Execute()
 		//int nPgaRecCount = GetMS0RecordData(TAG_CAL, EXT_TAG_PGA_OOPP, pPgaValues, MS0_SIZE, site);
 		int nPgaRecCount(0);
 		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPP, pPgaValues, MS0_SIZE, nPgaRecCount);
+		if (0 != rc)
+		{
+			ex.SetError(rc);
+			ex.SetDescription("FpOtpRomTagRead is failed!");
+			throw ex;
+			return;
+		}
 		memcpy(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPGAOtpArray, &pPgaValues[4], NUM_PGA_OOPP_OTP_ROWS * (numCols  - HEADER));
 
 		bSuccess = CalculatePgaOffsets_OOPP(numCols, numRows, _pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults);
@@ -263,7 +267,7 @@ bool Ts_Calibrate::VerifyPixelRanges()
 	int			nFirstRow = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimTopWithoutStim;
 	int			nFirstCol = _pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nTrimLeftWithoutStim;
 
-	FPSFrame	*arFrame = &_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.arr_ImageFPSFrame;
+	FPSFrame *arFrame = &_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.arr_ImageFPSFrame;
 
 	GetFingerprintImage(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults, arFrame, _pSyn_Dut->_RowNumber, _pSyn_Dut->_ColumnNumber);
 
@@ -329,7 +333,6 @@ int32_t Ts_Calibrate::OtpPgaVarianceTest(int8_t* pOtpPgaOffsets, int8_t* pCurPga
 
 	return nVariance;
 }
-
 
 void Ts_Calibrate::CalculateLnaOffsetsBinarySearch(FPSFrame* pFrame, uint8_t* pLnaValues, int nNumRows, int nNumCols, CalibrationInfo &CalInfo, CalibrationResults &CalResults)
 {

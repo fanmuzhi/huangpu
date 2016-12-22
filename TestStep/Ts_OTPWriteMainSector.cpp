@@ -451,8 +451,13 @@ void Ts_OTPWriteMainSector::BurnToOTP(long nRecType, uint8_t* pSrc, int numBytes
 	uint8_t arExtendedTag[2] = { 0 };
 	uint8_t arNumBytes[2] = { 0 };
 
-	_pSyn_DutCtrl->FpOtpRomTagWrite(arOutBuf, nSize);
-
+	uint32_t rc = _pSyn_DutCtrl->FpOtpRomTagWrite(arOutBuf, nSize);
+	if (0 != rc)
+	{
+		Syn_Exception ex(0);
+		ex.SetDescription("BurnToOTP::FpOtpRomTagWrite is failed.");
+		throw(ex);
+	}
 }
 
 bool Ts_OTPWriteMainSector::RegCheckBitSet()

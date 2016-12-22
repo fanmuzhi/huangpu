@@ -1,6 +1,5 @@
 //local
 #include "fps_testexecutive.h"
-#include "ui_Syn_LocalSettingsDlg.h"
 //Qt
 #include <QtWidgets>
 
@@ -957,7 +956,7 @@ void FPS_TestExecutive::GetVersion()
 	uint32_t rc = pSelectedSite->Open();
 	if (rc != 0)
 	{
-		QMessageBox::information(this, QString("Error"), QString::number(rc, 16).toUpper());
+		QMessageBox::information(this, QString("Getverison Error : 0x"), QString::number(rc, 16).toUpper());
 		return;
 	}
 
@@ -965,20 +964,20 @@ void FPS_TestExecutive::GetVersion()
 	rc = pSelectedSite->ExecuteTestStep("InitializationStep");
 	if (rc != 0)
 	{
-		QMessageBox::information(this, QString("Error"), QString::number(rc, 16).toUpper());
+		QMessageBox::information(this, QString("Getverison Error : 0x"), QString::number(rc, 16).toUpper());
 		return;
 	}
 	rc = pSelectedSite->GetTestResult(oDutTestResult);
 	if (rc != 0)
 	{
-		QMessageBox::information(this, QString("Error"), QString::number(rc, 16).toUpper());
+		QMessageBox::information(this, QString("Getverison Error : 0x"), QString::number(rc, 16).toUpper());
 		return;
 	}
 	Syn_DutTestInfo *pInfo = NULL;
 	rc = pSelectedSite->GetTestInfo(pInfo);
 	if (0 != rc)
 	{
-		QMessageBox::information(this, QString("Error"), QString::number(rc, 16).toUpper());
+		QMessageBox::information(this, QString("Getverison Error : 0x"), QString::number(rc, 16).toUpper());
 		return;
 	}
 	rc = pSelectedSite->ExecuteTestStep("FinalizationStep");
@@ -1084,7 +1083,7 @@ void FPS_TestExecutive::ReadOTP()
 	uint32_t rc = pSelectedSite->Open();
 	if (rc != 0)
 	{
-		QMessageBox::information(this, QString("Error"), QString("OTPDump Error:") + QString::number(rc, 16).toUpper());
+		QMessageBox::information(this, QString("Error"), QString("OTPDump Error : 0x") + QString::number(rc, 16).toUpper());
 		return;
 	}
 
@@ -1093,21 +1092,21 @@ void FPS_TestExecutive::ReadOTP()
 	rc = pSelectedSite->ExecuteTestStep("FinalizationStep");
 	if (rc != 0)
 	{
-		QMessageBox::information(this, QString("Error"), QString("OTPDump Error:") + QString::number(rc, 16).toUpper());
+		QMessageBox::information(this, QString("Error"), QString("OTPDump Error : 0x") + QString::number(rc, 16).toUpper());
 		return;
 	}
 	Syn_DutTestInfo *oDutTestInfo = NULL;
 	rc = pSelectedSite->GetTestInfo(oDutTestInfo);
 	if (rc != 0)
 	{
-		QMessageBox::information(this, QString("Error"), QString("OTPDump Error:") + QString::number(rc, 16).toUpper());
+		QMessageBox::information(this, QString("Error"), QString("OTPDump Error : 0x") + QString::number(rc, 16).toUpper());
 		return;
 	}
 	Syn_DutTestResult *oDutTestResult = NULL;
 	rc = pSelectedSite->GetTestResult(oDutTestResult);
 	if (rc != 0)
 	{
-		QMessageBox::information(this, QString("Error"), QString("OTPDump Error:") + QString::number(rc, 16).toUpper());
+		QMessageBox::information(this, QString("Error"), QString("OTPDump Error : 0x") + QString::number(rc, 16).toUpper());
 		return;
 	}
 
@@ -1243,18 +1242,28 @@ void FPS_TestExecutive::Invalidate()
 	uint32_t rc = pSelectedSite->Open();
 	if (rc != 0)
 	{
-		QMessageBox::information(this, QString("Error"), QString::number(rc, 16).toUpper());
+		QMessageBox::information(this, QString("Error : 0x"), QString::number(rc, 16).toUpper());
 		return;
 	}
 
 	Syn_DutTestResult *oDutTestResult = NULL;
 	rc = pSelectedSite->ExecuteTestStep("InitializationStep");
+	if (rc != 0)
+	{
+		QMessageBox::information(this, QString("Error"), QString("Invalidate is failed(1), error code is 0x") + QString::number(rc, 16).toUpper());
+		return;
+	}
 	rc = pSelectedSite->ExecuteTestStep("Invalidate");
+	if (rc != 0)
+	{
+		QMessageBox::information(this, QString("Error"), QString("Invalidate is failed(2), error code is 0x") + QString::number(rc, 16).toUpper());
+		return;
+	}
 	rc = pSelectedSite->ExecuteTestStep("FinalizationStep");
 	pSelectedSite->GetTestResult(oDutTestResult);
 	if (rc != 0)
 	{
-		QMessageBox::information(this, QString("Error"), QString("Invalidate is failed,error code is ") + QString::number(rc, 16).toUpper());
+		QMessageBox::information(this, QString("Error"), QString("Invalidate is failed(3), error code is 0x") + QString::number(rc, 16).toUpper());
 		return;
 	}
 

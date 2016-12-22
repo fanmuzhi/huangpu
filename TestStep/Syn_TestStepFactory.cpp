@@ -2,6 +2,7 @@
 #include "Syn_TestStepFactory.h"
 #include "Syn_FingerprintTest.h"
 #include "Ts_Calibrate.h"
+#include "Ts_ViperCalibrate.h"
 #include "Ts_OTPCheck.h"
 #include "Ts_AcqImgNoFinger.h"
 #include "Ts_AcqImgFinger.h"
@@ -66,7 +67,12 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	}
 	else if (std::string("Calibrate") == strTestStepName)
 	{
-		opTestStepInstance = new Ts_Calibrate(strTestStepName, strTestArgs, pDutCtrl, pDut);
+		if (pDut->_strProjectType == "Viper" || pDut->_strProjectType == "Viper2")
+			opTestStepInstance = new Ts_ViperCalibrate(strTestStepName, strTestArgs, pDutCtrl, pDut);//Viper Calibrate
+		else if (pDut->_strProjectType == "Metallica")
+			opTestStepInstance = new Ts_Calibrate(strTestStepName, strTestArgs, pDutCtrl, pDut);//Metallica Calibrate
+		else
+			return false;
 	}
 	else if (std::string("OTPWriteBootSector") == strTestStepName)
 	{

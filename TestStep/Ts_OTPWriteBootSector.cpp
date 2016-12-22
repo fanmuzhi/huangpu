@@ -61,8 +61,24 @@ void Ts_OTPWriteBootSector::Execute()
 	uint8_t otpBs1[BS1_SIZE] = { 0 };
 	//_pSyn_DutCtrl->FpOtpRomRead();
 
-	_pSyn_DutCtrl->FpOtpRomRead(BOOT_SEC, 0, otpBs0, BS0_SIZE);
-	_pSyn_DutCtrl->FpOtpRomRead(BOOT_SEC, 1, otpBs1, BS1_SIZE);
+	uint32_t rc(0);
+
+	rc = _pSyn_DutCtrl->FpOtpRomRead(BOOT_SEC, 0, otpBs0, BS0_SIZE);
+	if (0 != rc)
+	{
+		Syn_Exception ex(rc);
+		ex.SetDescription("BOOT_SEC0::FpOtpRomTagRead is failed!");
+		throw ex;
+		return;
+	}
+	rc = _pSyn_DutCtrl->FpOtpRomRead(BOOT_SEC, 1, otpBs1, BS1_SIZE);
+	if (0 != rc)
+	{
+		Syn_Exception ex(rc);
+		ex.SetDescription("BOOT_SEC1::FpOtpRomTagRead is failed!");
+		throw ex;
+		return;
+	}
 
 	//Communication Option and flash bit
 	int index = 51;
@@ -153,9 +169,9 @@ void Ts_OTPWriteBootSector::Execute()
 	*/
 
 	//write to boot secotr
-	_pSyn_DutCtrl->FpOtpRomWrite(BOOT_SEC, 0, otpBs0, BS0_SIZE);
-	_pSyn_DutCtrl->FpOtpRomWrite(BOOT_SEC, 1, otpBs1, BS0_SIZE);
-
+	//maybe 0x403,do not care
+	rc = _pSyn_DutCtrl->FpOtpRomWrite(BOOT_SEC, 0, otpBs0, BS0_SIZE);
+	rc = _pSyn_DutCtrl->FpOtpRomWrite(BOOT_SEC, 1, otpBs1, BS0_SIZE);
 }
 
 void Ts_OTPWriteBootSector::ProcessData()

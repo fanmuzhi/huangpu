@@ -145,6 +145,7 @@ xcopy /y "$(SolutionDir)..\changning\FpBridge\syn_devicemanager.h" "$(SolutionDi
     <ClInclude Include="Ts_SCM_WOF.h" />
     <ClInclude Include="Ts_SharpnessTest.h" />
     <ClInclude Include="Ts_SNRTest.h" />
+    <ClInclude Include="Ts_ViperCalibrate.h" />
     <ClInclude Include="Ts_ViperWOF.h" />
     <ClInclude Include="Ts_Viper_SCMWOF.h" />
     <ClInclude Include="Ts_WaitStimulus.h" />
@@ -184,6 +185,7 @@ xcopy /y "$(SolutionDir)..\changning\FpBridge\syn_devicemanager.h" "$(SolutionDi
     <ClCompile Include="Ts_SCM_WOF.cpp" />
     <ClCompile Include="Ts_SharpnessTest.cpp" />
     <ClCompile Include="Ts_SNRTest.cpp" />
+    <ClCompile Include="Ts_ViperCalibrate.cpp" />
     <ClCompile Include="Ts_ViperWOF.cpp" />
     <ClCompile Include="Ts_Viper_SCMWOF.cpp" />
     <ClCompile Include="Ts_WaitStimulus.cpp" />
