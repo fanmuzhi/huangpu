@@ -159,6 +159,22 @@ typedef struct
 
 typedef struct
 {
+	int	_bExecuted;
+	int _highLimit;
+	//float _fGrav;
+}DeepSleepCurrentInfo;
+
+typedef struct
+{
+	float	spivcc_current;
+	float	vcc_current;
+	int		_bPass;
+
+	double  m_elapsedtime;
+}DeepSleepCurrentResults;
+
+typedef struct
+{
 	uint32_t   buildtime;        /* Unix-style build time, in seconds   *//*  from 1/1/1970 12:00 AM GMT         */
 	uint32_t   buildnum;         /* build number                        */
 	uint8_t    vmajor;           /* major version                       */
