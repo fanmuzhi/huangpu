@@ -112,6 +112,9 @@
     <ClCompile Include="Ts_Viper_SCMWOF.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Ts_ViperCalibrate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Syn_TestStep.h">
@@ -226,6 +229,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Syn_FingerprintTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_ViperCalibrate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
