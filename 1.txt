@@ -1,0 +1,2 @@
+status is OK!
+tempNumChannels is 0!

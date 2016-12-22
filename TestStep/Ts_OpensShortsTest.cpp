@@ -29,6 +29,7 @@ void Ts_OpensShortsTest::SetUp()
 
 	//parse args
 	std::vector<std::string> listOfArgValue;
+	_pSyn_Dut->_pSyn_DutTestInfo->_opensShortsInfo.m_bExecuted = false;
 	_pSyn_Dut->_pSyn_DutTestInfo->_opensShortsInfo.m_nNumResBytes = 2056;
 	_pSyn_Dut->_pSyn_DutTestInfo->_opensShortsInfo.m_nDelay_ms = 500;
 	
@@ -45,7 +46,6 @@ void Ts_OpensShortsTest::SetUp()
 	if (0 != listOfArgValue[1].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_opensShortsInfo.m_nDelay_ms = atoi(listOfArgValue[1].c_str());
 
-	_pSyn_Dut->_pSyn_DutTestInfo->_opensShortsInfo.m_bExecuted = false;
 }
 
 void Ts_OpensShortsTest::Execute()
@@ -60,10 +60,17 @@ void Ts_OpensShortsTest::Execute()
 		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
 		ex.SetDescription("OpensShortsPatch Patch is NULL!");
 		throw ex;
-		return;
 	}
 
-	_pSyn_DutCtrl->FpLoadPatch(OpensShortsPatchInfo._pArrayBuf, OpensShortsPatchInfo._uiArraySize);
+	rc = _pSyn_DutCtrl->FpLoadPatch(OpensShortsPatchInfo._pArrayBuf, OpensShortsPatchInfo._uiArraySize);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Load OpenShorts Patch Failed");
+		throw ex;
+	}
+
+	//rc = _pSyn_DutCtrl->FpGetPatchInfo((uint8_t*)&_pSyn_Dut->_pSyn_DutTestInfo->_getPatchInfo, PATCHINFO_SIZE);
 
 	//Get the response.
 	rc = _pSyn_DutCtrl->FpRunPatchTest(_pSyn_Dut->_pSyn_DutTestResult->_opensShortsResults.m_pResponse, _pSyn_Dut->_pSyn_DutTestInfo->_opensShortsInfo.m_nNumResBytes);
@@ -71,11 +78,16 @@ void Ts_OpensShortsTest::Execute()
 	{
 		ex.SetError(rc);
 		ex.SetDescription("Run OpenShorts Patch Test Failed");
-		return;
 		throw ex;
 	}
 
-	_pSyn_DutCtrl->FpUnloadPatch();
+	rc = _pSyn_DutCtrl->FpUnloadPatch();
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Unload Patch Failed");
+		throw ex;
+	}
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_opensShortsInfo.m_bExecuted = true;
 }
@@ -84,12 +96,10 @@ void Ts_OpensShortsTest::ProcessData()
 {
 	_pSyn_Dut->_pSyn_DutTestResult->_opensShortsResults.m_bPass = 0;
 
-	if (_pSyn_Dut->_pSyn_DutTestResult->_opensShortsResults.m_pResponse[2] & 0x00000001)
+	if (_pSyn_Dut->_pSyn_DutTestResult->_opensShortsResults.m_pResponse[2] & 0x01)
 		_pSyn_Dut->_pSyn_DutTestResult->_opensShortsResults.m_bPass = 1;
-	//else
-	//	_pSyn_Dut->_pSyn_DutTestResult->_pixelPatchResults.m_bPass = 0;
-	if (_pSyn_Dut->_pSyn_DutTestResult->_opensShortsResults.m_pResponse[2] & 0x00000002)
-		_pSyn_Dut->_pSyn_DutTestResult->_opensShortsResults.m_bPass = 0;
+	else
+		_pSyn_Dut->_pSyn_DutTestResult->_pixelPatchResults.m_bPass = 0;
 
 	if (!(_pSyn_Dut->_pSyn_DutTestResult->_opensShortsResults.m_bPass))
 	{
@@ -104,5 +114,21 @@ void Ts_OpensShortsTest::ProcessData()
 
 void Ts_OpensShortsTest::CleanUp()
 {
-	_pSyn_DutCtrl->FpReset();
+	Syn_Exception ex(0);
+	uint32_t rc = _pSyn_DutCtrl->FpReset();
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Unload Patch Failed");
+		throw ex;
+	}
+
+	rc = _pSyn_DutCtrl->FpTidleSet(0);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpTidleSet command failed!");
+		throw ex;
+		return;
+	}
 }

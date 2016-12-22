@@ -102,18 +102,34 @@ void Ts_RAMTest::ProcessData()
 
 void Ts_RAMTest::CleanUp()
 {
-	_pSyn_DutCtrl->FpReset();
+	Syn_Exception ex(0);
+	uint32_t rc = _pSyn_DutCtrl->FpReset();
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Unload Patch Failed");
+		throw ex;
+	}
+
+	rc = _pSyn_DutCtrl->FpTidleSet(0);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpTidleSet command failed!");
+		throw ex;
+		return;
+	}
 }
 
 void Ts_RAMTest::LoadRAMPatch(std::string sPatchName, uint8_t* pPatchResults, uint16_t nSize)
 {
+	uint32_t rc(0);
 	Syn_Exception ex(0);
 	if (0 == sPatchName.size())
 	{
 		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
 		ex.SetDescription("RAMPatch name is NULL!");
 		throw ex;
-		return;
 	}
 
 	Syn_PatchInfo RamPatchInfo;
@@ -122,8 +138,15 @@ void Ts_RAMTest::LoadRAMPatch(std::string sPatchName, uint8_t* pPatchResults, ui
 		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
 		ex.SetDescription(sPatchName+" Patch is NULL!");
 		throw ex;
-		return;
 	}
-	_pSyn_DutCtrl->FpLoadPatch(RamPatchInfo._pArrayBuf, RamPatchInfo._uiArraySize, pPatchResults, nSize);
-	_pSyn_DutCtrl->FpUnloadPatch();
+	rc = _pSyn_DutCtrl->FpLoadPatch(RamPatchInfo._pArrayBuf, RamPatchInfo._uiArraySize, pPatchResults, nSize);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription(sPatchName + " RAM Patch Load Failed");
+		throw ex;
+	}
+	//Maybe not need to unload patch
+	//rc = _pSyn_DutCtrl->FpGetPatchInfo((uint8_t*)&_pSyn_Dut->_pSyn_DutTestInfo->_getPatchInfo, PATCHINFO_SIZE);
+	//rc = _pSyn_DutCtrl->FpUnloadPatch();
 }

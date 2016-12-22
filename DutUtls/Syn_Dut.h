@@ -64,6 +64,7 @@ struct Syn_DutTestInfo
 	SpiOwnershipInfo		    _SpiOwnershipInfo;
 	OTPCheckInfo				_otpCheckInfo;
 	GetVerInfo					_getVerInfo;
+	GetPatchInfo				_getPatchInfo;
 	HuaweiIQTestInfo			_huaweiIqTestInfo;
 };
 

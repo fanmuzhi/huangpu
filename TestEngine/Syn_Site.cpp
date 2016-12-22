@@ -511,7 +511,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 		fprintf(pFile, "\nOpens/Shorts Test,%s,%.0f ms", DutResults->_opensShortsResults.m_bPass ? "Pass" : "Fail", DutResults->_opensShortsResults.m_elapsedtime);
 
 		for (int i = 0; i<25; i++)
-			fprintf(pFile, ",%d", *((uint32_t*)(&DutResults->_opensShortsResults.m_pResponse[(i + 1) * 4])));
+			fprintf(pFile, ",%d", *(&DutResults->_opensShortsResults.m_pResponse[(i + 1) * 4 + 2]));
 		fprintf(pFile, "\n");
 	}
 
@@ -521,7 +521,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 		fprintf(pFile, "\nPixel Patch,%s,%.0f ms\n", DutResults->_pixelPatchResults.m_bPass ? "Pass" : "Fail", DutResults->_pixelPatchResults.m_elapsedtime);
 		fprintf(pFile, ",,,");
 		for (int i = 0; i < (DutInfo->_pixelPatchInfo.m_nNumResBytes) / 4; i++)
-			fprintf(pFile, "%d,", *((uint32_t*)&DutResults->_pixelPatchResults.m_pResponse[i * 4]));
+			fprintf(pFile, "%d,", *(&DutResults->_pixelPatchResults.m_pResponse[i * 4] + 2));
 		fprintf(pFile, "\n");
 	}
 
@@ -532,7 +532,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 
 		fprintf(pFile, ",,,");
 		for (int i = 0; i<(DutInfo->_woVarInfo.m_nNumResBytes / 4); i++)
-			fprintf(pFile, "%d,", *((uint32_t*)&DutResults->_woVarResults.m_pResponse[i * 4]));
+			fprintf(pFile, "%d,", *(&DutResults->_woVarResults.m_pResponse[i * 4] + 2));
 		fprintf(pFile, "\n");
 	}
 
@@ -544,7 +544,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 		for (int i = 0; i<13; i++)
 		{
 			if (i == 0)
-				fprintf(pFile, "%d,", DutResults->_AFETestResults.m_pResponse[4]);
+				fprintf(pFile, "%d,", DutResults->_AFETestResults.m_pResponse[4] + 2);
 			else
 				fprintf(pFile, "0,");
 		}
@@ -554,10 +554,10 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 		for (int i = 0; i<13; i++)
 		{
 			temp = 0x00000000;
-			temp |= int(DutResults->_AFETestResults.m_pResponse[(4 * i) + 11]) << 24;
-			temp |= int(DutResults->_AFETestResults.m_pResponse[(4 * i) + 10]) << 16;
-			temp |= int(DutResults->_AFETestResults.m_pResponse[(4 * i) + 9]) << 8;
-			temp |= int(DutResults->_AFETestResults.m_pResponse[(4 * i) + 8]);
+			temp |= int(DutResults->_AFETestResults.m_pResponse[(4 * i) + 11 + 2]) << 24;
+			temp |= int(DutResults->_AFETestResults.m_pResponse[(4 * i) + 10 + 2]) << 16;
+			temp |= int(DutResults->_AFETestResults.m_pResponse[(4 * i) + 9 + 2]) << 8;
+			temp |= int(DutResults->_AFETestResults.m_pResponse[(4 * i) + 8 + 2]);
 			fprintf(pFile, "%d,", temp);
 		}
 

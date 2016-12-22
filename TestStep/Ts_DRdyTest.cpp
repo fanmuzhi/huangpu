@@ -56,38 +56,23 @@ void Ts_DRdyTest::Execute()
 	uint32_t rc(0);
 	int portID = _pSyn_Dut->_pSyn_DutTestInfo->_DRdyInfo.m_portId;
 	int pinMsk = _pSyn_Dut->_pSyn_DutTestInfo->_DRdyInfo.m_pinMsk;
-	bool *nDRdyState = false;
 	uint8_t  pResult[2] = {0,0};
+	bool *nDRdyStates = new bool;
+	_pSyn_DutCtrl->GetBridge(_pSynBridge);
 
-	//set DRdy pin to input.
-	//_pSyn_DutCtrl->GpioSetPinType(portID, pinMsk, 5);
-
-	//_pSyn_DutCtrl->FpDisableSleep();
-	//_pSyn_DutCtrl->FpWaitForCMDComplete();
-	//::Sleep(5);
-
-	////read DRdy
+	////write 0x0257 and get status
 	//for (int i = 0; i < NUM_DRDY_CHECKS; i++)
 	//{
-	//	_pSyn_DutCtrl->GpioPinRead(portID, pinMsk, &nDRdyState);
-	//	_pSyn_Dut->_pSyn_DutTestResult->_DRdyResults.m_arHiStates[i] = (nDRdyState & pinMsk) ? 1 : 0;
+	//	_pSynBridge->GPIO_CheckDRDY(nDRdyStates);
+	//	_pSyn_Dut->_pSyn_DutTestResult->_DRdyResults.m_arHiStates[i] = (*nDRdyStates & pinMsk) ? 1 : 0;
 	//}
-
-	//_pSyn_DutCtrl->FpReadAndCheckStatus(0);
-
-	//::Sleep(5);
-	////read DRdy
-	//for (int i = 0; i < NUM_DRDY_CHECKS; i++)
-	//{
-	//	_pSyn_DutCtrl->GpioPinRead(portID, pinMsk, &nDRdyState);
-	//	_pSyn_Dut->_pSyn_DutTestResult->_DRdyResults.m_arLoStates[i] = (nDRdyState & pinMsk) ? 1 : 0;
-	//}
-
+	//read 0x03ff
 	for (int i = 0; i < NUM_DRDY_CHECKS; i++)
 	{
-		//rc = _pSynBridge->GPIO_CheckDRDY(nDRdyState);
-		_pSyn_Dut->_pSyn_DutTestResult->_DRdyResults.m_arLoStates[i] = (*nDRdyState & pinMsk) ? 1 : 0;
+		_pSynBridge->GPIO_CheckDRDY(nDRdyStates);
+		_pSyn_Dut->_pSyn_DutTestResult->_DRdyResults.m_arLoStates[i] = (*nDRdyStates & pinMsk) ? 1 : 0;
 	}
+	delete nDRdyStates;
 	_pSyn_Dut->_pSyn_DutTestInfo->_DRdyInfo.m_bExecuted = true;
 
 }
