@@ -66,6 +66,12 @@ void Ts_OTPWriteMainSector::Execute()
 	{
 		//If LNA values have not been stored in the OTP.
 		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, arMS0, MS0_SIZE, nLNA_count);
+		if (0 != rc)
+		{
+			ex.SetError(rc);
+			ex.SetDescription("OtpRomTagRead EXT_TAG_LNA is failed!");
+			throw ex;
+		}
 		if (nLNA_count == 0)
 		{
 			BurnToOTP(EXT_TAG_LNA, &(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults).m_pPrintPatch[(_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nLnaIdx], _pSyn_Dut->_RowNumber);
@@ -76,6 +82,12 @@ void Ts_OTPWriteMainSector::Execute()
 		if ((_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nCalType == 1)//kPgaCalTypeOneOffsetPerPixel
 		{
 			rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPP, arMS0, MS0_SIZE, nPGA_OOPP_count);
+			if (0 != rc)
+			{
+				ex.SetError(rc);
+				ex.SetDescription("OtpRomTagRead EXT_TAG_PGA_OOPP is failed!");
+				throw ex;
+			}
 			if (nPGA_OOPP_count == 0)
 			{
 				BurnToOTP(EXT_TAG_PGA_OOPP, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_arPgaOffsets, NUM_PGA_OOPP_OTP_ROWS * (nNumCols - 8));
@@ -88,6 +100,12 @@ void Ts_OTPWriteMainSector::Execute()
 		if ((_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nCalType == 0)//kPgaCalTypeOneOffsetPerRow
 		{
 			rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPR, arMS0, MS0_SIZE, nPGA_count);
+			if (0 != rc)
+			{
+				ex.SetError(rc);
+				ex.SetDescription("OtpRomTagRead EXT_TAG_PGA_OOPR is failed!");
+				throw ex;
+			}
 			if (nPGA_count == 0)
 			{
 				BurnToOTP(EXT_TAG_PGA_OOPR, &(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults).m_pPrintPatch[(_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nPgaIdx], _pSyn_Dut->_RowNumber);
@@ -100,6 +118,12 @@ void Ts_OTPWriteMainSector::Execute()
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_snrInfo.m_bExecuted)
 	{
 		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SNR, arMS0, MS0_SIZE, nSNR_count);
+		if (0 != rc)
+		{
+			ex.SetError(rc);
+			ex.SetDescription("OtpRomTagRead EXT_TAG_SNR is failed!");
+			throw ex;
+		}
 		if (nSNR_count == 0)
 		{
 			memset(arMS0, 0, sizeof(arMS0));
@@ -117,6 +141,12 @@ void Ts_OTPWriteMainSector::Execute()
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_bExecuted)
 	{
 		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_FlexId, arMS0, MS0_SIZE, nFlexId_count);
+		if (0 != rc)
+		{
+			ex.SetError(rc);
+			ex.SetDescription("OtpRomTagRead EXT_TAG_FlexId is failed!");
+			throw ex;
+		}
 		if (nFlexId_count == 0)
 		{
 			memset(arMS0, 0, sizeof(arMS0));
@@ -131,6 +161,12 @@ void Ts_OTPWriteMainSector::Execute()
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_z0FDWofInfo.m_bExecutedWithStimulus)
 	{
 		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FD_ZONE0, arMS0, MS0_SIZE, nWofBot_count);
+		if (0 != rc)
+		{
+			ex.SetError(rc);
+			ex.SetDescription("OtpRomTagRead EXT_TAG_WOF_FD_ZONE0 is failed!");
+			throw ex;
+		}
 		if (nWofBot_count == 0)
 		{
 			memset(arMS0, 0, sizeof(arMS0));
@@ -146,6 +182,12 @@ void Ts_OTPWriteMainSector::Execute()
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_z0FUWofInfo.m_bExecutedWithStimulus)
 	{
 		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FU_ZONE0, arMS0, MS0_SIZE, nWofBot_count);
+		if (0 != rc)
+		{
+			ex.SetError(rc);
+			ex.SetDescription("OtpRomTagRead EXT_TAG_WOF_FU_ZONE0 is failed!");
+			throw ex;
+		}
 		if (nWofBot_count == 0)
 		{
 			memset(arMS0, 0, sizeof(arMS0));
@@ -162,6 +204,12 @@ void Ts_OTPWriteMainSector::Execute()
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_z1FDWofInfo.m_bExecutedWithStimulus)
 	{
 		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FD_ZONE1, arMS0, MS0_SIZE, nWofTop_count);
+		if (0 != rc)
+		{
+			ex.SetError(rc);
+			ex.SetDescription("OtpRomTagRead EXT_TAG_WOF_FD_ZONE1 is failed!");
+			throw ex;
+		}
 		if (nWofTop_count == 0)
 		{
 			memset(arMS0, 0, sizeof(arMS0));
@@ -177,6 +225,12 @@ void Ts_OTPWriteMainSector::Execute()
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_z1FUWofInfo.m_bExecutedWithStimulus)
 	{
 		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_WOF_FU_ZONE1, arMS0, MS0_SIZE, nWofTop_count);
+		if (0 != rc)
+		{
+			ex.SetError(rc);
+			ex.SetDescription("OtpRomTagRead EXT_TAG_WOF_FU_ZONE1 is failed!");
+			throw ex;
+		}
 		if (nWofTop_count == 0)
 		{
 			memset(arMS0, 0, sizeof(arMS0));
@@ -194,6 +248,12 @@ void Ts_OTPWriteMainSector::Execute()
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_z1SCM_wofInfo.m_bExecutedWithStimulus)
 	{
 		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_ZONE1, arMS0, MS0_SIZE, nScmWofTop_count);
+		if (0 != rc)
+		{
+			ex.SetError(rc);
+			ex.SetDescription("OtpRomTagRead EXT_TAG_SCM_WOF_ZONE1 is failed!");
+			throw ex;
+		}
 		if (nScmWofTop_count == 0)
 		{	
 			memset(arMS0, 0, sizeof(arMS0));
@@ -210,6 +270,12 @@ void Ts_OTPWriteMainSector::Execute()
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_z0SCM_wofInfo.m_bExecutedWithStimulus)
 	{
 		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_SCM_WOF_ZONE0, arMS0, MS0_SIZE, nScmWofBot_count);
+		if (0 != rc)
+		{
+			ex.SetError(rc);
+			ex.SetDescription("OtpRomTagRead EXT_TAG_SCM_WOF_ZONE0 is failed!");
+			throw ex;
+		}
 		if (nScmWofBot_count == 0)
 		{	
 			memset(arMS0, 0, sizeof(arMS0));
@@ -226,6 +292,12 @@ void Ts_OTPWriteMainSector::Execute()
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_ReadDutAdcInfo.m_bExecuted)
 	{
 		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_DutTempAdc, arMS0, MS0_SIZE, nDutTempAdc_count);
+		if (0 != rc)
+		{
+			ex.SetError(rc);
+			ex.SetDescription("OtpRomTagRead EXT_TAG_DutTempAdc is failed!");
+			throw ex;
+		}
 		if (nDutTempAdc_count == 0)
 		{
 			memset(arMS0, 0, sizeof(arMS0));
@@ -240,6 +312,12 @@ void Ts_OTPWriteMainSector::Execute()
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nProductId != 0)
 	{
 		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PRODUCT_ID, arMS0, MS0_SIZE, nProductId_count);
+		if (0 != rc)
+		{
+			ex.SetError(rc);
+			ex.SetDescription("OtpRomTagRead EXT_TAG_PRODUCT_ID is failed!");
+			throw ex;
+		}
 		if (nProductId_count == 0)
 		{
 			memset(arMS0, 0, sizeof(arMS0));
@@ -251,6 +329,12 @@ void Ts_OTPWriteMainSector::Execute()
 
 	//LNA_PGA_GAINS
 	rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA_PGA_GAINS, arMS0, MS0_SIZE, nLNA_PGA_GAINS_count);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("OtpRomTagRead EXT_TAG_LNA_PGA_GAINS is failed!");
+		throw ex;
+	}
 	if (nLNA_PGA_GAINS_count == 0&&0!=_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_bUseConfigGains)
 	{
 		/*uint8_t LnaGainValue(0), PgaGainValue(0);
@@ -293,6 +377,12 @@ void Ts_OTPWriteMainSector::Execute()
 	if (GetMtAndConfigPartNumbers(&partNumbers))
 	{
 		rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PART_NUMBERS, arMS0, MS0_SIZE, nPartNumberId_count);
+		if (0 != rc)
+		{
+			ex.SetError(rc);
+			ex.SetDescription("OtpRomTagRead EXT_TAG_PART_NUMBERS is failed!");
+			throw ex;
+		}
 		if (nPartNumberId_count == 0)
 		{
 			BurnToOTP(EXT_TAG_PART_NUMBERS, (uint8_t*)&partNumbers, sizeof(partNumbers));

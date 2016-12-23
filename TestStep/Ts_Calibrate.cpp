@@ -152,6 +152,12 @@ void Ts_Calibrate::Execute()
 
 	int nTags(0);
 	rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, pLnaValues, MS0_SIZE, nTags);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("OtpRomTagRead EXT_TAG_LNA is failed!");
+		throw ex;
+	}
 	if (nTags > 0)
 	{
 		CopyToPrintPatch(&pLnaValues[4], _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch, numRows, nLnaIdx);	//skip LNA first 4 bytes 00 00 00 07

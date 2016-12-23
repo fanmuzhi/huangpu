@@ -81,6 +81,12 @@ void Ts_Invalidate::Invalidate(uint32_t tagId)
 	uint32_t rc(0);
 	int count_threshold = 0;
 	rc = _pSyn_DutCtrl->FpOtpRomTagRead(tagId, pDst, MS0_SIZE, count_threshold);
+	if (0 != rc)
+	{
+		Syn_Exception ex(rc);
+		ex.SetDescription("OtpRomTagRead MS0_SIZE is failed!");
+		throw ex;
+	}
 	while (timeout && 0 == rc && count_threshold > 0)
 	{
 		char Argument_to_write[2052] = { 0 };
