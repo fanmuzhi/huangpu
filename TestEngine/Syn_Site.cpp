@@ -441,13 +441,11 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	//Config file path
 	fprintf(pFile, "Config file,%s\n", _strConfigFilePath.c_str());
 
-	//fprintf(pFile, "ConfigFile,%s\n", _pSyn_Dut->_pSyn_DutTestInfo-);
 	fprintf(pFile, "%%%%%%%%%%%%%%%%%%%%%%\n");
 
 	fprintf(pFile, "\n---------------------\n");
 	const time_t t = time(NULL);
 	struct tm* current_time = localtime(&t);
-	//fprintf(pFile, "Run %d,%s\n", "", asctime(current_time));
 	fprintf(pFile, "Test Time,%s\n", asctime(current_time));
 
 	//Sensor Serial Number
@@ -620,7 +618,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 					fprintf(pFile, ",%02X", DutResults->_calibrationResults.m_pPGAOtpArray[i]);
 				}
 
-				if (-0x300 == DutResults->_calibrationResults.m_nStage2VarianceScore)
+				if (Stage2VarianceScoreDefault == DutResults->_calibrationResults.m_nStage2VarianceScore)
 				{
 					fprintf(pFile, "\n,,,Stage2 Variance Score,N/A\n");
 				}
@@ -628,7 +626,6 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 				{
 					fprintf(pFile, "\n,,,Stage2 Variance Score,%d\n", DutResults->_calibrationResults.m_nStage2VarianceScore);
 				}
-				//fprintf(pFile, "\n,,,Stage2 Variance Score,%d\n", DutResults->_calibrationResults.m_nStage2VarianceScore);
 			}
 			else
 			{
