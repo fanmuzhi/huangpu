@@ -83,7 +83,7 @@ void Ts_ButtonTest::SetUp()
 
 void Ts_ButtonTest::Execute()
 {
-	bool *nBtnState = new bool;
+	bool nBtnState = 0;
 	_pSyn_DutCtrl->GetBridge(_pSynBridge);
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_bWithStimulus)
 	{
@@ -91,9 +91,9 @@ void Ts_ButtonTest::Execute()
 		//Get the state of the Button pin NUM_DRDY_CHECKS times.
 		for (int i = 0; i<NUM_BTN_CHECKS; i++)
 		{
-			_pSynBridge->GPIO_CheckSwitch(nBtnState);
+			_pSynBridge->GPIO_CheckSwitch(&nBtnState);
 			//_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithStimResults.m_arCurrStates[i] = (*nBtnState & _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_pinMsk) ? 1 : 0;
-			_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithStimResults.m_arCurrStates[i] = *nBtnState;
+			_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithStimResults.m_arCurrStates[i] = nBtnState;
 		}
 
 		SYN_ProcessBtnTestData(_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo, _pSyn_Dut->_pSyn_DutTestResult->_btnTestWithStimResults);
@@ -106,9 +106,9 @@ void Ts_ButtonTest::Execute()
 		//Get the state of the Button pin NUM_DRDY_CHECKS times.
 		for (int i = 0; i<NUM_BTN_CHECKS; i++)
 		{
-			_pSynBridge->GPIO_CheckSwitch(nBtnState);
+			_pSynBridge->GPIO_CheckSwitch(&nBtnState);
 			//_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithoutStimResults.m_arCurrStates[i] = (*nBtnState & _pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo.m_pinMsk) ? 1 : 0;
-			_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithoutStimResults.m_arCurrStates[i] = *nBtnState;
+			_pSyn_Dut->_pSyn_DutTestResult->_btnTestWithoutStimResults.m_arCurrStates[i] = nBtnState;
 		}
 
 		SYN_ProcessBtnTestData(_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithoutStimInfo, _pSyn_Dut->_pSyn_DutTestResult->_btnTestWithoutStimResults);

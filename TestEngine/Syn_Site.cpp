@@ -819,18 +819,17 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	//Current Test
 	if (DutInfo->_currentInfo.m_bExecuted)
 	{
-		fprintf(pFile, "\nCurrent Test,%s,%.0f ms,", DutResults->_currentResults.bPass ? "Pass" : "Fail", DutResults->_currentResults.m_elapsedtime);
-		//If the test was successful.
-		if (DutResults->_currentResults.bPass != 0)
-		{
-			fprintf(pFile, "Digital image acq current (mA),%.3f\n", (float)(DutResults->_currentResults.m_nImageAcqDigCurrent_uA) / 1000);
-			fprintf(pFile, ",,,Analog image acq current (mA),%.3f\n", (float)(DutResults->_currentResults.m_nImageAcqAnaCurrent_uA) / 1000);
-		}
-		else
-		{
-			fprintf(pFile, "Digital image acq current (mA),%.3f\n", (float)(DutResults->_currentResults.m_nImageAcqDigCurrent_uA) / 1000);
-			fprintf(pFile, ",,,Analog image acq current (mA),%.3f\n", (float)(DutResults->_currentResults.m_nImageAcqAnaCurrent_uA) / 1000);
-		}
+		fprintf(pFile, "\nCurrent Test,%s,%.0f ms,\n", DutResults->_currentResults.bPass ? "Pass" : "Fail", DutResults->_currentResults.m_elapsedtime);
+		fprintf(pFile, ",,,Digital image acq current (uA),%f\n", (float)(DutResults->_currentResults.m_nImageAcqDigCurrent_uA));
+		fprintf(pFile, ",,,Analog image acq current (uA),%f\n", (float)(DutResults->_currentResults.m_nImageAcqAnaCurrent_uA));
+	}
+
+	//DeepSleep
+	if (DutInfo->_deepSleepCurrentInfo._bExecuted)
+	{
+		fprintf(pFile, "\nDeep Sleep Current Test,%s,%.0f ms,\n", DutResults->_deepSleepCurrentResults._bPass ? "Pass" : "Fail", DutResults->_deepSleepCurrentResults.m_elapsedtime);
+		fprintf(pFile, ",,,spivcc current (uA),%f\n", (float)(DutResults->_deepSleepCurrentResults.spivcc_current_uA));
+		fprintf(pFile, ",,,vcc current (uA),%f\n", (float)(DutResults->_deepSleepCurrentResults.vcc_current_uA));
 	}
 
 	//Retain Mode Test

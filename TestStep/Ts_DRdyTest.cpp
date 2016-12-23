@@ -54,25 +54,54 @@ void Ts_DRdyTest::SetUp()
 void Ts_DRdyTest::Execute()
 {
 	uint32_t rc(0);
+	Syn_Exception ex(0);
+
 	int portID = _pSyn_Dut->_pSyn_DutTestInfo->_DRdyInfo.m_portId;
 	int pinMsk = _pSyn_Dut->_pSyn_DutTestInfo->_DRdyInfo.m_pinMsk;
 	uint8_t  pResult[2] = {0,0};
-	bool *nDRdyStates = new bool;
+	bool nDRdyStates = 0;
 	_pSyn_DutCtrl->GetBridge(_pSynBridge);
 
-	////write 0x0257 and get status
-	//for (int i = 0; i < NUM_DRDY_CHECKS; i++)
-	//{
-	//	_pSynBridge->GPIO_CheckDRDY(nDRdyStates);
-	//	_pSyn_Dut->_pSyn_DutTestResult->_DRdyResults.m_arHiStates[i] = (*nDRdyStates & pinMsk) ? 1 : 0;
-	//}
-	//read 0x03ff
+	//reset sensor then we can read a DRDY
+	rc = _pSyn_DutCtrl->FpReset();
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Unload Patch Failed");
+		throw ex;
+	}
+	
+	int timeoutVal = 2000;
+	do{
+		_pSynBridge->GPIO_CheckDRDY(&nDRdyStates);
+		if (nDRdyStates == true)
+		{
+			break;
+		}
+		timeoutVal--;
+	} while (0 != timeoutVal);
+
 	for (int i = 0; i < NUM_DRDY_CHECKS; i++)
 	{
-		_pSynBridge->GPIO_CheckDRDY(nDRdyStates);
-		_pSyn_Dut->_pSyn_DutTestResult->_DRdyResults.m_arLoStates[i] = (*nDRdyStates & pinMsk) ? 1 : 0;
+		_pSynBridge->GPIO_CheckDRDY(&nDRdyStates);
+		_pSyn_Dut->_pSyn_DutTestResult->_DRdyResults.m_arHiStates[i] = nDRdyStates;
 	}
-	delete nDRdyStates;
+
+	//excute command can set drdy 0
+	rc = _pSyn_DutCtrl->FpTidleSet(0);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpTidleSet command failed!");
+		throw ex;
+		return;
+	}
+	for (int i = 0; i < NUM_DRDY_CHECKS; i++)
+	{
+		_pSynBridge->GPIO_CheckDRDY(&nDRdyStates);
+		_pSyn_Dut->_pSyn_DutTestResult->_DRdyResults.m_arLoStates[i] = nDRdyStates;
+	}
+
 	_pSyn_Dut->_pSyn_DutTestInfo->_DRdyInfo.m_bExecuted = true;
 
 }
@@ -110,5 +139,4 @@ void Ts_DRdyTest::ProcessData()
 
 void Ts_DRdyTest::CleanUp()
 {
-	_pSyn_DutCtrl->FpReset();
 }

@@ -161,6 +161,22 @@ typedef struct
 
 typedef struct
 {
+	int		_bExecuted;
+	float	_highLimit;
+	//float _fGrav;
+}DeepSleepCurrentInfo;
+
+typedef struct
+{
+	float	spivcc_current_uA;
+	float	vcc_current_uA;
+	int		_bPass;
+
+	double  m_elapsedtime;
+}DeepSleepCurrentResults;
+
+typedef struct
+{
 	uint32_t   buildtime;        /* Unix-style build time, in seconds   *//*  from 1/1/1970 12:00 AM GMT         */
 	uint32_t   buildnum;         /* build number                        */
 	uint8_t    vmajor;           /* major version                       */
@@ -311,6 +327,7 @@ typedef struct
 	int		  m_nTimeout;
 	int		  m_bExecuted;
 }LEDTestInfo;
+
 typedef struct
 {
 	int	m_bPass;
@@ -329,6 +346,7 @@ typedef struct
 	int		  m_nPercentFail;
 	int		  m_bExecuted;
 }SdkBaselineTestInfo;
+
 typedef struct
 {
 	int m_bPass;
@@ -728,14 +746,14 @@ typedef struct
 	//3 = gain of 1000
 
 	AdcBaseLineInfo m_ablInfo;
-	int	m_nImageAcqDigMax_uA;
-	int	m_nImageAcqAnaMax_uA;
-	int	m_nImageAcqDigMin_uA;
-	int	m_nImageAcqAnaMin_uA;
-	int	m_nActiveDigLimit_uA;
-	int	m_nActiveAnaLimit_uA;
-	int	m_nSleepDigLimit_uA;
-	int	m_nSleepAnaLimit_uA;
+	float	m_nImageAcqDigMax_uA;
+	float	m_nImageAcqAnaMax_uA;
+	float	m_nImageAcqDigMin_uA;
+	float	m_nImageAcqAnaMin_uA;
+	float	m_nActiveDigLimit_uA;
+	float	m_nActiveAnaLimit_uA;
+	float	m_nSleepDigLimit_uA;
+	float	m_nSleepAnaLimit_uA;
 
 	int	m_arImageAcqCurrentVals[NUM_CURRENT_VALUES];
 	int	m_arActiveCurrentVals[NUM_CURRENT_VALUES];
@@ -744,11 +762,11 @@ typedef struct
 
 typedef struct
 {
-	int bPass;
-	int	m_nImageAcqDigCurrent_uA;
-	int	m_nImageAcqAnaCurrent_uA;
-	int	m_nSleepDigCurrent_uA;
-	int	m_nSleepAnaCurrent_uA;
+	int		bPass;
+	float	m_nImageAcqDigCurrent_uA;
+	float	m_nImageAcqAnaCurrent_uA;
+	int		m_nSleepDigCurrent_uA;
+	int		m_nSleepAnaCurrent_uA;
 
 	double      m_elapsedtime;
 }CurrentResults;

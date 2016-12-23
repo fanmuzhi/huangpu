@@ -59,16 +59,6 @@ void Syn_FingerprintTest::GetFingerprintImage(CalibrationResults &pCalResults, F
 	return;
 }
 
-void Syn_FingerprintTest::GetFingerprintImageForCurrentTest(CalibrationResults& pCalResults, FPSFrame* pFrame, int nNumRows, int nNumCols, uint32_t* pCurrentDrawVals, int nGain)
-{
-	/*if (NULL == _pSyn_Module)
-	{
-		return;
-	}
-
-	_pSyn_Module->GetFingerprintImageForCurrentTest(pCalResults, pFrame, nNumRows, nNumCols, pCurrentDrawVals, nGain);*/
-}
-
 void Syn_FingerprintTest::ImageDecode(FPSFrame *pDecodeFrame, FPSFrame *pEncodeFrame, int nNumRow, int nNumCol, int nNumFrames)
 {
 	if (NULL == _pSyn_DutCtrl)
