@@ -343,6 +343,12 @@ void Ts_OTPWriteMainSector::ProcessData()
 
 	//check projID match
 	rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PRODUCT_ID, pDst, MS0_SIZE, count);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("OtpRomTagRead EXT_TAG_PRODUCT_ID is failed!");
+		throw ex;
+	}
 	if (count > 0)
 	{
 		//result = memcmp(&pDst[4], &_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nProductId, 4);
@@ -359,6 +365,12 @@ void Ts_OTPWriteMainSector::ProcessData()
 
 	//check LNA match
 	rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, pDst, MS0_SIZE, count);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("OtpRomTagRead EXT_TAG_LNA is failed!");
+		throw ex;
+	}
 	if (count > 0)
 	{
 		if (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted)
@@ -377,6 +389,12 @@ void Ts_OTPWriteMainSector::ProcessData()
 
 	//check PGA OOPP match
 	rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPP, pDst, MS0_SIZE, count);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("OtpRomTagRead EXT_TAG_PGA_OOPP is failed!");
+		throw ex;
+	}
 	if (count > 0)
 	{
 		if (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted)
