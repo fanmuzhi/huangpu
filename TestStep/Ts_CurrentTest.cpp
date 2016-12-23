@@ -33,10 +33,10 @@ void Ts_CurrentTest::SetUp()
 	_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_bExecuted = false;
 	_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nLowGain = 2;
 	_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nHighGain = 3;
-	_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqAnaMax_uA = (int)(50 * 1000);
-	_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqDigMax_uA = (int)(5 * 1000);
-	_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqAnaMin_uA = (int)(1 * 1000);
-	_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqDigMin_uA = (int)(0.01 * 1000);
+	_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqAnaMax_uA = (float)(50 * 1000);
+	_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqDigMax_uA = (float)(5 * 1000);
+	_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqAnaMin_uA = (float)(1 * 1000);
+	_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqDigMin_uA = (float)(0.01 * 1000);
 	
 	ParseTestStepArgs(_strArgs, listOfArgValue);
 	size_t ilistSize = listOfArgValue.size();
@@ -51,13 +51,13 @@ void Ts_CurrentTest::SetUp()
 	if (0 != listOfArgValue[1].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nHighGain = atoi(listOfArgValue[1].c_str()) % 4;//Gain range is 0-3.
 	if (0 != listOfArgValue[2].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqAnaMax_uA = (int)(stof(listOfArgValue[2]) * 1000);//(int)(_tstof((LPCTSTR)listOfArgValue[2].c_str()) * 1000);
+		_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqAnaMax_uA = (float)(stof(listOfArgValue[2]) * 1000);//(int)(_tstof((LPCTSTR)listOfArgValue[2].c_str()) * 1000);
 	if (0 != listOfArgValue[3].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqDigMax_uA = (int)(stof(listOfArgValue[3]) * 1000);//(int)(_tstof((LPCTSTR)listOfArgValue[3].c_str()) * 1000);
+		_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqDigMax_uA = (float)(stof(listOfArgValue[3]) * 1000);//(int)(_tstof((LPCTSTR)listOfArgValue[3].c_str()) * 1000);
 	if (0 != listOfArgValue[4].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqAnaMin_uA = (int)(stof(listOfArgValue[4]) * 1000);//(int)(_tstof((LPCTSTR)listOfArgValue[4].c_str()) * 1000);
+		_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqAnaMin_uA = (float)(stof(listOfArgValue[4]) * 1000);//(int)(_tstof((LPCTSTR)listOfArgValue[4].c_str()) * 1000);
 	if (0 != listOfArgValue[5].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqDigMin_uA = (int)(stof(listOfArgValue[5]) * 1000);//(int)(_tstof((LPCTSTR)listOfArgValue[5].c_str()) * 1000);
+		_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqDigMin_uA = (float)(stof(listOfArgValue[5]) * 1000);//(int)(_tstof((LPCTSTR)listOfArgValue[5].c_str()) * 1000);
 
 	//load ImgAcqPatch
 	Syn_PatchInfo ImgAcqPatchInfo;
@@ -102,8 +102,8 @@ void Ts_CurrentTest::Execute()
 	}
 
 
-	_pSyn_Dut->_pSyn_DutTestResult->_currentResults.m_nImageAcqDigCurrent_uA = (arrValue[0] - _pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[2])/1000;	//hign gain 1.8V
-	_pSyn_Dut->_pSyn_DutTestResult->_currentResults.m_nImageAcqAnaCurrent_uA = (arrValue[1] - _pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[3])/1000;	//hign gain 3.3V
+	_pSyn_Dut->_pSyn_DutTestResult->_currentResults.m_nImageAcqDigCurrent_uA = ((float)arrValue[0] - (float)_pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[2])/1000;	//hign gain 1.8V
+	_pSyn_Dut->_pSyn_DutTestResult->_currentResults.m_nImageAcqAnaCurrent_uA = ((float)arrValue[1] - (float)_pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[3])/1000;	//hign gain 3.3V
 
 }
 
@@ -113,6 +113,10 @@ void Ts_CurrentTest::ProcessData()
 
 	if ((_pSyn_Dut->_pSyn_DutTestResult->_currentResults.m_nImageAcqAnaCurrent_uA > _pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqAnaMax_uA)|| 
 		(_pSyn_Dut->_pSyn_DutTestResult->_currentResults.m_nImageAcqAnaCurrent_uA < _pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqAnaMin_uA))
+		_pSyn_Dut->_pSyn_DutTestResult->_currentResults.bPass = 0;
+
+	if ((_pSyn_Dut->_pSyn_DutTestResult->_currentResults.m_nImageAcqDigCurrent_uA > _pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqDigMax_uA)|| 
+		(_pSyn_Dut->_pSyn_DutTestResult->_currentResults.m_nImageAcqDigCurrent_uA < _pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqDigMin_uA))
 		_pSyn_Dut->_pSyn_DutTestResult->_currentResults.bPass = 0;
 
 	if (!_pSyn_Dut->_pSyn_DutTestResult->_currentResults.bPass)
