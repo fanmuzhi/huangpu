@@ -62,6 +62,12 @@ void Ts_ReadDutAdc::Execute()
 	uint8_t pDst[MS0_SIZE] = { 0 };
 	int count = 0;
 	uint32_t rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_DutTempAdc, pDst, MS0_SIZE, count);
+	if (0 != rc)
+	{
+		Syn_Exception ex(rc);
+		ex.SetDescription("OtpRomTagRead EXT_TAG_DutTempAdc is failed!");
+		throw ex;
+	}
 	if (0 == count)
 	{
 		int nTotal = 0;

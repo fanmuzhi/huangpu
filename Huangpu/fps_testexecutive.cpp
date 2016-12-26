@@ -956,7 +956,7 @@ void FPS_TestExecutive::GetVersion()
 	uint32_t rc = pSelectedSite->Open();
 	if (rc != 0)
 	{
-		QMessageBox::information(this, QString("Getverison Error : 0x"), QString::number(rc, 16).toUpper());
+		QMessageBox::information(this, QString("Error"), QString("Getverison Error : 0x") + QString::number(rc, 16).toUpper());
 		return;
 	}
 
@@ -964,20 +964,20 @@ void FPS_TestExecutive::GetVersion()
 	rc = pSelectedSite->ExecuteTestStep("InitializationStep");
 	if (rc != 0)
 	{
-		QMessageBox::information(this, QString("Getverison Error : 0x"), QString::number(rc, 16).toUpper());
+		QMessageBox::information(this, QString("Error"), QString("Getverison Error : 0x") + QString::number(rc, 16).toUpper());
 		return;
 	}
 	rc = pSelectedSite->GetTestResult(oDutTestResult);
 	if (rc != 0)
 	{
-		QMessageBox::information(this, QString("Getverison Error : 0x"), QString::number(rc, 16).toUpper());
+		QMessageBox::information(this, QString("Error"), QString("Getverison Error : 0x") + QString::number(rc, 16).toUpper());
 		return;
 	}
 	Syn_DutTestInfo *pInfo = NULL;
 	rc = pSelectedSite->GetTestInfo(pInfo);
 	if (0 != rc)
 	{
-		QMessageBox::information(this, QString("Getverison Error : 0x"), QString::number(rc, 16).toUpper());
+		QMessageBox::information(this,QString("Error"), QString("Getverison Error : 0x") + QString::number(rc, 16).toUpper());
 		return;
 	}
 	rc = pSelectedSite->ExecuteTestStep("FinalizationStep");
@@ -1025,28 +1025,60 @@ void FPS_TestExecutive::GetVersion()
 			break;
 	}
 
+	QString str_iface("");
+	switch (pInfo->_getVerInfo.iface)
+	{
+		case 0:
+			str_iface = " (UNKNOWN) ";
+			break;
+		case 1:
+			str_iface = " (USB) ";
+			break;
+		case 2:
+			str_iface = " (PARALLEL) ";
+			break;
+		case 3:
+			str_iface = " (SPI) ";
+			break;
+		case 4:
+			str_iface = " (SPI_MASTER) ";
+			break;
+		case 5:
+			str_iface = " (SPI_MCBSP) ";
+			break;
+		case 6:
+			str_iface = " (I2C) ";
+			break;
+		case 7:
+			str_iface = " (PS2) ";
+			break;
+		default:
+			str_iface = " (???) ";
+			break;
+	}
+
 	ui.textBrowser->clear();
 	ui.textBrowser->append(QString("Version:"));
 	//QDateTime timeValue = QDateTime::fromTime_t(pInfo->_getVerInfo.buildtime + 43200);
 	//ui.textBrowser->append(QString("buildtime:") + timeValue.toString());
-	ui.textBrowser->append(QString("buildtime:") + QString::fromWCharArray(timestr));
-	ui.textBrowser->append(QString("buildnum:") + QString::number(pInfo->_getVerInfo.buildnum));
-	ui.textBrowser->append(QString("vmajor:") + QString::number(pInfo->_getVerInfo.vmajor));
-	ui.textBrowser->append(QString("vminor:") + QString::number(pInfo->_getVerInfo.vminor));
-	ui.textBrowser->append(QString("target:") + QString::number(pInfo->_getVerInfo.target) + strTarget);
-	ui.textBrowser->append(QString("product:") + QString::number(pInfo->_getVerInfo.product) + strProductType);
-	ui.textBrowser->append(QString("siliconrev:") + QString::number(pInfo->_getVerInfo.siliconrev));
-	ui.textBrowser->append(QString("formalrel:") + QString::number(pInfo->_getVerInfo.formalrel));
-	ui.textBrowser->append(QString("platform:") + QString::number(pInfo->_getVerInfo.platform));
-	ui.textBrowser->append(QString("patch:") + QString::number(pInfo->_getVerInfo.patch));
-	ui.textBrowser->append(QString("serial_number:") + QString::fromLatin1(oDutTestResult->_versionResult.sSerialNumber, 12));
-	ui.textBrowser->append(QString("security:") + QString::number(pInfo->_getVerInfo.security[0]) + QString("|") + QString::number(pInfo->_getVerInfo.security[1]));
-	ui.textBrowser->append(QString("patchsig:") + QString::number(pInfo->_getVerInfo.patchsig));
-	ui.textBrowser->append(QString("iface:") + QString::number(pInfo->_getVerInfo.iface));
-	ui.textBrowser->append(QString("otpsig:") + QString::number(pInfo->_getVerInfo.otpsig[0]) + QString("|") + QString::number(pInfo->_getVerInfo.otpsig[1]) + QString("|") + QString::number(pInfo->_getVerInfo.otpsig[2]));
-	ui.textBrowser->append(QString("otpspare1:") + QString::number(pInfo->_getVerInfo.otpspare1));
-	ui.textBrowser->append(QString("reserved:") + QString::number(pInfo->_getVerInfo.reserved));
-	ui.textBrowser->append(QString("device_type:") + QString::number(pInfo->_getVerInfo.device_type));
+	ui.textBrowser->append(QString("buildtime : ") + QString::fromWCharArray(timestr));
+	ui.textBrowser->append(QString("buildnum : ") + QString::number(pInfo->_getVerInfo.buildnum));
+	ui.textBrowser->append(QString("vmajor : ") + QString::number(pInfo->_getVerInfo.vmajor));
+	ui.textBrowser->append(QString("vminor : ") + QString::number(pInfo->_getVerInfo.vminor));
+	ui.textBrowser->append(QString("target : ") + QString::number(pInfo->_getVerInfo.target) + strTarget);
+	ui.textBrowser->append(QString("product : ") + QString::number(pInfo->_getVerInfo.product) + strProductType);
+	ui.textBrowser->append(QString("siliconrev : ") + QString::number(pInfo->_getVerInfo.siliconrev));
+	ui.textBrowser->append(QString("formalrel : ") + QString::number(pInfo->_getVerInfo.formalrel));
+	ui.textBrowser->append(QString("platform : ") + QString::number(pInfo->_getVerInfo.platform));
+	ui.textBrowser->append(QString("patch : ") + QString::number(pInfo->_getVerInfo.patch));
+	ui.textBrowser->append(QString("serial_number : ") + QString::fromLatin1(oDutTestResult->_versionResult.sSerialNumber, 12));
+	ui.textBrowser->append(QString("security : ") + QString::number(pInfo->_getVerInfo.security[0]) + QString("|") + QString::number(pInfo->_getVerInfo.security[1]));
+	ui.textBrowser->append(QString("patchsig : ") + QString::number(pInfo->_getVerInfo.patchsig));
+	ui.textBrowser->append(QString("iface : ") + QString::number(pInfo->_getVerInfo.iface) + str_iface);
+	ui.textBrowser->append(QString("otpsig : ") + QString::number(pInfo->_getVerInfo.otpsig[0]) + QString("|") + QString::number(pInfo->_getVerInfo.otpsig[1]) + QString("|") + QString::number(pInfo->_getVerInfo.otpsig[2]));
+	ui.textBrowser->append(QString("otpspare1 : ") + QString::number(pInfo->_getVerInfo.otpspare1));
+	ui.textBrowser->append(QString("reserved : ") + QString::number(pInfo->_getVerInfo.reserved));
+	ui.textBrowser->append(QString("device_type : ") + QString::number(pInfo->_getVerInfo.device_type));
 
 	pSelectedSite->Close();
 }
