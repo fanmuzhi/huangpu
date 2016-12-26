@@ -35,7 +35,7 @@ public:
 
 	virtual uint32_t GPIO_CheckDRDY(bool *drdyp, uint32_t timeout = 2000) = 0;
 
-	virtual uint32_t GPIO_SetDRDY(bool drdyval, uint32_t timeout = 2000) = 0;
+	//virtual uint32_t GPIO_SetDRDY(bool drdyval, uint32_t timeout = 2000) = 0;		//DRdy is input only on M5.
 
 	virtual uint32_t GPIO_CheckSleepN(bool *sleepval, uint32_t timeout = 2000) = 0;
 
@@ -43,7 +43,7 @@ public:
 
 	virtual uint32_t GPIO_CheckSwitch(bool *switchval, uint32_t timeout = 2000) = 0;
 
-	virtual uint32_t GPIO_SetSwitch(bool switchval, uint32_t timeout = 2000) = 0;
+	//virtual uint32_t GPIO_SetSwitch(bool switchval, uint32_t timeout = 2000) = 0;	 //make switch input only
 
 	virtual uint32_t GPIO_CheckOSCTrim(bool *trimchval, uint32_t timeout = 2000) = 0;
 

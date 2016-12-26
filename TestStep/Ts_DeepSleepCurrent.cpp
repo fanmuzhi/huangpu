@@ -65,11 +65,11 @@ void Ts_DeepSleepCurrent::Execute()
 
 	_pSynBridge->GetCurrentValues(arrValue, true);		//low gain
 
-	float spivcc_current = (float)(arrValue[0]) - (float)(_pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[0]);
-	float vcc_current = (float)(arrValue[1]) - (float)(_pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[1]);
+	float spivcc_current = ((float)(arrValue[0]) - (float)(_pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[0])) / 1000;
+	float vcc_current = ((float)(arrValue[1]) - (float)(_pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[1])) / 1000;
 
-	_pSyn_Dut->_pSyn_DutTestResult->_deepSleepCurrentResults.spivcc_current_uA = spivcc_current/1000;	//uA
-	_pSyn_Dut->_pSyn_DutTestResult->_deepSleepCurrentResults.vcc_current_uA = vcc_current/1000;		//uA
+	_pSyn_Dut->_pSyn_DutTestResult->_deepSleepCurrentResults.spivcc_current_uA = spivcc_current;	//uA
+	_pSyn_Dut->_pSyn_DutTestResult->_deepSleepCurrentResults.vcc_current_uA = vcc_current;		//uA
 
 #ifdef _DEBUG
 	LOG(DEBUG) << "DeepSleep SPIVCC Current (uA): " << spivcc_current;

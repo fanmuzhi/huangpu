@@ -332,8 +332,21 @@ bool Ts_SCM_WOF::ExecuteZone0SCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResult
 	}
 
 	//Clear registers.
-	_pSyn_DutCtrl->FpUnloadPatch();
-	_pSyn_DutCtrl->FpReset();
+	rc = _pSyn_DutCtrl->FpReset();
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpReset() Failed");
+		throw ex;
+	}
+
+	rc = _pSyn_DutCtrl->FpTidleSet(0);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpTidleSet command failed!");
+		throw ex;
+	}
 	return true;
 }
 
@@ -396,8 +409,21 @@ bool Ts_SCM_WOF::ExecuteZone1SCMWofTest(SCM_WofTestInfo& info, SCM_WofTestResult
 	}
 
 	//clear registers
-	_pSyn_DutCtrl->FpUnloadPatch();
-	_pSyn_DutCtrl->FpReset();
+	rc = _pSyn_DutCtrl->FpReset();
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpReset() Failed");
+		throw ex;
+	}
+
+	rc = _pSyn_DutCtrl->FpTidleSet(0);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpTidleSet command failed!");
+		throw ex;
+	}
 	return true;
 }
 
