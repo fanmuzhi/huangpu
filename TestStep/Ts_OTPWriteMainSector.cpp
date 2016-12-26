@@ -4,7 +4,7 @@
 
 Ts_OTPWriteMainSector::Ts_OTPWriteMainSector(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
-, bBurnPGA_OOPP(false)
+, bPass(true)
 {
 }
 
@@ -45,7 +45,6 @@ void Ts_OTPWriteMainSector::Execute()
 		throw ex;
 		return;
 	}
-	_pSyn_DutCtrl->FpUnloadPatch();
 	_pSyn_DutCtrl->FpLoadPatch(OTPRWPatchInfo._pArrayBuf, OTPRWPatchInfo._uiArraySize);
 
 	if (0 != _pSyn_Dut->_pSyn_DutTestResult->_binCodes.size())
@@ -55,7 +54,6 @@ void Ts_OTPWriteMainSector::Execute()
 	}
 
 	uint8_t	arMS0[MS0_SIZE] = { 0 };
-	bool	bSuccess = true;
 	int		nNumCols = _pSyn_Dut->_ColumnNumber;
 	int		nLNA_count, nPGA_count, nSNR_count, nLNA_PGA_GAINS_count;
 	int		nFlexId_count, nWofBot_count, nWofTop_count, nDutTempAdc_count, nPGA_OOPP_count, nScmWofTop_count, nScmWofBot_count, nProductId_count, nPartNumberId_count;
@@ -72,10 +70,21 @@ void Ts_OTPWriteMainSector::Execute()
 			ex.SetDescription("OtpRomTagRead EXT_TAG_LNA is failed!");
 			throw ex;
 		}
-		if (nLNA_count == 0)
+		if (nLNA_count <= 0)
 		{
 			BurnToOTP(EXT_TAG_LNA, &(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults).m_pPrintPatch[(_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nLnaIdx], _pSyn_Dut->_RowNumber);
 			BurnToOTP(EXT_TAG_LNA, &(_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults).m_pPrintPatch[(_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo).m_nLnaIdx], _pSyn_Dut->_RowNumber);
+		}
+		else
+		{	//compare the LNA value in OTP with value used in calibration
+			if (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted)
+			{
+				int result = memcmp(&arMS0[4], &_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch[_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nLnaIdx], _pSyn_Dut->_RowNumber);
+				if (result != 0)
+				{
+					bPass = false;
+				}
+			}
 		}
 
 		//If PGA values (one offset per pixel) have not been stored in the OTP.
@@ -88,11 +97,22 @@ void Ts_OTPWriteMainSector::Execute()
 				ex.SetDescription("OtpRomTagRead EXT_TAG_PGA_OOPP is failed!");
 				throw ex;
 			}
-			if (nPGA_OOPP_count == 0)
+			if (nPGA_OOPP_count <= 0)
 			{
 				BurnToOTP(EXT_TAG_PGA_OOPP, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_arPgaOffsets, NUM_PGA_OOPP_OTP_ROWS * (nNumCols - 8));
 				BurnToOTP(EXT_TAG_PGA_OOPP, _pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_arPgaOffsets, NUM_PGA_OOPP_OTP_ROWS * (nNumCols - 8));
-				bBurnPGA_OOPP = true;
+			}
+			else
+			{
+				if (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted)
+				{
+					//compare result in OTP array 
+					int result = memcmp(&arMS0[4], &_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPGAOtpArray, (_pSyn_Dut->_ColumnNumber - 8) * NUM_PGA_OOPP_OTP_ROWS);
+					if (result != 0)
+					{
+						bPass = false;
+					}
+				}
 			}
 		}
 
@@ -396,24 +416,11 @@ void Ts_OTPWriteMainSector::Execute()
 	{
 		if (NULL != fmPatch._pArrayBuf)
 		{
-			//if (!RegCheckBitSet())
-			//{
-			//	return;
-			//}
-			try
+			rc = _pSyn_DutCtrl->FpOtpRomWrite(MAIN_SEC, 1, fmPatch._pArrayBuf, fmPatch._uiArraySize);
+			if (0 != rc)
 			{
+				//this is a work around.
 				_pSyn_DutCtrl->FpOtpRomWrite(MAIN_SEC, 1, fmPatch._pArrayBuf, fmPatch._uiArraySize);
-			}
-			catch (exception ex)
-			{
-				try
-				{
-					//this is a work around.
-					_pSyn_DutCtrl->FpOtpRomWrite(MAIN_SEC, 1, fmPatch._pArrayBuf, fmPatch._uiArraySize);
-				}
-				catch (...)
-				{
-				}
 			}
 		}
 	}
@@ -423,93 +430,6 @@ void Ts_OTPWriteMainSector::Execute()
 
 void Ts_OTPWriteMainSector::ProcessData()
 {
-	Syn_Exception ex(0);
-	uint32_t rc(0);
-
-	int count = 0;
-	int result = 1;		//0 for match
-	bool bPass = true;
-	uint8_t pDst[MS0_SIZE];
-
-	//check projID match
-	rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PRODUCT_ID, pDst, MS0_SIZE, count);
-	if (0 != rc)
-	{
-		ex.SetError(rc);
-		ex.SetDescription("OtpRomTagRead EXT_TAG_PRODUCT_ID is failed!");
-		throw ex;
-	}
-	if (count > 0)
-	{
-		//result = memcmp(&pDst[4], &_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nProductId, 4);
-		uint32_t projID = *((uint32_t*)&pDst[4]);
-		if (_pSyn_Dut->_pSyn_DutTestInfo->_initInfo.m_nProductId != projID)
-		{
-			bPass = false;
-		}
-	}
-	else
-	{
-		bPass = false;
-	}
-
-	//check LNA match
-	rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_LNA, pDst, MS0_SIZE, count);
-	if (0 != rc)
-	{
-		ex.SetError(rc);
-		ex.SetDescription("OtpRomTagRead EXT_TAG_LNA is failed!");
-		throw ex;
-	}
-	if (count > 0)
-	{
-		if (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted)
-		{
-			result = memcmp(&pDst[4], &_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPrintPatch[_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_nLnaIdx], _pSyn_Dut->_RowNumber);
-			if (result != 0)
-			{
-				bPass = false;
-			}
-		}
-	}
-	else
-	{
-		bPass = false;
-	}
-
-	//check PGA OOPP match
-	rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_PGA_OOPP, pDst, MS0_SIZE, count);
-	if (0 != rc)
-	{
-		ex.SetError(rc);
-		ex.SetDescription("OtpRomTagRead EXT_TAG_PGA_OOPP is failed!");
-		throw ex;
-	}
-	if (count > 0)
-	{
-		if (_pSyn_Dut->_pSyn_DutTestInfo->_calibrationInfo.m_bExecuted)
-		{
-			if (bBurnPGA_OOPP)
-			{
-				//compare result in real time calibration
-				result = memcmp(&pDst[4], &_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_arPgaOffsets, (_pSyn_Dut->_ColumnNumber - 8) * NUM_PGA_OOPP_OTP_ROWS);
-			}
-			else
-			{
-				//compare result in OTP
-				result = memcmp(&pDst[4], &_pSyn_Dut->_pSyn_DutTestResult->_calibrationResults.m_pPGAOtpArray, (_pSyn_Dut->_ColumnNumber - 8)* NUM_PGA_OOPP_OTP_ROWS);
-			}
-			if (result != 0)
-			{
-				bPass = false;
-			}
-		}
-	}
-	else
-	{
-		bPass = false;
-	}
-
 	if (0 != _pSyn_Dut->_pSyn_DutTestResult->_binCodes.size() || !bPass)
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("OTPWriteMainSector", "Fail"));
@@ -522,7 +442,23 @@ void Ts_OTPWriteMainSector::ProcessData()
 
 void Ts_OTPWriteMainSector::CleanUp()
 {
-	_pSyn_DutCtrl->FpUnloadPatch();
+	Syn_Exception ex(0);
+	uint32_t rc = _pSyn_DutCtrl->FpReset();
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpReset() Failed");
+		throw ex;
+	}
+
+	rc = _pSyn_DutCtrl->FpTidleSet(0);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpTidleSet command failed!");
+		throw ex;
+		return;
+	}
 }
 
 void Ts_OTPWriteMainSector::BurnToOTP(long nRecType, uint8_t* pSrc, int numBytes)

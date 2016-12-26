@@ -91,7 +91,7 @@ typedef unsigned char UINT8; // UINT8 is created to handle MPC04 data
 #define MAX_PART_NUMBER_LENGTH 8
 
 #define MPC04_CLOCKRATE			8
-#define M5_CLOCKRATE			8	
+#define M5_CLOCKRATE			12	
 
 #define Stage2VarianceScoreDefault	-0x300
 
