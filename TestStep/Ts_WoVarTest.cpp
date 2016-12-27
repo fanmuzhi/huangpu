@@ -115,7 +115,7 @@ void Ts_WoVarTest::CleanUp()
 	if (0 != rc)
 	{
 		ex.SetError(rc);
-		ex.SetDescription("Unload Patch Failed");
+		ex.SetDescription("FpReset() Failed");
 		throw ex;
 	}
 

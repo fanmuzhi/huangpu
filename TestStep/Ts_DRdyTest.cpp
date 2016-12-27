@@ -67,7 +67,7 @@ void Ts_DRdyTest::Execute()
 	if (0 != rc)
 	{
 		ex.SetError(rc);
-		ex.SetDescription("Unload Patch Failed");
+		ex.SetDescription("FpRest() Failed");
 		throw ex;
 	}
 	

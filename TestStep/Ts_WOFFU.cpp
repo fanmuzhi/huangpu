@@ -327,8 +327,21 @@ bool Ts_WOFFU::GetZone0FingerUpData(WofTestInfo &wofInfo, WofTestResults &wofRes
 	}
 
 	//Clear registers.
-	_pSyn_DutCtrl->FpUnloadPatch();
-	_pSyn_DutCtrl->FpReset();
+	rc = _pSyn_DutCtrl->FpReset();
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpReset() Failed");
+		throw ex;
+	}
+
+	rc = _pSyn_DutCtrl->FpTidleSet(0);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpTidleSet command failed!");
+		throw ex;
+	}
 
 	return true;
 }
@@ -378,8 +391,21 @@ bool Ts_WOFFU::GetZone1FingerUpData(WofTestInfo &wofInfo, WofTestResults &wofRes
 	}
 
 	//Clear registers.
-	_pSyn_DutCtrl->FpUnloadPatch();
-	_pSyn_DutCtrl->FpReset();
+	rc = _pSyn_DutCtrl->FpReset();
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpReset() Failed");
+		throw ex;
+	}
+
+	rc = _pSyn_DutCtrl->FpTidleSet(0);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpTidleSet command failed!");
+		throw ex;
+	}
 
 	return true;
 }

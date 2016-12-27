@@ -151,7 +151,7 @@ void Ts_ButtonTest::ProcessData()
 
 void Ts_ButtonTest::CleanUp()
 {
-	_pSyn_DutCtrl->FpReset();
+	//_pSyn_DutCtrl->FpReset();
 }
 
 void Ts_ButtonTest::SYN_ProcessBtnTestData(BtnTestInfo &pInfo, BtnTestResults &pResults)

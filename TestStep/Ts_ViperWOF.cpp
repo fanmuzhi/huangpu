@@ -281,8 +281,21 @@ bool Ts_ViperWOF::GetZ0WofData(WofTestInfo &wofInfo, WofTestResults &wofResults,
 	}
 
 	//Clear registers.
-	_pSyn_DutCtrl->FpUnloadPatch();
-	_pSyn_DutCtrl->FpReset();
+	rc = _pSyn_DutCtrl->FpReset();
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpReset() Failed");
+		throw ex;
+	}
+
+	rc = _pSyn_DutCtrl->FpTidleSet(0);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpTidleSet command failed!");
+		throw ex;
+	}
 	return true;
 }
 
