@@ -918,7 +918,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 			stType = "SHA1";
 		else
 			stType = "Unknown(convert to XOR)";
-		fprintf(pFile, "\n,,,%s,%08x,%08x", stType.c_str(), DutInfo->_ROMChecksumInfo.m_ChecksumValue, DutResults->_ROMChecksumResults.m_ChecksumResult);
+		fprintf(pFile, "\n,,,%s,0x%08x,0x%08x", stType.c_str(), DutInfo->_ROMChecksumInfo.m_ChecksumValue, DutResults->_ROMChecksumResults.m_ChecksumResult);
 		
 		fprintf(pFile, "\n");
 	}

@@ -223,7 +223,7 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	{
 		opTestStepInstance = new Ts_DeepSleepCurrent(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
-	else if (std::string("Ts_ROMChecksum") == strTestStepName)
+	else if (std::string("ROMChecksum") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_ROMChecksum(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}

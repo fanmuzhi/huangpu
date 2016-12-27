@@ -43,7 +43,7 @@ void Ts_ROMChecksum::SetUp()
 	if (0 != listOfArgValue[0].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_ROMChecksumInfo.m_Type = atoi(listOfArgValue[0].c_str());
 	if (0 != listOfArgValue[1].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_ROMChecksumInfo.m_ChecksumValue = atoi(listOfArgValue[1].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_ROMChecksumInfo.m_ChecksumValue = std::stoul(listOfArgValue[1], NULL, 16);
 }
 
 
@@ -144,7 +144,7 @@ void Ts_ROMChecksum::Execute()
 
 	_pSyn_Dut->_pSyn_DutTestResult->_ROMChecksumResults.m_ChecksumResult = checksumResult;
 
-	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_bExecuted = true;
+	_pSyn_Dut->_pSyn_DutTestInfo->_ROMChecksumInfo.m_bExecuted = true;
 }
 
 
