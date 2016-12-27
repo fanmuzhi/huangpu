@@ -179,8 +179,7 @@ void Ts_InitializationStep::Execute()
 		for (size_t t = 0; t < snSize; t++)
 		{
 			uint8_t tempSN = (_pSyn_Dut->_DeviceSerialNumber)[t] - '0';//char to int
-			unsigned ValueSN = tempSN * pow(10, snSize - t - 1);
-			iDeviceSN += ValueSN;
+			iDeviceSN += tempSN * pow(10, snSize - t - 1);
 		}
 
 		Create_SN(snInitArray, iDeviceSN, _pSyn_Dut->_iSiteNumber, 0);
