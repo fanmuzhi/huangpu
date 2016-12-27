@@ -118,6 +118,9 @@
     <ClCompile Include="Ts_DeepSleepCurrent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Ts_ROMChecksum.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Syn_TestStep.h">
@@ -238,6 +241,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ts_DeepSleepCurrent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_ROMChecksum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

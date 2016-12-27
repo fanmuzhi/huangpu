@@ -142,6 +142,7 @@ xcopy /y "$(SolutionDir)..\changning\FpBridge\syn_devicemanager.h" "$(SolutionDi
     <ClInclude Include="Ts_RAMTest.h" />
     <ClInclude Include="Ts_ReadDutAdc.h" />
     <ClInclude Include="Ts_RetainMode.h" />
+    <ClInclude Include="Ts_ROMChecksum.h" />
     <ClInclude Include="Ts_RxStandardDev.h" />
     <ClInclude Include="Ts_SCM_WOF.h" />
     <ClInclude Include="Ts_SharpnessTest.h" />
@@ -183,6 +184,7 @@ xcopy /y "$(SolutionDir)..\changning\FpBridge\syn_devicemanager.h" "$(SolutionDi
     <ClCompile Include="Ts_RAMTest.cpp" />
     <ClCompile Include="Ts_ReadDutAdc.cpp" />
     <ClCompile Include="Ts_RetainMode.cpp" />
+    <ClCompile Include="Ts_ROMChecksum.cpp" />
     <ClCompile Include="Ts_RxStandardDev.cpp" />
     <ClCompile Include="Ts_SCM_WOF.cpp" />
     <ClCompile Include="Ts_SharpnessTest.cpp" />

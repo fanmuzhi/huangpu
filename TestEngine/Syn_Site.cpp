@@ -903,6 +903,26 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 		fprintf(pFile, "\n");
 	}
 
+	//ROMChecksum Test
+	if (DutInfo->_ROMChecksumInfo.m_bExecuted)
+	{
+		fprintf(pFile, "\nROMChecksum Test,%s,%.0f ms, Type, Standard value, Result value", DutResults->_ROMChecksumResults.m_bPass ? "Pass" : "Fail", DutResults->_ROMChecksumResults.m_elapsedtime);
+		std::string stType;
+		if (1 == DutInfo->_ROMChecksumInfo.m_Type)
+			stType = "XOR";
+		else if (2 == DutInfo->_ROMChecksumInfo.m_Type)
+			stType = "CRC32";
+		else if (3 == DutInfo->_ROMChecksumInfo.m_Type)
+			stType = "SHA256";
+		else if (4 == DutInfo->_ROMChecksumInfo.m_Type)
+			stType = "SHA1";
+		else
+			stType = "Unknown(convert to XOR)";
+		fprintf(pFile, "\n,,,%s,%08x,%08x", stType.c_str(), DutInfo->_ROMChecksumInfo.m_ChecksumValue, DutResults->_ROMChecksumResults.m_ChecksumResult);
+		
+		fprintf(pFile, "\n");
+	}
+
 	//Average No Finger & Average Finger
 	//int numFrames = 30;
 	//float temp = 0.0;
