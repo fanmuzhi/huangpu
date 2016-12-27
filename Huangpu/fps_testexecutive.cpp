@@ -478,12 +478,22 @@ QString FPS_TestExecutive::TransformSerialnumber(uint8_t *arrSerialnumber, uint3
 	if (size < 6)
 		return "";
 
-	QString strSerialnumber("");
+	QString strSN45("");
+	QString strSN0123("");
+	for (unsigned int i = 0; i < 6; i++)
+	{
+		QString strTempSN = QString::number(arrSerialnumber[i], 16).toUpper();
+		strTempSN = strTempSN.length() == 2 ? strTempSN : "0" + strTempSN;
 
-	strSerialnumber = QString::number(arrSerialnumber[4], 16) + QString::number(arrSerialnumber[5], 16) + QString::number(arrSerialnumber[0], 16) + 
-						QString::number(arrSerialnumber[1], 16) + QString::number(arrSerialnumber[2], 16) + QString::number(arrSerialnumber[3], 16);
+		if (4 == i || 5 == i)
+			strSN45 += strTempSN;
+		else
+			strSN0123 += strTempSN;
+	}
 
-	return strSerialnumber.toUpper();
+	QString strSerialnumber = strSN45 + strSN0123;
+
+	return strSerialnumber;
 }
 
 void FPS_TestExecutive::ReceiveTestResults(unsigned int iSiteNumber,const Syn_DutTestResult *pDutResult)
