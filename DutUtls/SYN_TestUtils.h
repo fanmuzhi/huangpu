@@ -2,7 +2,8 @@
 
 #include <stdint.h>
 
-#define SW_VERSION "1.1.6"
+#define SW_VERSION		"1.1.6"
+#define SW_RELEASEDATE	"2016-12-28"
 
 #define SYN_FALSE							0
 #define SYN_TRUE							!SYN_FALSE

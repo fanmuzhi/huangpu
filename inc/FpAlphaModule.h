@@ -46,7 +46,7 @@ typedef struct Alpha_Sensor_Status
 	unsigned int ALIVE;
 }Alpha_Sensor_Status_t;
 
-enum class ChecksumType{ XOR, CRC32, SHA256, SHA1};
+enum class ChecksumType{ XOR, CRC32, SHA256, SHA1 };
 
 class SYNA_FPALPHAMODULE_API FpAlphaModule
 {
