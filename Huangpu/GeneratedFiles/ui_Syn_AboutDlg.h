@@ -45,13 +45,14 @@ public:
         if (Syn_AboutDlg->objectName().isEmpty())
             Syn_AboutDlg->setObjectName(QStringLiteral("Syn_AboutDlg"));
         Syn_AboutDlg->setWindowModality(Qt::ApplicationModal);
-        Syn_AboutDlg->resize(260, 160);
+        Syn_AboutDlg->resize(296, 157);
         formLayout = new QFormLayout(Syn_AboutDlg);
         formLayout->setSpacing(6);
         formLayout->setContentsMargins(11, 11, 11, 11);
         formLayout->setObjectName(QStringLiteral("formLayout"));
         LogoLabel = new QLabel(Syn_AboutDlg);
         LogoLabel->setObjectName(QStringLiteral("LogoLabel"));
+        LogoLabel->setPixmap(QPixmap(QString::fromUtf8(":/FPS_TestExecutive/images/Synaptics.bmp")));
 
         formLayout->setWidget(0, QFormLayout::LabelRole, LogoLabel);
 
@@ -115,7 +116,7 @@ public:
     void retranslateUi(QWidget *Syn_AboutDlg)
     {
         Syn_AboutDlg->setWindowTitle(QApplication::translate("Syn_AboutDlg", "About Huangpu", 0));
-        LogoLabel->setText(QApplication::translate("Syn_AboutDlg", "SYNALogo", 0));
+        LogoLabel->setText(QString());
         NameLabel->setText(QApplication::translate("Syn_AboutDlg", "Name", 0));
         VersionLabel->setText(QApplication::translate("Syn_AboutDlg", "Version", 0));
         DateLabel->setText(QApplication::translate("Syn_AboutDlg", "Date", 0));

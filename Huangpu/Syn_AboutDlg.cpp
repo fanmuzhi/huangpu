@@ -28,7 +28,7 @@ Syn_AboutDlg::~Syn_AboutDlg()
 
 void Syn_AboutDlg::SetInfo()
 {
-	ui->LogoLabel->setPixmap(QPixmap("images/Synaptics.bmp"));
+	//ui->LogoLabel->setPixmap(QPixmap("images/Synaptics.bmp"));
 
 	ui->NameLabel->setText("Huangpu");
 

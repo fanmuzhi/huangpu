@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>260</width>
-    <height>160</height>
+    <width>296</width>
+    <height>157</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,10 @@
    <item row="0" column="0">
     <widget class="QLabel" name="LogoLabel">
      <property name="text">
-      <string>SYNALogo</string>
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap resource="fps_testexecutive.qrc">:/FPS_TestExecutive/images/Synaptics.bmp</pixmap>
      </property>
     </widget>
    </item>
@@ -99,6 +102,8 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="fps_testexecutive.qrc"/>
+ </resources>
  <connections/>
 </ui>
