@@ -29,7 +29,7 @@ void Ts_DeepSleepCurrent::SetUp()
 	}
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_deepSleepCurrentInfo._bExecuted = false;
-	_pSyn_Dut->_pSyn_DutTestInfo->_deepSleepCurrentInfo._highLimit = 25;
+	_pSyn_Dut->_pSyn_DutTestInfo->_deepSleepCurrentInfo._highLimit = 5;
 
 	std::vector<std::string> listOfArgValue;
 	ParseTestStepArgs(_strArgs, listOfArgValue);
@@ -49,7 +49,6 @@ void Ts_DeepSleepCurrent::Execute()
 {
 
 	Syn_Exception ex(0);
-	_pSyn_DutCtrl->GetBridge(_pSynBridge);
 
 	//Set SleepN to 0
 	_pSynBridge->GPIO_SetSleepN(false);

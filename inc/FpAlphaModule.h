@@ -71,7 +71,7 @@ public:
 
 	virtual uint32_t FpReset(uint32_t timeout = TIMEOUT_VALUE);
 
-	virtual uint32_t FpGetVersion(uint8_t *arrVersion, uint32_t size = 38, uint32_t timeout = TIMEOUT_VALUE);
+	virtual uint32_t FpGetVersion(uint8_t *arrVersion, uint32_t size, uint32_t timeout = TIMEOUT_VALUE);
 
 	virtual uint32_t FpGetStartInfo(uint8_t *arrStartInfo, uint32_t size, uint32_t timeout = TIMEOUT_VALUE);
 

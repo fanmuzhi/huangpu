@@ -1,6 +1,8 @@
 #include "Ts_DRdyTest.h"
 #include "windows.h"
 
+#define NUM_DRDY_CHECKS 2
+
 
 Ts_DRdyTest::Ts_DRdyTest(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
@@ -56,11 +58,8 @@ void Ts_DRdyTest::Execute()
 	uint32_t rc(0);
 	Syn_Exception ex(0);
 
-	int portID = _pSyn_Dut->_pSyn_DutTestInfo->_DRdyInfo.m_portId;
-	int pinMsk = _pSyn_Dut->_pSyn_DutTestInfo->_DRdyInfo.m_pinMsk;
 	uint8_t  pResult[2] = {0,0};
 	bool nDRdyStates = 0;
-	_pSyn_DutCtrl->GetBridge(_pSynBridge);
 
 	//reset sensor then we can read a DRDY
 	rc = _pSyn_DutCtrl->FpReset();
