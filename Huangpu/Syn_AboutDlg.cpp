@@ -34,9 +34,7 @@ void Syn_AboutDlg::SetInfo()
 
 	ui->VersionLabel->setText(QString("Version:") + SW_VERSION);
 	
-	QDate currentDate = QDate::currentDate();
-	QString strCurDate = QString::number(currentDate.year()) + "-" + QString::number(currentDate.month()) + "-" + QString::number(currentDate.day());
-	ui->DateLabel->setText("Release Date:" + strCurDate);
+	ui->DateLabel->setText(QString("Release Date:") + SW_RELEASEDATE);
 
 	ui->CopyrightLabel->setText("Copyright@2016 Synaptics");
 }

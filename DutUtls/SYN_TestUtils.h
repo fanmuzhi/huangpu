@@ -2,7 +2,8 @@
 
 #include <stdint.h>
 
-#define SW_VERSION "1.1.6"
+#define SW_VERSION		"2.0.0"
+#define SW_RELEASEDATE	"2016-12-28"
 
 #define SYN_FALSE							0
 #define SYN_TRUE							!SYN_FALSE
@@ -905,7 +906,6 @@ typedef struct
 ///////////////////////////// ////////////////////////
 //////////////////////////// ////////////////////////
 ///////////////////////////	////////////////////////
-enum	{NUM_DRDY_CHECKS = 10};
 
 //structures for DRdy Test
 typedef struct
@@ -918,8 +918,8 @@ typedef struct
 typedef struct
 {
 	int			m_bPass;
-	uint8_t		m_arHiStates[NUM_DRDY_CHECKS];
-	uint8_t		m_arLoStates[NUM_DRDY_CHECKS];
+	uint8_t		m_arHiStates[5];
+	uint8_t		m_arLoStates[5];
 
 	double      m_elapsedtime;
 }DRdyResults;

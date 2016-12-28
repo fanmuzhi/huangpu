@@ -74,7 +74,6 @@ void Ts_CurrentTest::Execute()
 {
 	Syn_Exception ex(0);
 	_pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_bExecuted = true;
-	_pSyn_DutCtrl->GetBridge(_pSynBridge);
 
 	//get print file
 	Syn_PatchInfo PrintFileInfo;

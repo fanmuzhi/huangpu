@@ -171,7 +171,19 @@ void Ts_OTPWriteBootSector::Execute()
 	//write to boot secotr
 	//maybe 0x403,do not care
 	rc = _pSyn_DutCtrl->FpOtpRomWrite(BOOT_SEC, 0, otpBs0, BS0_SIZE);
+	if (0 != rc)
+	{
+		Syn_Exception ex(rc);
+		ex.SetDescription("BOOT_SEC0::FpOtpRomWrite failed!");
+		throw ex;
+	}
 	rc = _pSyn_DutCtrl->FpOtpRomWrite(BOOT_SEC, 1, otpBs1, BS0_SIZE);
+	if (0 != rc)
+	{
+		Syn_Exception ex(rc);
+		ex.SetDescription("BOOT_SEC1::FpOtpRomWrite failed!");
+		throw ex;
+	}
 }
 
 void Ts_OTPWriteBootSector::ProcessData()

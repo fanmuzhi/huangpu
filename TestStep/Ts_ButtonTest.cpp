@@ -84,7 +84,6 @@ void Ts_ButtonTest::SetUp()
 void Ts_ButtonTest::Execute()
 {
 	bool nBtnState = 0;
-	_pSyn_DutCtrl->GetBridge(_pSynBridge);
 	if (_pSyn_Dut->_pSyn_DutTestInfo->_btnTestWithStimInfo.m_bWithStimulus)
 	{
 		//Execute with stimulus.

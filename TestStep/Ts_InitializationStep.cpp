@@ -178,7 +178,7 @@ void Ts_InitializationStep::Execute()
 		size_t snSize = _pSyn_Dut->_DeviceSerialNumber.size();
 		for (size_t t = 0; t < snSize; t++)
 		{
-			uint32_t tempSN = (_pSyn_Dut->_DeviceSerialNumber)[t] - '0';//char to int
+			uint8_t tempSN = (_pSyn_Dut->_DeviceSerialNumber)[t] - '0';//char to int
 			iDeviceSN += tempSN * pow(10, snSize - t - 1);
 		}
 
