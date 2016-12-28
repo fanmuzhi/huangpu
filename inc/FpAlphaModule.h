@@ -12,7 +12,7 @@
 #define COLUMN_SIZE_MAX		200	
 #define ALPHA_HEADER		8
 
-#define TIMEOUT_VALUE 2000
+#define TIMEOUT_VALUE 500
 
 //error code
 #define FPMODULE_ERROR_TIME_OUT				0x1500
@@ -45,6 +45,8 @@ typedef struct Alpha_Sensor_Status
 	unsigned int JUSTRESET;
 	unsigned int ALIVE;
 }Alpha_Sensor_Status_t;
+
+enum class ChecksumType{ XOR, CRC32, SHA256, SHA1};
 
 class SYNA_FPALPHAMODULE_API FpAlphaModule
 {
@@ -101,6 +103,8 @@ public:
 
 	/*opsize default value : 4*/
 	virtual uint32_t FpPeekRegister(uint32_t nHwRegAddr, uint8_t opsize, uint32_t &ovalue, uint32_t timeout = TIMEOUT_VALUE);
+
+	virtual uint32_t FpROMChecksum(ChecksumType Type, uint32_t &oChecksumValue, uint32_t timeout = TIMEOUT_VALUE);
 
 	virtual uint32_t FpUpdateADCOffsets(uint32_t arrAdcbaselines[4], uint32_t timeout = TIMEOUT_VALUE);
 

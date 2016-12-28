@@ -62,3 +62,4 @@ std::string	Syn_BinCodes::m_sPackageTypeFail = "150";		//Not used.
 std::string	Syn_BinCodes::m_sAFETestFail = "151";
 std::string Syn_BinCodes::m_sBootSectorFail = "152";
 std::string Syn_BinCodes::m_sMainSectorFail = "153";
+std::string Syn_BinCodes::m_sROMChecsum = "154";

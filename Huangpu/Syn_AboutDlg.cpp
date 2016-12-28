@@ -1,5 +1,5 @@
 #include "Syn_AboutDlg.h"
-
+#include "QDate"
 #include "Syn_TestUtils.h"
 
 Syn_AboutDlg::Syn_AboutDlg(QWidget *parent)
@@ -34,7 +34,9 @@ void Syn_AboutDlg::SetInfo()
 
 	ui->VersionLabel->setText(QString("Version:") + SW_VERSION);
 	
-	ui->DateLabel->setText("Release Date:2016-08-04");
+	QDate currentDate = QDate::currentDate();
+	QString strCurDate = QString::number(currentDate.year()) + "-" + QString::number(currentDate.month()) + "-" + QString::number(currentDate.day());
+	ui->DateLabel->setText("Release Date:" + strCurDate);
 
 	ui->CopyrightLabel->setText("Copyright@2016 Synaptics");
 }

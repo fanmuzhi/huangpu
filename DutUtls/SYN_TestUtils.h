@@ -197,6 +197,16 @@ typedef struct
 	uint8_t    device_type;      /* device type                         */
 }GetVerInfo;
 
+typedef struct
+{
+	uint8_t start_type;
+	uint8_t reset_type;
+	uint32_t start_status;
+	uint32_t sanity_pc;
+	uint32_t sanity_code;
+	uint32_t reset_nvinfo[13];
+}Get_Startinfo;
+
 typedef struct 
 {
 	uint32_t          basep;
@@ -1172,3 +1182,17 @@ typedef struct
 	int iRealRowNumber;
 	int iRealColumnNumber;
 }Syn_WaitStimulusResults;// Syn_WaitStimulusInfo;
+
+typedef struct
+{
+	int				m_bExecuted;
+	unsigned int	m_Type;
+	uint32_t		m_ChecksumValue;
+}ROMChecksumInfo;
+
+typedef struct
+{
+	int			m_bPass;
+	uint32_t	m_ChecksumResult;
+	double      m_elapsedtime;
+}ROMChecksumResults;

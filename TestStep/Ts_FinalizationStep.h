@@ -13,8 +13,5 @@ public:
 	virtual void ProcessData();
 
 	virtual void CleanUp();
-
-	void WriteLog();
-
 };
 

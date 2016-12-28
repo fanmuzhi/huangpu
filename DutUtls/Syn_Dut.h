@@ -67,6 +67,7 @@ struct Syn_DutTestInfo
 	GetPatchInfo				_getPatchInfo;
 	HuaweiIQTestInfo			_huaweiIqTestInfo;
 	DeepSleepCurrentInfo		_deepSleepCurrentInfo;
+	ROMChecksumInfo				_ROMChecksumInfo;
 };
 
 struct Syn_DutTestResult
@@ -123,6 +124,7 @@ struct Syn_DutTestResult
 	Syn_WaitStimulusResults		_WaitStimulusResults;
 	HuaweiIQTestResults			_huaweiIqTestResults;
 	DeepSleepCurrentResults		_deepSleepCurrentResults;
+	ROMChecksumResults			_ROMChecksumResults;
 };
 
 class Syn_Dut

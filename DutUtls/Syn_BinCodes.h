@@ -64,5 +64,6 @@ public:
 	static std::string	m_sAFETestFail;					//151
 	static std::string  m_sBootSectorFail;				//152
 	static std::string  m_sMainSectorFail;				//153
+	static std::string  m_sROMChecsum;					//154
 };
 
