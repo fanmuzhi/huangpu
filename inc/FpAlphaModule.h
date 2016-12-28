@@ -46,7 +46,7 @@ typedef struct Alpha_Sensor_Status
 	unsigned int ALIVE;
 }Alpha_Sensor_Status_t;
 
-enum class ChecksumType{ XOR, CRC32, SHA256, SHA1};
+enum class ChecksumType{ XOR, CRC32, SHA256, SHA1 };
 
 class SYNA_FPALPHAMODULE_API FpAlphaModule
 {
@@ -71,7 +71,7 @@ public:
 
 	virtual uint32_t FpReset(uint32_t timeout = TIMEOUT_VALUE);
 
-	virtual uint32_t FpGetVersion(uint8_t *arrVersion, uint32_t size = 38, uint32_t timeout = TIMEOUT_VALUE);
+	virtual uint32_t FpGetVersion(uint8_t *arrVersion, uint32_t size, uint32_t timeout = TIMEOUT_VALUE);
 
 	virtual uint32_t FpGetStartInfo(uint8_t *arrStartInfo, uint32_t size, uint32_t timeout = TIMEOUT_VALUE);
 
@@ -104,7 +104,10 @@ public:
 	/*opsize default value : 4*/
 	virtual uint32_t FpPeekRegister(uint32_t nHwRegAddr, uint8_t opsize, uint32_t &ovalue, uint32_t timeout = TIMEOUT_VALUE);
 
+	//WOF Low Power test used for Viper2
 	virtual uint32_t FpROMChecksum(ChecksumType Type, uint32_t &oChecksumValue, uint32_t timeout = TIMEOUT_VALUE);
+
+	virtual uint32_t FpRunWOF2CFG(uint8_t *woflowpowerbin, uint32_t size, uint32_t timeout = TIMEOUT_VALUE);
 
 	virtual uint32_t FpUpdateADCOffsets(uint32_t arrAdcbaselines[4], uint32_t timeout = TIMEOUT_VALUE);
 
