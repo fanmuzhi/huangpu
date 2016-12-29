@@ -352,7 +352,7 @@ uint32_t Syn_Site::ExecuteTestStep(std::string sTestName, ExcuteType Type)
 	{
 		try
 		{
-			pTestStep->CleanUp();
+			_pSynBridge->SetVoltages(0,0);
 		}
 		catch (...){}
 		delete pTestStep;
@@ -835,9 +835,9 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	//Retain Mode Test
 	if (DutInfo->_retainModeInfo.m_bExecuted)
 	{
-		fprintf(pFile, "\nRetain Mode Test,%s,%0.f ms,ADC Value,", DutResults->_retainModeResults.m_bPass ? "Pass" : "Fail", DutResults->_retainModeResults.m_elapsedtime);
-		fprintf(pFile, "\n,,,%.3f", DutResults->_retainModeResults.m_nRetainModeCurrent);
-		fprintf(pFile, "\n");
+		fprintf(pFile, "\nRetain Mode Test,%s,%0.f ms,ADC Value,\n", DutResults->_retainModeResults.m_bPass ? "Pass" : "Fail", DutResults->_retainModeResults.m_elapsedtime);
+		fprintf(pFile, ",,,spivcc current (uA),%.3f \n", DutResults->_retainModeResults.m_nRetainModeCurrent_VCC_uA);
+		fprintf(pFile, ",,,vcc current (uA),%.3f \n", DutResults->_retainModeResults.m_nRetainModeCurrent_SPIVCC_uA);
 	}
 
 	//SNR Test

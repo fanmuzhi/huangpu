@@ -91,6 +91,7 @@ void Ts_CurrentTest::Execute()
 		row++;
 	
 	//read current
+	//since it's high range, the spi_vcc current is not accurate.
 	uint32_t arrValue[2] = { 0, 0 };
 	uint32_t rc = _pSyn_DutCtrl->FpGetImage(row,column, PrintFileInfo._uiArraySize, PrintFileInfo._pArrayBuf, arrValue, 2000);
 	if (0 != rc)
@@ -114,8 +115,11 @@ void Ts_CurrentTest::ProcessData()
 		(_pSyn_Dut->_pSyn_DutTestResult->_currentResults.m_nImageAcqAnaCurrent_uA < _pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqAnaMin_uA))
 		_pSyn_Dut->_pSyn_DutTestResult->_currentResults.bPass = 0;
 
-	if ((_pSyn_Dut->_pSyn_DutTestResult->_currentResults.m_nImageAcqDigCurrent_uA > _pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqDigMax_uA)|| 
-		(_pSyn_Dut->_pSyn_DutTestResult->_currentResults.m_nImageAcqDigCurrent_uA < _pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqDigMin_uA))
+	//if ((_pSyn_Dut->_pSyn_DutTestResult->_currentResults.m_nImageAcqDigCurrent_uA > _pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqDigMax_uA)|| 
+	//	(_pSyn_Dut->_pSyn_DutTestResult->_currentResults.m_nImageAcqDigCurrent_uA < _pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqDigMin_uA))
+	//	_pSyn_Dut->_pSyn_DutTestResult->_currentResults.bPass = 0;
+
+	if (_pSyn_Dut->_pSyn_DutTestResult->_currentResults.m_nImageAcqDigCurrent_uA > _pSyn_Dut->_pSyn_DutTestInfo->_currentInfo.m_nImageAcqDigMax_uA)
 		_pSyn_Dut->_pSyn_DutTestResult->_currentResults.bPass = 0;
 
 	if (!_pSyn_Dut->_pSyn_DutTestResult->_currentResults.bPass)

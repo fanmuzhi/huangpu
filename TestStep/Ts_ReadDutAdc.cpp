@@ -57,37 +57,16 @@ void Ts_ReadDutAdc::SetUp()
 
 void Ts_ReadDutAdc::Execute()
 {
+
+	int nTotal = 0;
+	int nNumAdcReadings = 3;
+	this->ReadDutAdcSetup();
+	for (int i = 0; i<nNumAdcReadings; i++)
+		nTotal += this->ReadDutAdc();
+	_pSyn_Dut->_pSyn_DutTestResult->_ReadDutAdcResults.m_nDutAdc = nTotal / nNumAdcReadings;
+
 	_pSyn_Dut->_pSyn_DutTestInfo->_ReadDutAdcInfo.m_bExecuted = true;
-
-	uint8_t pDst[MS0_SIZE] = { 0 };
-	int count = 0;
-	uint32_t rc = _pSyn_DutCtrl->FpOtpRomTagRead(EXT_TAG_DutTempAdc, pDst, MS0_SIZE, count);
-	if (0 != rc)
-	{
-		Syn_Exception ex(rc);
-		ex.SetDescription("OtpRomTagRead EXT_TAG_DutTempAdc is failed!");
-		throw ex;
-	}
-	if (0 == count)
-	{
-		int nTotal = 0;
-		int nNumAdcReadings = 3;
-		ReadDutAdcSetup();
-		for (int i = 0; i<nNumAdcReadings; i++)
-			nTotal += ReadDutAdc();
-		_pSyn_Dut->_pSyn_DutTestResult->_ReadDutAdcResults.m_nDutAdc = nTotal / nNumAdcReadings;
-
-		//SYN_ReadDutAdcStepExecute(&(GetSite().m_ReadDutAdcInfo), (&GetSite().m_ReadDutAdcResults));
-		_pSyn_Dut->_pSyn_DutTestResult->_ReadDutAdcResults.m_bPass = 1;
-	}
-	else
-	{
-		//Use Dut temperature ADC stored in OTP.
-		//if (GetMS0RecordData(TAG_CAL, EXT_TAG_DutTempAdc, pOtpData, MS0_SIZE, site) != 0)
-		if (0 != count)
-			_pSyn_Dut->_pSyn_DutTestResult->_ReadDutAdcResults.m_nDutAdc = *((uint16_t*)pDst);
-		_pSyn_Dut->_pSyn_DutTestResult->_ReadDutAdcResults.m_bPass = 1;
-	}
+	_pSyn_Dut->_pSyn_DutTestResult->_ReadDutAdcResults.m_bPass = 1;
 }
 
 void Ts_ReadDutAdc::ProcessData()
@@ -150,10 +129,12 @@ int Ts_ReadDutAdc::ReadDutAdc()
 	_pSyn_DutCtrl->FpGetStatus(pDst, 4);*/
 
 
-	uint8_t	pDst[6];
+	uint32_t value;
 	int nAdcReading = 0;
-	//_pSyn_DutCtrl->FpPeekRegister(0x80002024, pDst);
-	nAdcReading = ((uint16_t)pDst[5] << 8) + pDst[4];	//Swap.
+	_pSyn_DutCtrl->FpPeekRegister(0x80002024, 4, value);
+	//nAdcReading = ((uint16_t)pDst[5] << 8) + pDst[4];	//Swap.
+	nAdcReading = (value >> 16) & 0x0000FFFF;
+
 
 	_pSyn_DutCtrl->FpPokeRegister(0x80002024, 0x09);
 

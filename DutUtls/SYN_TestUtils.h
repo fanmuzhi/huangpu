@@ -1135,7 +1135,8 @@ typedef struct
 typedef struct
 {
 	int			m_bPass;
-	float		m_nRetainModeCurrent;
+	float		m_nRetainModeCurrent_VCC_uA;
+	float		m_nRetainModeCurrent_SPIVCC_uA;
 
 	double      m_elapsedtime;
 }RetainModeResults;

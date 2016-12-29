@@ -33,8 +33,8 @@ void Ts_RetainMode::SetUp()
 	std::vector<std::string> listOfArgValue;
 	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_bExecuted = false;
 	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nGain = 2;
-	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMaxCurrent = (float)1;
-	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMinCurrent = (float)0.1;
+	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMaxCurrent = (float)1000;	//uA
+	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMinCurrent = (float)0.1;	//uA
 	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nDelay = 0;
 	
 	ParseTestStepArgs(_strArgs, listOfArgValue);
@@ -47,9 +47,9 @@ void Ts_RetainMode::SetUp()
 	if (0 != listOfArgValue[0].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nGain = atoi(listOfArgValue[0].c_str());
 	if (0 != listOfArgValue[1].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMaxCurrent = (float)atof(listOfArgValue[1].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMaxCurrent = (float)atof(listOfArgValue[1].c_str()) * 1000;
 	if (0 != listOfArgValue[2].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMinCurrent = (float)atof(listOfArgValue[2].c_str());
+		_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMinCurrent = (float)atof(listOfArgValue[2].c_str())  * 1000;
 	if (0 != listOfArgValue[2].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nDelay = atoi(listOfArgValue[3].c_str());
 
@@ -84,13 +84,14 @@ void Ts_RetainMode::Execute()
 		throw ex;
 		return;
 	}
-	//_pSyn_DutCtrl->FpEnterSleep();
 
-	//uint16_t nADCBaseline = site.GetLocalSettingsPtr()->GetAblInfo(site.GetDutCtrlSerNum()).m_arAdcBaseLines[2][2];//baseline gain.
-	/*uint16_t nADCBaseline = _pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[2];
-	uint32_t pTemp[NUM_ADC_BASE_READINGS] = {0, 0, 0, 0};
-	float	arRawADCLow[NUM_ADC_BASE_READINGS] = {0.0, 0.0, 0.0, 0.0};
-	float	nGainDiff = 0.0;*/
+	//EnterSleep
+	_pSyn_DutCtrl->FpTidleSet(0x03E8);
+
+	//uint16_t nADCBaseline = _pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[2];
+	//uint32_t pTemp[NUM_ADC_BASE_READINGS] = {0, 0, 0, 0};
+	//float	arRawADCLow[NUM_ADC_BASE_READINGS] = {0.0, 0.0, 0.0, 0.0};
+	//float	nGainDiff = 0.0;
 
 	//uint8_t pDst[NUM_CURRENT_DRAW_READINGS];
 
@@ -99,27 +100,27 @@ void Ts_RetainMode::Execute()
 	//uint8_t pDst[6];
 	//_pSyn_DutCtrl->FpPeekRegister(0x80002808, pDst);
 	//_pSyn_DutCtrl->FpPeekRegister(0x80002814, pDst);
-	//_pSyn_DutCtrl->FpPokeRegister(0x80002808, 0x3);
+	_pSyn_DutCtrl->FpPokeRegister(0x80002808, 0x3);
 	//_pSyn_DutCtrl->FpPeekRegister(0x80002814, pDst);
-	//_pSyn_DutCtrl->FpPokeRegister(0x80002814, 0x20);
-	//_pSyn_DutCtrl->FpPokeRegister(0x80002814, 0x20);
+	_pSyn_DutCtrl->FpPokeRegister(0x80002814, 0x20);
+	_pSyn_DutCtrl->FpPokeRegister(0x80002814, 0x20);
 	//_pSyn_DutCtrl->FpPeekRegister(0x80002814, pDst);
-	//_pSyn_DutCtrl->FpPokeRegister(0x80002814, 0x21);
-	//_pSyn_DutCtrl->FpPokeRegister(0x80002064, 0x10000000);
-	//_pSyn_DutCtrl->FpPokeRegister(0x80002064, 0x6F20000); 
+	_pSyn_DutCtrl->FpPokeRegister(0x80002814, 0x21);
+	_pSyn_DutCtrl->FpPokeRegister(0x80002064, 0x10000000);
+	_pSyn_DutCtrl->FpPokeRegister(0x80002064, 0x6F20000); 
 	//_pSyn_DutCtrl->FpPeekRegister(0x80002064, pDst);
-	//_pSyn_DutCtrl->FpPokeRegister(0x80002064, 0x20000007);
+	_pSyn_DutCtrl->FpPokeRegister(0x80002064, 0x20000007);
 
-	////2nd poke
-	//_pSyn_DutCtrl->FpPokeRegister(0x8000030C, 0x41);
-	//_pSyn_DutCtrl->FpPokeRegister(0x80000388, 0x07D0);
-	//_pSyn_DutCtrl->FpPokeRegister(0x8000038C, 0x401008);
-	//_pSyn_DutCtrl->FpPokeRegister(0x80000390, 0xFFFF00C4);
-	//_pSyn_DutCtrl->FpPokeRegister(0x80000394, 0x0);
-	//_pSyn_DutCtrl->FpPokeRegister(0x80000300, 0x19, false);
+	//2nd poke
+	_pSyn_DutCtrl->FpPokeRegister(0x8000030C, 0x41);
+	_pSyn_DutCtrl->FpPokeRegister(0x80000388, 0x07D0);
+	_pSyn_DutCtrl->FpPokeRegister(0x8000038C, 0x401008);
+	_pSyn_DutCtrl->FpPokeRegister(0x80000390, 0xFFFF00C4);
+	_pSyn_DutCtrl->FpPokeRegister(0x80000394, 0x0);
+	_pSyn_DutCtrl->FpPokeRegister(0x80000300, 0x19, false);
 
 
-	//::Sleep(_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nDelay);
+	::Sleep(_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nDelay);
 
 	////Average the 10 readings for low gain
 	//for(int i = 0; i < NUM_CURRENT_DRAW_READINGS; i++)
@@ -136,6 +137,15 @@ void Ts_RetainMode::Execute()
 	//nGainDiff = (arRawADCLow[2] - (float)nADCBaseline);	
 	//_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_nRetainModeCurrent = 10 * ((nGainDiff * 3) / 4096);
 
+	uint32_t arrValue[2] = { 0, 0 };
+	_pSynBridge->GetCurrentValues(arrValue, true);		//low gain
+
+	float spivcc_current = ((float)(arrValue[0]) - (float)(_pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[0])) / 1000;	//uA
+	float vcc_current = ((float)(arrValue[1]) - (float)(_pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[1])) / 1000;		//uA
+
+	_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_nRetainModeCurrent_VCC_uA = vcc_current;
+	_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_nRetainModeCurrent_SPIVCC_uA = spivcc_current;
+
 	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_bExecuted = true;
 }
 
@@ -144,8 +154,8 @@ void Ts_RetainMode::ProcessData()
 {
 	_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_bPass = true;
 
-	if (_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_nRetainModeCurrent > _pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMaxCurrent ||
-		_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_nRetainModeCurrent < _pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMinCurrent)
+	if ((_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_nRetainModeCurrent_VCC_uA > _pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMaxCurrent)||
+		(_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_nRetainModeCurrent_SPIVCC_uA > _pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMaxCurrent))
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_bPass = false;
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofWovarCurrentFail);
@@ -162,5 +172,25 @@ void Ts_RetainMode::ProcessData()
 
 void Ts_RetainMode::CleanUp()
 {
-	_pSyn_DutCtrl->FpUnloadPatch();
+	Syn_Exception ex(0);
+	uint32_t rc(0);
+
+	_pSyn_DutCtrl->PowerOff();
+	rc = _pSyn_DutCtrl->PowerOn(_pSyn_Dut->_uiDutpwrVddh_mV, _pSyn_Dut->_uiDutpwrVdd_mV);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("PowerOn command failed!");
+		throw ex;
+		return;
+	}
+
+	rc = _pSyn_DutCtrl->FpTidleSet(0);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpTidleSet command failed!");
+		throw ex;
+		return;
+	}
 }

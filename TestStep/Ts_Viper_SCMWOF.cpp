@@ -239,6 +239,13 @@ bool Ts_Viper_SCMWOF::ExecuteZone0SCMWofTest(SCM_WofTestInfo& info, SCM_WofTestR
 	uint8_t*	pResponseBuf = bWithStim ? results.m_arDataWithStim : results.m_arDataWithoutStim;
 	int			nVcc = (int)(info.m_nVCC * 1000);
 
+	if (UseConfigVotage)
+	{
+		_pSyn_DutCtrl->PowerOff();
+		_pSyn_DutCtrl->PowerOn(nVcc, _pSyn_Dut->_uiDutpwrVdd_mV);
+		_pSyn_DutCtrl->FpTidleSet(0);
+	}
+
 	//Load WOF Patch
 	if (NULL == ScmWofPatchInfo._pArrayBuf)
 	{
@@ -248,13 +255,6 @@ bool Ts_Viper_SCMWOF::ExecuteZone0SCMWofTest(SCM_WofTestInfo& info, SCM_WofTestR
 	}
 	_pSyn_DutCtrl->FpLoadPatch(ScmWofPatchInfo._pArrayBuf, ScmWofPatchInfo._uiArraySize);
 
-	if (UseConfigVotage)
-	{
-		_pSyn_DutCtrl->PowerOff();
-		_pSyn_DutCtrl->PowerOn(nVcc, _pSyn_Dut->_uiDutpwrVdd_mV);
-		_pSyn_DutCtrl->FpTidleSet(0);
-	}
-	
 	//Fill the settings
 	Cmd3SweepTagInfo._pArrayBuf[0x0B] = WOF_GAIN_START;
 	Cmd3SweepTagInfo._pArrayBuf[0x0F] = WOF_GAIN_STEP;
@@ -270,7 +270,6 @@ bool Ts_Viper_SCMWOF::ExecuteZone0SCMWofTest(SCM_WofTestInfo& info, SCM_WofTestR
 	results.m_nGainStop = Cmd3SweepTagInfo._pArrayBuf[0x13];
 	results.m_nNumGains = ((results.m_nGainStop - results.m_nGainStart) / results.m_nGainInc) + 1;
 	results.m_nResponseSize = (results.m_nNumThresholds * results.m_nNumGains) + WOF_REPONSE_HEAD;
-
 
 	//Run SCMWOF Patch
 	rc = _pSyn_DutCtrl->FpRunSCMWOFPlot(Cmd1ScmWofPlotInfo._pArrayBuf, Cmd1ScmWofPlotInfo._uiArraySize, Cmd2ScmWofBinInfo._pArrayBuf, Cmd2ScmWofBinInfo._uiArraySize,
