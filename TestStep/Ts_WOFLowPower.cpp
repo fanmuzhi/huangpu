@@ -59,8 +59,8 @@ void Ts_WOFLowPower::Execute()
 	Syn_Exception ex(0);
 
 	//Poke appropriate registers.
-	_pSyn_DutCtrl->FpPokeRegister(0x80000374, 0x00000012);
 	_pSyn_DutCtrl->FpPokeRegister(0x800003A0, 0x00FFFFFF);
+	_pSyn_DutCtrl->FpPokeRegister(0x80000374, 0x00000012);
 
 	//Load and execute the patch. The bin file is prefixed with a command ID. Do not load this ID in data block.
 	Syn_PatchInfo WofLowPowerBinPatchInfo;
@@ -79,7 +79,11 @@ void Ts_WOFLowPower::Execute()
 		throw ex;
 	}
 
+	//enter sleep
+	_pSyn_DutCtrl->FpTidleSet(0x03E8);
+
 	//::Sleep(_pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nDelay_ms);
+	::Sleep(100);
 
 	//get current
 	uint32_t arrValue[2] = { 0, 0 };
