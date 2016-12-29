@@ -165,8 +165,6 @@ void Ts_RetainMode::ProcessData()
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("RetainModeCurrentTest", "Pass"));
 	}
-
-	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_elapsedtime);
 }
 
 
@@ -193,4 +191,6 @@ void Ts_RetainMode::CleanUp()
 		throw ex;
 		return;
 	}
+
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_elapsedtime);
 }

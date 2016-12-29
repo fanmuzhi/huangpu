@@ -1155,7 +1155,8 @@ typedef struct
 typedef struct
 {
 	int			m_bPass;
-	float		m_nCurrent_uA;
+	float		m_nCurrent_VCC_uA;
+	float		m_nCurrent_SPIVCC_uA;
 
 	double      m_elapsedtime;
 }WofLowPowerResults;

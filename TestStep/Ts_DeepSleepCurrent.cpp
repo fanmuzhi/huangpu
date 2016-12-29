@@ -53,7 +53,7 @@ void Ts_DeepSleepCurrent::Execute()
 	//Set SleepN to 0
 	_pSynBridge->GPIO_SetSleepN(false);
 
-	::Sleep(5);
+	::Sleep(500);
 
 	//get current
 	uint32_t arrValue[2] = { 0, 0 };
@@ -95,10 +95,27 @@ void Ts_DeepSleepCurrent::ProcessData()
 		_pSyn_Dut->_pSyn_DutTestResult->_deepSleepCurrentResults._bPass = true;
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("DeepSleepCurrent", "Pass"));
 	}
-
-	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_deepSleepCurrentResults.m_elapsedtime);
 }
 
 void Ts_DeepSleepCurrent::CleanUp()
 {
+	Syn_Exception ex(0);
+	uint32_t rc = _pSyn_DutCtrl->FpReset();
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpReset() Failed");
+		throw ex;
+	}
+
+	rc = _pSyn_DutCtrl->FpTidleSet(0);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpTidleSet command failed!");
+		throw ex;
+		return;
+	}
+
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_deepSleepCurrentResults.m_elapsedtime);
 }
