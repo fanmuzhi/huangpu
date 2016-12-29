@@ -823,8 +823,8 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	if (DutInfo->_retainModeInfo.m_bExecuted)
 	{
 		fprintf(pFile, "\nRetain Mode Test,%s,%0.f ms,\n", DutResults->_retainModeResults.m_bPass ? "Pass" : "Fail", DutResults->_retainModeResults.m_elapsedtime);
-		fprintf(pFile, ",,,spivcc current (uA),%.3f \n", DutResults->_retainModeResults.m_nRetainModeCurrent_VCC_uA);
-		fprintf(pFile, ",,,vcc current (uA),%.3f \n", DutResults->_retainModeResults.m_nRetainModeCurrent_SPIVCC_uA);
+		fprintf(pFile, ",,,spivcc current (uA),%.3f \n", DutResults->_retainModeResults.m_nRetainModeCurrent_SPIVCC_uA);
+		fprintf(pFile, ",,,vcc current (uA),%.3f \n", DutResults->_retainModeResults.m_nRetainModeCurrent_VCC_uA);
 	}
 
 	//WOF-Lowpower
