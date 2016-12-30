@@ -33,9 +33,9 @@ void Ts_RetainMode::SetUp()
 	std::vector<std::string> listOfArgValue;
 	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_bExecuted = false;
 	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nGain = 2;
-	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMaxCurrent = (float)1000;	//uA
-	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMinCurrent = (float)0.1;	//uA
-	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nDelay = 0;
+	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMaxCurrent = 800;	//uA
+	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMinCurrent = 0;	//uA
+	_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nDelay = 500;
 	
 	ParseTestStepArgs(_strArgs, listOfArgValue);
 	size_t ilistSize = listOfArgValue.size();
@@ -52,17 +52,6 @@ void Ts_RetainMode::SetUp()
 		_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMinCurrent = (float)atof(listOfArgValue[2].c_str())  * 1000;
 	if (0 != listOfArgValue[2].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nDelay = atoi(listOfArgValue[3].c_str());
-
-	//load NAVPatch
-	Syn_PatchInfo NAVPatch;
-	if (!_pSyn_Dut->FindPatch("WoeSleepCurrentPatch", NAVPatch) || NULL == NAVPatch._pArrayBuf)
-	{
-		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-		ex.SetDescription("WofPatchInfo Patch is NULL!");
-		throw ex;
-		return;
-	}
-	_pSyn_DutCtrl->FpLoadPatch(NAVPatch._pArrayBuf, NAVPatch._uiArraySize);
 	
 }
 
@@ -77,92 +66,81 @@ void Ts_RetainMode::Execute()
 		ex.SetError(Syn_ExceptionCode::Syn_DutCtrlNull);
 		ex.SetDescription("_pSyn_DutCtrl is NULL!");
 		throw ex;
-		return;
 	}
 	if (NULL == _pSyn_Dut)
 	{
 		ex.SetError(Syn_ExceptionCode::Syn_DutNull);
 		ex.SetDescription("_pSyn_Dut is NULL!");
 		throw ex;
-		return;
+	}
+
+	//load NAVPatch
+	Syn_PatchInfo NAVPatch;
+	if (!_pSyn_Dut->FindPatch("NavPatch", NAVPatch) || NULL == NAVPatch._pArrayBuf)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+		ex.SetDescription("WofPatchInfo Patch is NULL!");
+		throw ex;
+	}
+
+	rc = _pSyn_DutCtrl->FpLoadPatch(NAVPatch._pArrayBuf, NAVPatch._uiArraySize);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Load NAV Patch Failed");
+		throw ex;
 	}
 
 	//Poke appropriate registers.
-	_pSyn_DutCtrl->FpPokeRegister(0x800003A0, 0x00FFFFFF);
-	_pSyn_DutCtrl->FpPokeRegister(0x80000374, 0x00000012);
-
-	//load wof2 cofigure
-	uint8_t wof2sdk[] = {0x00,0x00,0x00,0x00,0x04,0x10,0x40,0x00,0xcc,0x2c,0x30,0xc8,0x00,0x00,
-						 0x00,0x00,0xD0,0x07,0x08,0x00,0x03,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xF2,0x02,
-						 0x01,0x00 };
-	_pSyn_DutCtrl->FpRunWOF2CFG(wof2sdk,32);
+	rc = _pSyn_DutCtrl->FpPokeRegister(0x800003A0, 0x00FFFFFF);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Poke 1st Register Failed");
+		throw ex;
+	}
+	rc = _pSyn_DutCtrl->FpPokeRegister(0x80000374, 0x00000012);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Poke 2nd Register Failed");
+		throw ex;
+	}
 
 	//Load and execute the patch. The bin file is prefixed with a command ID. Do not load this ID in data block.
-	//Syn_PatchInfo WofLowPowerBinPatchInfo;
-	//if (!_pSyn_Dut->FindPatch("WofLowPowerBin", WofLowPowerBinPatchInfo) || NULL == WofLowPowerBinPatchInfo._pArrayBuf)
-	//{
-	//	ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-	//	ex.SetDescription("WofLowPowerBin Patch is NULL!");
-	//	throw ex;
-	//}
+	Syn_PatchInfo WofLowPowerBinPatchInfo;
+	if (!_pSyn_Dut->FindPatch("WofLowPowerBin", WofLowPowerBinPatchInfo) || NULL == WofLowPowerBinPatchInfo._pArrayBuf)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+		ex.SetDescription("WofLowPowerBin Patch is NULL!");
+		throw ex;
+	}
 
-	//rc = _pSyn_DutCtrl->FpRunWOF2CFG(WofLowPowerBinPatchInfo._pArrayBuf, WofLowPowerBinPatchInfo._uiArraySize);
-	//if (0 != rc)
-	//{
-	//	ex.SetError(rc);
-	//	ex.SetDescription("Run Wof2 CFG Failed");
-	//	throw ex;
-	//}
+	rc = _pSyn_DutCtrl->FpRunWOF2CFG(WofLowPowerBinPatchInfo._pArrayBuf, WofLowPowerBinPatchInfo._uiArraySize);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Run Wof2 CFG Failed");
+		throw ex;
+	}
 
 	//enter sleep
-	_pSyn_DutCtrl->FpTidleSet(0x03E8);
+	rc = _pSyn_DutCtrl->FpTidleSet(0x03E8);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Enter Sleep Failed");
+		throw ex;
+	}
 
-	////load ImgAcqPatch
-	//Syn_PatchInfo ImgAcqPatchInfo;
-	//if (_pSyn_Dut->FindPatch("ImageAcqPatch", ImgAcqPatchInfo))
-	//{
-	//	if (0 != ImgAcqPatchInfo._uiArraySize)
-	//	{
-	//		_pSyn_DutCtrl->FpLoadPatch(ImgAcqPatchInfo._pArrayBuf, ImgAcqPatchInfo._uiArraySize);
-	//	}
-	//}
-
-	////get print file
-	//Syn_PatchInfo PrintFileInfo;
-	//if (!_pSyn_Dut->FindPatch("PrintFile", PrintFileInfo))
-	//{
-	//	ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-	//	ex.SetDescription("PrintFile Patch is NULL!");
-	//	throw ex;
-	//	return;
-	//}
-
-	//uint16_t row = _pSyn_Dut->_RowNumber;
-	//uint16_t column = _pSyn_Dut->_ColumnNumber;
-	//if (0 == (row*column) % 64)
-	//	row++;
-	
-	////read current
-	////since it's high range, the spi_vcc current is not accurate.
-	//uint32_t arrValue[2] = { 0, 0 };
-	//rc = _pSyn_DutCtrl->FpGetImage(row,column, PrintFileInfo._uiArraySize, PrintFileInfo._pArrayBuf, arrValue, 2000);
-	//if (0 != rc)
-	//{
-	//	ex.SetError(rc);
-	//	ex.SetDescription("FpGetImage Failed");
-	//	throw ex;
-	//}
-
-	//delay
-	//::Sleep(_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nDelay);
-	::Sleep(100);
+	::Sleep(_pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nDelay);
 
 	//read current
-	uint32_t arrValue[2] = { 0, 0 };
-	_pSynBridge->GetCurrentValues(arrValue, false);		//high gain
+	uint32_t arrValue[2] = { 0, 0 };		
+	_pSynBridge->GetCurrentValues(arrValue, true);		//	low gain
 
-	float spivcc_current = ((float)(arrValue[0]) - (float)(_pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[2])) / 1000;	//uA
-	float vcc_current = ((float)(arrValue[1]) - (float)(_pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[3])) / 1000;		//uA
+	float spivcc_current = ((float)(arrValue[0]) - (float)(_pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[0])) / 1000;	//uA
+	float vcc_current = ((float)(arrValue[1]) - (float)(_pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[1])) / 1000;		//uA
 
 	_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_nRetainModeCurrent_VCC_uA = vcc_current;
 	_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_nRetainModeCurrent_SPIVCC_uA = spivcc_current;
@@ -176,7 +154,7 @@ void Ts_RetainMode::ProcessData()
 	_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_bPass = true;
 
 	if ((_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_nRetainModeCurrent_VCC_uA > _pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMaxCurrent)||
-		(_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_nRetainModeCurrent_SPIVCC_uA > _pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMaxCurrent))
+		(_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_nRetainModeCurrent_VCC_uA < _pSyn_Dut->_pSyn_DutTestInfo->_retainModeInfo.m_nMinCurrent))
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_bPass = false;
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofWovarCurrentFail);

@@ -18,14 +18,12 @@ void Ts_WOFLowPower::SetUp()
 		ex.SetError(Syn_ExceptionCode::Syn_DutCtrlNull);
 		ex.SetDescription("_pSyn_DutCtrl is NULL!");
 		throw ex;
-		return;
 	}
 	if (NULL == _pSyn_Dut)
 	{
 		ex.SetError(Syn_ExceptionCode::Syn_DutNull);
 		ex.SetDescription("_pSyn_Dut is NULL!");
 		throw ex;
-		return;
 	}
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_bExecuted = false;
@@ -58,9 +56,36 @@ void Ts_WOFLowPower::Execute()
 	uint32_t rc(0);
 	Syn_Exception ex(0);
 
+	if (NULL == _pSyn_DutCtrl)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutCtrlNull);
+		ex.SetDescription("_pSyn_DutCtrl is NULL!");
+		throw ex;
+		return;
+	}
+	if (NULL == _pSyn_Dut)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutNull);
+		ex.SetDescription("_pSyn_Dut is NULL!");
+		throw ex;
+		return;
+	}
+
 	//Poke appropriate registers.
-	_pSyn_DutCtrl->FpPokeRegister(0x800003A0, 0x00FFFFFF);
-	_pSyn_DutCtrl->FpPokeRegister(0x80000374, 0x00000012);
+	rc = _pSyn_DutCtrl->FpPokeRegister(0x800003A0, 0x00FFFFFF);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Poke 1st Register Failed");
+		throw ex;
+	}
+	rc = _pSyn_DutCtrl->FpPokeRegister(0x80000374, 0x00000012);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Poke 2nd Register Failed");
+		throw ex;
+	}
 
 	//Load and execute the patch. The bin file is prefixed with a command ID. Do not load this ID in data block.
 	Syn_PatchInfo WofLowPowerBinPatchInfo;
@@ -80,10 +105,15 @@ void Ts_WOFLowPower::Execute()
 	}
 
 	//enter sleep
-	_pSyn_DutCtrl->FpTidleSet(0x03E8);
+	rc = _pSyn_DutCtrl->FpTidleSet(0x03E8);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Enter Sleep Failed");
+		throw ex;
+	}
 
-	//::Sleep(_pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nDelay_ms);
-	::Sleep(100);
+	::Sleep(_pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nDelay_ms);
 
 	//get current
 	uint32_t arrValue[2] = { 0, 0 };
