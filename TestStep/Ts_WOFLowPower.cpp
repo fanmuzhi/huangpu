@@ -55,63 +55,61 @@ void Ts_WOFLowPower::SetUp()
 
 void Ts_WOFLowPower::Execute()
 {
-	//_pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_bExecuted = true;
-	//_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_bPass = 0;
-	//_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_nCurrent_uA = 0;
+	uint32_t rc(0);
+	Syn_Exception ex(0);
 
-	//uint16_t	nAdcId = 2;
-	//uint16_t	nGainId = _pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nGain;
-	//uint16_t	nADCBaseline = _pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arAdcBaseLines[nAdcId][nGainId];
-	////uint16_t	nADCBaseline = site.GetLocalSettingsPtr()->GetAdcBaseLine(site.GetSiteNum(), nAdcId, info.m_nGain);
-	//uint32_t	arTemp[NUM_ADC_BASE_READINGS] = { 0, 0, 0, 0 };
-	//uint32_t	nAdcSum = 0, nAdcAve;
+	//Poke appropriate registers.
+	_pSyn_DutCtrl->FpPokeRegister(0x800003A0, 0x00FFFFFF);
+	_pSyn_DutCtrl->FpPokeRegister(0x80000374, 0x00000012);
 
-	////load Patch
-	//Syn_PatchInfo WofLowPowerPatchInfo;
-	//if (_pSyn_Dut->FindPatch("WofLowPowerPatch", WofLowPowerPatchInfo) && NULL != WofLowPowerPatchInfo._pArrayBuf)
-	//{
-	//	_pSyn_DutCtrl->FpLoadPatch(WofLowPowerPatchInfo._pArrayBuf, WofLowPowerPatchInfo._uiArraySize);
-	//}
+	//Load and execute the patch. The bin file is prefixed with a command ID. Do not load this ID in data block.
+	Syn_PatchInfo WofLowPowerBinPatchInfo;
+	if (!_pSyn_Dut->FindPatch("WofLowPowerBin", WofLowPowerBinPatchInfo) || NULL == WofLowPowerBinPatchInfo._pArrayBuf)
+	{
+		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
+		ex.SetDescription("WofLowPowerBin Patch is NULL!");
+		throw ex;
+	}
 
-	////Poke appropriate registers.
-	////FpPokeCmd(0x80000374, 0x00000012);
-	////FpPokeCmd(0x800003A0, 0x00FFFFFF);
-	//_pSyn_DutCtrl->FpPokeRegister(0x80000374, 0x00000012);
-	//_pSyn_DutCtrl->FpPokeRegister(0x800003A0, 0x00FFFFFF);
+	rc = _pSyn_DutCtrl->FpRunWOF2CFG(WofLowPowerBinPatchInfo._pArrayBuf, WofLowPowerBinPatchInfo._uiArraySize);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Run Wof2 CFG Failed");
+		throw ex;
+	}
 
-	////Load and execute the patch. The bin file is prefixed with a command ID. Do not load this ID in data block.
-	//Syn_PatchInfo WofLowPowerBinPatchInfo;
-	//if (!_pSyn_Dut->FindPatch("WofLowPowerBin", WofLowPowerBinPatchInfo) || NULL == WofLowPowerBinPatchInfo._pArrayBuf)
-	//{
-	//	Syn_Exception ex(0);
-	//	ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-	//	ex.SetDescription("WofLowPowerBin Patch is NULL!");
-	//	throw ex;
-	//	return;
-	//}
+	//enter sleep
+	_pSyn_DutCtrl->FpTidleSet(0x03E8);
 
-	//_pSyn_DutCtrl->FpWrite(1, WofLowPowerBinPatchInfo._pArrayBuf[0], &(WofLowPowerBinPatchInfo._pArrayBuf[1]), WofLowPowerBinPatchInfo._uiArraySize - 1);
-	//_pSyn_DutCtrl->FpWaitForCMDComplete();
+	//::Sleep(_pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nDelay_ms);
+	::Sleep(100);
 
-	////Get an average of multiple ADC readings.
-	//for (int i = 0; i < NUM_CURRENT_DRAW_READINGS; i++)
-	//{
-	//	_pSyn_DutCtrl->GetCurrentSenseValues(_pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nGain, 64, arTemp);
-	//	nAdcSum += arTemp[nAdcId];
-	//}
-	//nAdcAve = nAdcSum / NUM_CURRENT_DRAW_READINGS;
+	//get current
+	uint32_t arrValue[2] = { 0, 0 };
+	_pSynBridge->GetCurrentValues(arrValue, true);		//low gain
 
-	////Calculate current. Subtract the MPC04 base line offset from average ADC reading.
-	//_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_nCurrent_uA = (10 * ((float)nAdcAve - (float)nADCBaseline) * 3) / 4096;
+	float spivcc_current = ((float)(arrValue[0]) - (float)(_pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[0])) / 1000;
+	float vcc_current = ((float)(arrValue[1]) - (float)(_pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[1])) / 1000;
 
+#ifdef _DEBUG
+	LOG(DEBUG) << "WOFLowPower SPIVCC Current (uA): " << spivcc_current;
+	LOG(DEBUG) << "WOFLowPower VCC Current: (uA) " << vcc_current;
+#endif
+
+	_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_nCurrent_VCC_uA = vcc_current;
+	_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_nCurrent_SPIVCC_uA = spivcc_current;
+
+	_pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_bExecuted = true;
 }
 
 void Ts_WOFLowPower::ProcessData()
 {
 	_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_bPass = 1;
 
-	if ((_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_nCurrent_uA > _pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMaxCurrent_uA)|| 
-		(_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_nCurrent_uA < _pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMinCurrent_uA))
+	if ((_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_nCurrent_VCC_uA > _pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMaxCurrent_uA)|| 
+		(_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_nCurrent_VCC_uA < _pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMinCurrent_uA) ||
+		(_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_nCurrent_SPIVCC_uA > _pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMaxCurrent_uA))
 		_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_bPass = 0;
 
 	if (!_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_bPass)
@@ -121,11 +119,27 @@ void Ts_WOFLowPower::ProcessData()
 	}
 	else
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOF-LowPower", "Pass"));
-
-	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_elapsedtime);
 }
 
 void Ts_WOFLowPower::CleanUp()
 {
-	_pSyn_DutCtrl->FpUnloadPatch();
+	Syn_Exception ex(0);
+	uint32_t rc = _pSyn_DutCtrl->FpReset();
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpReset() Failed");
+		throw ex;
+	}
+
+	rc = _pSyn_DutCtrl->FpTidleSet(0);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpTidleSet command failed!");
+		throw ex;
+		return;
+	}
+
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_elapsedtime);
 }

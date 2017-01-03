@@ -528,7 +528,7 @@ bool Ts_OTPWriteMainSector::GetMtAndConfigPartNumbers(MtAndConfigPnInfo* pInfo)
 	memset(pInfo->mt_partnum, NULL, MAX_PART_NUMBER_LENGTH);
 	memset(pInfo->mt_config, NULL, MAX_PART_NUMBER_LENGTH);
 
-	uint8_t pPartNumber[MAX_PART_NUMBER_LENGTH] = { 0x05, 0x55, 0x00, 0x06, 0x19, 0x01, 0x00, 0x0A };
+	uint8_t pPartNumber[MAX_PART_NUMBER_LENGTH] = { 0x05, 0x55, 0x00, 0x06, 0x19, 0x01, 0x00, 0x0B };	//A for 1.15, B for 2.0
 	uint8_t pConfigFile[MAX_PART_NUMBER_LENGTH] = { 0x05, 0x80, 0x00, 0x60, 0x33, 0x01, 0x00, 0x01 };
 	//uint8_t pConfigFile[MAX_PART_NUMBER_LENGTH] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 	if (!GetConfigFileArray(sConfigFileName, pConfigFile))

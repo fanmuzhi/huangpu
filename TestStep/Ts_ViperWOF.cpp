@@ -223,6 +223,16 @@ bool Ts_ViperWOF::GetZ0WofData(WofTestInfo &wofInfo, WofTestResults &wofResults,
 	bool bWithStim = wofInfo.m_bWithStimulus ? true : false;
 	uint8_t*	pResponseBuf = bWithStim ? wofResults.m_arDataWithStim : wofResults.m_arDataWithoutStim;
 
+	//if need 3.6 volts
+	int nVcc = (int)(wofInfo.m_nVCC * 1000);
+	if (UseConfigVoltage)
+	{
+		_pSyn_DutCtrl->PowerOff();
+		_pSyn_DutCtrl->PowerOn(nVcc, _pSyn_Dut->_uiDutpwrVdd_mV);
+		_pSyn_DutCtrl->FpTidleSet(0);
+	}
+
+
 	//Load WOF Patch
 	Syn_PatchInfo WofPatchInfo;
 	_pSyn_Dut->FindPatch("WofPatch", WofPatchInfo);
@@ -237,15 +247,6 @@ bool Ts_ViperWOF::GetZ0WofData(WofTestInfo &wofInfo, WofTestResults &wofResults,
 	Syn_PatchInfo WofCmd1Patch, WofCmd2Patch;
 	_pSyn_Dut->FindPatch("WofFdCmd1", WofCmd1Patch);
 	_pSyn_Dut->FindPatch("WofFdCmd2", WofCmd2Patch);
-
-	//if need 3.6 volts
-	int nVcc = (int)(wofInfo.m_nVCC * 1000);
-	if (UseConfigVoltage)
-	{
-		_pSyn_DutCtrl->PowerOff();
-		_pSyn_DutCtrl->PowerOn(nVcc, _pSyn_Dut->_uiDutpwrVdd_mV);
-		_pSyn_DutCtrl->FpTidleSet(0);
-	}
 
 	//Fill the settings
 	WofCmd2Patch._pArrayBuf[0x0C] = WOF_GAIN_START;

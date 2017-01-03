@@ -97,7 +97,6 @@ void Ts_RAMTest::ProcessData()
 	else
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("RAMTest", "Pass"));
 
-	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_RAMTestResults.m_elapsedtime);
 }
 
 void Ts_RAMTest::CleanUp()
@@ -119,6 +118,8 @@ void Ts_RAMTest::CleanUp()
 		throw ex;
 		return;
 	}
+
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_RAMTestResults.m_elapsedtime);
 }
 
 void Ts_RAMTest::LoadRAMPatch(std::string sPatchName, uint8_t* pPatchResults, uint16_t nSize)

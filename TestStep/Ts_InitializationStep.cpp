@@ -132,6 +132,7 @@ void Ts_InitializationStep::Execute()
 
 	uint32_t rc(0);
 	//PowerOn
+	_pSyn_DutCtrl->PowerOff();
 	rc = _pSyn_DutCtrl->PowerOn(_pSyn_Dut->_uiDutpwrVddh_mV, _pSyn_Dut->_uiDutpwrVdd_mV);
 	if (0 != rc)
 	{

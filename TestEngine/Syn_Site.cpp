@@ -352,7 +352,7 @@ uint32_t Syn_Site::ExecuteTestStep(std::string sTestName, ExcuteType Type)
 	{
 		try
 		{
-			pTestStep->CleanUp();
+			_pSynBridge->SetVoltages(0,0);
 		}
 		catch (...){}
 		delete pTestStep;
@@ -560,19 +560,6 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 		}
 
 		fprintf(pFile, "\n");
-	}
-
-	//WOF-Lowpower
-	if (DutInfo->_wofLowPowerInfo.m_bExecuted)
-	{
-		if (DutResults->_wofLowPowerResults.m_bPass == 0)
-		{
-			fprintf(pFile, "\nWOF-Low Power,Fail,%.0f ms,Current (uA),%.3f\n", DutResults->_wofLowPowerResults.m_elapsedtime, DutResults->_wofLowPowerResults.m_nCurrent_uA);
-		}
-		else //Pass
-		{
-			fprintf(pFile, "\nWOF-Low Power,Pass,%.0f ms,Current (uA),%.3f\n", DutResults->_wofLowPowerResults.m_elapsedtime, DutResults->_wofLowPowerResults.m_nCurrent_uA);
-		}
 	}
 
 	//Cablication
@@ -835,9 +822,17 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 	//Retain Mode Test
 	if (DutInfo->_retainModeInfo.m_bExecuted)
 	{
-		fprintf(pFile, "\nRetain Mode Test,%s,%0.f ms,ADC Value,", DutResults->_retainModeResults.m_bPass ? "Pass" : "Fail", DutResults->_retainModeResults.m_elapsedtime);
-		fprintf(pFile, "\n,,,%.3f", DutResults->_retainModeResults.m_nRetainModeCurrent);
-		fprintf(pFile, "\n");
+		fprintf(pFile, "\nRetain Mode Test,%s,%0.f ms,\n", DutResults->_retainModeResults.m_bPass ? "Pass" : "Fail", DutResults->_retainModeResults.m_elapsedtime);
+		fprintf(pFile, ",,,spivcc current (uA),%.3f \n", DutResults->_retainModeResults.m_nRetainModeCurrent_SPIVCC_uA);
+		fprintf(pFile, ",,,vcc current (uA),%.3f \n", DutResults->_retainModeResults.m_nRetainModeCurrent_VCC_uA);
+	}
+
+	//WOF-Lowpower
+	if (DutInfo->_wofLowPowerInfo.m_bExecuted)
+	{
+		fprintf(pFile, "\nWOF-Low Power,%s,%.0f ms,\n", DutResults->_wofLowPowerResults.m_bPass ? "Pass" : "Fail", DutResults->_wofLowPowerResults.m_elapsedtime);
+		fprintf(pFile, ",,,spivcc current (uA),%.3f \n", DutResults->_wofLowPowerResults.m_nCurrent_SPIVCC_uA);
+		fprintf(pFile, ",,,vcc current (uA),%.3f \n", DutResults->_wofLowPowerResults.m_nCurrent_VCC_uA);
 	}
 
 	//SNR Test
@@ -851,6 +846,7 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 		fprintf(pFile, "\n");
 	}
 
+	//Huawei SNR
 	if (DutInfo->_huaweiIqTestInfo._bExecuted)
 	{
 		fprintf(pFile, "\nHuaWei ImageQuality Test,%s,%.0f ms,", DutResults->_huaweiIqTestResults._bPass ? "Pass" : "Fail", DutResults->_huaweiIqTestResults.m_elapsedtime);
