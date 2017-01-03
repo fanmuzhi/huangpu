@@ -12,7 +12,7 @@
 #define COLUMN_SIZE_MAX		200	
 #define ALPHA_HEADER		8
 
-#define TIMEOUT_VALUE 500
+#define TIMEOUT_VALUE 2000
 
 //error code
 #define FPMODULE_ERROR_TIME_OUT				0x1500
