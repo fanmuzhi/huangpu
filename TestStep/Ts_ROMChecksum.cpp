@@ -141,7 +141,14 @@ void Ts_ROMChecksum::Execute()
 		throw ex;
 		return;
 	}
-
+	rc = _pSyn_DutCtrl->FpUnloadPatch();
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("Unload patch failed!");
+		throw ex;
+		return;
+	}
 	_pSyn_Dut->_pSyn_DutTestResult->_ROMChecksumResults.m_ChecksumResult = checksumResult;
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_ROMChecksumInfo.m_bExecuted = true;
@@ -168,6 +175,22 @@ void Ts_ROMChecksum::ProcessData()
 
 void Ts_ROMChecksum::CleanUp()
 {
-	_pSyn_DutCtrl->FpUnloadPatch();
+	Syn_Exception ex(0);
+	uint32_t rc = _pSyn_DutCtrl->FpReset();
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpReset() Failed");
+		throw ex;
+	}
+
+	rc = _pSyn_DutCtrl->FpTidleSet(0);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpTidleSet command failed!");
+		throw ex;
+		return;
+	}
 	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_ROMChecksumResults.m_elapsedtime);
 }

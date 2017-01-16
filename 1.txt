@@ -48,3 +48,13 @@ status is OK!
 tempNumChannels is 0!
 status is OK!
 tempNumChannels is 0!
+status is OK!
+tempNumChannels is 0!
+status is OK!
+tempNumChannels is 0!
+status is OK!
+tempNumChannels is 0!
+status is OK!
+tempNumChannels is 0!
+status is OK!
+tempNumChannels is 0!
