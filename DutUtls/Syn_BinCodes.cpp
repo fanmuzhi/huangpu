@@ -60,6 +60,11 @@ std::string	Syn_BinCodes::m_sSpiOwnershipFail = "148.1";
 std::string	Syn_BinCodes::m_sMpcVoltageFail = "149";
 std::string	Syn_BinCodes::m_sPackageTypeFail = "150";		//Not used.
 std::string	Syn_BinCodes::m_sAFETestFail = "151";
-std::string Syn_BinCodes::m_sBootSectorFail = "152";
-std::string Syn_BinCodes::m_sMainSectorFail = "153";
-std::string Syn_BinCodes::m_sROMChecsum = "154";
+std::string Syn_BinCodes::m_sDynOffCorrDacTestFail = "153";
+std::string Syn_BinCodes::m_sLnaVgaGainTestFail = "154";
+std::string Syn_BinCodes::m_sIromChecksumTestFail = "155";
+std::string Syn_BinCodes::m_sFlexIdTestFail = "156";
+//Huangpu define,not copy from Autoclient
+std::string Syn_BinCodes::m_sBootSectorFail = "152H";
+std::string Syn_BinCodes::m_sMainSectorFail = "153H";
+std::string Syn_BinCodes::m_sROMChecsumFail = "154H";

@@ -59,6 +59,10 @@ struct Syn_DutTestInfo
 	SecurityStepInfo			_securityStepInfo;
 	ProductIDTestInfo			_productIdTestInfo;
 	AFETestInfo					_AFETestInfo;
+	FlexIdTestInfo				_FlexIdTestInfo;
+	IromChecksumTestInfo		_IromChecksumTestInfo;
+	DynOffCorrDacTestInfo		_DynOffCorrDacTestInfo;
+	LnaVgaGainTestInfo			_LnaVgaGainTestInfo;
 	LEDTestInfo					_LEDTestInfo;
 	SdkBaselineTestInfo		    _SdkBaselineInfo;
 	SpiOwnershipInfo		    _SpiOwnershipInfo;
@@ -117,6 +121,10 @@ struct Syn_DutTestResult
 	SecurityStepResults			_securityStepResults;
 	ProductIDTestResults		_productIdTestResults;
 	AFETestResults				_AFETestResults;
+	FlexIdTestResults			_FlexIdTestResults;
+	IromChecksumTestResults		_IromChecksumTestResults;
+	DynOffCorrDacTestResults	_DynOffCorrDacTestResults;
+	LnaVgaGainTestResults		_LnaVgaGainTestResults;
 	LEDTestResults				_LEDTestResults;
 	SdkBaselineTestResults	    _SdkBaselineResults;
 	SpiOwnershipResults			_SpiOwnershipResults;

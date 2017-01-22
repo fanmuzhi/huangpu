@@ -162,7 +162,7 @@ void Ts_ROMChecksum::ProcessData()
 	if (_pSyn_Dut->_pSyn_DutTestResult->_ROMChecksumResults.m_ChecksumResult != _pSyn_Dut->_pSyn_DutTestInfo->_ROMChecksumInfo.m_ChecksumValue)
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_ROMChecksumResults.m_bPass = false;
-		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sROMChecsum);
+		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sROMChecsumFail);
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("ROMChecksum", "Fail"));
 	}
 	else

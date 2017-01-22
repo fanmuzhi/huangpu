@@ -25,6 +25,10 @@
 #include "Ts_OpensShortsTest.h"
 #include "Ts_RAMTest.h"
 #include "Ts_AFETest.h"
+#include "Ts_FlexIdTest.h"
+#include "Ts_IromChecksumTest.h"
+#include "Ts_DynOffCorrDacTest.h"
+#include "Ts_LnaVgaGainTest.h"
 #include "Ts_WOFFD.h"
 #include "Ts_WOFFU.h"
 #include "Ts_WOFLowPower.h"
@@ -159,6 +163,22 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	else if (std::string("AFETest") == strTestStepName)
 	{
 		opTestStepInstance = new Ts_AFETest(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("FlexIdTest") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_FlexIdTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("IromChecksumTest") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_IromChecksumTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("DynOffCorrDacTest") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_DynOffCorrDacTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("LnaVgaGainTest") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_LnaVgaGainTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else if (std::string("WOF_FD_WithoutStimulus") == strTestStepName || std::string("WOF_FD_WithStimulus") == strTestStepName)
 	{
