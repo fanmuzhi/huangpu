@@ -1,4 +1,5 @@
 <RCC>
-    <qresource prefix="FPS_TestExecutive">
+    <qresource prefix="/FPS_TestExecutive">
+        <file>images/Synaptics.bmp</file>
     </qresource>
 </RCC>
