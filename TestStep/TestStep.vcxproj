@@ -114,6 +114,7 @@ xcopy /y "$(SolutionDir)..\changning\FpBridge\syn_devicemanager.h" "$(SolutionDi
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Ts_Metallica_WOFLowPower.h" />
     <ClInclude Include="Ts_DynOffCorrDacTest.h" />
     <ClInclude Include="Ts_FlexIdTest.h" />
     <ClInclude Include="Syn_FingerprintTest.h" />
@@ -161,6 +162,7 @@ xcopy /y "$(SolutionDir)..\changning\FpBridge\syn_devicemanager.h" "$(SolutionDi
     <ClInclude Include="Ts_WoVarTest.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Ts_Metallica_WOFLowPower.cpp" />
     <ClCompile Include="Ts_DynOffCorrDacTest.cpp" />
     <ClCompile Include="Ts_IromChecksumTest.cpp" />
     <ClCompile Include="Ts_FlexIdTest.cpp" />

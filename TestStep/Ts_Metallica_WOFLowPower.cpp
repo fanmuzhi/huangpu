@@ -1,16 +1,16 @@
-#include "Ts_WOFLowPower.h"
+#include "Ts_Metallica_WOFLowPower.h"
 
 
-Ts_WOFLowPower::Ts_WOFLowPower(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut)
+Ts_Metallica_WOFLowPower::Ts_Metallica_WOFLowPower(string &strName, string &strArgs, FpAlphaModule * &pDutCtrl, Syn_Dut * &pDut)
 :Syn_FingerprintTest(strName, strArgs, pDutCtrl, pDut)
 {
 }
 
-Ts_WOFLowPower::~Ts_WOFLowPower()
+Ts_Metallica_WOFLowPower::~Ts_Metallica_WOFLowPower()
 {
 }
 
-void Ts_WOFLowPower::SetUp()
+void Ts_Metallica_WOFLowPower::SetUp()
 {
 	Syn_Exception ex(0);
 	if (NULL == _pSyn_DutCtrl)
@@ -28,12 +28,10 @@ void Ts_WOFLowPower::SetUp()
 
 	_pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_bExecuted = false;
 	_pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nGain = 2;
-	_pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMaxCurrent_uA = 100;
+	_pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMaxCurrent_uA = 50;
 	_pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMinCurrent_uA = 0;
 	_pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nDelay_ms = 200;
-	_pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMaxSpiCurrent_uA = 50;
-	_pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMinSpiCurrent_uA = 0;
-	
+
 	std::vector<std::string> listOfArgValue;
 	ParseTestStepArgs(_strArgs, listOfArgValue);
 	size_t ilistSize = listOfArgValue.size();
@@ -51,16 +49,16 @@ void Ts_WOFLowPower::SetUp()
 		_pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMinCurrent_uA = atoi(listOfArgValue[2].c_str());
 	if (0 != listOfArgValue[3].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nDelay_ms = atoi(listOfArgValue[3].c_str());
-	if (0 != listOfArgValue[4].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMaxSpiCurrent_uA = atoi(listOfArgValue[4].c_str());
-	if (0 != listOfArgValue[5].length())
-		_pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMinSpiCurrent_uA = atoi(listOfArgValue[5].c_str());
 }
 
-void Ts_WOFLowPower::Execute()
+void Ts_Metallica_WOFLowPower::Execute()
 {
 	uint32_t rc(0);
 	Syn_Exception ex(0);
+	///No BIN File for Metallica instead we use a static 'wof2_met_109a' array declared above.
+	static uint8_t wof2_met_109a[] = { 0x76, 0x02, 0x04, 0x00, 0x00, 0x0F, 0x30, 0x40, 0x00, 0xCC, 0x0C, 0x0C, 0x02, 0x00, 0x01,
+		0x10, 0x10, 0xE8, 0x03, 0x1C, 0x00, 0x03, 0xF0, 0xFF, 0xFF, 0x99, 0x03, 0xF9, 0x02, 0xD8, 0x28,
+		0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08 };
 
 	if (NULL == _pSyn_DutCtrl)
 	{
@@ -92,23 +90,16 @@ void Ts_WOFLowPower::Execute()
 		ex.SetDescription("Poke 2nd Register Failed");
 		throw ex;
 	}
-
+	
 	//Load and execute the patch. The bin file is prefixed with a command ID. Do not load this ID in data block.
-	Syn_PatchInfo WofLowPowerBinPatchInfo;
-	if (!_pSyn_Dut->FindPatch("WofLowPowerBin", WofLowPowerBinPatchInfo) || NULL == WofLowPowerBinPatchInfo._pArrayBuf)
-	{
-		ex.SetError(Syn_ExceptionCode::Syn_DutPatchError);
-		ex.SetDescription("WofLowPowerBin Patch is NULL!");
-		throw ex;
-	}
-
-	rc = _pSyn_DutCtrl->FpRunWOF2CFG(WofLowPowerBinPatchInfo._pArrayBuf, WofLowPowerBinPatchInfo._uiArraySize);
+	rc = _pSyn_DutCtrl->FpRunWOF2CFG(&wof2_met_109a[0], sizeof(wof2_met_109a));
 	if (0 != rc)
 	{
 		ex.SetError(rc);
-		ex.SetDescription("Run Wof2 CFG Failed");
+		ex.SetDescription("Metallica Run Wof2 CFG Failed");
 		throw ex;
 	}
+
 	//enter sleep
 	rc = _pSyn_DutCtrl->FpTidleSet(0x03E8);
 	if (0 != rc)
@@ -138,13 +129,13 @@ void Ts_WOFLowPower::Execute()
 	_pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_bExecuted = true;
 }
 
-void Ts_WOFLowPower::ProcessData()
+void Ts_Metallica_WOFLowPower::ProcessData()
 {
 	_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_bPass = 1;
 
-	if ((_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_nCurrent_VCC_uA > _pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMaxCurrent_uA)|| 
+	if ((_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_nCurrent_VCC_uA > _pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMaxCurrent_uA) ||
 		(_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_nCurrent_VCC_uA < _pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMinCurrent_uA) ||
-		(_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_nCurrent_SPIVCC_uA > _pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMaxSpiCurrent_uA))
+		(_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_nCurrent_SPIVCC_uA > _pSyn_Dut->_pSyn_DutTestInfo->_wofLowPowerInfo.m_nMaxCurrent_uA))
 		_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_bPass = 0;
 
 	if (!_pSyn_Dut->_pSyn_DutTestResult->_wofLowPowerResults.m_bPass)
@@ -156,7 +147,7 @@ void Ts_WOFLowPower::ProcessData()
 		_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("WOF-LowPower", "Pass"));
 }
 
-void Ts_WOFLowPower::CleanUp()
+void Ts_Metallica_WOFLowPower::CleanUp()
 {
 	Syn_Exception ex(0);
 	uint32_t rc = _pSyn_DutCtrl->FpReset();

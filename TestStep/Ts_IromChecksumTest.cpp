@@ -71,7 +71,7 @@ void Ts_IromChecksumTest::Execute()
 	}
 
 	//Get the response.
-	rc = _pSyn_DutCtrl->FpRunPatchTest(_pSyn_Dut->_pSyn_DutTestResult->_IromChecksumTestResults.m_pResponse, _pSyn_Dut->_pSyn_DutTestInfo->_IromChecksumTestInfo.m_nNumResBytes);
+	rc = _pSyn_DutCtrl->FpRunPatchTest(_pSyn_Dut->_pSyn_DutTestResult->_IromChecksumTestResults.m_pResponse, _pSyn_Dut->_pSyn_DutTestInfo->_IromChecksumTestInfo.m_nNumResBytes, _pSyn_Dut->_pSyn_DutTestInfo->_IromChecksumTestInfo.m_nDelay_ms);
 	if (0 != rc)
 	{
 		ex.SetError(rc);

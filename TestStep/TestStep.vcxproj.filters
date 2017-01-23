@@ -133,6 +133,9 @@
     <ClCompile Include="Ts_LnaVgaGainTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Ts_Metallica_WOFLowPower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Syn_TestStep.h">
@@ -268,6 +271,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ts_LnaVgaGainTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ts_Metallica_WOFLowPower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

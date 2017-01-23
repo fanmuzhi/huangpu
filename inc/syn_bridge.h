@@ -32,7 +32,7 @@ public:
 
 	virtual uint32_t GetIdentity(uint32_t *identifierp, uint32_t *boot_versionp, uint32_t *appl_versionp, unsigned int timeout = DEFAULT_TIMEOUT_VALUE) = 0;
 
-	virtual uint32_t SetVoltages(unsigned int vcc, unsigned int spivcc, unsigned int timeout = DEFAULT_TIMEOUT_VALUE, unsigned int sleeptime = 20) = 0;
+	virtual uint32_t SetVoltages(unsigned int vcc, unsigned int spivcc, unsigned int timeout = DEFAULT_TIMEOUT_VALUE, unsigned int sleeptime = 20, bool vccfirst = true, unsigned int middelaytime = 0) = 0;
 
 	virtual uint32_t GPIO_CheckDRDY(bool *drdyp, uint32_t timeout = DEFAULT_TIMEOUT_VALUE) = 0;
 

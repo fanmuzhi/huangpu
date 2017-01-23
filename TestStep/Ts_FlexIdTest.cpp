@@ -71,7 +71,7 @@ void Ts_FlexIdTest::Execute()
 	}
 
 	//Get the response.
-	rc = _pSyn_DutCtrl->FpRunPatchTest(_pSyn_Dut->_pSyn_DutTestResult->_FlexIdTestResults.m_pResponse, _pSyn_Dut->_pSyn_DutTestInfo->_FlexIdTestInfo.m_nNumResBytes);
+	rc = _pSyn_DutCtrl->FpRunPatchTest(_pSyn_Dut->_pSyn_DutTestResult->_FlexIdTestResults.m_pResponse, _pSyn_Dut->_pSyn_DutTestInfo->_FlexIdTestInfo.m_nNumResBytes, _pSyn_Dut->_pSyn_DutTestInfo->_FlexIdTestInfo.m_nDelay_ms);
 	if (0 != rc)
 	{
 		ex.SetError(rc);

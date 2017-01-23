@@ -71,7 +71,7 @@ void Ts_LnaVgaGainTest::Execute()
 	}
 
 	//Get the response.
-	rc = _pSyn_DutCtrl->FpRunPatchTest(_pSyn_Dut->_pSyn_DutTestResult->_LnaVgaGainTestResults.m_pResponse, _pSyn_Dut->_pSyn_DutTestInfo->_LnaVgaGainTestInfo.m_nNumResBytes);
+	rc = _pSyn_DutCtrl->FpRunPatchTest(_pSyn_Dut->_pSyn_DutTestResult->_LnaVgaGainTestResults.m_pResponse, _pSyn_Dut->_pSyn_DutTestInfo->_LnaVgaGainTestInfo.m_nNumResBytes, _pSyn_Dut->_pSyn_DutTestInfo->_LnaVgaGainTestInfo.m_nDelay_ms);
 	if (0 != rc)
 	{
 		ex.SetError(rc);

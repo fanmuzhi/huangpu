@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Syn_FingerprintTest.h"
+
+
 class Ts_WOFLowPower : public Syn_FingerprintTest
 {
 public:

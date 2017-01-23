@@ -1214,6 +1214,8 @@ typedef struct
 	int			m_nMaxCurrent_uA;
 	int			m_nMinCurrent_uA;
 	int			m_nDelay_ms;
+	int			m_nMaxSpiCurrent_uA;
+	int			m_nMinSpiCurrent_uA;
 }WofLowPowerInfo;
 
 typedef struct
