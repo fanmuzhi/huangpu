@@ -84,7 +84,8 @@ void Ts_DeepSleepCurrent::Execute()
 void Ts_DeepSleepCurrent::ProcessData()
 {
 	if (_pSyn_Dut->_pSyn_DutTestResult->_deepSleepCurrentResults.spivcc_current_uA > _pSyn_Dut->_pSyn_DutTestInfo->_deepSleepCurrentInfo._highLimit 
-		|| _pSyn_Dut->_pSyn_DutTestResult->_deepSleepCurrentResults.vcc_current_uA > _pSyn_Dut->_pSyn_DutTestInfo->_deepSleepCurrentInfo._highLimit)
+		|| _pSyn_Dut->_pSyn_DutTestResult->_deepSleepCurrentResults.vcc_current_uA > _pSyn_Dut->_pSyn_DutTestInfo->_deepSleepCurrentInfo._highLimit
+		|| _pSyn_Dut->_pSyn_DutTestResult->_deepSleepCurrentResults.vcc_current_uA <= 0)
 	{
 		_pSyn_Dut->_pSyn_DutTestResult->_deepSleepCurrentResults._bPass = false;
 		_pSyn_Dut->_pSyn_DutTestResult->_binCodes.push_back(Syn_BinCodes::m_sWofWovarCurrentFail);

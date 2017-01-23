@@ -48,5 +48,13 @@ void Ts_FinalizationStep::ProcessData()
 
 void Ts_FinalizationStep::CleanUp()
 {
-	_pSyn_DutCtrl->PowerOff();
+	Syn_Exception ex(0);
+	uint32_t rc = _pSyn_DutCtrl->PowerOff();
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("PowerOff command failed!");
+		throw ex;
+		return;
+	}
 }

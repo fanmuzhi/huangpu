@@ -62,8 +62,13 @@ public:
 	static std::string	m_sMpcVoltageFail;				//149
 	static std::string	m_sPackageTypeFail;				//150
 	static std::string	m_sAFETestFail;					//151
-	static std::string  m_sBootSectorFail;				//152
-	static std::string  m_sMainSectorFail;				//153
-	static std::string  m_sROMChecsum;					//154
+	static std::string  m_sDynOffCorrDacTestFail;		//153
+	static std::string  m_sLnaVgaGainTestFail;			//154
+	static std::string  m_sIromChecksumTestFail;		//155
+	static std::string  m_sFlexIdTestFail;				//156
+	//huangpu define,not copy from autoclient
+	static std::string  m_sBootSectorFail;				//152H
+	static std::string  m_sMainSectorFail;				//153H
+	static std::string  m_sROMChecsumFail;				//154H
 };
 

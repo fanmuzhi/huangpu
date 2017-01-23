@@ -18,6 +18,10 @@
 #define MAX_PRINTFILE_SIZE					20000
 #define MAX_OPENS_SHORTS_RES				5000
 #define MAX_AFE_TEST_RES					5000
+#define MAX_FLEXID_TEST_RES					5000
+#define MAX_IROMCHECKSUM_TEST_RES			5000
+#define MAX_DYNOFFCORRDAC_TEST_RES			5000
+#define MAX_LNAVGAGAIN_TEST_RES				5000
 #define MAX_PIXEL_PATCH_RES_BYTES			3000
 #define MAX_WOVAR_RES_BYTES					3000
 #define MAX_LED_TEST_MSG_LEN				500
@@ -464,11 +468,71 @@ typedef struct
 
 typedef struct
 {
-	int			m_bPass;	
+	int			m_bPass;
 	uint8_t		m_pResponse[MAX_AFE_TEST_RES];
 
 	double      m_elapsedtime;
 }AFETestResults;
+
+typedef struct
+{
+	int			m_bExecuted;
+	int			m_nNumResBytes;
+	int			m_nDelay_ms;
+}FlexIdTestInfo;
+
+typedef struct
+{
+	int			m_bPass;
+	uint8_t		m_pResponse[MAX_FLEXID_TEST_RES];
+
+	double      m_elapsedtime;
+}FlexIdTestResults;
+
+typedef struct
+{
+	int			m_bExecuted;
+	int			m_nNumResBytes;
+	int			m_nDelay_ms;
+}IromChecksumTestInfo;
+
+typedef struct
+{
+	int			m_bPass;
+	uint8_t		m_pResponse[MAX_IROMCHECKSUM_TEST_RES];
+
+	double      m_elapsedtime;
+}IromChecksumTestResults;
+
+typedef struct
+{
+	int			m_bExecuted;
+	int			m_nNumResBytes;
+	int			m_nDelay_ms;
+}DynOffCorrDacTestInfo;
+
+typedef struct
+{
+	int			m_bPass;
+	uint8_t		m_pResponse[MAX_DYNOFFCORRDAC_TEST_RES];
+
+	double      m_elapsedtime;
+}DynOffCorrDacTestResults;
+
+typedef struct
+{
+	int			m_bExecuted;
+	int			m_nNumResBytes;
+	int			m_nDelay_ms;
+}LnaVgaGainTestInfo;
+
+typedef struct
+{
+	int			m_bPass;
+	uint8_t		m_pResponse[MAX_LNAVGAGAIN_TEST_RES];
+
+	double      m_elapsedtime;
+}LnaVgaGainTestResults;
 
 ///////////////////////////	////////////////////////
 #define MAX_WOF_DATA		5 * 1024
@@ -1150,6 +1214,8 @@ typedef struct
 	int			m_nMaxCurrent_uA;
 	int			m_nMinCurrent_uA;
 	int			m_nDelay_ms;
+	int			m_nMaxSpiCurrent_uA;
+	int			m_nMinSpiCurrent_uA;
 }WofLowPowerInfo;
 
 typedef struct

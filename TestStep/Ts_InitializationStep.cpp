@@ -131,8 +131,16 @@ void Ts_InitializationStep::Execute()
 	}
 
 	uint32_t rc(0);
-	//PowerOn
-	_pSyn_DutCtrl->PowerOff();
+	//PowerOff
+	rc = _pSyn_DutCtrl->PowerOff();
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("PowerOff command failed!");
+		throw ex;
+		return;
+	}
+	//Power on
 	rc = _pSyn_DutCtrl->PowerOn(_pSyn_Dut->_uiDutpwrVddh_mV, _pSyn_Dut->_uiDutpwrVdd_mV);
 	if (0 != rc)
 	{
@@ -141,15 +149,6 @@ void Ts_InitializationStep::Execute()
 		throw ex;
 		return;
 	}
-	rc = _pSyn_DutCtrl->FpTidleSet(0);
-	if (0 != rc)
-	{
-		ex.SetError(rc);
-		ex.SetDescription("FpTidleSet command failed!");
-		throw ex;
-		return;
-	}
-
 	try
 	{
 		rc = _pSyn_DutCtrl->FpGetVersion((uint8_t*)&(_pSyn_Dut->_pSyn_DutTestInfo->_getVerInfo), VERSION_SIZE);
@@ -227,11 +226,28 @@ void Ts_InitializationStep::ProcessData()
 	}
 
 	_pSyn_Dut->_pSyn_DutTestResult->_mapTestPassInfo.insert(std::map<std::string, std::string>::value_type("InitializationStep", "Pass"));
+	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_initResults.m_elapsedtime);
 }
 
 void Ts_InitializationStep::CleanUp()
 {
-	ComputeRunningTime(_pSyn_Dut->_pSyn_DutTestResult->_initResults.m_elapsedtime);
+	Syn_Exception ex(0);
+	uint32_t rc = _pSyn_DutCtrl->FpReset();
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpReset() Failed");
+		throw ex;
+	}
+
+	rc = _pSyn_DutCtrl->FpTidleSet(0);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("FpTidleSet command failed!");
+		throw ex;
+		return;
+	}
 }
 
 void Ts_InitializationStep::Create_SN(uint8_t* SN, uint32_t nDeviceSerNum, int nSiteNum, int nTestLocationId)

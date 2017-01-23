@@ -25,9 +25,14 @@
 #include "Ts_OpensShortsTest.h"
 #include "Ts_RAMTest.h"
 #include "Ts_AFETest.h"
+#include "Ts_FlexIdTest.h"
+#include "Ts_IromChecksumTest.h"
+#include "Ts_DynOffCorrDacTest.h"
+#include "Ts_LnaVgaGainTest.h"
 #include "Ts_WOFFD.h"
 #include "Ts_WOFFU.h"
 #include "Ts_WOFLowPower.h"
+#include "Ts_Metallica_WOFLowPower.h"
 #include "Ts_SCM_WOF.h"
 #include "Ts_ReadDutAdc.h"
 #include "Ts_OTPWriteBootSector.h"
@@ -160,6 +165,22 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	{
 		opTestStepInstance = new Ts_AFETest(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
+	else if (std::string("FlexIdTest") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_FlexIdTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("IromChecksumTest") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_IromChecksumTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("DynOffCorrDacTest") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_DynOffCorrDacTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
+	else if (std::string("LnaVgaGainTest") == strTestStepName)
+	{
+		opTestStepInstance = new Ts_LnaVgaGainTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
+	}
 	else if (std::string("WOF_FD_WithoutStimulus") == strTestStepName || std::string("WOF_FD_WithStimulus") == strTestStepName)
 	{
 		if (pDut->_strProjectType == "Viper" || pDut->_strProjectType == "Viper2")
@@ -178,7 +199,10 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	}
 	else if (std::string("WOF-LowPower") == strTestStepName)
 	{
-		opTestStepInstance = new Ts_WOFLowPower(strTestStepName, strTestArgs, pDutCtrl, pDut);
+		if (pDut->_strProjectType == "Metallica")
+			opTestStepInstance = new Ts_Metallica_WOFLowPower(strTestStepName, strTestArgs, pDutCtrl, pDut);//Metallica Default
+		else
+			opTestStepInstance = new Ts_WOFLowPower(strTestStepName, strTestArgs, pDutCtrl, pDut);
 	}
 	else if (std::string("SCM_WOFWithoutStimulus") == strTestStepName || std::string("SCM_WOFWithStimulus") == strTestStepName)
 	{

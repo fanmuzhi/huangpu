@@ -562,6 +562,50 @@ bool Syn_Site::WriteLog(std::string sFolderPath, std::string sFileName)
 		fprintf(pFile, "\n");
 	}
 
+	//FlexId Test
+	if (DutInfo->_FlexIdTestInfo.m_bExecuted)
+	{
+		fprintf(pFile, "\nFlexIdTest,%s,%.0f ms\n", (DutResults->_FlexIdTestResults.m_bPass != 0) ? "Pass" : "Fail", DutResults->_FlexIdTestResults.m_elapsedtime);
+
+		fprintf(pFile, ",,,");
+		for (int i = 0; i<(DutInfo->_FlexIdTestInfo.m_nNumResBytes / 4); i++)
+			fprintf(pFile, "%d,", *(&DutResults->_FlexIdTestResults.m_pResponse[i * 4] + 2));
+		fprintf(pFile, "\n");
+	}
+
+	//IromCheckSum Test
+	if (DutInfo->_IromChecksumTestInfo.m_bExecuted)
+	{
+		fprintf(pFile, "\nIromCheckSumTest,%s,%.0f ms\n", (DutResults->_IromChecksumTestResults.m_bPass != 0) ? "Pass" : "Fail", DutResults->_IromChecksumTestResults.m_elapsedtime);
+
+		fprintf(pFile, ",,,");
+		for (int i = 0; i<(DutInfo->_IromChecksumTestInfo.m_nNumResBytes / 4); i++)
+			fprintf(pFile, "%d,", *(&DutResults->_IromChecksumTestResults.m_pResponse[i * 4] + 2));
+		fprintf(pFile, "\n");
+	}
+
+	//DynOffCorrDac Test
+	if (DutInfo->_DynOffCorrDacTestInfo.m_bExecuted)
+	{
+		fprintf(pFile, "\nDynOffCorrDacTest,%s,%.0f ms\n", (DutResults->_DynOffCorrDacTestResults.m_bPass != 0) ? "Pass" : "Fail", DutResults->_DynOffCorrDacTestResults.m_elapsedtime);
+
+		fprintf(pFile, ",,,");
+		for (int i = 0; i<(DutInfo->_DynOffCorrDacTestInfo.m_nNumResBytes / 4); i++)
+			fprintf(pFile, "%d,", *(&DutResults->_DynOffCorrDacTestResults.m_pResponse[i * 4] + 2));
+		fprintf(pFile, "\n");
+	}
+
+	//LnaVgaGain Test
+	if (DutInfo->_LnaVgaGainTestInfo.m_bExecuted)
+	{
+		fprintf(pFile, "\nLnaVgaGainTest,%s,%.0f ms\n", (DutResults->_LnaVgaGainTestResults.m_bPass != 0) ? "Pass" : "Fail", DutResults->_LnaVgaGainTestResults.m_elapsedtime);
+
+		fprintf(pFile, ",,,");
+		for (int i = 0; i<(DutInfo->_LnaVgaGainTestInfo.m_nNumResBytes / 4); i++)
+			fprintf(pFile, "%d,", *(&DutResults->_LnaVgaGainTestResults.m_pResponse[i * 4] + 2));
+		fprintf(pFile, "\n");
+	}
+
 	//Cablication
 	if (DutInfo->_calibrationInfo.m_bExecuted)
 	{

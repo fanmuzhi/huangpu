@@ -114,6 +114,9 @@ xcopy /y "$(SolutionDir)..\changning\FpBridge\syn_devicemanager.h" "$(SolutionDi
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Ts_Metallica_WOFLowPower.h" />
+    <ClInclude Include="Ts_DynOffCorrDacTest.h" />
+    <ClInclude Include="Ts_FlexIdTest.h" />
     <ClInclude Include="Syn_FingerprintTest.h" />
     <ClInclude Include="Ts_AcqImgFinger.h" />
     <ClInclude Include="Ts_AcqImgNoFinger.h" />
@@ -132,6 +135,8 @@ xcopy /y "$(SolutionDir)..\changning\FpBridge\syn_devicemanager.h" "$(SolutionDi
     <ClInclude Include="Ts_Imperfections.h" />
     <ClInclude Include="Ts_InitializationStep.h" />
     <ClInclude Include="Ts_Invalidate.h" />
+    <ClInclude Include="Ts_IromChecksumTest.h" />
+    <ClInclude Include="Ts_LnaVgaGainTest.h" />
     <ClInclude Include="Ts_OpensShortsTest.h" />
     <ClInclude Include="Ts_OTPCheck.h" />
     <ClInclude Include="Ts_OTPWriteBootSector.h" />
@@ -157,6 +162,10 @@ xcopy /y "$(SolutionDir)..\changning\FpBridge\syn_devicemanager.h" "$(SolutionDi
     <ClInclude Include="Ts_WoVarTest.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Ts_Metallica_WOFLowPower.cpp" />
+    <ClCompile Include="Ts_DynOffCorrDacTest.cpp" />
+    <ClCompile Include="Ts_IromChecksumTest.cpp" />
+    <ClCompile Include="Ts_FlexIdTest.cpp" />
     <ClCompile Include="Ts_AcqImgFinger.cpp" />
     <ClCompile Include="Ts_AcqImgNoFinger.cpp" />
     <ClCompile Include="Ts_AFETest.cpp" />
@@ -174,6 +183,7 @@ xcopy /y "$(SolutionDir)..\changning\FpBridge\syn_devicemanager.h" "$(SolutionDi
     <ClCompile Include="Ts_Imperfections.cpp" />
     <ClCompile Include="Ts_InitializationStep.cpp" />
     <ClCompile Include="Ts_Invalidate.cpp" />
+    <ClCompile Include="Ts_LnaVgaGainTest.cpp" />
     <ClCompile Include="Ts_OpensShortsTest.cpp" />
     <ClCompile Include="Ts_OTPCheck.cpp" />
     <ClCompile Include="Ts_OTPWriteBootSector.cpp" />
