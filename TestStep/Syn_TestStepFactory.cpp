@@ -221,7 +221,9 @@ bool Syn_TestStepFactory::CreateTestStepInstance(std::string strTestStepName, st
 	}
 	else if (std::string("HuaweiImageQualityTest") == strTestStepName)
 	{
+#ifdef _NDEBUG
 		opTestStepInstance = new Ts_HuaweiImageQualityTest(strTestStepName, strTestArgs, pDutCtrl, pDut);
+#endif
 	}
 	else if (std::string("ButtonTestWithoutStimulus") == strTestStepName)
 	{
