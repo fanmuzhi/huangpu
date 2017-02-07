@@ -11,7 +11,7 @@ using namespace System::Runtime::InteropServices;
 using namespace System::Drawing;
 
 
-namespace DotNetTestEngine {
+namespace ManagedTestEngine {
 
 	//System::String to std::string
 	void MarshalString(String^ s, string& os)

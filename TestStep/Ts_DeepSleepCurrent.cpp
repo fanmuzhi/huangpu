@@ -43,6 +43,30 @@ void Ts_DeepSleepCurrent::SetUp()
 	if (0 != listOfArgValue[0].length())
 		_pSyn_Dut->_pSyn_DutTestInfo->_deepSleepCurrentInfo._highLimit = std::stof(listOfArgValue[0]);
 
+	//
+	//try to power cycle here 
+	//since the Firmware Patch need to work before measureing the current.
+	//
+
+	uint32_t rc(0);
+	//PowerOff
+	rc = _pSyn_DutCtrl->PowerOff();
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("PowerOff command failed!");
+		throw ex;
+		return;
+	}
+	//Power on
+	rc = _pSyn_DutCtrl->PowerOn(_pSyn_Dut->_uiDutpwrVddh_mV, _pSyn_Dut->_uiDutpwrVdd_mV);
+	if (0 != rc)
+	{
+		ex.SetError(rc);
+		ex.SetDescription("PowerOn command failed!");
+		throw ex;
+		return;
+	}
 }
 
 void Ts_DeepSleepCurrent::Execute()

@@ -9,7 +9,7 @@
 using namespace System;
 using namespace System::Collections::Generic;
 
-namespace DotNetTestEngine {
+namespace ManagedTestEngine {
 
 	public ref class DllVersion
 	{
