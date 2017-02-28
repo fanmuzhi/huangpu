@@ -44,7 +44,7 @@ bool Syn_Dut::CreateDutInstance(string iType, Syn_Dut * &opSyn_DutInstance)
 	return true;
 }
 
-void Syn_Dut::InitData(Syn_SysConfig &sysConfig, AdcBaseLineInfo &iAdcBaseLineInfo)
+void Syn_Dut::InitData(Syn_SysConfig &sysConfig)
 {
 	bool rc(true);
 
@@ -61,7 +61,6 @@ void Syn_Dut::InitData(Syn_SysConfig &sysConfig, AdcBaseLineInfo &iAdcBaseLineIn
 	if (NULL == _pSyn_DutTestInfo)
 	{
 		_pSyn_DutTestInfo = new Syn_DutTestInfo();
-		_pSyn_DutTestInfo->_adcBaselineInfo = iAdcBaseLineInfo;
 	}
 
 	if (NULL == _pSyn_DutTestResult)
@@ -119,7 +118,6 @@ void Syn_Dut::InitData(Syn_SysConfig &sysConfig, AdcBaseLineInfo &iAdcBaseLineIn
 	_pSyn_DutTestInfo->_RAMTestInfo.m_bExecuted = false;
 	_pSyn_DutTestInfo->_retainModeInfo.m_bExecuted = false;
 	_pSyn_DutTestInfo->_wofLowPowerInfo.m_bExecuted = false;
-	_pSyn_DutTestInfo->_adcBaselineInfo.m_bExecuted = true;
 	_pSyn_DutTestInfo->_securityStepInfo.m_bExecuted = false;
 	_pSyn_DutTestInfo->_productIdTestInfo.m_bExecuted = false;
 	_pSyn_DutTestInfo->_AFETestInfo.m_bExecuted = false;

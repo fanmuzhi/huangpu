@@ -60,7 +60,7 @@ Syn_Site::~Syn_Site()
 	}
 }
 
-uint32_t Syn_Site::CreateSiteInstance(uint8_t siteNumber, string deviceSerNumber, string strConfigFilePath, const AdcBaseLineInfo &iADCInfo, Syn_Site * &opSiteInstance)
+uint32_t Syn_Site::CreateSiteInstance(uint8_t siteNumber, string deviceSerNumber, string strConfigFilePath, Syn_Site * &opSiteInstance)
 {
 	opSiteInstance = NULL;
 
@@ -70,19 +70,6 @@ uint32_t Syn_Site::CreateSiteInstance(uint8_t siteNumber, string deviceSerNumber
 	{
 		delete opSiteInstance;
 		opSiteInstance = NULL;
-	}
-	else
-	{
-		opSiteInstance->_ADCInfo.m_bExecuted = true;
-		opSiteInstance->_ADCInfo.m_nVdd = iADCInfo.m_nVdd;
-		opSiteInstance->_ADCInfo.m_nVio = iADCInfo.m_nVio;
-		opSiteInstance->_ADCInfo.m_nVled = iADCInfo.m_nVled;
-		opSiteInstance->_ADCInfo.m_nVddh = iADCInfo.m_nVddh;
-
-		for (int a = 0; a < NUM_CURRENT_VALUES; a++)
-		{
-			(opSiteInstance->_ADCInfo.m_arrAdcBaseLines)[a] = (iADCInfo.m_arrAdcBaseLines)[a];
-		}
 	}
 	
 	return rc;
@@ -202,7 +189,7 @@ uint32_t Syn_Site::Open()
 	_pSyn_Dut->SetPatchInfo(_SysConfig._listPatchInfo);
 
 	//fill info
-	_pSyn_Dut->InitData(_SysConfig,_ADCInfo);
+	_pSyn_Dut->InitData(_SysConfig);
 	
 	size_t stringSize = _strConfigFilePath.size();
 	size_t lastBackslashIndex = _strConfigFilePath.find_last_of("/");

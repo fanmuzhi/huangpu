@@ -21,7 +21,7 @@ Synaptics_Site::Synaptics_Site(uint8_t siteNumber, std::string deviceSerNumber, 
 	}
 
 	std::string path;
-	uint32_t rc = Syn_Site::CreateSiteInstance(siteNumber, deviceSerNumber, strConfigFilePath, adcBaseLineInfo, _pSyn_Site);
+	uint32_t rc = Syn_Site::CreateSiteInstance(siteNumber, deviceSerNumber, strConfigFilePath, _pSyn_Site);
 	if (rc != 0 || NULL == _pSyn_Site)
 	{
 		throw exception("Construct site failed.");

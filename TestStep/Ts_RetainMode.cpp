@@ -139,8 +139,8 @@ void Ts_RetainMode::Execute()
 	uint32_t arrValue[2] = { 0, 0 };		
 	_pSynBridge->GetCurrentValues(arrValue, true);		//	low gain
 
-	float spivcc_current = ((float)(arrValue[0]) - (float)(_pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[0])) / 1000;	//uA
-	float vcc_current = ((float)(arrValue[1]) - (float)(_pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[1])) / 1000;		//uA
+	float spivcc_current = ((float)arrValue[0]) / 1000;	//uA
+	float vcc_current = ((float)arrValue[1]) / 1000;		//uA
 
 	_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_nRetainModeCurrent_VCC_uA = vcc_current;
 	_pSyn_Dut->_pSyn_DutTestResult->_retainModeResults.m_nRetainModeCurrent_SPIVCC_uA = spivcc_current;

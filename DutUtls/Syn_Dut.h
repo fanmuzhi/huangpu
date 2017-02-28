@@ -55,7 +55,6 @@ struct Syn_DutTestInfo
 	RAMTestInfo					_RAMTestInfo;
 	RetainModeInfo				_retainModeInfo;
 	WofLowPowerInfo				_wofLowPowerInfo;
-	AdcBaseLineInfo				_adcBaselineInfo;
 	SecurityStepInfo			_securityStepInfo;
 	ProductIDTestInfo			_productIdTestInfo;
 	AFETestInfo					_AFETestInfo;
@@ -146,7 +145,7 @@ public:
 	static bool CreateDutInstance(string Type, Syn_Dut * &opSyn_DutInstance);
 
 	//function
-	void InitData(Syn_SysConfig &sysConfig, AdcBaseLineInfo &iAdcBaseLineInfo);
+	void InitData(Syn_SysConfig &sysConfig);
 
 	bool FindPatch(std::string patchName, Syn_PatchInfo &patchInfo);
 

@@ -156,7 +156,7 @@ bool FPS_TestExecutive::ConstructSiteList(const Syn_LocalSettings &LocalSettings
 		string strSerialNumber = LocalSettingsInfo._listOfSiteSettings[i]._strDutSerNum;
 		uint8_t uiSiteNumber = i + 1;
 		Syn_Site *pSyn_SiteInstance = NULL; 
-		rc = Syn_Site::CreateSiteInstance(uiSiteNumber, strSerialNumber, _LocalSettingsInfo._strSysConfigFilePath, LocalSettingsInfo._listOfSiteSettings[i]._adcBaseLineInfo, pSyn_SiteInstance);
+		rc = Syn_Site::CreateSiteInstance(uiSiteNumber, strSerialNumber, _LocalSettingsInfo._strSysConfigFilePath, pSyn_SiteInstance);
 		if (NULL == pSyn_SiteInstance || Syn_ExceptionCode::Syn_OK != rc)
 		{
 			string osErrorInfo("");

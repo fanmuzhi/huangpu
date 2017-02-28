@@ -102,8 +102,8 @@ void Ts_CurrentTest::Execute()
 	}
 
 
-	_pSyn_Dut->_pSyn_DutTestResult->_currentResults.m_nImageAcqDigCurrent_uA = ((float)arrValue[0] - (float)_pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[2])/1000;	//hign gain 1.8V
-	_pSyn_Dut->_pSyn_DutTestResult->_currentResults.m_nImageAcqAnaCurrent_uA = ((float)arrValue[1] - (float)_pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[3])/1000;	//hign gain 3.3V
+	_pSyn_Dut->_pSyn_DutTestResult->_currentResults.m_nImageAcqDigCurrent_uA = ((float)arrValue[0])/1000;	//hign gain 1.8V
+	_pSyn_Dut->_pSyn_DutTestResult->_currentResults.m_nImageAcqAnaCurrent_uA = ((float)arrValue[1])/1000;	//hign gain 3.3V
 
 }
 

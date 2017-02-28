@@ -124,8 +124,8 @@ void Ts_WOFLowPower::Execute()
 	uint32_t arrValue[2] = { 0, 0 };
 	_pSynBridge->GetCurrentValues(arrValue, true);		//low gain
 
-	float spivcc_current = ((float)(arrValue[0]) - (float)(_pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[0])) / 1000;
-	float vcc_current = ((float)(arrValue[1]) - (float)(_pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[1])) / 1000;
+	float spivcc_current = ((float)arrValue[0]) / 1000;
+	float vcc_current = ((float)arrValue[1]) / 1000;
 
 #ifdef _DEBUG
 	LOG(DEBUG) << "WOFLowPower SPIVCC Current (uA): " << spivcc_current;

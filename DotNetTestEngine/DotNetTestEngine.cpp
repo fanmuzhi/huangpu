@@ -55,7 +55,7 @@ namespace ManagedTestEngine {
 		MarshalString(devSerNum, devSN);
 		std::string path;
 		MarshalString(configPath, path);
-		UInt32 rc = Syn_Site::CreateSiteInstance(siteNum, devSN, path, adcBaseLineInfo, psite);
+		UInt32 rc = Syn_Site::CreateSiteInstance(siteNum, devSN, path, psite);
 		if (rc != 0)
 		{
 			throw exception("Construct site failed.");
