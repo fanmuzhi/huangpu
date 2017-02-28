@@ -352,7 +352,8 @@ uint32_t Syn_Site::ExecuteTestStep(std::string sTestName, ExcuteType Type)
 	{
 		try
 		{
-			_pSynBridge->SetVoltages(0,0);
+			if (NULL != _pSynBridge)
+				_pSynBridge->SetVoltages(0,0);
 		}
 		catch (...){}
 		delete pTestStep;
