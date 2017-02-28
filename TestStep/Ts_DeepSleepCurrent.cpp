@@ -85,11 +85,15 @@ void Ts_DeepSleepCurrent::Execute()
 
 	//uint32_t spivcc_current = arrValue[0] - _pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[2];
 	//uint32_t vcc_current = arrValue[1] - _pSyn_Dut->_pSyn_DutTestInfo->_adcBaselineInfo.m_arrAdcBaseLines[3];
-
-	_pSynBridge->GetCurrentValues(arrValue, true);		//low gain
-
-	float spivcc_current = ((float)arrValue[0]) / 1000;
-	float vcc_current = ((float)arrValue[1]) / 1000;
+	uint32_t sum[2] = { 0 };
+	for (int i = 0; i < 10; i++)
+	{
+		_pSynBridge->GetCurrentValues(arrValue, true);		//low gain
+		sum[0] = sum[0] + arrValue[0];
+		sum[1] = sum[1] + arrValue[1];
+	}
+	float spivcc_current = ((float)sum[0]/10) / 1000;
+	float vcc_current = ((float)sum[1]/10) / 1000;
 
 	_pSyn_Dut->_pSyn_DutTestResult->_deepSleepCurrentResults.spivcc_current_uA = spivcc_current;	//uA
 	_pSyn_Dut->_pSyn_DutTestResult->_deepSleepCurrentResults.vcc_current_uA = vcc_current;		//uA

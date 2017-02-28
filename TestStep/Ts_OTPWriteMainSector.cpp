@@ -416,14 +416,26 @@ void Ts_OTPWriteMainSector::Execute()
 	{
 		if (NULL != fmPatch._pArrayBuf)
 		{
-			rc = _pSyn_DutCtrl->FpOtpRomWrite(MAIN_SEC, 1, fmPatch._pArrayBuf, fmPatch._uiArraySize);
-			if (0 != rc)
+			//rc = _pSyn_DutCtrl->FpOtpRomWrite(MAIN_SEC, 1, fmPatch._pArrayBuf, fmPatch._uiArraySize);
+			//if (0 != rc)
+			//{
+			//	ex.SetError(rc);
+			//	ex.SetDescription("FirmwareUpdate is failed!");
+			//	throw ex;
+			try
 			{
-				ex.SetError(rc);
-				ex.SetDescription("FirmwareUpdate is failed!");
-				throw ex;
-				////this is a work around.
-				//_pSyn_DutCtrl->FpOtpRomWrite(MAIN_SEC, 1, fmPatch._pArrayBuf, fmPatch._uiArraySize);
+				_pSyn_DutCtrl->FpOtpRomWrite(MAIN_SEC, 1, fmPatch._pArrayBuf, fmPatch._uiArraySize);
+			}
+			catch (exception ex)
+			{
+				try
+				{
+					//this is a work around.
+					_pSyn_DutCtrl->FpOtpRomWrite(MAIN_SEC, 1, fmPatch._pArrayBuf, fmPatch._uiArraySize);
+				}
+				catch (...)
+				{
+				}
 			}
 		}
 	}
