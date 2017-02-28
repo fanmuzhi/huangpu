@@ -2,15 +2,11 @@
 
 #include <stdint.h>
 
-#define SW_VERSION		"2.0.1"
-#define SW_RELEASEDATE	"2017-01-23"
+#define SW_VERSION		"2.1.0"
+#define SW_RELEASEDATE	"2017-02-28"
 
 #define SYN_FALSE							0
 #define SYN_TRUE							!SYN_FALSE
-
-#define MAJOR_VER							1
-#define MINOR_VER							12
-#define DEVOLOPMENT_VER						0
 
 #define MAXROW								200
 #define MAXCOL								200
